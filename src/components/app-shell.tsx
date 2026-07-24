@@ -28,6 +28,7 @@ import {
   Inbox,
   Image as ImageIcon,
   BadgePercent,
+  HelpCircle,
   Megaphone,
   ClipboardList,
   BookOpen,
@@ -159,8 +160,8 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
             to: "/pb-admin/sales-report",
             subItems: [
               { label: "Sales", to: "/pb-admin/sales-report", icon: BarChart3 },
-              { label: "View", to: "/pb-admin/analytics/view", icon: Eye },
-              { label: "Cart Views", to: "/pb-admin/analytics/cart-views", icon: ShoppingCart },
+              { label: "Views", to: "/pb-admin/views-report", icon: Eye },
+              { label: "Cart Views", to: "/pb-admin/cart-view", icon: ShoppingCart },
             ],
           },
         ],
@@ -207,9 +208,30 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
               { label: "Sitemap", to: "/pb-admin/marketing/sitemap", icon: Network },
             ],
           },
-          { label: "Ad Banners", icon: ImageIcon, to: "/pb-admin/ad-banners" },
-          { label: "Quizzes & Rewards", icon: Store, to: "/pb-admin/quizzes-rewards" },
           { label: "Audit Log", icon: ClipboardList, to: "/pb-admin/audit-log" },
+        ],
+      },
+      {
+        heading: "Banners & Engagement",
+        items: [
+          {
+            label: "Ad Banners",
+            icon: ImageIcon,
+            to: "/pb-admin/ad-banners/image",
+            subItems: [
+              { label: "Image Banners", to: "/pb-admin/ad-banners/image", icon: ImageIcon },
+              { label: "Popup Banners", to: "/pb-admin/ad-banners/popup", icon: BadgePercent },
+            ],
+          },
+          {
+            label: "Quizzes & Rewards",
+            icon: Store,
+            to: "/pb-admin/quizzes-rewards",
+            subItems: [
+              { label: "Quizzes", to: "/pb-admin/quizzes-rewards", icon: HelpCircle },
+              { label: "Promocodes", to: "/pb-admin/promo-codes", icon: TicketPercent },
+            ],
+          },
         ],
       },
     ];

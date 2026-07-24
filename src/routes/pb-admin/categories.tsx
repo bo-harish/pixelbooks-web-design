@@ -5,8 +5,6 @@ import {
   ChevronDown,
   Check,
   FolderTree,
-  Eye,
-  TrendingUp,
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
@@ -18,13 +16,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-admin/categories")({
@@ -140,7 +131,6 @@ function ManageCategoryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusValue>("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryItem | null>(null);
 
   const itemsPerPage = 10;
   const simulatedTotalBase = 122;
@@ -168,8 +158,7 @@ function ManageCategoryPage() {
     return filteredCategories.slice(start, start + itemsPerPage);
   }, [filteredCategories, currentPage, itemsPerPage]);
 
-  const handleToggleStatus = (categoryId: string, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
+  const handleToggleStatus = (categoryId: string) => {
     setCategories((prev) =>
       prev.map((c) => {
         if (c.id === categoryId) {
@@ -288,11 +277,10 @@ function ManageCategoryPage() {
                   paginatedCategories.map((cat) => (
                     <tr
                       key={cat.id}
-                      onClick={() => setSelectedCategory(cat)}
-                      className="group transition-colors hover:bg-muted/30 cursor-pointer"
+                      className="transition-colors hover:bg-muted/30"
                     >
                       <td className="py-4 px-6">
-                        <span className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors">
+                        <span className="font-semibold text-foreground text-sm">
                           {cat.name}
                         </span>
                       </td>
@@ -306,10 +294,7 @@ function ManageCategoryPage() {
                       </td>
 
                       <td className="py-4 px-6 text-right pr-8">
-                        <div
-                          className="inline-flex items-center justify-end"
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                        <div className="inline-flex items-center justify-end">
                           <Switch
                             checked={cat.status === "Enabled"}
                             onCheckedChange={() => handleToggleStatus(cat.id)}
@@ -388,95 +373,8 @@ function ManageCategoryPage() {
             </button>
           </div>
         </div>
-
-        {/* Detail Modal */}
-        <Dialog open={!!selectedCategory} onOpenChange={(open) => !open && setSelectedCategory(null)}>
-          {selectedCategory && (
-            <DialogContent className="sm:max-w-md rounded-2xl bg-card border-border p-6 shadow-xl">
-              <DialogHeader>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--sidebar-highlight)] text-[var(--brand)] shrink-0">
-                    <FolderTree size={24} />
-                  </div>
-                  <div>
-                    <DialogTitle className="text-xl font-bold text-foreground">
-                      {selectedCategory.name}
-                    </DialogTitle>
-                    <DialogDescription className="text-xs text-muted-foreground">
-                      Category details & performance metrics
-                    </DialogDescription>
-                  </div>
-                </div>
-              </DialogHeader>
-
-              <div className="space-y-4 py-3">
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {selectedCategory.description}
-                </p>
-
-                <div className="grid grid-cols-2 gap-3 rounded-xl border border-border/70 bg-muted/20 p-4">
-                  <div>
-                    <span className="text-xs text-muted-foreground block mb-0.5">Status</span>
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${
-                        selectedCategory.status === "Enabled"
-                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                          : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                      }`}
-                    >
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          selectedCategory.status === "Enabled" ? "bg-emerald-500" : "bg-rose-500"
-                        }`}
-                      />
-                      {selectedCategory.status}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block mb-0.5">Monthly Sales</span>
-                    <span className="text-sm font-bold text-foreground">
-                      {selectedCategory.avgSalesMonthly} eBooks / mo
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-2.5 text-xs text-foreground">
-                  <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <Eye size={14} className="text-muted-foreground/70" /> Total Views
-                    </span>
-                    <span className="font-medium">{selectedCategory.views} eBook Views</span>
-                  </div>
-                  <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <TrendingUp size={14} className="text-muted-foreground/70" /> Avg Sales / Month
-                    </span>
-                    <span className="font-medium">{selectedCategory.avgSalesMonthly} eBooks</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => handleToggleStatus(selectedCategory.id)}
-                  className="flex-1 inline-flex h-10 items-center justify-center rounded-lg px-4 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
-                  style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-                >
-                  {selectedCategory.status === "Enabled" ? "Disable Category" : "Enable Category"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory(null)}
-                  className="h-10 px-5 rounded-lg border border-border bg-card text-xs font-medium text-foreground hover:bg-secondary cursor-pointer"
-                >
-                  Close
-                </button>
-              </div>
-            </DialogContent>
-          )}
-        </Dialog>
       </div>
     </AppShell>
   );
 }
+

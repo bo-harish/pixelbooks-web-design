@@ -44,7 +44,7 @@ export const Route = createFileRoute("/pb-admin/admin-users")({
 });
 
 export type StatusValue = "All" | "Enabled" | "Disabled" | "Pending";
-export type RoleFilterValue = "All Roles" | "All Access" | "Catalogue" | "People" | "Authors" | "Reports" | "Marketing & Growth";
+export type RoleFilterValue = "All Roles" | "All Access" | "Catalogue" | "People" | "Authors" | "Reports" | "Marketing & Growth" | "Banners & Engagement";
 
 export interface PermissionSection {
   id: string;
@@ -104,9 +104,16 @@ export const MENU_SECTIONS: PermissionSection[] = [
     subItems: [
       { id: "marketing_schema_meta", label: "Schema & Meta (Marketing)" },
       { id: "marketing_sitemap", label: "Sitemap (Marketing)" },
-      { id: "ad_banners", label: "Ad Banners" },
-      { id: "quizzes_rewards", label: "Quizzes & Rewards" },
       { id: "audit_log", label: "Audit Log" },
+    ],
+  },
+  {
+    id: "banners_engagement",
+    label: "Banners & Engagement",
+    subItems: [
+      { id: "image_banners", label: "Image Banners" },
+      { id: "popup_banners", label: "Popup Banners" },
+      { id: "quizzes_rewards", label: "Quizzes & Rewards" },
     ],
   },
 ];
@@ -270,7 +277,8 @@ function ManageAdminUsersPage() {
       if (roleFilter === "People" && !user.permissions.some((p) => ["publisher_author", "customers", "admin_users"].includes(p))) return false;
       if (roleFilter === "Authors" && !user.permissions.some((p) => ["author_management", "merge_authors"].includes(p))) return false;
       if (roleFilter === "Reports" && !user.permissions.some((p) => ["margin_royalty_report", "sales_report"].includes(p))) return false;
-      if (roleFilter === "Marketing & Growth" && !user.permissions.some((p) => ["marketing_schema_meta", "marketing_sitemap", "ad_banners"].includes(p))) return false;
+      if (roleFilter === "Marketing & Growth" && !user.permissions.some((p) => ["marketing_schema_meta", "marketing_sitemap", "audit_log"].includes(p))) return false;
+      if (roleFilter === "Banners & Engagement" && !user.permissions.some((p) => ["image_banners", "popup_banners", "quizzes_rewards"].includes(p))) return false;
 
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -1017,6 +1025,31 @@ function ManageAdminUsersPage() {
                                 }}
                                 className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
                               >
+                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
+                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Banners & Engagement */}
+                  {(() => {
+                    const sec = MENU_SECTIONS.find((s) => s.id === "banners_engagement")!;
+                    const checked = isSectionChecked(sec);
+                    return (
+                      <div className="space-y-2.5">
+                        <div onClick={() => toggleSection(sec)} className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none">
+                          <CustomCheckbox checked={checked} />
+                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
+                        </div>
+                        <div className="ml-7 space-y-2">
+                          {sec.subItems?.map((sub) => {
+                            const subChecked = isSinglePermissionChecked(sub.id);
+                            return (
+                              <div key={sub.id} onClick={(e) => { e.stopPropagation(); toggleSinglePermission(sub.id); }} className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors">
                                 <CustomCheckbox checked={subChecked} className="h-4 w-4" />
                                 <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
                               </div>

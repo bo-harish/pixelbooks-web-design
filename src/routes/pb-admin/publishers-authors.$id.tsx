@@ -50,7 +50,7 @@ interface AccountDetails {
   commissionRate: string;
   profileUrl: string;
   status: EntityStatus;
-  
+
   // Bank Details
   accountHolderName: string;
   bankAccountNumber: string;
@@ -84,7 +84,7 @@ const MOCK_ACCOUNTS_MAP: Record<string, AccountDetails> = {
     gstNumber: "27ABCDE1234F1Z1",
     panCard: "QAZXS1234R",
     commissionRate: "16%",
-    profileUrl: "https://azqacustomer.pixelbooksapp.com/TBH-Publisher",
+    profileUrl: "https://pixelbooksapp.com/TBH-Publisher",
     status: "Approved",
     accountHolderName: "Tharvi",
     bankAccountNumber: "1234567890",
@@ -110,7 +110,7 @@ const MOCK_ACCOUNTS_MAP: Record<string, AccountDetails> = {
     gstNumber: "32AAAAA0000A1Z5",
     panCard: "WERLN9988P",
     commissionRate: "15%",
-    profileUrl: "https://azqacustomer.pixelbooksapp.com/werley-nortreus",
+    profileUrl: "https://pixelbooksapp.com/werley-nortreus",
     status: "Approved",
     accountHolderName: "Werley Nortreus",
     bankAccountNumber: "987654321098",
@@ -197,7 +197,7 @@ function PublisherAuthorDetailPage() {
     gstNumber: "27ABCDE1234F1Z1",
     panCard: "QAZXS1234R",
     commissionRate: "16%",
-    profileUrl: `https://azqacustomer.pixelbooksapp.com/${id}`,
+    profileUrl: `https://pixelbooksapp.com/${id}`,
     status: "Approved",
     accountHolderName: "Tharvi",
     bankAccountNumber: "1234567890",
@@ -364,13 +364,12 @@ function PublisherAuthorDetailPage() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className={`flex h-10 items-center justify-between gap-2.5 rounded-full px-4 text-xs font-bold shadow-xs transition-all outline-none cursor-pointer border ${
-                      account.status === "Approved"
+                    className={`flex h-10 items-center justify-between gap-2.5 rounded-full px-4 text-xs font-bold shadow-xs transition-all outline-none cursor-pointer border ${account.status === "Approved"
                         ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
                         : account.status === "Rejected"
                           ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
                           : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-1.5">
                       {account.status === "Approved" && <CheckCircle2 size={15} />}

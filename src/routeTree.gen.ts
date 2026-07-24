@@ -22,7 +22,9 @@ import { Route as PublisherSalesReportRouteImport } from './routes/publisher/sal
 import { Route as PublisherProfileRouteImport } from './routes/publisher/profile'
 import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
 import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
+import { Route as PbAdminViewsReportRouteImport } from './routes/pb-admin/views-report'
 import { Route as PbAdminSalesReportRouteImport } from './routes/pb-admin/sales-report'
+import { Route as PbAdminQuizzesRewardsRouteImport } from './routes/pb-admin/quizzes-rewards'
 import { Route as PbAdminPublishersAuthorsRouteImport } from './routes/pb-admin/publishers-authors'
 import { Route as PbAdminPromoCodesRouteImport } from './routes/pb-admin/promo-codes'
 import { Route as PbAdminMergeAuthorsRouteImport } from './routes/pb-admin/merge-authors'
@@ -30,7 +32,9 @@ import { Route as PbAdminMarginReportRouteImport } from './routes/pb-admin/margi
 import { Route as PbAdminCustomersRouteImport } from './routes/pb-admin/customers'
 import { Route as PbAdminCommissionRatesRouteImport } from './routes/pb-admin/commission-rates'
 import { Route as PbAdminCategoriesRouteImport } from './routes/pb-admin/categories'
+import { Route as PbAdminCartViewRouteImport } from './routes/pb-admin/cart-view'
 import { Route as PbAdminAuthorManagementRouteImport } from './routes/pb-admin/author-management'
+import { Route as PbAdminAuditLogRouteImport } from './routes/pb-admin/audit-log'
 import { Route as PbAdminAdminUsersRouteImport } from './routes/pb-admin/admin-users'
 import { Route as LibraryAdminUsersRouteImport } from './routes/library-admin/users'
 import { Route as LibraryAdminSupportRouteImport } from './routes/library-admin/support'
@@ -59,10 +63,14 @@ import { Route as PublisherBundlesBundleIdRouteImport } from './routes/publisher
 import { Route as PbAdminTitlesNewRouteImport } from './routes/pb-admin/titles.new'
 import { Route as PbAdminTitlesBookIdRouteImport } from './routes/pb-admin/titles.$bookId'
 import { Route as PbAdminPublishersAuthorsIdRouteImport } from './routes/pb-admin/publishers-authors.$id'
+import { Route as PbAdminMarketingSitemapRouteImport } from './routes/pb-admin/marketing.sitemap'
+import { Route as PbAdminMarketingSchemaMetaRouteImport } from './routes/pb-admin/marketing.schema-meta'
 import { Route as PbAdminCommissionRatesIdRouteImport } from './routes/pb-admin/commission-rates_/$id'
 import { Route as PbAdminBundlesNewRouteImport } from './routes/pb-admin/bundles.new'
 import { Route as PbAdminBundlesBundleIdRouteImport } from './routes/pb-admin/bundles.$bundleId'
 import { Route as PbAdminAuthorManagementAuthorIdRouteImport } from './routes/pb-admin/author-management.$authorId'
+import { Route as PbAdminAdBannersPopupRouteImport } from './routes/pb-admin/ad-banners.popup'
+import { Route as PbAdminAdBannersImageRouteImport } from './routes/pb-admin/ad-banners.image'
 
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
@@ -129,9 +137,19 @@ const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
   path: '/publisher/bank-accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PbAdminViewsReportRoute = PbAdminViewsReportRouteImport.update({
+  id: '/pb-admin/views-report',
+  path: '/pb-admin/views-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PbAdminSalesReportRoute = PbAdminSalesReportRouteImport.update({
   id: '/pb-admin/sales-report',
   path: '/pb-admin/sales-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminQuizzesRewardsRoute = PbAdminQuizzesRewardsRouteImport.update({
+  id: '/pb-admin/quizzes-rewards',
+  path: '/pb-admin/quizzes-rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PbAdminPublishersAuthorsRoute =
@@ -170,9 +188,19 @@ const PbAdminCategoriesRoute = PbAdminCategoriesRouteImport.update({
   path: '/pb-admin/categories',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PbAdminCartViewRoute = PbAdminCartViewRouteImport.update({
+  id: '/pb-admin/cart-view',
+  path: '/pb-admin/cart-view',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PbAdminAuthorManagementRoute = PbAdminAuthorManagementRouteImport.update({
   id: '/pb-admin/author-management',
   path: '/pb-admin/author-management',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminAuditLogRoute = PbAdminAuditLogRouteImport.update({
+  id: '/pb-admin/audit-log',
+  path: '/pb-admin/audit-log',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PbAdminAdminUsersRoute = PbAdminAdminUsersRouteImport.update({
@@ -323,6 +351,17 @@ const PbAdminPublishersAuthorsIdRoute =
     path: '/$id',
     getParentRoute: () => PbAdminPublishersAuthorsRoute,
   } as any)
+const PbAdminMarketingSitemapRoute = PbAdminMarketingSitemapRouteImport.update({
+  id: '/pb-admin/marketing/sitemap',
+  path: '/pb-admin/marketing/sitemap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminMarketingSchemaMetaRoute =
+  PbAdminMarketingSchemaMetaRouteImport.update({
+    id: '/pb-admin/marketing/schema-meta',
+    path: '/pb-admin/marketing/schema-meta',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PbAdminCommissionRatesIdRoute =
   PbAdminCommissionRatesIdRouteImport.update({
     id: '/pb-admin/commission-rates_/$id',
@@ -345,6 +384,16 @@ const PbAdminAuthorManagementAuthorIdRoute =
     path: '/$authorId',
     getParentRoute: () => PbAdminAuthorManagementRoute,
   } as any)
+const PbAdminAdBannersPopupRoute = PbAdminAdBannersPopupRouteImport.update({
+  id: '/pb-admin/ad-banners/popup',
+  path: '/pb-admin/ad-banners/popup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminAdBannersImageRoute = PbAdminAdBannersImageRouteImport.update({
+  id: '/pb-admin/ad-banners/image',
+  path: '/pb-admin/ad-banners/image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -362,7 +411,9 @@ export interface FileRoutesByFullPath {
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
   '/pb-admin/admin-users': typeof PbAdminAdminUsersRoute
+  '/pb-admin/audit-log': typeof PbAdminAuditLogRoute
   '/pb-admin/author-management': typeof PbAdminAuthorManagementRouteWithChildren
+  '/pb-admin/cart-view': typeof PbAdminCartViewRoute
   '/pb-admin/categories': typeof PbAdminCategoriesRoute
   '/pb-admin/commission-rates': typeof PbAdminCommissionRatesRoute
   '/pb-admin/customers': typeof PbAdminCustomersRoute
@@ -370,7 +421,9 @@ export interface FileRoutesByFullPath {
   '/pb-admin/merge-authors': typeof PbAdminMergeAuthorsRoute
   '/pb-admin/promo-codes': typeof PbAdminPromoCodesRoute
   '/pb-admin/publishers-authors': typeof PbAdminPublishersAuthorsRouteWithChildren
+  '/pb-admin/quizzes-rewards': typeof PbAdminQuizzesRewardsRoute
   '/pb-admin/sales-report': typeof PbAdminSalesReportRoute
+  '/pb-admin/views-report': typeof PbAdminViewsReportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
@@ -381,10 +434,14 @@ export interface FileRoutesByFullPath {
   '/library-admin/': typeof LibraryAdminIndexRoute
   '/pb-admin/': typeof PbAdminIndexRoute
   '/publisher/': typeof PublisherIndexRoute
+  '/pb-admin/ad-banners/image': typeof PbAdminAdBannersImageRoute
+  '/pb-admin/ad-banners/popup': typeof PbAdminAdBannersPopupRoute
   '/pb-admin/author-management/$authorId': typeof PbAdminAuthorManagementAuthorIdRoute
   '/pb-admin/bundles/$bundleId': typeof PbAdminBundlesBundleIdRoute
   '/pb-admin/bundles/new': typeof PbAdminBundlesNewRoute
   '/pb-admin/commission-rates/$id': typeof PbAdminCommissionRatesIdRoute
+  '/pb-admin/marketing/schema-meta': typeof PbAdminMarketingSchemaMetaRoute
+  '/pb-admin/marketing/sitemap': typeof PbAdminMarketingSitemapRoute
   '/pb-admin/publishers-authors/$id': typeof PbAdminPublishersAuthorsIdRoute
   '/pb-admin/titles/$bookId': typeof PbAdminTitlesBookIdRoute
   '/pb-admin/titles/new': typeof PbAdminTitlesNewRoute
@@ -418,7 +475,9 @@ export interface FileRoutesByTo {
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
   '/pb-admin/admin-users': typeof PbAdminAdminUsersRoute
+  '/pb-admin/audit-log': typeof PbAdminAuditLogRoute
   '/pb-admin/author-management': typeof PbAdminAuthorManagementRouteWithChildren
+  '/pb-admin/cart-view': typeof PbAdminCartViewRoute
   '/pb-admin/categories': typeof PbAdminCategoriesRoute
   '/pb-admin/commission-rates': typeof PbAdminCommissionRatesRoute
   '/pb-admin/customers': typeof PbAdminCustomersRoute
@@ -426,7 +485,9 @@ export interface FileRoutesByTo {
   '/pb-admin/merge-authors': typeof PbAdminMergeAuthorsRoute
   '/pb-admin/promo-codes': typeof PbAdminPromoCodesRoute
   '/pb-admin/publishers-authors': typeof PbAdminPublishersAuthorsRouteWithChildren
+  '/pb-admin/quizzes-rewards': typeof PbAdminQuizzesRewardsRoute
   '/pb-admin/sales-report': typeof PbAdminSalesReportRoute
+  '/pb-admin/views-report': typeof PbAdminViewsReportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
@@ -437,10 +498,14 @@ export interface FileRoutesByTo {
   '/library-admin': typeof LibraryAdminIndexRoute
   '/pb-admin': typeof PbAdminIndexRoute
   '/publisher': typeof PublisherIndexRoute
+  '/pb-admin/ad-banners/image': typeof PbAdminAdBannersImageRoute
+  '/pb-admin/ad-banners/popup': typeof PbAdminAdBannersPopupRoute
   '/pb-admin/author-management/$authorId': typeof PbAdminAuthorManagementAuthorIdRoute
   '/pb-admin/bundles/$bundleId': typeof PbAdminBundlesBundleIdRoute
   '/pb-admin/bundles/new': typeof PbAdminBundlesNewRoute
   '/pb-admin/commission-rates/$id': typeof PbAdminCommissionRatesIdRoute
+  '/pb-admin/marketing/schema-meta': typeof PbAdminMarketingSchemaMetaRoute
+  '/pb-admin/marketing/sitemap': typeof PbAdminMarketingSitemapRoute
   '/pb-admin/publishers-authors/$id': typeof PbAdminPublishersAuthorsIdRoute
   '/pb-admin/titles/$bookId': typeof PbAdminTitlesBookIdRoute
   '/pb-admin/titles/new': typeof PbAdminTitlesNewRoute
@@ -475,7 +540,9 @@ export interface FileRoutesById {
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
   '/pb-admin/admin-users': typeof PbAdminAdminUsersRoute
+  '/pb-admin/audit-log': typeof PbAdminAuditLogRoute
   '/pb-admin/author-management': typeof PbAdminAuthorManagementRouteWithChildren
+  '/pb-admin/cart-view': typeof PbAdminCartViewRoute
   '/pb-admin/categories': typeof PbAdminCategoriesRoute
   '/pb-admin/commission-rates': typeof PbAdminCommissionRatesRoute
   '/pb-admin/customers': typeof PbAdminCustomersRoute
@@ -483,7 +550,9 @@ export interface FileRoutesById {
   '/pb-admin/merge-authors': typeof PbAdminMergeAuthorsRoute
   '/pb-admin/promo-codes': typeof PbAdminPromoCodesRoute
   '/pb-admin/publishers-authors': typeof PbAdminPublishersAuthorsRouteWithChildren
+  '/pb-admin/quizzes-rewards': typeof PbAdminQuizzesRewardsRoute
   '/pb-admin/sales-report': typeof PbAdminSalesReportRoute
+  '/pb-admin/views-report': typeof PbAdminViewsReportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
@@ -494,10 +563,14 @@ export interface FileRoutesById {
   '/library-admin/': typeof LibraryAdminIndexRoute
   '/pb-admin/': typeof PbAdminIndexRoute
   '/publisher/': typeof PublisherIndexRoute
+  '/pb-admin/ad-banners/image': typeof PbAdminAdBannersImageRoute
+  '/pb-admin/ad-banners/popup': typeof PbAdminAdBannersPopupRoute
   '/pb-admin/author-management/$authorId': typeof PbAdminAuthorManagementAuthorIdRoute
   '/pb-admin/bundles/$bundleId': typeof PbAdminBundlesBundleIdRoute
   '/pb-admin/bundles/new': typeof PbAdminBundlesNewRoute
   '/pb-admin/commission-rates_/$id': typeof PbAdminCommissionRatesIdRoute
+  '/pb-admin/marketing/schema-meta': typeof PbAdminMarketingSchemaMetaRoute
+  '/pb-admin/marketing/sitemap': typeof PbAdminMarketingSitemapRoute
   '/pb-admin/publishers-authors/$id': typeof PbAdminPublishersAuthorsIdRoute
   '/pb-admin/titles/$bookId': typeof PbAdminTitlesBookIdRoute
   '/pb-admin/titles/new': typeof PbAdminTitlesNewRoute
@@ -533,7 +606,9 @@ export interface FileRouteTypes {
     | '/library-admin/support'
     | '/library-admin/users'
     | '/pb-admin/admin-users'
+    | '/pb-admin/audit-log'
     | '/pb-admin/author-management'
+    | '/pb-admin/cart-view'
     | '/pb-admin/categories'
     | '/pb-admin/commission-rates'
     | '/pb-admin/customers'
@@ -541,7 +616,9 @@ export interface FileRouteTypes {
     | '/pb-admin/merge-authors'
     | '/pb-admin/promo-codes'
     | '/pb-admin/publishers-authors'
+    | '/pb-admin/quizzes-rewards'
     | '/pb-admin/sales-report'
+    | '/pb-admin/views-report'
     | '/publisher/bank-accounts'
     | '/publisher/margin-report'
     | '/publisher/profile'
@@ -552,10 +629,14 @@ export interface FileRouteTypes {
     | '/library-admin/'
     | '/pb-admin/'
     | '/publisher/'
+    | '/pb-admin/ad-banners/image'
+    | '/pb-admin/ad-banners/popup'
     | '/pb-admin/author-management/$authorId'
     | '/pb-admin/bundles/$bundleId'
     | '/pb-admin/bundles/new'
     | '/pb-admin/commission-rates/$id'
+    | '/pb-admin/marketing/schema-meta'
+    | '/pb-admin/marketing/sitemap'
     | '/pb-admin/publishers-authors/$id'
     | '/pb-admin/titles/$bookId'
     | '/pb-admin/titles/new'
@@ -589,7 +670,9 @@ export interface FileRouteTypes {
     | '/library-admin/support'
     | '/library-admin/users'
     | '/pb-admin/admin-users'
+    | '/pb-admin/audit-log'
     | '/pb-admin/author-management'
+    | '/pb-admin/cart-view'
     | '/pb-admin/categories'
     | '/pb-admin/commission-rates'
     | '/pb-admin/customers'
@@ -597,7 +680,9 @@ export interface FileRouteTypes {
     | '/pb-admin/merge-authors'
     | '/pb-admin/promo-codes'
     | '/pb-admin/publishers-authors'
+    | '/pb-admin/quizzes-rewards'
     | '/pb-admin/sales-report'
+    | '/pb-admin/views-report'
     | '/publisher/bank-accounts'
     | '/publisher/margin-report'
     | '/publisher/profile'
@@ -608,10 +693,14 @@ export interface FileRouteTypes {
     | '/library-admin'
     | '/pb-admin'
     | '/publisher'
+    | '/pb-admin/ad-banners/image'
+    | '/pb-admin/ad-banners/popup'
     | '/pb-admin/author-management/$authorId'
     | '/pb-admin/bundles/$bundleId'
     | '/pb-admin/bundles/new'
     | '/pb-admin/commission-rates/$id'
+    | '/pb-admin/marketing/schema-meta'
+    | '/pb-admin/marketing/sitemap'
     | '/pb-admin/publishers-authors/$id'
     | '/pb-admin/titles/$bookId'
     | '/pb-admin/titles/new'
@@ -645,7 +734,9 @@ export interface FileRouteTypes {
     | '/library-admin/support'
     | '/library-admin/users'
     | '/pb-admin/admin-users'
+    | '/pb-admin/audit-log'
     | '/pb-admin/author-management'
+    | '/pb-admin/cart-view'
     | '/pb-admin/categories'
     | '/pb-admin/commission-rates'
     | '/pb-admin/customers'
@@ -653,7 +744,9 @@ export interface FileRouteTypes {
     | '/pb-admin/merge-authors'
     | '/pb-admin/promo-codes'
     | '/pb-admin/publishers-authors'
+    | '/pb-admin/quizzes-rewards'
     | '/pb-admin/sales-report'
+    | '/pb-admin/views-report'
     | '/publisher/bank-accounts'
     | '/publisher/margin-report'
     | '/publisher/profile'
@@ -664,10 +757,14 @@ export interface FileRouteTypes {
     | '/library-admin/'
     | '/pb-admin/'
     | '/publisher/'
+    | '/pb-admin/ad-banners/image'
+    | '/pb-admin/ad-banners/popup'
     | '/pb-admin/author-management/$authorId'
     | '/pb-admin/bundles/$bundleId'
     | '/pb-admin/bundles/new'
     | '/pb-admin/commission-rates_/$id'
+    | '/pb-admin/marketing/schema-meta'
+    | '/pb-admin/marketing/sitemap'
     | '/pb-admin/publishers-authors/$id'
     | '/pb-admin/titles/$bookId'
     | '/pb-admin/titles/new'
@@ -702,7 +799,9 @@ export interface RootRouteChildren {
   LibraryAdminSupportRoute: typeof LibraryAdminSupportRoute
   LibraryAdminUsersRoute: typeof LibraryAdminUsersRoute
   PbAdminAdminUsersRoute: typeof PbAdminAdminUsersRoute
+  PbAdminAuditLogRoute: typeof PbAdminAuditLogRoute
   PbAdminAuthorManagementRoute: typeof PbAdminAuthorManagementRouteWithChildren
+  PbAdminCartViewRoute: typeof PbAdminCartViewRoute
   PbAdminCategoriesRoute: typeof PbAdminCategoriesRoute
   PbAdminCommissionRatesRoute: typeof PbAdminCommissionRatesRoute
   PbAdminCustomersRoute: typeof PbAdminCustomersRoute
@@ -710,7 +809,9 @@ export interface RootRouteChildren {
   PbAdminMergeAuthorsRoute: typeof PbAdminMergeAuthorsRoute
   PbAdminPromoCodesRoute: typeof PbAdminPromoCodesRoute
   PbAdminPublishersAuthorsRoute: typeof PbAdminPublishersAuthorsRouteWithChildren
+  PbAdminQuizzesRewardsRoute: typeof PbAdminQuizzesRewardsRoute
   PbAdminSalesReportRoute: typeof PbAdminSalesReportRoute
+  PbAdminViewsReportRoute: typeof PbAdminViewsReportRoute
   PublisherBankAccountsRoute: typeof PublisherBankAccountsRoute
   PublisherMarginReportRoute: typeof PublisherMarginReportRoute
   PublisherProfileRoute: typeof PublisherProfileRoute
@@ -721,9 +822,13 @@ export interface RootRouteChildren {
   LibraryAdminIndexRoute: typeof LibraryAdminIndexRoute
   PbAdminIndexRoute: typeof PbAdminIndexRoute
   PublisherIndexRoute: typeof PublisherIndexRoute
+  PbAdminAdBannersImageRoute: typeof PbAdminAdBannersImageRoute
+  PbAdminAdBannersPopupRoute: typeof PbAdminAdBannersPopupRoute
   PbAdminBundlesBundleIdRoute: typeof PbAdminBundlesBundleIdRoute
   PbAdminBundlesNewRoute: typeof PbAdminBundlesNewRoute
   PbAdminCommissionRatesIdRoute: typeof PbAdminCommissionRatesIdRoute
+  PbAdminMarketingSchemaMetaRoute: typeof PbAdminMarketingSchemaMetaRoute
+  PbAdminMarketingSitemapRoute: typeof PbAdminMarketingSitemapRoute
   PbAdminTitlesBookIdRoute: typeof PbAdminTitlesBookIdRoute
   PbAdminTitlesNewRoute: typeof PbAdminTitlesNewRoute
   PublisherBundlesBundleIdRoute: typeof PublisherBundlesBundleIdRoute
@@ -834,11 +939,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublisherBankAccountsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pb-admin/views-report': {
+      id: '/pb-admin/views-report'
+      path: '/pb-admin/views-report'
+      fullPath: '/pb-admin/views-report'
+      preLoaderRoute: typeof PbAdminViewsReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-admin/sales-report': {
       id: '/pb-admin/sales-report'
       path: '/pb-admin/sales-report'
       fullPath: '/pb-admin/sales-report'
       preLoaderRoute: typeof PbAdminSalesReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/quizzes-rewards': {
+      id: '/pb-admin/quizzes-rewards'
+      path: '/pb-admin/quizzes-rewards'
+      fullPath: '/pb-admin/quizzes-rewards'
+      preLoaderRoute: typeof PbAdminQuizzesRewardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-admin/publishers-authors': {
@@ -890,11 +1009,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbAdminCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pb-admin/cart-view': {
+      id: '/pb-admin/cart-view'
+      path: '/pb-admin/cart-view'
+      fullPath: '/pb-admin/cart-view'
+      preLoaderRoute: typeof PbAdminCartViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-admin/author-management': {
       id: '/pb-admin/author-management'
       path: '/pb-admin/author-management'
       fullPath: '/pb-admin/author-management'
       preLoaderRoute: typeof PbAdminAuthorManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/audit-log': {
+      id: '/pb-admin/audit-log'
+      path: '/pb-admin/audit-log'
+      fullPath: '/pb-admin/audit-log'
+      preLoaderRoute: typeof PbAdminAuditLogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-admin/admin-users': {
@@ -1093,6 +1226,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbAdminPublishersAuthorsIdRouteImport
       parentRoute: typeof PbAdminPublishersAuthorsRoute
     }
+    '/pb-admin/marketing/sitemap': {
+      id: '/pb-admin/marketing/sitemap'
+      path: '/pb-admin/marketing/sitemap'
+      fullPath: '/pb-admin/marketing/sitemap'
+      preLoaderRoute: typeof PbAdminMarketingSitemapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/marketing/schema-meta': {
+      id: '/pb-admin/marketing/schema-meta'
+      path: '/pb-admin/marketing/schema-meta'
+      fullPath: '/pb-admin/marketing/schema-meta'
+      preLoaderRoute: typeof PbAdminMarketingSchemaMetaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-admin/commission-rates_/$id': {
       id: '/pb-admin/commission-rates_/$id'
       path: '/pb-admin/commission-rates/$id'
@@ -1120,6 +1267,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/pb-admin/author-management/$authorId'
       preLoaderRoute: typeof PbAdminAuthorManagementAuthorIdRouteImport
       parentRoute: typeof PbAdminAuthorManagementRoute
+    }
+    '/pb-admin/ad-banners/popup': {
+      id: '/pb-admin/ad-banners/popup'
+      path: '/pb-admin/ad-banners/popup'
+      fullPath: '/pb-admin/ad-banners/popup'
+      preLoaderRoute: typeof PbAdminAdBannersPopupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/ad-banners/image': {
+      id: '/pb-admin/ad-banners/image'
+      path: '/pb-admin/ad-banners/image'
+      fullPath: '/pb-admin/ad-banners/image'
+      preLoaderRoute: typeof PbAdminAdBannersImageRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -1168,7 +1329,9 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryAdminSupportRoute: LibraryAdminSupportRoute,
   LibraryAdminUsersRoute: LibraryAdminUsersRoute,
   PbAdminAdminUsersRoute: PbAdminAdminUsersRoute,
+  PbAdminAuditLogRoute: PbAdminAuditLogRoute,
   PbAdminAuthorManagementRoute: PbAdminAuthorManagementRouteWithChildren,
+  PbAdminCartViewRoute: PbAdminCartViewRoute,
   PbAdminCategoriesRoute: PbAdminCategoriesRoute,
   PbAdminCommissionRatesRoute: PbAdminCommissionRatesRoute,
   PbAdminCustomersRoute: PbAdminCustomersRoute,
@@ -1176,7 +1339,9 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminMergeAuthorsRoute: PbAdminMergeAuthorsRoute,
   PbAdminPromoCodesRoute: PbAdminPromoCodesRoute,
   PbAdminPublishersAuthorsRoute: PbAdminPublishersAuthorsRouteWithChildren,
+  PbAdminQuizzesRewardsRoute: PbAdminQuizzesRewardsRoute,
   PbAdminSalesReportRoute: PbAdminSalesReportRoute,
+  PbAdminViewsReportRoute: PbAdminViewsReportRoute,
   PublisherBankAccountsRoute: PublisherBankAccountsRoute,
   PublisherMarginReportRoute: PublisherMarginReportRoute,
   PublisherProfileRoute: PublisherProfileRoute,
@@ -1187,9 +1352,13 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryAdminIndexRoute: LibraryAdminIndexRoute,
   PbAdminIndexRoute: PbAdminIndexRoute,
   PublisherIndexRoute: PublisherIndexRoute,
+  PbAdminAdBannersImageRoute: PbAdminAdBannersImageRoute,
+  PbAdminAdBannersPopupRoute: PbAdminAdBannersPopupRoute,
   PbAdminBundlesBundleIdRoute: PbAdminBundlesBundleIdRoute,
   PbAdminBundlesNewRoute: PbAdminBundlesNewRoute,
   PbAdminCommissionRatesIdRoute: PbAdminCommissionRatesIdRoute,
+  PbAdminMarketingSchemaMetaRoute: PbAdminMarketingSchemaMetaRoute,
+  PbAdminMarketingSitemapRoute: PbAdminMarketingSitemapRoute,
   PbAdminTitlesBookIdRoute: PbAdminTitlesBookIdRoute,
   PbAdminTitlesNewRoute: PbAdminTitlesNewRoute,
   PublisherBundlesBundleIdRoute: PublisherBundlesBundleIdRoute,
