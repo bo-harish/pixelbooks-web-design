@@ -12,7 +12,6 @@ import {
   FileX2,
   Building2,
   CircleOff,
-  Eye,
   Tag,
   HardDrive,
   Users,
@@ -301,7 +300,7 @@ function EBookBundleDetailPage() {
           <p className="text-sm text-muted-foreground">eBook Bundle not found.</p>
           <Link
             to="/publisher/bundles/"
-            className="text-sm font-medium"
+            className="text-sm font-normal"
             style={{ color: "var(--brand)" }}
           >
             ← Back to eBook Bundles
@@ -360,7 +359,7 @@ function EBookBundleDetailPage() {
           </Link>
           <Link
             to="/publisher/bundles"
-            className="text-sm font-semibold text-foreground hover:text-[var(--brand)] transition-colors"
+            className="text-sm font-normal text-foreground hover:text-[var(--brand)] transition-colors"
           >
             Back to Manage Bundles
           </Link>
@@ -463,17 +462,6 @@ function EBookBundleDetailPage() {
 
                   {/* Actions */}
                   <div className="pt-2 flex flex-wrap items-center gap-3">
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs"
-                      style={{
-                        backgroundColor: "var(--brand)",
-                        color: "var(--brand-contrast)",
-                      }}
-                    >
-                      <Eye size={15} />
-                      Preview Bundle
-                    </button>
                     <CopyBundleUrlButton bundleId={bundle.id} />
                   </div>
                 </div>
@@ -483,32 +471,39 @@ function EBookBundleDetailPage() {
         </div>
 
         {/* ── eBook Bundle Collections (USER request: on top) ─────── */}
-        <SectionCard title="eBook Bundle Collections">
+        <SectionCard title="Titles in this Bundle">
           <div className="space-y-4">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {matchedBooks.map((b) => (
-                <div
+                <Link
                   key={b.id}
-                  className="w-36 shrink-0 rounded-lg border border-border/60 bg-secondary/10 p-3 flex flex-col justify-between"
+                  to="/publisher/catalogue/$bookId"
+                  params={{ bookId: b.id }}
+                  className="group w-36 shrink-0 rounded-lg border border-border/60 bg-secondary/10 p-3 flex flex-col justify-between transition-all hover:border-[var(--brand)] hover:bg-secondary/30 hover:shadow-sm cursor-pointer"
                 >
                   <div className="space-y-3">
                     <div
-                      className="mx-auto flex h-36 w-28 items-center justify-center rounded-md text-xs font-bold text-white shadow-sm"
+                      className="mx-auto flex h-36 w-28 items-center justify-center rounded-md text-xs font-bold text-white shadow-sm transition-transform group-hover:scale-[1.02]"
                       style={{ background: b.cover }}
                     >
                       {b.initials}
                     </div>
                     <div className="space-y-0.5">
-                      <p className="truncate text-xs font-semibold text-foreground">{b.title}</p>
-                      <p className="text-[10px] text-muted-foreground">{b.author}</p>
+                      <p className="truncate text-xs font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
+                        {b.title}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground truncate">{b.author}</p>
                     </div>
                   </div>
-                  <div className="mt-2 flex items-baseline gap-1.5 pt-2 border-t border-border/50">
+                  <div className="mt-2 flex items-baseline justify-between gap-1.5 pt-2 border-t border-border/50">
                     <span className="text-xs font-bold text-foreground">
                       ₹{getBookPrice(b).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                     </span>
+                    <span className="text-[10px] font-medium text-[var(--brand)] opacity-0 group-hover:opacity-100 transition-opacity">
+                      View →
+                    </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 

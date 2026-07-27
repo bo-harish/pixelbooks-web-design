@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Tag, Users, Clock, BookOpen, Star, ArrowUpRight, ArrowDownRight, ChevronDown } from "lucide-react";
+import { Tag, Users, Clock, BookOpen, Star, ArrowUpRight, ArrowDownRight, ChevronDown, TrendingUp, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -63,14 +63,6 @@ const stats: Stat[] = [
     icon: Users,
     delta: 6.1,
     spark: [20, 22, 21, 24, 23, 28, 27, 30, 32, 31, 34, 36],
-  },
-  {
-    label: "Royalty Receivable",
-    value: "₹8,425",
-    sub: "Last payout · 24 Mar 2026",
-    icon: Clock,
-    delta: -3.2,
-    spark: [30, 28, 29, 27, 26, 24, 25, 23, 22, 21, 20, 19],
   },
   {
     label: "Total eBooks Published",
@@ -189,6 +181,178 @@ const topBooks = [
   },
 ];
 
+const topBooksByRange: Record<Range, typeof topBooks> = {
+  "7d": [
+    {
+      title: "NEP 2020 · Policy Formulation In Education",
+      isbn: "9789356781234",
+      rating: 4.6,
+      views: 142,
+      sales: 38,
+      revenue: "₹119.70",
+      initials: "NEP",
+      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
+    },
+    {
+      title: "Knowledge for the Time",
+      isbn: "9781019041857",
+      rating: 4.0,
+      views: 98,
+      sales: 24,
+      revenue: "₹75.60",
+      initials: "KFT",
+      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
+    },
+    {
+      title: "A Complete History of Music for Schools",
+      isbn: "1176559435",
+      rating: 4.2,
+      views: 86,
+      sales: 19,
+      revenue: "₹59.85",
+      initials: "MUS",
+      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
+    },
+    {
+      title: "The Elements of Style",
+      isbn: "9780205309023",
+      rating: 4.8,
+      views: 65,
+      sales: 14,
+      revenue: "₹29.40",
+      initials: "STY",
+      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
+    },
+  ],
+  "30d": topBooks,
+  "90d": [
+    {
+      title: "NEP 2020 · Policy Formulation In Education",
+      isbn: "9789356781234",
+      rating: 4.6,
+      views: 3420,
+      sales: 840,
+      revenue: "₹2,646.00",
+      initials: "NEP",
+      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
+    },
+    {
+      title: "A Complete History of Music for Schools",
+      isbn: "1176559435",
+      rating: 4.2,
+      views: 2750,
+      sales: 610,
+      revenue: "₹1,921.50",
+      initials: "MUS",
+      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
+    },
+    {
+      title: "Knowledge for the Time",
+      isbn: "9781019041857",
+      rating: 4.0,
+      views: 2100,
+      sales: 480,
+      revenue: "₹1,512.00",
+      initials: "KFT",
+      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
+    },
+    {
+      title: "The Elements of Style",
+      isbn: "9780205309023",
+      rating: 4.8,
+      views: 1950,
+      sales: 440,
+      revenue: "₹924.00",
+      initials: "STY",
+      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
+    },
+  ],
+  "1y": [
+    {
+      title: "NEP 2020 · Policy Formulation In Education",
+      isbn: "9789356781234",
+      rating: 4.6,
+      views: 12400,
+      sales: 3120,
+      revenue: "₹9,828.00",
+      initials: "NEP",
+      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
+    },
+    {
+      title: "A Complete History of Music for Schools",
+      isbn: "1176559435",
+      rating: 4.2,
+      views: 9860,
+      sales: 2180,
+      revenue: "₹6,867.00",
+      initials: "MUS",
+      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
+    },
+    {
+      title: "Knowledge for the Time",
+      isbn: "9781019041857",
+      rating: 4.0,
+      views: 8120,
+      sales: 1740,
+      revenue: "₹5,481.00",
+      initials: "KFT",
+      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
+    },
+    {
+      title: "The Elements of Style",
+      isbn: "9780205309023",
+      rating: 4.8,
+      views: 7420,
+      sales: 1680,
+      revenue: "₹3,528.00",
+      initials: "STY",
+      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
+    },
+  ],
+  "Till Date": [
+    {
+      title: "NEP 2020 · Policy Formulation In Education",
+      isbn: "9789356781234",
+      rating: 4.6,
+      views: 28450,
+      sales: 6840,
+      revenue: "₹21,546.00",
+      initials: "NEP",
+      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
+    },
+    {
+      title: "A Complete History of Music for Schools",
+      isbn: "1176559435",
+      rating: 4.2,
+      views: 22100,
+      sales: 4950,
+      revenue: "₹15,592.50",
+      initials: "MUS",
+      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
+    },
+    {
+      title: "Knowledge for the Time",
+      isbn: "9781019041857",
+      rating: 4.0,
+      views: 18600,
+      sales: 3980,
+      revenue: "₹12,537.00",
+      initials: "KFT",
+      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
+    },
+    {
+      title: "The Elements of Style",
+      isbn: "9780205309023",
+      rating: 4.8,
+      views: 16800,
+      sales: 3820,
+      revenue: "₹8,022.00",
+      initials: "STY",
+      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
+    },
+  ],
+};
+
 function RangePicker({ value, onChange }: { value: Range; onChange: (r: Range) => void }) {
   return (
     <div
@@ -288,6 +452,7 @@ function StatSkeleton() {
 
 function DashboardContent() {
   const [range, setRange] = useState<Range>("30d");
+  const [topBooksRange, setTopBooksRange] = useState<Range>("30d");
   const [salesFy, setSalesFy] = useState("FY (2025 - 2026)");
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -296,9 +461,59 @@ function DashboardContent() {
   }, []);
 
   const currentSalesData = salesDataByFy[salesFy] ?? salesDataByFy["FY (2025 - 2026)"];
+  const currentTopBooks = topBooksByRange[topBooksRange] ?? topBooks;
 
   return (
     <div className="space-y-6 p-4 md:p-8">
+      {/* Total Receivable Till Date — Premium Card */}
+      <div
+        className="relative overflow-hidden rounded-2xl p-px"
+        style={{ background: "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))" }}
+      >
+        <div className="relative rounded-[15px] bg-card p-5 sm:p-6">
+          {/* Subtle background glow */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.07]"
+            style={{ background: "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)" }}
+          />
+
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            {/* Left: Label + Amount */}
+            <div className="flex items-center gap-4">
+              <span
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+                style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+              >
+                <Wallet size={22} strokeWidth={2} />
+              </span>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Total Receivable Till Date
+                </p>
+                <p className="mt-0.5 text-3xl font-extrabold tracking-tight text-foreground">
+                  ₹8,425
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  All-time cumulative balance · unaffected by range filters
+                </p>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="hidden h-10 w-px bg-border sm:block self-center" />
+
+            {/* Right: Info pillars */}
+            <div className="flex items-center gap-6 sm:shrink-0">
+              <div className="text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Last Payout</p>
+                <p className="mt-1 text-sm font-bold text-foreground">24 Mar 2026</p>
+                <p className="mt-0.5 text-[10px] text-muted-foreground">₹3,200 disbursed</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -311,9 +526,9 @@ function DashboardContent() {
         <RangePicker value={range} onChange={setRange} />
       </div>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {loading
-          ? Array.from({ length: 4 }).map((_, i) => <StatSkeleton key={i} />)
+          ? Array.from({ length: stats.length }).map((_, i) => <StatSkeleton key={i} />)
           : stats.map((s) => <StatCard key={s.label} stat={s} />)}
       </section>
 
@@ -444,11 +659,16 @@ function DashboardContent() {
       </section>
 
       <section className="rounded-xl border border-border bg-card p-4 md:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg font-semibold tracking-tight">Top Selling eBooks</h2>
-          <span className="text-xs text-muted-foreground">
-            {range === "Till Date" ? "Till Date" : range === "1y" ? "Last 1 year" : `Last ${range}`}
-          </span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight">Top Selling eBooks</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {topBooksRange === "Till Date"
+                ? "All-time top titles by sales & revenue"
+                : `Top titles performance (${topBooksRange === "1y" ? "1 year" : topBooksRange})`}
+            </p>
+          </div>
+          <RangePicker value={topBooksRange} onChange={setTopBooksRange} />
         </div>
 
         {/* Desktop table */}
@@ -473,7 +693,7 @@ function DashboardContent() {
                       </td>
                     </tr>
                   ))
-                : topBooks.map((b) => (
+                : currentTopBooks.map((b) => (
                     <tr
                       key={b.title}
                       className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
@@ -499,7 +719,7 @@ function DashboardContent() {
                         </div>
                       </td>
                       <td className="py-4 pr-4">{b.views.toLocaleString()}</td>
-                      <td className="py-4 pr-4">{b.sales}</td>
+                      <td className="py-4 pr-4">{b.sales.toLocaleString()}</td>
                       <td className="py-4 pl-4 text-right font-medium">{b.revenue}</td>
                     </tr>
                   ))}
@@ -515,7 +735,7 @@ function DashboardContent() {
                   <Skeleton className="h-24 w-full rounded-lg" />
                 </li>
               ))
-            : topBooks.map((b) => (
+            : currentTopBooks.map((b) => (
                 <li key={b.title} className="rounded-lg border border-border p-3">
                   <div className="flex items-start gap-3">
                     <div

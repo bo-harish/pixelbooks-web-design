@@ -81,7 +81,7 @@ function CommissionRatesDetail() {
               >
                 <ArrowLeft size={16} />
               </Link>
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-sm font-normal text-foreground">
                 Back to Commission Rates
               </span>
             </div>
@@ -426,7 +426,7 @@ function CommissionRatesDetail() {
               <button
                 type="button"
                 onClick={() => navigate({ to: "/pb-admin/commission-rates" })}
-                className="h-11 rounded-lg border border-border bg-card px-5 text-sm font-semibold text-muted-foreground hover:bg-secondary/40 transition-colors cursor-pointer"
+                className="h-11 rounded-lg border border-border bg-card px-5 text-sm font-normal text-muted-foreground hover:bg-secondary/40 transition-colors cursor-pointer"
               >
                 Back to Listing
               </button>

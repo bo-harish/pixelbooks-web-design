@@ -18,6 +18,13 @@ import {
   BookOpen,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/pb-admin/bundles/new")({
   head: () => ({
@@ -295,11 +302,7 @@ export function NewAdminBundlePage() {
     setSelectedIds([]);
   };
 
-  const applyDiscountPreset = (percent: number) => {
-    if (totalPrice === 0) return;
-    const discounted = Math.round(totalPrice * (1 - percent / 100));
-    setPricing(discounted.toString());
-  };
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -346,7 +349,7 @@ export function NewAdminBundlePage() {
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-foreground">Back to Manage Bundles</span>
+                <span className="text-sm font-normal text-foreground">Back to Manage Bundles</span>
               </div>
             </div>
           </div>
@@ -410,21 +413,7 @@ export function NewAdminBundlePage() {
                   />
                 </div>
 
-                {totalPrice > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-medium text-muted-foreground">Quick Discount:</span>
-                    {[10, 15, 20, 25].map((pct) => (
-                      <button
-                        key={pct}
-                        type="button"
-                        onClick={() => applyDiscountPreset(pct)}
-                        className="h-9 px-3 rounded-lg border border-border bg-card text-xs font-medium text-foreground hover:border-[var(--brand)] hover:bg-[var(--sidebar-highlight)] hover:text-[var(--brand)] transition-colors cursor-pointer"
-                      >
-                        -{pct}%
-                      </button>
-                    ))}
-                  </div>
-                )}
+
               </div>
             </div>
 
@@ -577,23 +566,24 @@ export function NewAdminBundlePage() {
               />
             </div>
 
-            {/* Category Filter Pills */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <Filter size={14} className="text-muted-foreground mr-1 hidden sm:inline-block" />
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`h-8 px-3 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                    selectedCategory === cat
-                      ? "bg-[var(--brand)] text-[var(--brand-contrast)] font-semibold shadow-xs"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary/40"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+            {/* Category Filter Dropdown */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground whitespace-nowrap flex items-center gap-1.5">
+                <Filter size={14} className="text-muted-foreground" />
+                Category:
+              </span>
+              <Select value={selectedCategory} onValueChange={(val) => setSelectedCategory(val)}>
+                <SelectTrigger className="h-11 w-48 rounded-xl bg-card shadow-none text-xs font-medium border-border">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat} className="text-xs">
+                      {cat === "All" ? "All Categories" : cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

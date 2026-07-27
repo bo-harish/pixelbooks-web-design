@@ -518,7 +518,7 @@ function LibraryAdminUsersPage() {
               setIsViewOpen(false);
               setSelectedUser(null);
             }}
-            className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-foreground mb-4 cursor-pointer"
+            className="flex items-center gap-2 text-sm font-normal text-slate-700 dark:text-slate-200 hover:text-foreground mb-4 cursor-pointer"
           >
             <ArrowLeft size={16} />
             Back to Users

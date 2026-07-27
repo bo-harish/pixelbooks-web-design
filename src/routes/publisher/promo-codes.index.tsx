@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   Search,
@@ -9,10 +9,9 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  Pencil,
-  Trash2,
   XCircle,
   Ban,
+  Tag,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -22,6 +21,7 @@ import {
   PaginationLink,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
+import { getPromos, type Promo, type PromoStatus, type Activation } from "@/lib/promo-codes-data";
 
 export const Route = createFileRoute("/publisher/promo-codes/")({
   head: () => ({
@@ -40,90 +40,6 @@ export const Route = createFileRoute("/publisher/promo-codes/")({
   }),
   component: PromoCodesPage,
 });
-
-type PromoStatus = "Pending for Admin Approval" | "Approved" | "Rejected" | "Disabled" | "Expired";
-type Activation = "Available" | "Not available";
-
-type Promo = {
-  id: string;
-  code: string;
-  start: string;
-  end: string;
-  status: PromoStatus;
-  discount: number;
-  title: string;
-  activation: Activation;
-  active: boolean;
-};
-
-const seed: Promo[] = [
-  {
-    id: "1",
-    code: "FQSGFQX799",
-    start: "Dec 09",
-    end: "Dec 09, 2025",
-    status: "Expired",
-    discount: 10,
-    title: "All",
-    activation: "Not available",
-    active: false,
-  },
-  {
-    id: "2",
-    code: "MONSOON25",
-    start: "Jul 01",
-    end: "Aug 31, 2026",
-    status: "Approved",
-    discount: 25,
-    title: "Monsoon Reads",
-    activation: "Available",
-    active: true,
-  },
-  {
-    id: "3",
-    code: "KIDS15",
-    start: "Jun 15",
-    end: "Dec 31, 2026",
-    status: "Approved",
-    discount: 15,
-    title: "Kids Collection",
-    activation: "Available",
-    active: true,
-  },
-  {
-    id: "4",
-    code: "WELCOME5",
-    start: "Jan 01",
-    end: "Dec 31, 2026",
-    status: "Pending for Admin Approval",
-    discount: 5,
-    title: "New Users",
-    activation: "Not available",
-    active: false,
-  },
-  {
-    id: "5",
-    code: "AUG40",
-    start: "Aug 01",
-    end: "Aug 15, 2026",
-    status: "Disabled",
-    discount: 40,
-    title: "Independence Sale",
-    activation: "Not available",
-    active: false,
-  },
-  {
-    id: "6",
-    code: "FLASH20",
-    start: "Mar 10",
-    end: "Mar 12, 2026",
-    status: "Rejected",
-    discount: 20,
-    title: "Flash Weekend",
-    activation: "Not available",
-    active: false,
-  },
-];
 
 const filters = [
   "All",
@@ -176,10 +92,11 @@ function ActivationPill({ value }: { value: Activation }) {
 }
 
 function PromoCodesPage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("All");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [promos] = useState<Promo[]>(seed);
+  const [promos] = useState<Promo[]>(() => getPromos());
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
@@ -187,7 +104,11 @@ function PromoCodesPage() {
     return promos.filter((p) => {
       if (filter !== "All" && p.status !== filter) return false;
       if (!q) return true;
-      return p.code.toLowerCase().includes(q) || p.title.toLowerCase().includes(q);
+      return (
+        p.code.toLowerCase().includes(q) ||
+        p.title.toLowerCase().includes(q) ||
+        p.ebook.toLowerCase().includes(q)
+      );
     });
   }, [promos, filter, query]);
 
@@ -212,11 +133,11 @@ function PromoCodesPage() {
     <AppShell title="Promo Codes" subtitle="Create and manage discount codes for your storefront.">
       <div className="space-y-6 p-4 md:p-8">
         {/* Toolbar */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Search
               size={17}
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <input
               value={query}
@@ -224,48 +145,60 @@ function PromoCodesPage() {
                 setQuery(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search by promo code, title"
-              className="h-11 w-full rounded-lg border border-border bg-card pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+              placeholder="Search by promo code, title, eBook..."
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
             />
           </div>
-          <div className="relative">
-            <button
-              onClick={() => setFilterOpen((v) => !v)}
-              className="flex h-11 min-w-[130px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium"
-            >
-              <span>{filter}</span>
-              <ChevronDown size={16} className="text-muted-foreground" />
-            </button>
-            {filterOpen && (
-              <div className="absolute right-0 z-20 mt-2 w-40 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
-                {filters.map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => {
-                      setFilter(f);
-                      setFilterOpen(false);
-                      setPage(1);
-                    }}
-                    className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-colors hover:bg-secondary ${f === filter ? "font-semibold text-foreground" : "text-muted-foreground"
+          <div className="flex items-center gap-2.5">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setFilterOpen((v) => !v)}
+                className="flex h-11 min-w-[150px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)]"
+              >
+                <span className="truncate">{filter}</span>
+                <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
+              </button>
+              {filterOpen && (
+                <div
+                  className="absolute right-0 z-20 mt-1.5 w-52 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1"
+                  onMouseLeave={() => setFilterOpen(false)}
+                >
+                  {filters.map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => {
+                        setFilter(f);
+                        setFilterOpen(false);
+                        setPage(1);
+                      }}
+                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs transition-colors hover:bg-secondary ${
+                        f === filter
+                          ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
+                          : "text-muted-foreground"
                       }`}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-            )}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Link
+              to="/publisher/promo-codes/new"
+              className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 shrink-0"
+              style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+            >
+              <Plus size={16} strokeWidth={2.5} />
+              Add Promo Code
+            </Link>
           </div>
-          <Link
-            to="/publisher/promo-codes/new"
-            className="flex h-11 items-center gap-2 rounded-lg px-5 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
-            style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-          >
-            Add Promo Code
-          </Link>
         </div>
 
-        {/* Table */}
+        {/* Table card */}
         <div className="overflow-hidden rounded-xl border border-border bg-card">
+          {/* Desktop table */}
           <div className="hidden overflow-x-auto md:block">
             <table className="w-full text-sm">
               <thead>
@@ -274,9 +207,9 @@ function PromoCodesPage() {
                   <th className="py-4 pr-4 font-semibold">Promo Duration</th>
                   <th className="py-4 pr-4 font-semibold">Status</th>
                   <th className="py-4 pr-4 font-semibold">Discount</th>
-                  <th className="py-4 pr-4 font-semibold">Title</th>
+                  <th className="py-4 pr-4 font-semibold">Title / eBook</th>
                   <th className="py-4 pr-4 font-semibold">Activation</th>
-                  <th className="py-4 pr-6 text-right font-semibold">Action</th>
+                  <th className="py-4 pr-6" />
                 </tr>
               </thead>
               <tbody>
@@ -290,10 +223,17 @@ function PromoCodesPage() {
                 {pageItems.map((p) => (
                   <tr
                     key={p.id}
-                    className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
+                    onClick={() =>
+                      navigate({
+                        to: "/publisher/promo-codes/$promoId",
+                        params: { promoId: p.id },
+                      })
+                    }
+                    className="group border-b border-border/60 transition-colors last:border-0 cursor-pointer hover:bg-secondary/50"
                   >
                     <td className="py-5 pl-6 pr-4">
-                      <span className="inline-flex items-center rounded-md border border-border bg-secondary/60 px-2.5 py-1 font-mono text-xs font-semibold tracking-wider text-foreground">
+                      <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2.5 py-1 font-mono text-xs font-semibold tracking-wider text-foreground">
+                        <Tag size={12} className="text-[var(--brand)]" />
                         {p.code}
                       </span>
                     </td>
@@ -303,27 +243,22 @@ function PromoCodesPage() {
                     <td className="py-5 pr-4">
                       <StatusPill status={p.status} />
                     </td>
-                    <td className="py-5 pr-4 font-medium">{p.discount}%</td>
-                    <td className="py-5 pr-4 text-muted-foreground">{p.title}</td>
+                    <td className="py-5 pr-4 font-semibold text-foreground">{p.discount}%</td>
+                    <td className="py-5 pr-4">
+                      <p className="font-medium text-foreground group-hover:text-[var(--brand)] transition-colors">
+                        {p.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate max-w-[220px]">
+                        {p.ebook}
+                      </p>
+                    </td>
                     <td className="py-5 pr-4">
                       <ActivationPill value={p.activation} />
                     </td>
-                    <td className="py-5 pr-6">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          aria-label="Edit"
-                          className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                        >
-                          <Pencil size={15} />
-                        </button>
-                        <button
-                          aria-label="Delete"
-                          className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary"
-                          style={{ color: "var(--danger)" }}
-                        >
-                          <Trash2 size={15} />
-                        </button>
-                      </div>
+                    <td className="py-5 pr-6 text-right">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
+                        <ChevronRight size={16} />
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -339,19 +274,35 @@ function PromoCodesPage() {
               </li>
             )}
             {pageItems.map((p) => (
-              <li key={p.id} className="space-y-2 p-4">
+              <li
+                key={p.id}
+                onClick={() =>
+                  navigate({
+                    to: "/publisher/promo-codes/$promoId",
+                    params: { promoId: p.id },
+                  })
+                }
+                className="cursor-pointer space-y-2.5 p-4 transition-colors hover:bg-secondary/50"
+              >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-md border border-border bg-secondary/60 px-2.5 py-1 font-mono text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2.5 py-1 font-mono text-xs font-semibold">
+                    <Tag size={12} className="text-[var(--brand)]" />
                     {p.code}
                   </span>
-                  <StatusPill status={p.status} />
+                  <div className="flex items-center gap-2">
+                    <StatusPill status={p.status} />
+                    <ChevronRight size={16} className="text-muted-foreground" />
+                  </div>
                 </div>
-                <p className="text-sm font-medium">{p.title}</p>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{p.title}</p>
+                  <p className="text-xs text-muted-foreground">{p.ebook}</p>
+                </div>
                 <p className="text-[11px] text-muted-foreground">
                   {p.start} – {p.end}
                 </p>
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                  <span className="text-xs font-semibold">{p.discount}% off</span>
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-border/40">
+                  <span className="text-xs font-semibold text-foreground">{p.discount}% off</span>
                   <ActivationPill value={p.activation} />
                 </div>
               </li>
@@ -393,10 +344,10 @@ function PromoCodesPage() {
                         style={
                           n === currentPage
                             ? {
-                              backgroundColor: "var(--brand)",
-                              color: "var(--brand-contrast)",
-                              borderColor: "transparent",
-                            }
+                                backgroundColor: "var(--brand)",
+                                color: "var(--brand-contrast)",
+                                borderColor: "transparent",
+                              }
                             : undefined
                         }
                       >

@@ -288,7 +288,7 @@ export function AdminBundleDetailPage() {
           <p className="text-sm text-muted-foreground">eBook Bundle not found.</p>
           <Link
             to="/pb-admin/bundles"
-            className="text-sm font-medium"
+            className="text-sm font-normal"
             style={{ color: "var(--brand)" }}
           >
             ← Back to Manage Bundles
@@ -347,7 +347,7 @@ export function AdminBundleDetailPage() {
           </Link>
           <Link
             to="/pb-admin/bundles"
-            className="text-sm font-semibold text-foreground hover:text-[var(--brand)] transition-colors"
+            className="text-sm font-normal text-foreground hover:text-[var(--brand)] transition-colors"
           >
             Back to Manage Bundles
           </Link>
@@ -470,7 +470,7 @@ export function AdminBundleDetailPage() {
         </div>
 
         {/* ── eBook Bundle Collections ─────────────────────────────── */}
-        <SectionCard title="eBook Bundle Collections">
+        <SectionCard title="Titles in this Bundle">
           <div className="space-y-4">
             <div className="flex flex-wrap gap-3">
               {matchedBooks.map((b) => (

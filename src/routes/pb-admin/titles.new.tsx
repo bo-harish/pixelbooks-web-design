@@ -1862,7 +1862,7 @@ function AddEBookPage() {
       <div className="p-4 md:p-8">
         <Link
           to="/pb-admin/titles"
-          className="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          className="mb-5 inline-flex items-center gap-1.5 text-sm font-normal text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft size={15} /> Back to Catalogue
         </Link>

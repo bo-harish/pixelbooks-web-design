@@ -54,6 +54,7 @@ import { Route as PublisherBundlesIndexRouteImport } from './routes/publisher/bu
 import { Route as PbAdminTitlesIndexRouteImport } from './routes/pb-admin/titles.index'
 import { Route as PbAdminBundlesIndexRouteImport } from './routes/pb-admin/bundles.index'
 import { Route as PublisherPromoCodesNewRouteImport } from './routes/publisher/promo-codes.new'
+import { Route as PublisherPromoCodesPromoIdRouteImport } from './routes/publisher/promo-codes.$promoId'
 import { Route as PublisherCatalogueNewRouteImport } from './routes/publisher/catalogue.new'
 import { Route as PublisherCatalogueBookIdRouteImport } from './routes/publisher/catalogue.$bookId'
 import { Route as PublisherCatalogueImportNewRouteImport } from './routes/publisher/catalogue-import.new'
@@ -301,6 +302,12 @@ const PublisherPromoCodesNewRoute = PublisherPromoCodesNewRouteImport.update({
   path: '/publisher/promo-codes/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublisherPromoCodesPromoIdRoute =
+  PublisherPromoCodesPromoIdRouteImport.update({
+    id: '/publisher/promo-codes/$promoId',
+    path: '/publisher/promo-codes/$promoId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PublisherCatalogueNewRoute = PublisherCatalogueNewRouteImport.update({
   id: '/publisher/catalogue/new',
   path: '/publisher/catalogue/new',
@@ -451,6 +458,7 @@ export interface FileRoutesByFullPath {
   '/publisher/catalogue-import/new': typeof PublisherCatalogueImportNewRoute
   '/publisher/catalogue/$bookId': typeof PublisherCatalogueBookIdRoute
   '/publisher/catalogue/new': typeof PublisherCatalogueNewRoute
+  '/publisher/promo-codes/$promoId': typeof PublisherPromoCodesPromoIdRoute
   '/publisher/promo-codes/new': typeof PublisherPromoCodesNewRoute
   '/pb-admin/bundles/': typeof PbAdminBundlesIndexRoute
   '/pb-admin/titles/': typeof PbAdminTitlesIndexRoute
@@ -515,6 +523,7 @@ export interface FileRoutesByTo {
   '/publisher/catalogue-import/new': typeof PublisherCatalogueImportNewRoute
   '/publisher/catalogue/$bookId': typeof PublisherCatalogueBookIdRoute
   '/publisher/catalogue/new': typeof PublisherCatalogueNewRoute
+  '/publisher/promo-codes/$promoId': typeof PublisherPromoCodesPromoIdRoute
   '/publisher/promo-codes/new': typeof PublisherPromoCodesNewRoute
   '/pb-admin/bundles': typeof PbAdminBundlesIndexRoute
   '/pb-admin/titles': typeof PbAdminTitlesIndexRoute
@@ -580,6 +589,7 @@ export interface FileRoutesById {
   '/publisher/catalogue-import/new': typeof PublisherCatalogueImportNewRoute
   '/publisher/catalogue/$bookId': typeof PublisherCatalogueBookIdRoute
   '/publisher/catalogue/new': typeof PublisherCatalogueNewRoute
+  '/publisher/promo-codes/$promoId': typeof PublisherPromoCodesPromoIdRoute
   '/publisher/promo-codes/new': typeof PublisherPromoCodesNewRoute
   '/pb-admin/bundles/': typeof PbAdminBundlesIndexRoute
   '/pb-admin/titles/': typeof PbAdminTitlesIndexRoute
@@ -646,6 +656,7 @@ export interface FileRouteTypes {
     | '/publisher/catalogue-import/new'
     | '/publisher/catalogue/$bookId'
     | '/publisher/catalogue/new'
+    | '/publisher/promo-codes/$promoId'
     | '/publisher/promo-codes/new'
     | '/pb-admin/bundles/'
     | '/pb-admin/titles/'
@@ -710,6 +721,7 @@ export interface FileRouteTypes {
     | '/publisher/catalogue-import/new'
     | '/publisher/catalogue/$bookId'
     | '/publisher/catalogue/new'
+    | '/publisher/promo-codes/$promoId'
     | '/publisher/promo-codes/new'
     | '/pb-admin/bundles'
     | '/pb-admin/titles'
@@ -774,6 +786,7 @@ export interface FileRouteTypes {
     | '/publisher/catalogue-import/new'
     | '/publisher/catalogue/$bookId'
     | '/publisher/catalogue/new'
+    | '/publisher/promo-codes/$promoId'
     | '/publisher/promo-codes/new'
     | '/pb-admin/bundles/'
     | '/pb-admin/titles/'
@@ -837,6 +850,7 @@ export interface RootRouteChildren {
   PublisherCatalogueImportNewRoute: typeof PublisherCatalogueImportNewRoute
   PublisherCatalogueBookIdRoute: typeof PublisherCatalogueBookIdRoute
   PublisherCatalogueNewRoute: typeof PublisherCatalogueNewRoute
+  PublisherPromoCodesPromoIdRoute: typeof PublisherPromoCodesPromoIdRoute
   PublisherPromoCodesNewRoute: typeof PublisherPromoCodesNewRoute
   PbAdminBundlesIndexRoute: typeof PbAdminBundlesIndexRoute
   PbAdminTitlesIndexRoute: typeof PbAdminTitlesIndexRoute
@@ -1163,6 +1177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublisherPromoCodesNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/publisher/promo-codes/$promoId': {
+      id: '/publisher/promo-codes/$promoId'
+      path: '/publisher/promo-codes/$promoId'
+      fullPath: '/publisher/promo-codes/$promoId'
+      preLoaderRoute: typeof PublisherPromoCodesPromoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/publisher/catalogue/new': {
       id: '/publisher/catalogue/new'
       path: '/publisher/catalogue/new'
@@ -1367,6 +1388,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublisherCatalogueImportNewRoute: PublisherCatalogueImportNewRoute,
   PublisherCatalogueBookIdRoute: PublisherCatalogueBookIdRoute,
   PublisherCatalogueNewRoute: PublisherCatalogueNewRoute,
+  PublisherPromoCodesPromoIdRoute: PublisherPromoCodesPromoIdRoute,
   PublisherPromoCodesNewRoute: PublisherPromoCodesNewRoute,
   PbAdminBundlesIndexRoute: PbAdminBundlesIndexRoute,
   PbAdminTitlesIndexRoute: PbAdminTitlesIndexRoute,

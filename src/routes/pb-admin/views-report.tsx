@@ -197,7 +197,7 @@ function BackButton({ label, onClick }: { label: string; onClick: () => void }) 
       <button type="button" onClick={onClick} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer">
         <ArrowLeft size={16} />
       </button>
-      <span className="text-sm font-semibold text-foreground">{label}</span>
+      <span className="text-sm font-normal text-foreground">{label}</span>
     </div>
   );
 }

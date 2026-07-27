@@ -946,7 +946,7 @@ function LibraryAdminOrdersPage() {
             >
               <ArrowLeft size={16} />
             </button>
-            <span className="text-sm font-semibold text-foreground">Back to Orders</span>
+            <span className="text-sm font-normal text-foreground">Back to Orders</span>
           </div>
 
           {/* Main Card Container */}

@@ -394,7 +394,7 @@ function EBookDetailPage() {
           <p className="text-sm text-muted-foreground">Title not found.</p>
           <Link
             to="/pb-admin/titles"
-            className="text-sm font-medium"
+            className="text-sm font-normal"
             style={{ color: "var(--brand)" }}
           >
             ← Back to Titles
@@ -422,7 +422,7 @@ function EBookDetailPage() {
           </Link>
           <Link
             to="/pb-admin/titles"
-            className="text-sm font-semibold text-foreground hover:text-[var(--brand)] transition-colors"
+            className="text-sm font-normal text-foreground hover:text-[var(--brand)] transition-colors"
           >
             Back to Title Catalogue
           </Link>

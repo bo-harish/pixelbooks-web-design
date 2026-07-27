@@ -24,6 +24,12 @@ import {
   Tag,
   Check as CheckIcon,
   CheckCircle,
+  Eye,
+  RefreshCw,
+  Loader2,
+  ListOrdered,
+  Quote,
+  Link as LinkIcon,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 
@@ -223,94 +229,390 @@ function Switch({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 /*  Section: Upload row                                                        */
 /* -------------------------------------------------------------------------- */
 
+function EbookDocumentPreview({ file }: { file: File }) {
+  const ext = file.name.split(".").pop()?.toLowerCase() || "";
+  const isPdf = ext === "pdf" || file.type.includes("pdf");
+  const formatLabel = isPdf ? "PDF" : "ePUB";
+
+  return (
+    <div className="relative mb-2 flex flex-col items-center">
+      {/* Document Sheet Thumbnail */}
+      <div className="group/doc relative flex aspect-[3/4] w-24 flex-col justify-between overflow-hidden rounded-lg border border-border/80 bg-card p-2.5 shadow-md ring-1 ring-black/5 transition-transform duration-200 hover:scale-105">
+        {/* Top Format Badge & Header Line */}
+        <div className="flex items-center justify-between border-b border-border/40 pb-1.5">
+          <span
+            className={`inline-block rounded px-1 py-0.2 text-[8px] font-extrabold uppercase tracking-wider text-white shadow-2xs ${isPdf ? "bg-rose-500" : "bg-teal-600"
+              }`}
+          >
+            {formatLabel}
+          </span>
+          <div className="h-1 w-6 rounded-full bg-muted-foreground/30" />
+        </div>
+
+        {/* Mock Content Lines simulating page */}
+        <div className="my-1.5 space-y-1">
+          <div className="h-1.5 w-full rounded-xs bg-foreground/20" />
+          <div className="h-1.5 w-4/5 rounded-xs bg-foreground/15" />
+          <div className="h-1 w-full rounded-xs bg-muted-foreground/20" />
+          <div className="h-1 w-3/4 rounded-xs bg-muted-foreground/20" />
+          <div className="h-1 w-5/6 rounded-xs bg-muted-foreground/20" />
+        </div>
+
+        {/* Bottom Page Footer */}
+        <div className="flex items-center justify-between border-t border-border/40 pt-1 text-[7px] text-muted-foreground/60">
+          <span>Pg 1</span>
+          <span>● ● ●</span>
+        </div>
+
+        {/* Hover overlay preview tag */}
+        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50 p-1 opacity-0 transition-opacity group-hover/doc:opacity-100">
+          <span className="flex items-center gap-1 text-[9px] font-semibold text-white">
+            <Eye size={10} /> Preview {formatLabel}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function UploadTile({
+  step,
   title,
+  subtitle,
   hint,
   ctaLabel,
   icon,
+  formats,
+  required = false,
   extra,
+  onFileChange,
+  isCover = false,
+  externalFile,
 }: {
+  step: number;
   title: string;
+  subtitle: string;
   hint: string;
   ctaLabel: string;
   icon: React.ReactNode;
+  formats: string[];
+  required?: boolean;
   extra?: React.ReactNode;
+  onFileChange?: (file: File | null) => void;
+  isCover?: boolean;
+  externalFile?: File | null;
 }) {
+  const [dragging, setDragging] = useState(false);
+  const [internalFile, setInternalFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const file = externalFile !== undefined ? externalFile : internalFile;
+
+  useEffect(() => {
+    if (file) {
+      setIsUploading(true);
+      const timer = setTimeout(() => setIsUploading(false), 1200);
+      return () => clearTimeout(timer);
+    } else {
+      setIsUploading(false);
+    }
+  }, [file]);
+
+  const updateFile = (newFile: File | null) => {
+    setInternalFile(newFile);
+    onFileChange?.(newFile);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const dropped = e.dataTransfer.files[0];
+    if (dropped) {
+      updateFile(dropped);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files?.[0];
+    if (picked) {
+      updateFile(picked);
+    }
+  };
+
+  const formatBytes = (bytes: number) => {
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const imagePreviewUrl = useMemo(() => {
+    if (file && isCover && file.type.startsWith("image/")) {
+      return URL.createObjectURL(file);
+    }
+    return null;
+  }, [file, isCover]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
+
   return (
-    <div className="flex h-full flex-col items-center justify-between rounded-xl border border-dashed border-border bg-secondary/30 p-5 text-center">
-      <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
-        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-background text-muted-foreground">
-          {icon}
-        </div>
-        <div>
-          <p className="text-sm font-semibold">{title}</p>
-          <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>
-        </div>
-        {extra}
+    <div className="group/tile relative flex h-full flex-col rounded-2xl border border-border/80 bg-card p-5 shadow-2xs transition-all duration-300 hover:border-[var(--brand)]/40 hover:shadow-md">
+      {/* Top Header inside tile */}
+      <div className="mb-3 flex items-center gap-2.5 border-b border-border/60 pb-3">
+        <span className="inline-flex shrink-0 items-center justify-center rounded-full bg-[var(--sidebar-highlight)] px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-[var(--brand)] border border-[var(--brand)]/20">
+          Step {step < 10 ? `0${step}` : step}
+        </span>
+        <h4 className="text-sm font-bold tracking-tight text-foreground">{title}</h4>
       </div>
-      <button
-        type="button"
-        className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-border bg-background text-sm font-medium transition-colors hover:bg-secondary"
+
+      {/* Subtitle */}
+      {subtitle && <p className="mb-3 text-xs text-muted-foreground">{subtitle}</p>}
+
+      {/* Hidden file input */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept={isCover ? "image/jpeg,image/png" : ".epub,.pdf"}
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
+      {/* Drop zone container */}
+      <div
+        onDragEnter={() => setDragging(true)}
+        onDragLeave={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragging(false);
+        }}
+        onDrop={handleDrop}
+        onDragOver={(e) => e.preventDefault()}
+        onClick={() => !file && inputRef.current?.click()}
+        className="group/drop relative flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200"
+        style={{
+          borderColor: dragging
+            ? "var(--brand)"
+            : file
+              ? "color-mix(in oklab, var(--brand) 40%, var(--border))"
+              : "var(--border)",
+          backgroundColor: dragging
+            ? "color-mix(in oklab, var(--brand) 8%, var(--card))"
+            : file
+              ? "color-mix(in oklab, var(--brand) 3%, var(--card))"
+              : "color-mix(in oklab, var(--card) 98%, var(--secondary))",
+          cursor: file ? "default" : "pointer",
+        }}
       >
-        <Upload size={15} />
-        {ctaLabel}
-      </button>
+        {/* Drag-over overlay */}
+        {dragging && (
+          <div
+            className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 rounded-xl"
+            style={{ backgroundColor: "color-mix(in oklab, var(--brand) 12%, var(--card))" }}
+          >
+            <Upload size={28} className="animate-bounce text-[var(--brand)]" />
+            <p className="text-xs font-bold text-[var(--brand)]">
+              Release to upload file
+            </p>
+          </div>
+        )}
+
+        {file ? (
+          /* Uploaded state */
+          <div className="flex w-full flex-col items-center justify-center py-1">
+            {imagePreviewUrl ? (
+              /* Image Cover Preview */
+              <div className="relative mb-2 flex flex-col items-center">
+                <div className="relative aspect-[438/678] w-24 overflow-hidden rounded-lg border border-black/10 shadow-md ring-1 ring-black/5 transition-transform duration-200 hover:scale-105">
+                  <img
+                    src={imagePreviewUrl}
+                    alt="Cover Preview"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 via-transparent to-transparent p-1.5 opacity-0 transition-opacity hover:opacity-100">
+                    <span className="flex items-center gap-1 text-[9px] font-semibold text-white">
+                      <Eye size={10} /> Preview
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* eBook Document / PDF / ePUB Page Preview */
+              <EbookDocumentPreview file={file} />
+            )}
+
+            <p className="max-w-[180px] truncate text-xs font-bold text-foreground">
+              {file.name}
+            </p>
+            <p className="mt-0.5 text-[11px] font-medium text-muted-foreground">
+              {formatBytes(file.size)}
+            </p>
+
+            {/* Actions: Replace / Remove */}
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  inputRef.current?.click();
+                }}
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 text-[11px] font-semibold text-foreground transition-colors hover:bg-secondary"
+              >
+                <RefreshCw size={12} /> Replace
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateFile(null);
+                }}
+                className={`inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold transition-all ${isUploading
+                    ? "border-2 border-dotted border-rose-500/60 bg-rose-500/5 text-rose-600/80 animate-pulse cursor-wait"
+                    : "border border-rose-500/20 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400"
+                  }`}
+              >
+                {isUploading ? (
+                  <Loader2 size={12} className="animate-spin text-rose-500" />
+                ) : (
+                  <X size={12} />
+                )}
+                Remove
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Default dropzone state */
+          <div className="flex w-full flex-col items-center justify-center py-2">
+            {/* Styled Icon Container */}
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--sidebar-highlight)] text-[var(--brand)] shadow-2xs border border-[var(--brand)]/15 transition-transform duration-300 group-hover/drop:scale-110">
+              {icon}
+            </div>
+
+            <p className="text-xs font-bold text-foreground">
+              Drag & drop file here
+            </p>
+
+            <span className="my-2 text-[11px] font-medium text-muted-foreground">or</span>
+
+            {/* Upload Button */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                inputRef.current?.click();
+              }}
+              className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-xl border border-border bg-background text-xs font-semibold text-foreground transition-all duration-200 hover:border-[var(--brand)] hover:bg-[var(--brand)] hover:text-white shadow-2xs"
+            >
+              <Upload size={13} />
+              {ctaLabel}
+            </button>
+
+            {/* Simple format text */}
+            <p className="mt-2.5 text-[11px] font-medium text-muted-foreground">
+              {formats.join(" • ")}
+            </p>
+
+            {hint && (
+              <p className="mt-1 text-[10px] font-medium text-muted-foreground/75">
+                {hint}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Extra Action (e.g. Auto Generate Sample) */}
+      {extra && <div className="mt-4">{extra}</div>}
     </div>
   );
 }
 
 function UploadRow() {
   const [autofill, setAutofill] = useState(true);
+  const [ebookFile, setEbookFile] = useState<File | null>(null);
+  const [sampleFile, setSampleFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+
+  const handleGenerateSample = () => {
+    if (!ebookFile) return;
+    const generatedSample = new File(
+      [ebookFile],
+      `Sample_${ebookFile.name.replace(/\.[^/.]+$/, "")}.epub`,
+      { type: "application/epub+zip" }
+    );
+    setSampleFile(generatedSample);
+  };
 
   return (
-    <SectionCard>
-      <div className="grid gap-4 md:grid-cols-3">
-        <div>
-          <p className="mb-2 text-sm font-semibold">Upload Your eBook</p>
-          <UploadTile
-            title="Your eBook"
-            hint="Maximum file size 10 MB"
-            ctaLabel="Upload ePUB or PDF"
-            icon={<BookOpen size={22} />}
-          />
-        </div>
-        <div>
-          <p className="mb-2 text-sm font-semibold">Upload Free Sample</p>
-          <UploadTile
-            title="Your eBook free sample"
-            hint="Maximum file size 10 MB"
-            ctaLabel="Upload ePUB or PDF"
-            icon={<BookOpen size={22} />}
-            extra={
-              <>
-                <button
-                  type="button"
-                  className="mt-2 inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold"
-                  style={{
-                    backgroundColor: "color-mix(in oklab, var(--brand) 14%, transparent)",
-                    color: "var(--brand)",
-                  }}
-                >
-                  <Sparkles size={12} /> Generate Sample from Source
-                </button>
-                <span className="text-[11px] text-muted-foreground">Or</span>
-              </>
-            }
-          />
-        </div>
-        <div>
-          <p className="mb-2 text-sm font-semibold">Upload Cover Image</p>
-          <UploadTile
-            title="Cover Image"
-            hint="438 × 678 pixels for 2x scale. Maximum file size 5 MB."
-            ctaLabel="Upload Cover Image (JPEG or PNG)"
-            icon={<ImageIcon size={22} />}
-          />
-        </div>
+    <SectionCard
+      title="Upload eBook Files & Metadata"
+      description="Provide your main eBook file, preview sample, and high-resolution cover image."
+    >
+      <div className="grid gap-6 md:grid-cols-3">
+        <UploadTile
+          step={1}
+          title="Upload Your eBook"
+          subtitle="Drop your primary manuscript file"
+          hint=""
+          ctaLabel="Upload ePUB or PDF"
+          icon={<BookOpen size={20} />}
+          formats={["ePUB", "PDF", "Max 30 MB"]}
+          required
+          onFileChange={setEbookFile}
+          externalFile={ebookFile}
+        />
+
+        <UploadTile
+          step={2}
+          title="Upload Free Sample"
+          subtitle="Preview sample for readers"
+          hint=""
+          ctaLabel="Upload Sample File"
+          icon={<FileText size={20} />}
+          formats={["ePUB", "PDF", "Max 10 MB"]}
+          onFileChange={setSampleFile}
+          externalFile={sampleFile}
+          extra={
+            ebookFile ? (
+              <button
+                type="button"
+                onClick={handleGenerateSample}
+                className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--brand)]/30 bg-gradient-to-r from-[var(--brand)]/15 via-[var(--brand)]/10 to-[var(--brand)]/5 px-3 text-xs font-bold text-[var(--brand)] shadow-2xs transition-all hover:border-[var(--brand)] hover:shadow-xs active:scale-[0.99]"
+              >
+                <Sparkles size={14} className="animate-pulse text-[var(--brand)]" />
+                Generate Sample from Source
+              </button>
+            ) : (
+              <div
+                title="Upload your eBook in Step 1 first to auto-generate a sample"
+                className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border/80 bg-muted/40 px-3 text-xs font-medium text-muted-foreground/70 cursor-not-allowed"
+              >
+                <Sparkles size={13} className="opacity-40" />
+                <span>Upload eBook to Enable Auto Sample</span>
+              </div>
+            )
+          }
+        />
+
+        <UploadTile
+          step={3}
+          title="Upload Cover Image"
+          subtitle="High-resolution book cover"
+          hint="438 × 678 px recommended"
+          ctaLabel="Upload Cover Image"
+          icon={<ImageIcon size={20} />}
+          formats={["JPEG", "PNG", "Max 5 MB"]}
+          required
+          isCover
+          onFileChange={setCoverFile}
+          externalFile={coverFile}
+        />
       </div>
 
       <div
-        className="mt-11 flex items-start gap-3 rounded-lg border p-3.5 text-[13px]"
+        className="mt-8 flex items-start gap-3 rounded-xl border p-4 text-[13px] shadow-2xs"
         style={{
           borderColor: "color-mix(in oklab, var(--destructive) 40%, transparent)",
           backgroundColor: "color-mix(in oklab, var(--destructive) 6%, transparent)",
@@ -338,6 +640,7 @@ function UploadRow() {
     </SectionCard>
   );
 }
+
 
 /* -------------------------------------------------------------------------- */
 /*  Section: Guidelines                                                        */
@@ -438,11 +741,125 @@ function GuidelinesSection() {
   );
 }
 
+function RichTextEditor({
+  value,
+  onChange,
+  placeholder,
+  rows = 4,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  placeholder?: string;
+  rows?: number;
+}) {
+  const insertFormatting = (prefix: string, suffix: string = "") => {
+    onChange(value + prefix + suffix);
+  };
+
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden transition-colors focus-within:border-[var(--brand)] shadow-2xs">
+      {/* RTB Formatting Toolbar */}
+      <div className="flex flex-wrap items-center gap-1 border-b border-border bg-secondary/40 p-2 text-muted-foreground">
+        <button
+          type="button"
+          onClick={() => insertFormatting("**", "**")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground text-xs font-extrabold transition-colors cursor-pointer"
+          title="Bold"
+        >
+          B
+        </button>
+        <button
+          type="button"
+          onClick={() => insertFormatting("*", "*")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground text-xs italic font-serif transition-colors cursor-pointer"
+          title="Italic"
+        >
+          I
+        </button>
+        <button
+          type="button"
+          onClick={() => insertFormatting("<u>", "</u>")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground text-xs underline transition-colors cursor-pointer"
+          title="Underline"
+        >
+          U
+        </button>
+        <button
+          type="button"
+          onClick={() => insertFormatting("~~", "~~")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground text-xs line-through transition-colors cursor-pointer"
+          title="Strikethrough"
+        >
+          S
+        </button>
+
+        <div className="mx-1 h-4 w-px bg-border/80" />
+
+        <button
+          type="button"
+          onClick={() => insertFormatting(value ? "\n- " : "- ")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground transition-colors cursor-pointer"
+          title="Bullet List"
+        >
+          <List size={14} />
+        </button>
+        <button
+          type="button"
+          onClick={() => insertFormatting(value ? "\n1. " : "1. ")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground transition-colors cursor-pointer"
+          title="Numbered List"
+        >
+          <ListOrdered size={14} />
+        </button>
+        <button
+          type="button"
+          onClick={() => insertFormatting(value ? "\n> " : "> ")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground transition-colors cursor-pointer"
+          title="Blockquote"
+        >
+          <Quote size={13} />
+        </button>
+
+        <div className="mx-1 h-4 w-px bg-border/80" />
+
+        <button
+          type="button"
+          onClick={() => insertFormatting("[", "](https://)")}
+          className="rounded h-7 w-7 flex items-center justify-center hover:bg-card hover:text-foreground transition-colors cursor-pointer"
+          title="Insert Link"
+        >
+          <LinkIcon size={13} />
+        </button>
+
+        <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pr-1">
+          Rich Text Editor (RTB)
+        </span>
+      </div>
+
+      {/* Textarea */}
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={rows}
+        placeholder={placeholder || "Provide a comprehensive summary and key highlights..."}
+        className="w-full bg-transparent p-3.5 text-sm leading-relaxed text-foreground outline-none resize-y placeholder:text-muted-foreground"
+      />
+
+      {/* Footer Info / Character Counter */}
+      <div className="flex items-center justify-between border-t border-border/40 bg-muted/20 px-3.5 py-1.5 text-[11px] text-muted-foreground">
+        <span>Rich Text &amp; Markdown enabled</span>
+        <span>{value.length} / 2,000 characters</span>
+      </div>
+    </div>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Section: eBook Details                                                     */
 /* -------------------------------------------------------------------------- */
 
 function EBookDetailsSection() {
+  const [summary, setSummary] = useState("Arun m");
   const [tags, setTags] = useState<string[]>([
     "Promised Land 2024",
     "Barack Obama",
@@ -488,7 +905,7 @@ function EBookDetailsSection() {
 
       <div className="mt-4">
         <Field label="Summary">
-          <Textarea rows={4} defaultValue="Arun m" />
+          <RichTextEditor value={summary} onChange={setSummary} />
         </Field>
       </div>
 
@@ -645,11 +1062,10 @@ function AuthorSearchResultCard({
           onAdd();
         }
       }}
-      className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ${
-        isSelected
-          ? "cursor-default border-border/70 bg-secondary/30 text-muted-foreground"
-          : "border-border bg-background hover:bg-secondary/50 cursor-pointer"
-      }`}
+      className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ${isSelected
+        ? "cursor-default border-border/70 bg-secondary/30 text-muted-foreground"
+        : "border-border bg-background hover:bg-secondary/50 cursor-pointer"
+        }`}
     >
       {match.avatar ? (
         <img
@@ -682,9 +1098,8 @@ function AuthorSearchResultCard({
               e.stopPropagation();
               if (match.books > 0) setShowBooksPopup((v) => !v);
             }}
-            className={`inline-flex items-center gap-1 text-[11px] text-muted-foreground cursor-pointer ${
-              match.books > 0 ? "hover:text-foreground" : ""
-            }`}
+            className={`inline-flex items-center gap-1 text-[11px] text-muted-foreground cursor-pointer ${match.books > 0 ? "hover:text-foreground" : ""
+              }`}
           >
             <BookOpen size={11} />
             <span className={match.books > 0 ? "underline-offset-2 hover:underline" : ""}>
@@ -1238,9 +1653,8 @@ function CategoryDialog({
                     <button
                       type="button"
                       onClick={() => setActive(name)}
-                      className={`flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors ${
-                        isActive ? "bg-secondary/60" : "hover:bg-secondary/30"
-                      }`}
+                      className={`flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors ${isActive ? "bg-secondary/60" : "hover:bg-secondary/30"
+                        }`}
                     >
                       <span
                         role="checkbox"
@@ -1249,9 +1663,8 @@ function CategoryDialog({
                           e.stopPropagation();
                           toggleMain(name);
                         }}
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
-                          checked ? "border-transparent" : "border-border bg-background"
-                        }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${checked ? "border-transparent" : "border-border bg-background"
+                          }`}
                         style={
                           checked
                             ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
@@ -1296,9 +1709,8 @@ function CategoryDialog({
                       className="flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors hover:bg-secondary/30 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
-                          checked ? "border-transparent" : "border-border bg-background"
-                        }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${checked ? "border-transparent" : "border-border bg-background"
+                          }`}
                         style={
                           checked
                             ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
@@ -1741,9 +2153,9 @@ function RentalDialog({
                   style={
                     p === page
                       ? {
-                          backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
-                          color: "var(--brand)",
-                        }
+                        backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
+                        color: "var(--brand)",
+                      }
                       : undefined
                   }
                 >
@@ -1878,7 +2290,7 @@ function AddEBookPage() {
       <div className="p-4 md:p-8">
         <Link
           to="/publisher/catalogue/"
-          className="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          className="mb-5 inline-flex items-center gap-1.5 text-sm font-normal text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft size={15} /> Back to Catalogue
         </Link>

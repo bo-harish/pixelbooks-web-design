@@ -534,7 +534,7 @@ export function ImageBannerPage() {
               >
                 <ArrowLeft size={16} />
               </button>
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-sm font-normal text-foreground">
                 Back to Image Banner
               </span>
             </div>

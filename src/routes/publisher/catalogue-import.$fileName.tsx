@@ -1,8 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, AlertCircle, XCircle, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft,
+  AlertCircle,
+  XCircle,
+  CheckCircle2,
+  FileSpreadsheet,
+  FileBadge,
+  GalleryVerticalEnd,
+} from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 
 export const Route = createFileRoute("/publisher/catalogue-import/$fileName")({
+  head: ({ params }) => ({
+    meta: [
+      { title: "Catalogue Import Summary — PixelBooks" },
+      { name: "description", content: "Review file validation results, upload errors, and import status." },
+    ],
+  }),
   component: ImportDetailPage,
 });
 
@@ -86,27 +100,86 @@ function StatusPill({ status }: { status: Status }) {
   );
 }
 
+function FileTypePill({ type }: { type: FileType }) {
+  const isEpub = type === "EPUB";
+  const color = isEpub ? "#16a34a" : "#dc2626";
+
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider"
+      style={{ color }}
+    >
+      {isEpub ? <GalleryVerticalEnd size={13} /> : <FileBadge size={13} />}
+      {type}
+    </span>
+  );
+}
+
 function ImportDetailPage() {
   const { fileName } = Route.useParams();
   const decoded = decodeURIComponent(fileName);
 
+  const successCount = rows.filter((r) => r.status === "Success").length;
+  const failedCount = rows.filter((r) => r.status === "Failed").length;
+
   return (
-    <AppShell title="Import Details">
+    <AppShell
+      title="Catalogue Import Summary"
+      subtitle="Review file validation results, upload errors, and import status."
+    >
       <div className="space-y-6 p-4 md:p-8">
-        {/* Back + heading */}
+        {/* Back Link */}
         <div className="mb-6 flex items-center gap-3">
           <Link
             to="/publisher/catalogue-import/"
-            aria-label="Back to imports"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            aria-label="Back to Catalogue Imports"
           >
             <ArrowLeft size={16} />
           </Link>
-          <div className="min-w-0">
-            <h2 className="truncate text-lg font-semibold leading-tight">{decoded}</h2>
-            <p className="text-sm text-muted-foreground">
-              Upload Date: 23 Feb, 2026 • Total {rows.length} files
-            </p>
+          <Link
+            to="/publisher/catalogue-import/"
+            className="text-sm font-normal text-foreground hover:text-[var(--brand)] transition-colors"
+          >
+            Back to Catalogue Imports
+          </Link>
+        </div>
+
+        {/* Header & Structured Metadata Bar */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--sidebar-highlight)] text-[var(--brand)]">
+              <FileSpreadsheet size={20} />
+            </div>
+            <h1 className="truncate text-xl font-bold tracking-tight text-foreground md:text-2xl">
+              {decoded}
+            </h1>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-2xs">
+            <div className="flex flex-wrap items-center gap-6 text-sm">
+              <div>
+                <span className="text-xs text-muted-foreground block">Upload Date</span>
+                <span className="font-medium text-foreground">23 Feb, 2026</span>
+              </div>
+              <div className="h-8 w-px bg-border hidden sm:block" />
+              <div>
+                <span className="text-xs text-muted-foreground block">Total Items</span>
+                <span className="font-medium text-foreground">Total {rows.length} files</span>
+              </div>
+            </div>
+
+            {/* File Status Badges */}
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 size={14} />
+                {successCount} Succeeded
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-600 dark:text-red-400">
+                <XCircle size={14} />
+                {failedCount} Failed
+              </span>
+            </div>
           </div>
         </div>
 
@@ -140,14 +213,7 @@ function ImportDetailPage() {
                       <StatusPill status={r.status} />
                     </td>
                     <td className="py-5 pr-4">
-                      <span
-                        className="text-sm font-medium"
-                        style={{
-                          color: r.fileType === "EPUB" ? "var(--success)" : "var(--foreground)",
-                        }}
-                      >
-                        {r.fileType}
-                      </span>
+                      <FileTypePill type={r.fileType} />
                     </td>
                     <td className="py-5 pr-6 text-right">
                       {r.status === "Failed" && (
@@ -181,14 +247,7 @@ function ImportDetailPage() {
                   )}
                   <div className="mt-2 flex items-center gap-3">
                     <StatusPill status={r.status} />
-                    <span
-                      className="text-xs font-medium"
-                      style={{
-                        color: r.fileType === "EPUB" ? "var(--success)" : "var(--foreground)",
-                      }}
-                    >
-                      {r.fileType}
-                    </span>
+                    <FileTypePill type={r.fileType} />
                   </div>
                 </div>
                 {r.status === "Failed" && (

@@ -204,7 +204,7 @@ function EBookDetailPage() {
           <p className="text-sm text-muted-foreground">eBook not found.</p>
           <Link
             to="/publisher/catalogue/"
-            className="text-sm font-medium"
+            className="text-sm font-normal"
             style={{ color: "var(--brand)" }}
           >
             ← Back to Catalogue
@@ -232,7 +232,7 @@ function EBookDetailPage() {
           </Link>
           <Link
             to="/publisher/catalogue/"
-            className="text-sm font-semibold text-foreground hover:text-[var(--brand)] transition-colors"
+            className="text-sm font-normal text-foreground hover:text-[var(--brand)] transition-colors"
           >
             Back to Catalogue
           </Link>

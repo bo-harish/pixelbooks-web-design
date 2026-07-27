@@ -273,7 +273,7 @@ function PublisherAuthorDetailPage() {
           >
             <ArrowLeft size={16} />
           </Link>
-          <span className="text-sm font-semibold text-foreground">
+          <span className="text-sm font-normal text-foreground">
             Back to Publisher / Author
           </span>
         </div>

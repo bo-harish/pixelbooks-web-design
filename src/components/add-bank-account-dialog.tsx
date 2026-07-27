@@ -3,7 +3,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 
 interface AddBankAccountDialogProps {
   open: boolean;
@@ -14,7 +13,6 @@ interface AddBankAccountDialogProps {
     branch: string;
     accountHolder: string;
     accountNumber: string;
-    isDefault: boolean;
   }) => void;
 }
 
@@ -25,7 +23,6 @@ export function AddBankAccountDialog({ open, onOpenChange, onAdd }: AddBankAccou
   const [accountHolder, setAccountHolder] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [confirmAccountNumber, setConfirmAccountNumber] = useState("");
-  const [isDefault, setIsDefault] = useState(false);
   const [showAccountNumber, setShowAccountNumber] = useState(false);
   const [showConfirmNumber, setShowConfirmNumber] = useState(false);
 
@@ -36,7 +33,6 @@ export function AddBankAccountDialog({ open, onOpenChange, onAdd }: AddBankAccou
       branch,
       accountHolder,
       accountNumber,
-      isDefault,
     });
     onOpenChange(false);
   };
@@ -162,39 +158,25 @@ export function AddBankAccountDialog({ open, onOpenChange, onAdd }: AddBankAccou
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between mt-8 pt-2">
-            <div className="flex items-center gap-2.5">
-              <Checkbox
-                id="default-account"
-                checked={isDefault}
-                onCheckedChange={(checked) => setIsDefault(checked === true)}
-              />
-              <Label
-                htmlFor="default-account"
-                className="text-sm font-medium text-foreground cursor-pointer"
-              >
-                Set as default account
-              </Label>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleCancel}
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAdd}
-                className="inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{
-                  backgroundColor: "var(--brand)",
-                  color: "var(--brand-contrast)",
-                }}
-              >
-                Add Account
-              </button>
-            </div>
+          <div className="flex items-center justify-end gap-3 mt-8 pt-2">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleAdd}
+              className="inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold transition-opacity hover:opacity-90 disabled:opacity-50"
+              style={{
+                backgroundColor: "var(--brand)",
+                color: "var(--brand-contrast)",
+              }}
+            >
+              Add Account
+            </button>
           </div>
         </div>
       </DialogContent>

@@ -28,11 +28,6 @@ export const Route = createFileRoute("/publisher/catalogue/")({
 });
 
 const STATUS_FILTERS: Array<"All" | Status> = ["All", "Published", "Unpublished", "Rejected"];
-const PUBLISHER_AUTHOR_FILTERS = [
-  "Publisher & Author",
-  "Publisher",
-  "Author",
-];
 
 const LANGUAGE_FILTERS = [
   "All Languages",
@@ -52,6 +47,40 @@ const GENRE_FILTERS = [
 ];
 
 const PAGE_SIZE = 8;
+
+function AuthorAvatar({
+  author,
+  size = "md",
+}: {
+  author: string;
+  size?: "sm" | "md" | "lg";
+}) {
+  const initials = author
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  const sizeClasses = {
+    sm: "h-5 w-5 text-[8.5px]",
+    md: "h-6 w-6 text-[10px]",
+    lg: "h-8 w-8 text-xs",
+  }[size];
+
+  return (
+    <div
+      className={`relative flex shrink-0 items-center justify-center rounded-full border border-[var(--brand)]/30 font-extrabold shadow-2xs ${sizeClasses}`}
+      style={{
+        backgroundColor: "color-mix(in oklch, var(--brand) 15%, transparent)",
+        color: "var(--brand)",
+      }}
+    >
+      <span>{initials}</span>
+    </div>
+  );
+}
 
 function DropdownSelect<T extends string>({
   value,
@@ -177,7 +206,6 @@ function CataloguePage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]>("All");
-  const [entityFilter, setEntityFilter] = useState("Publisher & Author");
   const [languageFilter, setLanguageFilter] = useState("All Languages");
   const [genreFilter, setGenreFilter] = useState("All Genre");
   const [page, setPage] = useState(1);
@@ -186,10 +214,6 @@ function CataloguePage() {
     const q = query.trim().toLowerCase();
     return seedBooks.filter((b) => {
       if (filter !== "All" && b.status !== filter) return false;
-      if (entityFilter !== "Publisher & Author") {
-        if (entityFilter === "Publisher" && !b.publisher) return false;
-        if (entityFilter === "Author" && !b.author) return false;
-      }
       if (genreFilter !== "All Genre") {
         if (b.category !== genreFilter) return false;
       }
@@ -201,7 +225,7 @@ function CataloguePage() {
         (b.isbn ?? "").toLowerCase().includes(q)
       );
     });
-  }, [query, filter, entityFilter, languageFilter, genreFilter]);
+  }, [query, filter, languageFilter, genreFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -245,17 +269,6 @@ function CataloguePage() {
 
           {/* Filter Dropdowns */}
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Publishers / Authors Dropdown */}
-            <DropdownSelect
-              value={entityFilter}
-              options={PUBLISHER_AUTHOR_FILTERS}
-              onChange={(v) => {
-                setEntityFilter(v);
-                setPage(1);
-              }}
-              className="w-full sm:w-auto min-w-[170px]"
-            />
-
             {/* All Languages Dropdown */}
             <DropdownSelect
               value={languageFilter}
@@ -342,19 +355,9 @@ function CataloguePage() {
                             {b.title}
                           </p>
                           <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-0.5 shadow-2xs">
-                              <span
-                                className="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full text-[8px] font-bold text-white"
-                                style={{ background: b.cover }}
-                              >
-                                {b.author
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")
-                                  .slice(0, 2)
-                                  .toUpperCase()}
-                              </span>
-                              <span className="text-[11.5px] font-medium text-foreground">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-1 shadow-2xs">
+                              <AuthorAvatar author={b.author} size="sm" />
+                              <span className="text-[11.5px] font-semibold text-foreground">
                                 {b.author}
                               </span>
                             </div>
@@ -421,19 +424,9 @@ function CataloguePage() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-foreground">{b.title}</p>
                     <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px]">
-                      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
-                        <span
-                          className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[7.5px] font-bold text-white"
-                          style={{ background: b.cover }}
-                        >
-                          {b.author
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </span>
-                        <span className="text-[11px] font-medium text-foreground">{b.author}</span>
+                      <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-1 shadow-2xs">
+                        <AuthorAvatar author={b.author} size="sm" />
+                        <span className="text-[11.5px] font-semibold text-foreground">{b.author}</span>
                       </div>
                       <span className="rounded-md border border-border px-1.5 py-0.5 font-semibold text-muted-foreground">
                         {b.format}

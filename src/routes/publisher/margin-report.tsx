@@ -12,6 +12,8 @@ import {
   Calendar,
   ScrollText,
   Table,
+  TrendingUp,
+  Wallet,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -104,7 +106,7 @@ const seed: LedgerRow[] = [
     ref: "Inv_0000299",
     margin: 1.95,
     received: null,
-    balance: 8.45,
+    balance: 8425,
     mode: "UPI",
   },
   {
@@ -114,7 +116,7 @@ const seed: LedgerRow[] = [
     ref: "-",
     margin: null,
     received: null,
-    balance: 8.45,
+    balance: 8425,
     mode: "-",
   },
 ];
@@ -590,27 +592,51 @@ function MarginReportPage() {
         <PaymentDetailView detail={selectedPayment} onBack={() => setSelectedPayment(null)} />
       ) : (
         <div className="space-y-6 p-4 md:p-8">
-          {/* Top Highlight Banner: Total Outstanding Receivable Till Date */}
-          <div className="rounded-xl border border-emerald-200/80 bg-emerald-500/10 dark:bg-emerald-950/30 dark:border-emerald-800/40 p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-400">
-                <BookOpen size={22} />
-              </span>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
-                    Total Receivable Till Date
-                  </h2>
-                  <span className="inline-flex items-center rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:text-emerald-300">
-                    All-Time Cumulative Balance
+          {/* Total Receivable Till Date — Premium Card */}
+          <div
+            className="relative overflow-hidden rounded-2xl p-px"
+            style={{ background: "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))" }}
+          >
+            <div className="relative rounded-[15px] bg-card p-5 sm:p-6">
+              {/* Subtle background glow */}
+              <div
+                className="pointer-events-none absolute inset-0 opacity-[0.07]"
+                style={{ background: "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)" }}
+              />
+
+              <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                {/* Left: Label + Amount */}
+                <div className="flex items-center gap-4">
+                  <span
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+                  >
+                    <Wallet size={22} strokeWidth={2} />
                   </span>
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                      Total Receivable Till Date
+                    </p>
+                    <p className="mt-0.5 text-3xl font-extrabold tracking-tight text-foreground">
+                      ₹8,425
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      All-time cumulative balance · unaffected by range filters
+                    </p>
+                  </div>
                 </div>
-                <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mt-0.5">
-                  ₹8.45
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Cumulative net margin receivable till date. Unaffected by date range filters.
-                </p>
+
+                {/* Divider */}
+                <div className="hidden h-10 w-px bg-border sm:block self-center" />
+
+                {/* Right: Info pillars */}
+                <div className="flex items-center gap-6 sm:shrink-0">
+                  <div className="text-center">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Last Payout</p>
+                    <p className="mt-1 text-sm font-bold text-foreground">24 Mar 2026</p>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground">₹3,200 disbursed</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

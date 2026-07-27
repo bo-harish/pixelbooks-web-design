@@ -155,7 +155,7 @@ export function LibraryAdminCartPage() {
           <div className="space-y-4">
             <Link
               to="/library-admin/requests"
-              className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-foreground cursor-pointer"
+              className="flex items-center gap-2 text-sm font-normal text-slate-700 dark:text-slate-200 hover:text-foreground cursor-pointer"
             >
               <ArrowLeft size={16} />
               Back to Requests
@@ -183,7 +183,7 @@ export function LibraryAdminCartPage() {
               <div className="flex items-center justify-between gap-4">
                 <Link
                   to="/library-admin/requests"
-                  className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-foreground cursor-pointer"
+                  className="flex items-center gap-2 text-sm font-normal text-slate-700 dark:text-slate-200 hover:text-foreground cursor-pointer"
                 >
                   <ArrowLeft size={16} />
                   Back to Requests

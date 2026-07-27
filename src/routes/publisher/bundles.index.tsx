@@ -173,7 +173,7 @@ function BundlesPage() {
                   <th className="py-4 pl-6 pr-4 font-semibold">Title</th>
                   <th className="py-4 pr-4 text-center font-semibold">Status</th>
                   <th className="py-4 pr-4 text-center font-semibold">Pricing</th>
-                  <th className="py-4 pr-4 text-center font-semibold">Activation</th>
+                  <th className="py-4 pr-4 text-center font-semibold">Active</th>
                   <th className="py-4 pr-6" />
                 </tr>
               </thead>
@@ -220,7 +220,7 @@ function BundlesPage() {
                     </td>
                     <td className="py-5 pr-4 text-center font-medium">₹{b.pricing}</td>
                     <td className="py-5 pr-4">
-                      <div className="flex items-center justify-center gap-3">
+                      <div className="flex items-center justify-center">
                         <button
                           role="switch"
                           aria-checked={b.active}
@@ -238,9 +238,6 @@ function BundlesPage() {
                             style={{ transform: b.active ? "translateX(22px)" : "translateX(2px)" }}
                           />
                         </button>
-                        <span className="text-sm font-medium">
-                          {b.active ? "Active" : "Inactive"}
-                        </span>
                       </div>
                     </td>
                     <td className="py-5 pr-6 text-right">
