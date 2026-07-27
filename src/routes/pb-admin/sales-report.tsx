@@ -691,7 +691,7 @@ function AdminSalesReportPage() {
                     </tr>
                   ) : (
                     detailPageItems.map((item) => (
-                      <tr key={item.id} className="transition-colors hover:bg-secondary/40">
+                      <tr key={item.id} className="transition-colors hover:bg-secondary/50">
                         {/* Book Cover + Title + Category Subtext */}
                         <td className="py-4 pl-6 pr-4">
                           <div className="flex items-center gap-3 max-w-xs">

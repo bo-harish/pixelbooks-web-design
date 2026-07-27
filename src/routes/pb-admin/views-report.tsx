@@ -299,7 +299,7 @@ function BookDrillDown({ entity, onBack }: { entity: EntityRow; onBack: () => vo
                 {pageItems.length === 0 ? (
                   <tr><td colSpan={5} className="py-16 text-center text-sm text-muted-foreground">No books found.</td></tr>
                 ) : pageItems.map(item => (
-                  <tr key={item.id} className="transition-colors hover:bg-secondary/40">
+                  <tr key={item.id} className="transition-colors hover:bg-secondary/50">
                     <td className="py-4 pl-6 pr-4">
                       <div className="flex items-center gap-3 max-w-xs">
                         <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded-sm text-[9px] font-bold text-white shadow-xs" style={{ background: item.coverGradient }}>{item.initials}</div>
@@ -556,7 +556,7 @@ function TitleReport({ onBack }: { onBack: () => void }) {
                 {pageItems.length === 0 ? (
                   <tr><td colSpan={6} className="py-16 text-center text-sm text-muted-foreground">No titles found.</td></tr>
                 ) : pageItems.map(item => (
-                  <tr key={item.id} className="transition-colors hover:bg-secondary/40">
+                  <tr key={item.id} className="transition-colors hover:bg-secondary/50">
                     <td className="py-4 pl-6 pr-4">
                       <div className="flex items-center gap-3 max-w-xs">
                         <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded-sm text-[9px] font-bold text-white shadow-xs" style={{ background: item.coverGradient }}>{item.initials}</div>
@@ -686,7 +686,7 @@ function CategoryReport({ onBack }: { onBack: () => void }) {
                   {dPageItems.length === 0 ? (
                     <tr><td colSpan={5} className="py-16 text-center text-sm text-muted-foreground">No titles found.</td></tr>
                   ) : dPageItems.map(item => (
-                    <tr key={item.id} className="transition-colors hover:bg-secondary/40">
+                    <tr key={item.id} className="transition-colors hover:bg-secondary/50">
                       <td className="py-4 pl-6 pr-4">
                         <div className="flex items-center gap-3 max-w-xs">
                           <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded-sm text-[9px] font-bold text-white shadow-xs" style={{ background: item.coverGradient }}>{item.initials}</div>

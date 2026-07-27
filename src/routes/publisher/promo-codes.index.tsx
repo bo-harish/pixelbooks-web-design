@@ -290,7 +290,7 @@ function PromoCodesPage() {
                 {pageItems.map((p) => (
                   <tr
                     key={p.id}
-                    className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/40"
+                    className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
                   >
                     <td className="py-5 pl-6 pr-4">
                       <span className="inline-flex items-center rounded-md border border-border bg-secondary/60 px-2.5 py-1 font-mono text-xs font-semibold tracking-wider text-foreground">

@@ -526,7 +526,7 @@ function ManagePublisherAuthor() {
                     <tr
                       key={item.id}
                       onClick={() => handleOpenAccount(item)}
-                      className="group cursor-pointer transition-colors hover:bg-muted/30"
+                      className="group cursor-pointer transition-colors hover:bg-secondary/50"
                     >
                       {/* Name + Role */}
                       <td className="py-4 px-4 md:px-6">
@@ -588,8 +588,10 @@ function ManagePublisherAuthor() {
                       </td>
 
                       {/* Chevron Action */}
-                      <td className="py-4 px-4 pr-6 text-right text-muted-foreground group-hover:text-foreground">
-                        <ChevronRight size={18} className="inline transition-transform group-hover:translate-x-0.5" />
+                      <td className="py-4 pr-6 text-right">
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
+                          <ChevronRight size={16} />
+                        </span>
                       </td>
                     </tr>
                   ))

@@ -708,7 +708,7 @@ function AuditLogPage() {
                           {/* Parent Row */}
                           <div
                             onClick={() => toggleRowExpanded(entry.id)}
-                            className={`flex items-start justify-between w-full py-4 px-6 transition-colors cursor-pointer hover:bg-muted/30 ${
+                            className={`flex items-start justify-between w-full py-4 px-6 transition-colors cursor-pointer hover:bg-secondary/50 ${
                               isExpanded ? "bg-muted/20" : ""
                             }`}
                           >

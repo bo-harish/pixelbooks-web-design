@@ -192,5 +192,58 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
      </div>
      ```
 
+9. **Grid Row Hover & Next Page Action Chevron (Catalogue & Listing Tables)**:
+   - **Row Hover Class**: Always use `group border-b border-border/60 transition-colors last:border-0 cursor-pointer hover:bg-secondary/50`.
+   - **Mandatory Action Chevron Button Wrapper**: Every clickable table row's rightmost action chevron (`ChevronRight`) MUST be wrapped in a rounded rectangle container so the button highlights on row hover. Never render a bare `<ChevronRight>` without this `h-8 w-8 rounded-md` wrapper:
+     ```tsx
+     <td className="py-4 pr-6 text-right">
+       <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
+         <ChevronRight size={16} />
+       </span>
+     </td>
+     ```
 
+10. **Publisher / Author Profile Pic & Name Cell Layout (Publishers & Authors Style)**:
+   - Combine circular initials avatar with entity type icon and name:
+     ```tsx
+     <div className="flex items-center gap-3">
+       <div
+         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-2xs"
+         style={{ background: item.avatarBg }}
+       >
+         {getInitials(item.name)}
+       </div>
+       <div>
+         <p className="font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
+           {item.name}
+         </p>
+         <p className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+           {item.type === "Publisher" ? (
+             <Building2 size={11} className="inline text-muted-foreground/80" />
+           ) : (
+             <User size={11} className="inline text-muted-foreground/80" />
+           )}
+           <span>{item.type}</span>
+         </p>
+       </div>
+     </div>
+     ```
 
+11. **Commission Rate Uniform Width Highlight Badge**:
+   - Uniform width badge (`w-[150px]`) displaying rate percentage and status tag (`Default` / `Custom`):
+     ```tsx
+     <div className="inline-flex items-center justify-between w-[150px] px-3.5 py-1.5 rounded-xl border border-border bg-card shadow-2xs group-hover:border-[var(--brand)]/40 transition-colors">
+       <span className="text-base font-extrabold text-foreground tracking-tight">
+         {item.rate}
+       </span>
+       {item.isCustom ? (
+         <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+           <Sparkles size={9} /> Custom
+         </span>
+       ) : (
+         <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+           Default
+         </span>
+       )}
+     </div>
+     ```

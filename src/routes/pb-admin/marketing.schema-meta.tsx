@@ -700,7 +700,7 @@ export function SchemaMetaPage() {
                     return (
                       <tr
                         key={item.id}
-                        className="group transition-colors hover:bg-muted/20"
+                        className="group border-b border-border/60 transition-colors hover:bg-secondary/50"
                       >
                         {/* Structured Title Cell Layout */}
                         <td className="px-6 py-4">

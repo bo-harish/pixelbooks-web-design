@@ -277,7 +277,7 @@ function ManageCategoryPage() {
                   paginatedCategories.map((cat) => (
                     <tr
                       key={cat.id}
-                      className="transition-colors hover:bg-muted/30"
+                      className="transition-colors hover:bg-secondary/50"
                     >
                       <td className="py-4 px-6">
                         <span className="font-semibold text-foreground text-sm">

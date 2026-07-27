@@ -1,9 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Tag, Users, Clock, BookOpen, Star, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Tag, Users, Clock, BookOpen, Star, ArrowUpRight, ArrowDownRight, ChevronDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Bar,
   BarChart,
@@ -31,7 +37,7 @@ function PublisherDashboard() {
   );
 }
 
-const RANGES = ["7d", "30d", "90d", "1y"] as const;
+const RANGES = ["7d", "30d", "90d", "1y", "Till Date"] as const;
 type Range = (typeof RANGES)[number];
 
 type Stat = {
@@ -75,20 +81,56 @@ const stats: Stat[] = [
   },
 ];
 
-const salesData = [
-  { month: "Apr", sales: 12 },
-  { month: "May", sales: 18 },
-  { month: "Jun", sales: 14 },
-  { month: "Jul", sales: 22 },
-  { month: "Aug", sales: 26 },
-  { month: "Sep", sales: 19 },
-  { month: "Oct", sales: 31 },
-  { month: "Nov", sales: 28 },
-  { month: "Dec", sales: 42 },
-  { month: "Jan", sales: 35 },
-  { month: "Feb", sales: 39 },
-  { month: "Mar", sales: 47 },
-];
+const salesDataByFy: Record<string, { month: string; sales: number }[]> = {
+  "FY (2025 - 2026)": [
+    { month: "Apr", sales: 12 },
+    { month: "May", sales: 18 },
+    { month: "Jun", sales: 14 },
+    { month: "Jul", sales: 22 },
+    { month: "Aug", sales: 26 },
+    { month: "Sep", sales: 19 },
+    { month: "Oct", sales: 31 },
+    { month: "Nov", sales: 28 },
+    { month: "Dec", sales: 42 },
+    { month: "Jan", sales: 35 },
+    { month: "Feb", sales: 39 },
+    { month: "Mar", sales: 47 },
+  ],
+  "FY (2024 - 2025)": [
+    { month: "Apr", sales: 10 },
+    { month: "May", sales: 14 },
+    { month: "Jun", sales: 12 },
+    { month: "Jul", sales: 18 },
+    { month: "Aug", sales: 20 },
+    { month: "Sep", sales: 15 },
+    { month: "Oct", sales: 25 },
+    { month: "Nov", sales: 22 },
+    { month: "Dec", sales: 34 },
+    { month: "Jan", sales: 28 },
+    { month: "Feb", sales: 31 },
+    { month: "Mar", sales: 38 },
+  ],
+  "FY (2023 - 2024)": [
+    { month: "Apr", sales: 8 },
+    { month: "May", sales: 11 },
+    { month: "Jun", sales: 9 },
+    { month: "Jul", sales: 14 },
+    { month: "Aug", sales: 16 },
+    { month: "Sep", sales: 12 },
+    { month: "Oct", sales: 20 },
+    { month: "Nov", sales: 18 },
+    { month: "Dec", sales: 28 },
+    { month: "Jan", sales: 22 },
+    { month: "Feb", sales: 25 },
+    { month: "Mar", sales: 30 },
+  ],
+};
+
+const fyGrowth: Record<string, string> = {
+  "FY (2025 - 2026)": "+18.6% Growth",
+  "FY (2024 - 2025)": "+15.2% Growth",
+  "FY (2023 - 2024)": "+12.0% Growth",
+};
 
 const categoryData = [
   { name: "Academic", value: 42 },
@@ -246,11 +288,14 @@ function StatSkeleton() {
 
 function DashboardContent() {
   const [range, setRange] = useState<Range>("30d");
+  const [salesFy, setSalesFy] = useState("FY (2025 - 2026)");
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(t);
   }, []);
+
+  const currentSalesData = salesDataByFy[salesFy] ?? salesDataByFy["FY (2025 - 2026)"];
 
   return (
     <div className="space-y-6 p-4 md:p-8">
@@ -274,27 +319,48 @@ function DashboardContent() {
 
       <section className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <div className="rounded-xl border border-border bg-card p-4 md:p-6 lg:col-span-2">
-          <div className="flex flex-wrap items-start justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h2 className="text-lg font-semibold tracking-tight">eBook Sales</h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">Trailing 12 months, all titles</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Monthly breakdown ({salesFy})</p>
             </div>
-            <span
-              className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
-              style={{
-                color: "var(--success)",
-                backgroundColor: "color-mix(in oklab, var(--success) 12%, transparent)",
-              }}
-            >
-              +18.6% YoY
-            </span>
+            <div className="flex items-center gap-2">
+              <span
+                className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                style={{
+                  color: "var(--success)",
+                  backgroundColor: "color-mix(in oklab, var(--success) 12%, transparent)",
+                }}
+              >
+                {fyGrowth[salesFy] ?? "+18.6% Growth"}
+              </span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground transition-colors hover:bg-secondary">
+                    <span>{salesFy}</span>
+                    <ChevronDown size={14} className="text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[150px]">
+                  {Object.keys(salesDataByFy).map((fy) => (
+                    <DropdownMenuItem
+                      key={fy}
+                      onClick={() => setSalesFy(fy)}
+                      className={salesFy === fy ? "font-semibold text-brand" : ""}
+                    >
+                      {fy}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
           <div className="mt-6 h-[280px] w-full md:h-[320px]">
             {loading ? (
               <Skeleton className="h-full w-full" />
             ) : (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={salesData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
+                <BarChart data={currentSalesData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
                   <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
                   <XAxis
                     dataKey="month"
@@ -380,7 +446,9 @@ function DashboardContent() {
       <section className="rounded-xl border border-border bg-card p-4 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-semibold tracking-tight">Top Selling eBooks</h2>
-          <span className="text-xs text-muted-foreground">Last {range}</span>
+          <span className="text-xs text-muted-foreground">
+            {range === "Till Date" ? "Till Date" : range === "1y" ? "Last 1 year" : `Last ${range}`}
+          </span>
         </div>
 
         {/* Desktop table */}

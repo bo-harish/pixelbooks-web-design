@@ -675,7 +675,7 @@ function PublisherAuthorDetailPage() {
                       <tr
                         key={book.id}
                         onClick={() => navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: book.id } })}
-                        className="group cursor-pointer transition-colors hover:bg-muted/30"
+                        className="group cursor-pointer transition-colors hover:bg-secondary/50"
                       >
                         {/* Title + Cover Thumbnail matching Section 6 of Style Guide */}
                         <td className="py-4 px-4 md:px-6">

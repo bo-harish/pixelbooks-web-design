@@ -126,7 +126,7 @@ function ImportDetailPage() {
                 {rows.map((r) => (
                   <tr
                     key={r.title}
-                    className="border-b border-border/60 align-top transition-colors last:border-0 hover:bg-secondary/40"
+                    className="border-b border-border/60 align-top transition-colors last:border-0 hover:bg-secondary/50"
                   >
                     <td className="py-5 pl-6 pr-4">
                       <div className="font-medium text-foreground">{r.title}</div>

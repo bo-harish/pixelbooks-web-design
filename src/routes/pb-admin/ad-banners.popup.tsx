@@ -363,7 +363,7 @@ export function PopUpBannerPage() {
                         <tr
                           key={item.id}
                           onClick={() => handleOpenEditBanner(item)}
-                          className="group cursor-pointer transition-colors hover:bg-muted/30"
+                          className="group cursor-pointer border-b border-border/60 transition-colors hover:bg-secondary/50"
                         >
                           {/* Banner Graphic Thumbnail Column */}
                           <td className="px-6 py-4">
@@ -428,9 +428,9 @@ export function PopUpBannerPage() {
                           </td>
 
                           {/* Chevron Arrow Column */}
-                          <td className="px-6 py-4 text-right text-muted-foreground">
-                            <span className="inline-flex items-center justify-center text-muted-foreground group-hover:text-foreground">
-                              <ChevronRight size={18} />
+                          <td className="px-6 py-4 text-right">
+                            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
+                              <ChevronRight size={16} />
                             </span>
                           </td>
                         </tr>

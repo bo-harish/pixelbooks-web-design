@@ -396,7 +396,7 @@ function PBAdminDashboard() {
                           bg: "var(--muted-foreground)",
                         },
                       ].map((lib) => (
-                        <tr key={lib.name} className="hover:bg-secondary/20 transition-colors">
+                        <tr key={lib.name} className="hover:bg-secondary/50 transition-colors">
                           <td className="py-4 pr-4">
                             <div className="flex items-center gap-4">
                               <div
@@ -466,7 +466,7 @@ function PBAdminDashboard() {
               </thead>
               <tbody className="divide-y divide-border/20">
                 {topSellingBooks.map((book) => (
-                  <tr key={book.title} className="hover:bg-secondary/20 transition-colors">
+                  <tr key={book.title} className="hover:bg-secondary/50 transition-colors">
                     <td className="py-4 pr-4 pl-2">
                       <div className="flex items-center gap-4">
                         <div

@@ -355,7 +355,7 @@ function ManageCustomerPage() {
                     <tr
                       key={cust.id}
                       onClick={() => setSelectedCustomer(cust)}
-                      className="group transition-colors hover:bg-muted/30 cursor-pointer"
+                      className="group border-b border-border/60 transition-colors cursor-pointer hover:bg-secondary/50"
                     >
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3.5">

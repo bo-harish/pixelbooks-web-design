@@ -826,7 +826,7 @@ function AdminMarginReportPage() {
                       </tr>
                     ) : (
                       historyRows.map((row) => (
-                        <tr key={row.id} className="hover:bg-secondary/40 transition-colors">
+                        <tr key={row.id} className="hover:bg-secondary/50 transition-colors">
                           <td className="py-4 pl-6 pr-4 text-foreground whitespace-nowrap">{row.date}</td>
                           <td className="py-4 pr-4 font-medium text-foreground">{row.type}</td>
                           <td className="py-4 pr-4 font-mono text-xs text-foreground font-semibold">
@@ -1114,7 +1114,7 @@ function AdminMarginReportPage() {
                   {ledgerRows.map((row) => (
                     <tr
                       key={row.id}
-                      className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/40"
+                      className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
                     >
                       <td className="py-4 pl-6 pr-4 text-foreground whitespace-nowrap">{row.date}</td>
                       <td className="py-4 pr-4 font-medium text-foreground">{row.type}</td>
@@ -1517,7 +1517,7 @@ function AdminMarginReportPage() {
                   pageItems.map((row) => (
                     <tr
                       key={row.id}
-                      className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/40"
+                      className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
                     >
                       {/* Publisher / Author Name & Type */}
                       <td className="py-4 pl-6 pr-4">

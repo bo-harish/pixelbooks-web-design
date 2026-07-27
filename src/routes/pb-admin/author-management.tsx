@@ -268,7 +268,7 @@ function AuthorManagementPage() {
                     <tr
                       key={author.id}
                       onClick={() => handleOpenEditPopup(author)}
-                      className="group transition-colors hover:bg-muted/30 cursor-pointer"
+                      className="group border-b border-border/60 transition-colors cursor-pointer hover:bg-secondary/50"
                     >
                       {/* Name & Email Column */}
                       <td className="py-4 px-6">
