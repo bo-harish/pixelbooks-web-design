@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,13 @@ import { Label } from "@/components/ui/label";
 interface AddBankAccountDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialData?: {
+    ifsc: string;
+    bankName: string;
+    branch: string;
+    accountHolder: string;
+    accountNumber: string;
+  } | null;
   onAdd?: (account: {
     ifsc: string;
     bankName: string;
@@ -16,15 +23,27 @@ interface AddBankAccountDialogProps {
   }) => void;
 }
 
-export function AddBankAccountDialog({ open, onOpenChange, onAdd }: AddBankAccountDialogProps) {
-  const [ifsc, setIfsc] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [branch, setBranch] = useState("");
-  const [accountHolder, setAccountHolder] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [confirmAccountNumber, setConfirmAccountNumber] = useState("");
+export function AddBankAccountDialog({ open, onOpenChange, initialData, onAdd }: AddBankAccountDialogProps) {
+  const [ifsc, setIfsc] = useState(initialData?.ifsc || "");
+  const [bankName, setBankName] = useState(initialData?.bankName || "");
+  const [branch, setBranch] = useState(initialData?.branch || "");
+  const [accountHolder, setAccountHolder] = useState(initialData?.accountHolder || "");
+  const [accountNumber, setAccountNumber] = useState(initialData?.accountNumber || "");
+  const [confirmAccountNumber, setConfirmAccountNumber] = useState(initialData?.accountNumber || "");
   const [showAccountNumber, setShowAccountNumber] = useState(false);
   const [showConfirmNumber, setShowConfirmNumber] = useState(false);
+
+  // Update state when dialog is reopened with new or no initialData
+  useEffect(() => {
+    if (open) {
+      setIfsc(initialData?.ifsc || "");
+      setBankName(initialData?.bankName || "");
+      setBranch(initialData?.branch || "");
+      setAccountHolder(initialData?.accountHolder || "");
+      setAccountNumber(initialData?.accountNumber || "");
+      setConfirmAccountNumber(initialData?.accountNumber || "");
+    }
+  }, [open, initialData]);
 
   const handleAdd = () => {
     onAdd?.({
@@ -47,7 +66,7 @@ export function AddBankAccountDialog({ open, onOpenChange, onAdd }: AddBankAccou
         <div className="bg-card rounded-lg p-8">
           <DialogHeader className="mb-8">
             <DialogTitle className="text-2xl font-semibold text-foreground">
-              Add Bank Account
+              {initialData ? "Edit Bank Account" : "Add Bank Account"}
             </DialogTitle>
           </DialogHeader>
 
@@ -175,7 +194,7 @@ export function AddBankAccountDialog({ open, onOpenChange, onAdd }: AddBankAccou
                 color: "var(--brand-contrast)",
               }}
             >
-              Add Account
+              {initialData ? "Save Changes" : "Add Account"}
             </button>
           </div>
         </div>

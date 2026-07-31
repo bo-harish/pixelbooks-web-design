@@ -21,7 +21,8 @@ import {
   PaginationLink,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
-import { getPromos, type Promo, type PromoStatus, type Activation } from "@/lib/promo-codes-data";
+import { Switch } from "@/components/ui/switch";
+import { getPromos, savePromos, type Promo, type PromoStatus, type Activation } from "@/lib/promo-codes-data";
 
 export const Route = createFileRoute("/publisher/promo-codes/")({
   head: () => ({
@@ -75,19 +76,24 @@ function StatusPill({ status }: { status: PromoStatus }) {
   );
 }
 
-function ActivationPill({ value }: { value: Activation }) {
-  const available = value === "Available";
-  const color = available ? "var(--success)" : "var(--muted-foreground)";
+function ActivationToggle({
+  activation,
+  active,
+  onToggle,
+}: {
+  activation: Activation;
+  active: boolean;
+  onToggle: () => void;
+}) {
+  // Blank when the promo isn't in an approved/available state
+  if (activation !== "Available") return null;
   return (
-    <span
-      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
-      style={{
-        backgroundColor: `color-mix(in oklch, ${color} 10%, transparent)`,
-        color,
-      }}
-    >
-      {value}
-    </span>
+    <Switch
+      checked={active}
+      onClick={(e) => e.stopPropagation()}
+      onCheckedChange={onToggle}
+      aria-label={active ? "Disable promo code" : "Enable promo code"}
+    />
   );
 }
 
@@ -96,8 +102,16 @@ function PromoCodesPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("All");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [promos] = useState<Promo[]>(() => getPromos());
+  const [promos, setPromos] = useState<Promo[]>(() => getPromos());
   const [page, setPage] = useState(1);
+
+  const toggleActive = (id: string) => {
+    setPromos((prev) => {
+      const updated = prev.map((p) => (p.id === id ? { ...p, active: !p.active } : p));
+      savePromos(updated);
+      return updated;
+    });
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -204,11 +218,11 @@ function PromoCodesPage() {
               <thead>
                 <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <th className="py-4 pl-6 pr-4 font-semibold">Promo Code</th>
+                  <th className="py-4 pr-4 font-semibold">Title / eBook</th>
+                  <th className="py-4 pr-4 font-semibold">Discount</th>
                   <th className="py-4 pr-4 font-semibold">Promo Duration</th>
                   <th className="py-4 pr-4 font-semibold">Status</th>
-                  <th className="py-4 pr-4 font-semibold">Discount</th>
-                  <th className="py-4 pr-4 font-semibold">Title / eBook</th>
-                  <th className="py-4 pr-4 font-semibold">Activation</th>
+                  <th className="py-4 pr-4 text-center font-semibold">Enable / Disable</th>
                   <th className="py-4 pr-6" />
                 </tr>
               </thead>
@@ -237,13 +251,6 @@ function PromoCodesPage() {
                         {p.code}
                       </span>
                     </td>
-                    <td className="py-5 pr-4 text-muted-foreground">
-                      {p.start} – {p.end}
-                    </td>
-                    <td className="py-5 pr-4">
-                      <StatusPill status={p.status} />
-                    </td>
-                    <td className="py-5 pr-4 font-semibold text-foreground">{p.discount}%</td>
                     <td className="py-5 pr-4">
                       <p className="font-medium text-foreground group-hover:text-[var(--brand)] transition-colors">
                         {p.title}
@@ -252,8 +259,19 @@ function PromoCodesPage() {
                         {p.ebook}
                       </p>
                     </td>
+                    <td className="py-5 pr-4 font-semibold text-foreground">{p.discount}%</td>
+                    <td className="py-5 pr-4 text-muted-foreground">
+                      {p.start} – {p.end}
+                    </td>
                     <td className="py-5 pr-4">
-                      <ActivationPill value={p.activation} />
+                      <StatusPill status={p.status} />
+                    </td>
+                    <td className="py-5 pr-4 text-center">
+                      <ActivationToggle
+                        activation={p.activation}
+                        active={p.active}
+                        onToggle={() => toggleActive(p.id)}
+                      />
                     </td>
                     <td className="py-5 pr-6 text-right">
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
@@ -303,7 +321,11 @@ function PromoCodesPage() {
                 </p>
                 <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-border/40">
                   <span className="text-xs font-semibold text-foreground">{p.discount}% off</span>
-                  <ActivationPill value={p.activation} />
+                  <ActivationToggle
+                    activation={p.activation}
+                    active={p.active}
+                    onToggle={() => toggleActive(p.id)}
+                  />
                 </div>
               </li>
             ))}

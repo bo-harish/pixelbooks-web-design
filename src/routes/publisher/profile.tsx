@@ -168,9 +168,7 @@ function ProfilePage() {
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-bold text-foreground">{publisherName || "Publisher Profile"}</h3>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    <ShieldCheck size={12} /> Verified Publisher
-                  </span>
+                 
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Upload a high-resolution logo to represent your brand across PixelBooks catalogues, store fronts, and invoices. Recommended format: PNG or JPEG (512x512px).
@@ -361,9 +359,7 @@ function ProfilePage() {
                       <p className="text-xs text-muted-foreground">Revenue share percentage</p>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                    <Sparkles size={11} /> Standard
-                  </span>
+                 
                 </div>
 
                 <div className="rounded-lg border border-border/70 bg-secondary/30 p-4 space-y-2">

@@ -70,6 +70,7 @@ const seed: BankAccount[] = [
 function BankAccountsPage() {
   const [accounts, setAccounts] = useState<BankAccount[]>(seed);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [removeId, setRemoveId] = useState<string | null>(null);
   const [setDefaultId, setSetDefaultId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -79,27 +80,37 @@ function BankAccountsPage() {
   } | null>(null);
 
   const accountToRemove = removeId ? (accounts.find((acc) => acc.id === removeId) ?? null) : null;
+  const accountToEdit = editingId ? (accounts.find((acc) => acc.id === editingId) ?? null) : null;
   const accountToSetDefault = setDefaultId
     ? (accounts.find((acc) => acc.id === setDefaultId) ?? null)
     : null;
 
-  const handleAdd = (data: {
+  const handleAddOrEdit = (data: {
     ifsc: string;
     bankName: string;
     branch: string;
     accountHolder: string;
     accountNumber: string;
   }) => {
-    const newAccount: BankAccount = {
-      id: `ba${Date.now()}`,
-      accountHolder: data.accountHolder,
-      accountNumber: data.accountNumber,
-      ifsc: data.ifsc,
-      bankName: data.bankName,
-      branch: data.branch,
-      isActive: accounts.length === 0,
-    };
-    setAccounts((prev) => [...prev, newAccount]);
+    if (editingId) {
+      setAccounts((prev) =>
+        prev.map((acc) =>
+          acc.id === editingId ? { ...acc, ...data } : acc
+        )
+      );
+    } else {
+      const newAccount: BankAccount = {
+        id: `ba${Date.now()}`,
+        accountHolder: data.accountHolder,
+        accountNumber: data.accountNumber,
+        ifsc: data.ifsc,
+        bankName: data.bankName,
+        branch: data.branch,
+        isActive: accounts.length === 0,
+      };
+      setAccounts((prev) => [...prev, newAccount]);
+    }
+    setEditingId(null);
   };
 
   const handleConfirmSetDefault = () => {
@@ -159,7 +170,17 @@ function BankAccountsPage() {
         </div>
 
         {/* Dialogs */}
-        <AddBankAccountDialog open={dialogOpen} onOpenChange={setDialogOpen} onAdd={handleAdd} />
+        <AddBankAccountDialog
+          open={dialogOpen || Boolean(editingId)}
+          onOpenChange={(open) => {
+            if (!open) {
+              setDialogOpen(false);
+              setEditingId(null);
+            }
+          }}
+          initialData={accountToEdit}
+          onAdd={handleAddOrEdit}
+        />
 
         {/* Confirmation Modal for Set as Default */}
         <AlertDialog
@@ -339,19 +360,22 @@ function BankAccountsPage() {
                 )}
                 <button
                   type="button"
+                  onClick={() => setEditingId(acc.id)}
                   className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-border bg-card px-3.5 text-xs font-semibold text-foreground transition-all hover:bg-secondary"
                 >
                   <Pencil size={13} />
                   Edit
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setRemoveId(acc.id)}
-                  className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-border bg-card px-3.5 text-xs font-medium text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <Trash2 size={13} />
-                  Remove
-                </button>
+                {!acc.isActive && (
+                  <button
+                    type="button"
+                    onClick={() => setRemoveId(acc.id)}
+                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-border bg-card px-3.5 text-xs font-medium text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 size={13} />
+                    Remove
+                  </button>
+                )}
               </div>
             </div>
           ))}

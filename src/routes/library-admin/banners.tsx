@@ -272,7 +272,7 @@ export function LibraryAdminBannersPage() {
                       <th className="px-6 py-4 min-w-[240px]">Image</th>
                       <th className="px-6 py-4 whitespace-nowrap">From Date</th>
                       <th className="px-6 py-4 whitespace-nowrap">To Date</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Status</th>
+                      <th className="px-6 py-4 whitespace-nowrap">Enable/Disable</th>
                       <th className="px-6 py-4 text-center whitespace-nowrap">Remove</th>
                       <th className="px-6 py-4 w-10"></th>
                     </tr>
@@ -321,15 +321,12 @@ export function LibraryAdminBannersPage() {
 
                           {/* Status Switch Toggle Column */}
                           <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex items-center gap-2.5">
+                            <div className="flex items-center">
                               <Switch
                                 checked={item.enabled}
                                 onCheckedChange={() => handleToggleStatus(item.id)}
                                 className="data-[state=checked]:bg-[var(--brand)] shadow-xs"
                               />
-                              <span className="text-xs font-semibold text-foreground">
-                                {item.enabled ? "Active" : "Inactive"}
-                              </span>
                             </div>
                           </td>
 

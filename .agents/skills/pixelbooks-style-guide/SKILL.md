@@ -247,3 +247,49 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
        )}
      </div>
      ```
+
+12. **Dropdown Menu Filters (Redesigned Unified Toolbar)**
+  - All standard toolbar dropdown filters (Languages, Genre, Roles, Borrow Date, Statuses) should be fully custom implementations instead of native standard browser `<select>` dropdowns. The dropdowns need to be styled cohesively using `h-11`, a `rounded-lg` container, `bg-card`, and custom popup shadow layers containing clickable buttons matching the publisher catalogue approach.
+   ```tsx
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            className={`flex h-11 items-center justify-between gap-2.5 rounded-lg border border-border bg-card px-3.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] ${className}`}
+          >
+            <span className="truncate">{value}</span>
+            <ChevronDown
+              size={15}
+              className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
+                open ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {open && (
+            <div
+              className="absolute right-0 top-full z-50 mt-1.5 max-h-56 min-w-[190px] overflow-y-auto rounded-lg border border-border bg-card shadow-lg py-1"
+              onMouseLeave={() => setOpen(false)}
+            >
+              {options.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt);
+                    setOpen(false);
+                  }}
+                  className={`flex w-full items-center justify-between px-3.5 py-2 text-left text-xs transition-colors hover:bg-secondary ${
+                    opt === value
+                      ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  {opt}
+                  {opt === value && <Check size={14} className="text-[var(--brand)]" />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+   ```

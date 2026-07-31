@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Fragment, useMemo, useState } from "react";
 import { Search, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { AppShell } from "@/components/app-shell";
 
 export const Route = createFileRoute("/library-admin/manage-ebooks")({
@@ -132,25 +138,46 @@ function ManageEbooksPage() {
           </div>
 
           <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-            <div className="w-full sm:w-[200px]">
-              <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3">
-                <select
-                  value={dateField}
-                  onChange={(e) => {
-                    setDateField(e.target.value as DateField);
-                    setPage(1);
-                  }}
-                  className="w-full appearance-none bg-transparent pr-7 text-sm outline-none text-foreground"
-                  aria-label="Date Filter Field"
+            <div className="relative w-full sm:w-auto">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex h-11 w-full sm:w-[150px] items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground cursor-pointer shrink-0 outline-none">
+                    <span>{dateField === "borrowDate" ? "Borrow Date" : "Exp. Return Date"}</span>
+                    <ChevronDown size={15} className="text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-[150px] bg-card border border-border rounded-lg shadow-md z-50 p-1"
                 >
-                  <option value="borrowDate">Borrow Date</option>
-                  <option value="expReturnDate">Exp. Return Date</option>
-                </select>
-                <ChevronDown
-                  size={16}
-                  className="pointer-events-none absolute right-3 text-muted-foreground"
-                />
-              </label>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setDateField("borrowDate");
+                      setPage(1);
+                    }}
+                    className={`flex items-center px-4 py-2 text-sm transition-colors cursor-pointer rounded-md ${
+                      dateField === "borrowDate"
+                        ? "bg-secondary font-medium text-foreground"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
+                  >
+                    Borrow Date
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setDateField("expReturnDate");
+                      setPage(1);
+                    }}
+                    className={`flex items-center px-4 py-2 text-sm transition-colors cursor-pointer rounded-md ${
+                      dateField === "expReturnDate"
+                        ? "bg-secondary font-medium text-foreground"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
+                  >
+                    Exp. Return Date
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <div className="w-full sm:w-[200px]">

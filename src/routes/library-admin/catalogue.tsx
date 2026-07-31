@@ -595,7 +595,7 @@ function LibraryCataloguePage() {
                   <th className="py-4 pl-6 pr-4 font-semibold">Purchased Books</th>
                   <th className="py-4 px-4 font-semibold text-center">Copies</th>
                   <th className="py-4 px-4 font-semibold text-center">Purchase Date</th>
-                  <th className="py-4 px-4 font-semibold text-center">Status</th>
+                  <th className="py-4 px-4 font-semibold text-center">Enable/Disable</th>
                   <th className="py-4 pl-4 pr-6 font-semibold" />
                 </tr>
               </thead>
@@ -665,16 +665,13 @@ function LibraryCataloguePage() {
                           {/* Status Toggle Switch */}
                           <td className="py-4 px-4">
                             <div
-                              className="flex items-center justify-center gap-2"
+                              className="flex items-center justify-center"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <Switch
                                 checked={book.status === "Active"}
                                 onCheckedChange={() => handleToggleStatus(book.id)}
                               />
-                              <span className="text-xs font-medium text-foreground w-12 text-left">
-                                {book.status}
-                              </span>
                             </div>
                           </td>
 

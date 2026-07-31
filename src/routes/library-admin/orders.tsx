@@ -938,57 +938,30 @@ function LibraryAdminOrdersPage() {
       <AppShell title="Order Details">
         <div className="p-4 md:p-8 space-y-6">
           {/* Back button */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsViewOpen(false)}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+                aria-label="Back to Orders"
+              >
+                <ArrowLeft size={16} />
+              </button>
+              <span className="text-sm font-normal text-foreground">Back to Orders</span>
+            </div>
             <button
-              onClick={() => setIsViewOpen(false)}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
-              aria-label="Back to Orders"
+              onClick={() => {
+                window.print();
+                toast.success("Preparing printable document...");
+              }}
+              className="h-10 rounded-full bg-[var(--brand)] text-white px-6 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm"
             >
-              <ArrowLeft size={16} />
+              Print Order
             </button>
-            <span className="text-sm font-normal text-foreground">Back to Orders</span>
           </div>
 
           {/* Main Card Container */}
           <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-6">
-            {/* Header: Logo, Title, Badge, and Print button */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/80">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900 text-emerald-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6"
-                  >
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold leading-tight text-foreground">
-                    Pixelbooks Library
-                  </h2>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-border px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground mt-1.5 border border-border">
-                    Total Library Users: 14
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  window.print();
-                  toast.success("Preparing printable document...");
-                }}
-                className="h-10 rounded-full bg-[var(--brand)] text-white px-6 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shadow-sm self-start sm:self-center"
-              >
-                Print Order
-              </button>
-            </div>
-
             {/* Split Content columns */}
             <div className="grid grid-cols-12 gap-6 lg:gap-8">
               {/* Left Column: eBook Order Details */}
@@ -1075,7 +1048,8 @@ function LibraryAdminOrdersPage() {
               <div className="col-span-12 lg:col-span-4 border-t lg:border-t-0 lg:border-l border-border/80 pt-6 lg:pt-0 pl-0 lg:pl-8 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold text-foreground">Payment Details</h3>
-                  <span className="inline-flex items-center rounded border border-slate-300 dark:border-border bg-white dark:bg-card px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground shadow-sm uppercase tracking-wider leading-none">
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20 gap-1 tracking-wider leading-none mr-2">
+                    <CheckCircle2 size={12} />
                     {isFreeOrder ? "Free" : "Paid"}
                   </span>
                 </div>
@@ -1083,15 +1057,7 @@ function LibraryAdminOrdersPage() {
                 <div className="space-y-3.5 text-xs text-slate-600 dark:text-slate-300">
                   <div className="flex justify-between items-center py-1.5 border-b border-border/50">
                     <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Payment Mode :
-                    </span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                      {isFreeOrder ? "Offline Payment" : "Online Gateway"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-border/50">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Subtotal(excl. GST) :
+                      Payment details
                     </span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200">
                       {subtotalText}
@@ -1099,7 +1065,7 @@ function LibraryAdminOrdersPage() {
                   </div>
                   <div className="flex justify-between items-center py-1.5 border-b border-border/50">
                     <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Item Discount :
+                      Item Discount
                     </span>
                     <span className="font-semibold text-slate-850 dark:text-slate-200">
                       - {currency}0.00
@@ -1107,22 +1073,22 @@ function LibraryAdminOrdersPage() {
                   </div>
                   <div className="flex justify-between items-center py-1.5 border-b border-border/50">
                     <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Additional Discount :
+                      Date:
                     </span>
-                    <span className="font-semibold text-slate-850 dark:text-slate-200">
-                      - {currency}0.00
+                    <span className="font-semibold text-slate-800 dark:text-slate-200">
+                      {selectedOrder.date}
                     </span>
                   </div>
                   <div className="flex justify-between items-center py-1.5 border-b border-border/50">
                     <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Total Tax Amount :
+                      Total Tax Amount
                     </span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200">
                       {currency}0.00
                     </span>
                   </div>
                   <div className="flex justify-between items-center pt-2">
-                    <span className="text-sm font-semibold text-foreground">Total Price:</span>
+                    <span className="text-sm font-semibold text-foreground">Total Price</span>
                     <span className="text-base font-bold text-foreground">{totalPriceText}</span>
                   </div>
                 </div>

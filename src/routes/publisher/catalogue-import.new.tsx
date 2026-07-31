@@ -1,13 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import {
   ArrowLeft,
+  ArrowRight,
   Download,
   Upload,
   FileText,
   Image as ImageIcon,
   X,
   Plus,
+  Check,
   CheckCircle2,
   FileSpreadsheet,
   ChevronDown,
@@ -25,12 +27,31 @@ export const Route = createFileRoute("/publisher/catalogue-import/new")({
   component: NewCatalogueImportPage,
 });
 
-type PickedFile = { name: string; size: number; kind: "doc" | "image" };
+type PickedFile = { name: string; size: number; kind: "doc" | "image"; previewUrl?: string };
 
 function humanSize(n: number) {
   if (n < 1024) return `${n} B`;
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
   return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function baseKey(name: string) {
+  return name.replace(/\.[^/.]+$/, "").toLowerCase().trim();
+}
+
+type UploadItem = { key: string; title: string; doc?: PickedFile; image?: PickedFile };
+
+// Groups selected doc + matching cover image into a single eBook row
+function buildUploadItems(files: PickedFile[]): UploadItem[] {
+  const map = new Map<string, UploadItem>();
+  for (const f of files) {
+    const key = baseKey(f.name);
+    if (!map.has(key)) map.set(key, { key, title: key, doc: undefined, image: undefined });
+    const item = map.get(key)!;
+    if (f.kind === "image") item.image = f;
+    else item.doc = f;
+  }
+  return Array.from(map.values());
 }
 
 function InstructionSection({
@@ -66,7 +87,19 @@ export function NewCatalogueImportPage() {
   const [instructionsOpen, setInstructionsOpen] = useState(false);
   const [files, setFiles] = useState<PickedFile[]>([]);
   const [excel, setExcel] = useState<File | null>(null);
-  const [status, setStatus] = useState<"idle" | "uploading" | "success">("idle");
+  const [showUploadFlow, setShowUploadFlow] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [uploadStage, setUploadStage] = useState<"uploading" | "done">("uploading");
+  const [uploadOrder, setUploadOrder] = useState<string[]>([]);
+  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
+
+  // Revoke object URLs on unmount to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      files.forEach((f) => f.previewUrl && URL.revokeObjectURL(f.previewUrl));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function pickMediaFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const list = e.target.files;
@@ -76,21 +109,183 @@ export function NewCatalogueImportPage() {
       const ext = f.name.split(".").pop()?.toLowerCase();
       const kind: PickedFile["kind"] =
         ext === "jpg" || ext === "jpeg" || ext === "png" ? "image" : "doc";
-      added.push({ name: f.name, size: f.size, kind });
+      added.push({
+        name: f.name,
+        size: f.size,
+        kind,
+        previewUrl: kind === "image" ? URL.createObjectURL(f) : undefined,
+      });
     }
     setFiles((prev) => [...prev, ...added]);
     e.target.value = "";
   }
 
-  function handleSubmit() {
-    setStatus("uploading");
-    setTimeout(() => {
-      setStatus("success");
-      setTimeout(() => navigate({ to: "/publisher/catalogue-import" }), 1400);
-    }, 1600);
+  function removeFile(index: number) {
+    setFiles((prev) => {
+      const target = prev[index];
+      if (target?.previewUrl) URL.revokeObjectURL(target.previewUrl);
+      return prev.filter((_, idx) => idx !== index);
+    });
   }
 
+  const uploadItems = useMemo(() => buildUploadItems(files), [files]);
+
+  function openUploadFlow() {
+    setShowConfirmModal(false);
+    setShowUploadFlow(true);
+    setProgressMap({});
+    setUploadOrder(uploadItems.map((item) => item.key));
+    setUploadStage("uploading");
+  }
+
+  function handleFinish() {
+    navigate({ to: "/publisher/catalogue-import" });
+  }
+
+  // Simulates sequential per-eBook upload progress
+  useEffect(() => {
+    if (uploadStage !== "uploading" || uploadOrder.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      for (const key of uploadOrder) {
+        for (let p = 20; p <= 100; p += 20) {
+          await new Promise((resolve) => setTimeout(resolve, 140));
+          if (cancelled) return;
+          setProgressMap((prev) => ({ ...prev, [key]: p }));
+        }
+      }
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      if (!cancelled) setUploadStage("done");
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [uploadStage, uploadOrder]);
+
   const isValid = files.length > 0 && excel !== null;
+
+  if (showUploadFlow) {
+    const totalFiles = files.length;
+    const totalEbooks = uploadItems.length;
+    return (
+      <AppShell title="Catalogue Import" subtitle="Uploading your eBook metadata and matching media files.">
+        <div className="space-y-6 p-4 md:p-8">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
+            <div className="mb-5 flex flex-col gap-2 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Upload files</h2>
+                <p className="text-xs text-muted-foreground">
+                  ({totalFiles} file{totalFiles !== 1 ? "s" : ""} selected - {totalEbooks} eBook
+                  {totalEbooks !== 1 ? "s" : ""} selected)
+                </p>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <th className="pb-3 pr-4 font-semibold">Title</th>
+                    <th className="pb-3 px-4 font-semibold">File Name</th>
+                    <th className="pb-3 px-4 font-semibold">File Type</th>
+                    <th className="pb-3 px-4 font-semibold">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {uploadItems.map((item) => {
+                    const docExt = item.doc?.name.split(".").pop()?.toUpperCase() ?? "";
+                    const progress = progressMap[item.key] ?? 0;
+                    const status: "PENDING" | "UPLOADING" | "COMPLETED" =
+                      uploadStage === "done" ? "COMPLETED" : progress > 0 ? "UPLOADING" : "PENDING";
+                    return (
+                      <tr key={item.key} className="transition-colors hover:bg-secondary/20">
+                        <td className="py-3.5 pr-4">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md text-[9px] font-bold text-white shadow-sm"
+                              style={{ backgroundColor: "var(--sidebar-highlight)" }}
+                            >
+                              {item.image?.previewUrl ? (
+                                <img
+                                  src={item.image.previewUrl}
+                                  alt={item.title}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <ImageIcon size={16} style={{ color: "var(--brand)" }} />
+                              )}
+                            </div>
+                            <span className="font-medium text-foreground">{item.title}</span>
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4 text-muted-foreground">{item.doc?.name ?? "—"}</td>
+                        <td className="py-3.5 px-4">
+                          {docExt && <span className="text-xs font-semibold text-rose-500">{docExt}</span>}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={`inline-flex items-center rounded-md px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
+                                status === "COMPLETED"
+                                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                  : status === "UPLOADING"
+                                    ? "bg-sky-500/10 text-sky-600 dark:text-sky-400"
+                                    : "bg-secondary text-muted-foreground"
+                              }`}
+                            >
+                              {status}
+                            </span>
+                            {status === "COMPLETED" ? (
+                              <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-emerald-500 text-emerald-500">
+                                <Check size={15} strokeWidth={3} />
+                              </span>
+                            ) : (
+                              <span
+                                className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-[10px] font-semibold ${
+                                  status === "UPLOADING"
+                                    ? "border-emerald-500 text-foreground"
+                                    : "border-border text-muted-foreground"
+                                }`}
+                              >
+                                {progress}%
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setShowUploadFlow(false)}
+              disabled={uploadStage === "uploading"}
+              className="inline-flex h-12 items-center justify-center rounded-xl border border-border bg-card px-6 text-sm font-semibold text-foreground transition-colors hover:bg-secondary disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Back
+            </button>
+
+            {uploadStage === "done" && (
+              <button
+                type="button"
+                onClick={handleFinish}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold shadow-xs transition-opacity hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+              >
+                Next
+                <ArrowRight size={16} />
+              </button>
+            )}
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell title="Catalogue Import" subtitle="Bulk-upload your eBook metadata via spreadsheet and matching media files.">
@@ -258,12 +453,88 @@ export function NewCatalogueImportPage() {
           )}
         </div>
 
-        {/* BOX 2: Upload Media Files */}
-        <div className="rounded-xl border border-border bg-card p-6 shadow-2xs space-y-5">
-          <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* BOX 2: Upload Metadata Spreadsheet */}
+        <div className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
+          <div className="flex flex-col gap-2 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold text-sm">
                 2
+              </span>
+              <div>
+                <h2 className="text-base font-semibold text-foreground">Upload Metadata Spreadsheet</h2>
+                <p className="text-xs text-muted-foreground">Select the completed Excel (.xlsx) metadata file</p>
+              </div>
+            </div>
+
+            {excel && (
+              <span className="text-xs font-semibold text-[var(--brand)] bg-[var(--sidebar-highlight)] px-3 py-1.5 rounded-lg self-start sm:self-auto">
+                1 file selected
+              </span>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            <label
+              className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-border bg-secondary/30 px-4 py-3 transition-colors hover:border-[var(--brand)] hover:bg-secondary/50"
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+                <FileSpreadsheet size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-foreground">
+                  {excel ? "Replace Excel File" : "Choose Excel File to Upload"}
+                </p>
+                <p className="text-xs text-muted-foreground">Supported: .xlsx</p>
+              </div>
+              <span className="shrink-0 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground">
+                Browse
+              </span>
+              <input
+                ref={excelInputRef}
+                type="file"
+                accept=".xlsx"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setExcel(e.target.files[0]);
+                  }
+                }}
+              />
+            </label>
+
+            {excel && (
+              <div className="overflow-hidden rounded-xl border border-border bg-card">
+                <div className="flex items-center justify-between px-4 py-2.5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+                      <FileSpreadsheet size={18} />
+                    </div>
+                    <div>
+                      <p className="max-w-[200px] truncate text-sm font-medium text-foreground sm:max-w-[300px]" title={excel.name}>
+                        {excel.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{humanSize(excel.size)}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setExcel(null)}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    title="Remove"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* BOX 3: Upload Media Files */}
+        <div className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
+          <div className="flex flex-col gap-2 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold text-sm">
+                3
               </span>
               <div>
                 <h2 className="text-base font-semibold text-foreground">Upload Media Files</h2>
@@ -278,13 +549,23 @@ export function NewCatalogueImportPage() {
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <label
-              className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-card p-8 text-center transition-colors hover:border-[var(--brand)] hover:bg-secondary/30"
+              className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-border bg-secondary/30 px-4 py-3 transition-colors hover:border-[var(--brand)] hover:bg-secondary/50"
             >
-              <Upload size={28} style={{ color: "var(--brand)" }} />
-              <p className="text-sm font-semibold text-foreground">Choose Multiple Files to Upload</p>
-              <p className="text-xs text-muted-foreground">Supported: .pdf, .epub, .jpg, .jpeg, .png</p>
+              <div
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                style={{ backgroundColor: "var(--sidebar-highlight)" }}
+              >
+                <Upload size={18} style={{ color: "var(--brand)" }} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-foreground">Choose Multiple Files to Upload</p>
+                <p className="text-xs text-muted-foreground">Supported: .pdf, .epub, .jpg, .jpeg, .png</p>
+              </div>
+              <span className="shrink-0 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground">
+                Browse
+              </span>
               <input
                 ref={mediaInputRef}
                 type="file"
@@ -314,10 +595,12 @@ export function NewCatalogueImportPage() {
                   {files.map((f, i) => (
                     <li key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/20 transition-colors">
                       <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg"
                         style={{ backgroundColor: "var(--sidebar-highlight)" }}
                       >
-                        {f.kind === "image" ? (
+                        {f.kind === "image" && f.previewUrl ? (
+                          <img src={f.previewUrl} alt={f.name} className="h-full w-full object-cover" />
+                        ) : f.kind === "image" ? (
                           <ImageIcon size={17} style={{ color: "var(--brand)" }} />
                         ) : (
                           <FileText size={17} style={{ color: "var(--brand)" }} />
@@ -331,7 +614,7 @@ export function NewCatalogueImportPage() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                        onClick={() => removeFile(i)}
                         aria-label={`Remove ${f.name}`}
                         className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
                       >
@@ -345,105 +628,23 @@ export function NewCatalogueImportPage() {
           </div>
         </div>
 
-        {/* BOX 3: Upload Metadata Spreadsheet & Finalize */}
+        {/* BOX 4: Submit Import */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-2xs space-y-5">
           <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold text-sm">
-                3
+                4
               </span>
               <div>
-                <h2 className="text-base font-semibold text-foreground">Upload Metadata Spreadsheet & Submit</h2>
-                <p className="text-xs text-muted-foreground">Upload the completed metadata Excel file (.xlsx, .xls)</p>
+                <h2 className="text-base font-semibold text-foreground">Submit Import</h2>
+                <p className="text-xs text-muted-foreground">Review and submit your catalogue import</p>
               </div>
             </div>
-
-            {excel && (
-              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 self-start sm:self-auto">
-                Excel Ready
-              </span>
-            )}
           </div>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-            {/* Upload Zone & Excel Preview (7 cols) */}
-            <div className="lg:col-span-7 space-y-4">
-              <label
-                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-card p-8 text-center transition-colors hover:border-[var(--brand)] hover:bg-secondary/30"
-              >
-                <FileSpreadsheet size={28} style={{ color: "var(--brand)" }} />
-                <p className="text-sm font-semibold text-foreground">Choose Excel File to Upload</p>
-                <p className="text-xs text-muted-foreground">Supported: .xlsx, .xls</p>
-                <input
-                  ref={excelInputRef}
-                  type="file"
-                  accept=".xlsx,.xls"
-                  className="hidden"
-                  onChange={(e) => setExcel(e.target.files?.[0] ?? null)}
-                />
-              </label>
-
-              {excel && (
-                <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-2xs">
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: "var(--sidebar-highlight)" }}
-                  >
-                    <FileSpreadsheet size={18} style={{ color: "var(--brand)" }} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-semibold text-foreground">{excel.name}</p>
-                    <p className="text-[11px] text-muted-foreground">{humanSize(excel.size)}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setExcel(null)}
-                    aria-label="Remove excel file"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
-                  >
-                    <X size={15} />
-                  </button>
-                </div>
-              )}
-
-              {status === "uploading" && (
-                <div className="rounded-xl border border-border bg-card p-4 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-foreground">Uploading files & metadata…</span>
-                    <span className="text-muted-foreground font-medium">Processing...</span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                    <div
-                      className="h-full animate-pulse"
-                      style={{ width: "70%", backgroundColor: "var(--brand)" }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {status === "success" && (
-                <div
-                  className="flex items-start gap-3 rounded-xl border p-4"
-                  style={{
-                    borderColor: "color-mix(in oklch, var(--success) 40%, transparent)",
-                    backgroundColor: "color-mix(in oklch, var(--success) 10%, transparent)",
-                  }}
-                >
-                  <CheckCircle2 size={20} className="shrink-0 mt-0.5" style={{ color: "var(--success)" }} />
-                  <div>
-                    <p className="text-xs font-semibold" style={{ color: "var(--success)" }}>
-                      Successfully Uploaded & Submitted
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
-                      Your import request has been submitted for review. Redirecting to imports list...
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-
+          <div className="grid grid-cols-1 gap-6">
             {/* Summary Box & Submit CTA (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col justify-between rounded-xl border border-border bg-secondary/10 p-5 space-y-6">
+            <div className="flex flex-col justify-between rounded-xl border border-border bg-secondary/10 p-5 space-y-6">
               <div className="space-y-4">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2">
                   Import Summary
@@ -476,8 +677,8 @@ export function NewCatalogueImportPage() {
               <div className="space-y-2 pt-4 border-t border-border">
                 <button
                   type="button"
-                  onClick={handleSubmit}
-                  disabled={!isValid || status !== "idle"}
+                  onClick={() => setShowConfirmModal(true)}
+                  disabled={!isValid}
                   className="w-full flex h-12 items-center justify-center gap-2 rounded-xl text-sm font-semibold shadow-xs transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                 >
@@ -500,6 +701,37 @@ export function NewCatalogueImportPage() {
           </div>
         </div>
       </div>
+
+      {/* Confirm Upload & Submit Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-xl">
+            <h3 className="text-lg font-bold text-foreground">Upload & Submit Catalogue Import?</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              You're about to upload {files.length} media file{files.length !== 1 ? "s" : ""} and submit this
+              catalogue import for admin approval. This action cannot be undone.
+            </p>
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowConfirmModal(false)}
+                className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-card px-5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={openUploadFlow}
+                className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl px-5 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+              >
+                <CheckCircle2 size={15} />
+                Confirm & Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }

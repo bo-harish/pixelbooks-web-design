@@ -565,27 +565,27 @@ export function LibraryAdminReportsPage() {
                     </th>
                     <th
                       onClick={() => handleDetailsSort("borrowCount")}
-                      className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-right"
+                      className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-center"
                     >
-                      <span className="flex items-center justify-end gap-1">
+                      <span className="flex items-center justify-center gap-1">
                         Borrow Count
                         <ArrowUpDown size={12} className="text-muted-foreground" />
                       </span>
                     </th>
                     <th
                       onClick={() => handleDetailsSort("returnCount")}
-                      className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-right"
+                      className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-center"
                     >
-                      <span className="flex items-center justify-end gap-1">
+                      <span className="flex items-center justify-center gap-1">
                         Return Count
                         <ArrowUpDown size={12} className="text-muted-foreground" />
                       </span>
                     </th>
                     <th
                       onClick={() => handleDetailsSort("readProgress")}
-                      className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-right"
+                      className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-center"
                     >
-                      <span className="flex items-center justify-end gap-1">
+                      <span className="flex items-center justify-center gap-1">
                         Read Progress(%)
                         <ArrowUpDown size={12} className="text-muted-foreground" />
                       </span>
@@ -612,13 +612,13 @@ export function LibraryAdminReportsPage() {
                         <td className="py-3.5 pr-4 text-sm font-semibold text-foreground">
                           {d.user}
                         </td>
-                        <td className="py-3.5 px-4 text-sm text-right text-foreground font-medium">
+                        <td className="py-3.5 px-4 text-sm text-center text-foreground font-medium">
                           {d.borrowCount}
                         </td>
-                        <td className="py-3.5 px-4 text-sm text-right text-foreground font-medium">
+                        <td className="py-3.5 px-4 text-sm text-center text-foreground font-medium">
                           {d.returnCount}
                         </td>
-                        <td className="py-3.5 px-4 text-sm text-right text-foreground font-medium">
+                        <td className="py-3.5 px-4 text-sm text-center text-foreground font-medium">
                           {d.readProgress}%
                         </td>
                       </tr>
@@ -920,18 +920,18 @@ export function LibraryAdminReportsPage() {
                   </th>
                   <th
                     onClick={() => handleSort("borrowCount")}
-                    className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-right"
+                    className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-center"
                   >
-                    <span className="flex items-center justify-end gap-1">
+                    <span className="flex items-center justify-center gap-1">
                       Borrow Count
                       <ArrowUpDown size={12} className="text-muted-foreground" />
                     </span>
                   </th>
                   <th
                     onClick={() => handleSort("readProgress")}
-                    className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-right"
+                    className="pb-3 px-4 font-semibold cursor-pointer hover:text-foreground transition-colors text-center"
                   >
-                    <span className="flex items-center justify-end gap-1">
+                    <span className="flex items-center justify-center gap-1">
                       Read Progress (%)
                       <ArrowUpDown size={12} className="text-muted-foreground" />
                     </span>
@@ -977,12 +977,12 @@ export function LibraryAdminReportsPage() {
                       <td className="py-3.5 px-4 text-sm text-foreground">{row.category}</td>
 
                       {/* Borrow Count */}
-                      <td className="py-3.5 px-4 text-sm text-right text-foreground font-medium">
+                      <td className="py-3.5 px-4 text-sm text-center text-foreground font-medium">
                         {row.borrowCount}
                       </td>
 
                       {/* Read Progress */}
-                      <td className="py-3.5 px-4 text-sm text-right text-foreground font-medium">
+                      <td className="py-3.5 px-4 text-sm text-center text-foreground font-medium">
                         {row.readProgress}%
                       </td>
 

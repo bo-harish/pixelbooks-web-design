@@ -13,6 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { Switch } from "@/components/ui/switch";
 import {
   getPromoById,
   getPromos,
@@ -158,19 +159,23 @@ function StatusPill({ status }: { status: PromoStatus }) {
   );
 }
 
-function ActivationPill({ value }: { value: Activation }) {
-  const available = value === "Available";
-  const color = available ? "var(--success)" : "var(--muted-foreground)";
+function ActivationToggle({
+  activation,
+  active,
+  onToggle,
+}: {
+  activation: Activation;
+  active: boolean;
+  onToggle: () => void;
+}) {
+  // Blank when the promo isn't in an approved/available state
+  if (activation !== "Available") return null;
   return (
-    <span
-      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
-      style={{
-        backgroundColor: `color-mix(in oklch, ${color} 10%, transparent)`,
-        color,
-      }}
-    >
-      {value}
-    </span>
+    <Switch
+      checked={active}
+      onCheckedChange={onToggle}
+      aria-label={active ? "Disable promo code" : "Enable promo code"}
+    />
   );
 }
 
@@ -203,8 +208,10 @@ function EditPromoCodePage() {
   const [promoCode, setPromoCode] = useState("");
   const [percentage, setPercentage] = useState("");
   const [minimumAmount, setMinimumAmount] = useState("");
-  const [dateRange, setDateRange] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [description, setDescription] = useState("");
+  const [active, setActive] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -214,8 +221,10 @@ function EditPromoCodePage() {
       setPromoCode(existingPromo.code || "");
       setPercentage(existingPromo.discount ? existingPromo.discount.toString() : "");
       setMinimumAmount(existingPromo.minimumAmount ? existingPromo.minimumAmount.toString() : "");
-      setDateRange(existingPromo.startDateISO || "");
+      setStartDate(existingPromo.startDateISO || "");
+      setEndDate(existingPromo.endDateISO || "");
       setDescription(existingPromo.description || "");
+      setActive(existingPromo.active);
     }
   }, [existingPromo]);
 
@@ -238,6 +247,13 @@ function EditPromoCodePage() {
 
   const isReadOnly = existingPromo.status === "Expired" || existingPromo.status === "Rejected";
 
+  const toggleActive = () => {
+    const allPromos = getPromos();
+    const updatedPromos = allPromos.map((p) => (p.id === promoId ? { ...p, active: !p.active } : p));
+    savePromos(updatedPromos);
+    setActive((v) => !v);
+  };
+
   const handleSave = () => {
     if (isReadOnly) return;
     const allPromos = getPromos();
@@ -249,7 +265,8 @@ function EditPromoCodePage() {
           ebook: ebook || p.ebook,
           discount: Number(percentage) || p.discount,
           minimumAmount: Number(minimumAmount) || p.minimumAmount,
-          startDateISO: dateRange || p.startDateISO,
+          startDateISO: startDate || p.startDateISO,
+          endDateISO: endDate || p.endDateISO,
           description: description || p.description,
         };
       }
@@ -299,7 +316,11 @@ function EditPromoCodePage() {
 
           <div className="flex items-center gap-2">
             <StatusPill status={existingPromo.status} />
-            <ActivationPill value={existingPromo.activation} />
+            <ActivationToggle
+              activation={existingPromo.activation}
+              active={active}
+              onToggle={toggleActive}
+            />
           </div>
         </div>
 
@@ -385,10 +406,19 @@ function EditPromoCodePage() {
               </Field>
 
               <DatePickerField
-                label="Date Range"
+                label="From Date"
                 required
-                value={dateRange}
-                onChange={setDateRange}
+                value={startDate}
+                onChange={setStartDate}
+                disabled={isReadOnly}
+                placeholder="Choose Date"
+              />
+
+              <DatePickerField
+                label="To Date"
+                required
+                value={endDate}
+                onChange={setEndDate}
                 disabled={isReadOnly}
                 placeholder="Choose Date"
               />

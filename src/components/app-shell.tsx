@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   BookMarked,
@@ -53,6 +53,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { NotificationsPopover } from "@/components/notifications-popover";
 import { toast } from "sonner";
 
@@ -243,33 +249,36 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
         heading: "Main",
         items: [
           { label: "Dashboard", icon: LayoutDashboard, to: "/library-admin" },
+          { label: "Reports", icon: BarChart3, to: "/library-admin/reports" },
+        ],
+      },
+      {
+        heading: "Inventory & Content",
+        items: [
           { label: "Catalogue", icon: BookMarked, to: "/library-admin/catalogue" },
-          { label: "Orders", icon: ShoppingBag, to: "/library-admin/orders" },
-          { label: "Book Store", icon: Store, to: "/library-admin/book-store" },
           { label: "Manage Borrowings", icon: FileEdit, to: "/library-admin/manage-ebooks" },
-          { label: "Library Users", icon: Users, to: "/library-admin/users" },
-        ],
-      },
-      {
-        heading: "Academic",
-        items: [
-          { label: "Courses", icon: GraduationCap, to: "/library-admin/courses" },
-          { label: "Departments", icon: Building2, to: "/library-admin/departments" },
-        ],
-      },
-      {
-        heading: "Requests & Ads",
-        items: [
-          { label: "Requests", icon: Inbox, to: "/library-admin/requests" },
+          { label: "Book Store", icon: Store, to: "/library-admin/book-store" },
           { label: "Banners", icon: ImageIcon, to: "/library-admin/banners" },
         ],
       },
       {
-        heading: "Reports & Utilities",
+        heading: "Operations",
         items: [
-          { label: "Reports", icon: BarChart3, to: "/library-admin/reports" },
-          { label: "Support", icon: LifeBuoy, to: "/library-admin/support" },
+          { label: "Orders", icon: ShoppingBag, to: "/library-admin/orders" },
+          { label: "Requests", icon: Inbox, to: "/library-admin/requests" },
         ],
+      },
+      {
+        heading: "Users & Structure",
+        items: [
+          { label: "Courses", icon: GraduationCap, to: "/library-admin/courses" },
+          { label: "Library Users", icon: Users, to: "/library-admin/users" },
+          { label: "Departments", icon: Building2, to: "/library-admin/departments" },
+        ],
+      },
+      {
+        heading: "Support",
+        items: [{ label: "Support", icon: LifeBuoy, to: "/library-admin/support" }],
       },
     ];
   }
@@ -657,80 +666,152 @@ function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate
 
 function ProfileDropdown() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const roleTheme = getRoleTheme(pathname);
   const isAuthor = pathname.startsWith("/author");
   const isPBAdmin = pathname.startsWith("/pb-admin");
   const isLibraryAdmin = pathname.startsWith("/library-admin");
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const userName = isAuthor ? "Dr. K. Raghavan" : "Anya Ramanathan";
+  const userRole = isPBAdmin
+    ? "PB Admin"
+    : isLibraryAdmin
+      ? "Library Admin"
+      : isAuthor
+        ? "Author"
+        : "Publisher";
+
+  const handleConfirmLogout = () => {
+    setShowLogoutModal(false);
+    toast.success("Successfully logged out");
+    navigate({ to: "/" });
+  };
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5 text-left transition-all hover:bg-secondary hover:border-border/80">
-          <div className="relative flex shrink-0">
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5 text-left transition-all hover:bg-secondary hover:border-border/80 cursor-pointer">
+            <div className="relative flex shrink-0">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all"
+                style={{
+                  backgroundColor: roleTheme.bgLight,
+                  color: roleTheme.color,
+                  boxShadow: `0 0 0 2px color-mix(in oklab, ${roleTheme.color} 40%, transparent)`,
+                }}
+              >
+                {isAuthor ? "KR" : "AR"}
+              </span>
+              <span
+                className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-card"
+                style={{ backgroundColor: roleTheme.color }}
+                title={`${roleTheme.name} Online`}
+              />
+            </div>
+            <span className="hidden min-w-0 sm:block">
+              <span className="block truncate text-sm font-semibold text-foreground">
+                {userName}
+              </span>
+              <span className="block truncate text-[11px] font-medium text-muted-foreground">
+                {userRole} · Pro
+              </span>
+            </span>
+            <ChevronDown size={14} className="hidden text-muted-foreground sm:block" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="bottom" align="end" className="w-56">
+          <DropdownMenuLabel className="flex items-center justify-between text-xs font-semibold">
+            <span>My account</span>
             <span
-              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all"
-              style={{
-                backgroundColor: roleTheme.bgLight,
-                color: roleTheme.color,
-                boxShadow: `0 0 0 2px color-mix(in oklab, ${roleTheme.color} 40%, transparent)`,
-              }}
+              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              style={{ backgroundColor: roleTheme.bgLight, color: roleTheme.color }}
             >
-              {isAuthor ? "KR" : "AR"}
+              {roleTheme.name}
             </span>
-            <span
-              className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-card"
-              style={{ backgroundColor: roleTheme.color }}
-              title={`${roleTheme.name} Online`}
-            />
-          </div>
-          <span className="hidden min-w-0 sm:block">
-            <span className="block truncate text-sm font-semibold text-foreground">
-              {isAuthor ? "Dr. K. Raghavan" : "Anya Ramanathan"}
-            </span>
-            <span className="block truncate text-[11px] font-medium text-muted-foreground">
-              {isPBAdmin
-                ? "PB Admin · Pro"
-                : isLibraryAdmin
-                  ? "Library Admin · Pro"
-                  : isAuthor
-                    ? "Author · Pro"
-                    : "Publisher · Pro"}
-            </span>
-          </span>
-          <ChevronDown size={14} className="hidden text-muted-foreground sm:block" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side="bottom" align="end" className="w-56">
-        <DropdownMenuLabel className="flex items-center justify-between text-xs font-semibold">
-          <span>My account</span>
-          <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-            style={{ backgroundColor: roleTheme.bgLight, color: roleTheme.color }}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link to="/publisher/profile">
+              <UserCircle size={16} className="mr-2" /> Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/publisher/settings">
+              <Settings size={16} className="mr-2" /> Settings
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/" id="profile-dropdown-btn-switch-workspace">
+              <LayoutDashboard size={16} className="mr-2" /> Switch Workspace
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setShowLogoutModal(true);
+            }}
+            className="cursor-pointer text-red-600 dark:text-red-400 focus:bg-red-500/10 focus:text-red-600 dark:focus:text-red-400"
           >
-            {roleTheme.name}
-          </span>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/publisher/profile">
-            <UserCircle size={16} className="mr-2" /> Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/publisher/settings">
-            <Settings size={16} className="mr-2" /> Settings
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/" id="profile-dropdown-btn-switch-workspace">
-            <LayoutDashboard size={16} className="mr-2" /> Switch Workspace
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogOut size={16} className="mr-2" /> Log out
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <LogOut size={16} className="mr-2" /> Log out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={showLogoutModal} onOpenChange={setShowLogoutModal}>
+        <DialogContent className="max-w-md gap-0 p-0 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+          <div className="p-6 space-y-4">
+            {/* Header Badge & Title */}
+            <div className="flex items-center gap-3.5">
+              <div
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+                style={{
+                  backgroundColor: "color-mix(in oklch, var(--danger) 14%, transparent)",
+                  color: "var(--danger)",
+                }}
+              >
+                <LogOut size={22} />
+              </div>
+              <div>
+                <DialogTitle className="text-lg font-bold text-foreground">
+                  Confirm Log Out
+                </DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                  Logged in as <span className="font-semibold text-foreground">{userName}</span> ({roleTheme.name})
+                </DialogDescription>
+              </div>
+            </div>
+
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Are you sure you want to log out of your <span className="font-medium text-foreground">{userRole}</span> account? You will need to sign in again to access your workspace.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="pt-3 flex items-center justify-end gap-3 border-t border-border">
+              <button
+                type="button"
+                onClick={() => setShowLogoutModal(false)}
+                className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmLogout}
+                className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "var(--danger)" }}
+              >
+                <LogOut size={15} />
+                Log Out
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

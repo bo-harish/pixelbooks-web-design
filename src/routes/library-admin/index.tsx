@@ -28,6 +28,9 @@ function LibraryAdminDashboard() {
   );
 }
 
+const RANGES = ["7d", "30d", "90d", "1y", "Till Date"] as const;
+type Range = (typeof RANGES)[number];
+
 type Stat = {
   label: string;
   value: string;
@@ -135,6 +138,33 @@ function StatCard({ stat }: { stat: Stat }) {
   );
 }
 
+function RangePicker({ value, onChange }: { value: Range; onChange: (r: Range) => void }) {
+  return (
+    <div
+      role="group"
+      aria-label="Select time range"
+      className="inline-flex items-center rounded-lg border border-border bg-card p-1 text-xs font-medium"
+    >
+      {RANGES.map((r) => (
+        <button
+          key={r}
+          type="button"
+          onClick={() => onChange(r)}
+          aria-pressed={r === value}
+          className="rounded-md px-3 py-1.5 transition-colors"
+          style={
+            r === value
+              ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
+              : { color: "var(--muted-foreground)" }
+          }
+        >
+          {r === "1y" ? "1 year" : r}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function StatSkeleton() {
   return (
     <div className="rounded-xl border border-border bg-card p-5">
@@ -153,6 +183,8 @@ function DashboardContent() {
   const [borrowedRange, setBorrowedRange] = useState("Monthly");
   const [requestsRange, setRequestsRange] = useState("Monthly");
   const [fyRange, setFyRange] = useState("FY (2026 - 2027)");
+  const [overviewRange, setOverviewRange] = useState<Range>("30d");
+  const [topBooksRange, setTopBooksRange] = useState<Range>("30d");
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 500);
@@ -214,6 +246,7 @@ function DashboardContent() {
             Digital library activity metrics and usage overview.
           </p>
         </div>
+        <RangePicker value={overviewRange} onChange={setOverviewRange} />
       </div>
 
       {/* Stats Cards Grid */}
@@ -283,8 +316,11 @@ function DashboardContent() {
 
       {/* Table Section */}
       <section className="rounded-xl border border-border bg-card p-4 md:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
-          <h2 className="text-lg font-semibold tracking-tight">Top eBooks Borrowed</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight">Top eBooks Borrowed</h2>
+          </div>
+          <RangePicker value={topBooksRange} onChange={setTopBooksRange} />
         </div>
 
         {/* Desktop Table */}

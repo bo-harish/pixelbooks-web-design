@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Shield,
   BookOpen,
+  Camera,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
@@ -412,22 +413,41 @@ function LibraryAdminUsersPage() {
 
   const handleUpdateDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedUser) return;
-
-    setUsers(
-      users.map((u) =>
-        u.id === selectedUser.id
-          ? {
-              ...u,
-              name: editName.toUpperCase(),
-              userType: editUserType,
-              email: editEmail.toLowerCase(),
-            }
-          : u,
-      ),
-    );
-
-    toast.success("User details updated successfully!");
+    if (!selectedUser) {
+      if (!editName.trim() || !editEmail.trim()) {
+        toast.error("Please fill in all required fields.");
+        return;
+      }
+      const newUserId = `U${(users.length + 1).toString().padStart(3, "0")}`;
+      const newUser: UserRecord = {
+        id: newUserId,
+        name: editName.toUpperCase(),
+        email: editEmail.toLowerCase(),
+        userType: editUserType,
+        borrows: "No eBook borrowed",
+        mobileAccess: false,
+        status: "Active",
+        joinDate: new Date().toISOString().split("T")[0],
+        department: editCourse, // Store course as department for now
+      };
+      setUsers([newUser, ...users]);
+      toast.success(`New user ${newUser.name} created successfully!`);
+      setPage(1);
+    } else {
+      setUsers(
+        users.map((u) =>
+          u.id === selectedUser.id
+            ? {
+                ...u,
+                name: editName.toUpperCase(),
+                userType: editUserType,
+                email: editEmail.toLowerCase(),
+              }
+            : u,
+        ),
+      );
+      toast.success("User details updated successfully!");
+    }
     setIsViewOpen(false);
     setSelectedUser(null);
   };
@@ -508,9 +528,9 @@ function LibraryAdminUsersPage() {
     return "U";
   };
 
-  if (isViewOpen && selectedUser) {
+  if (isViewOpen) {
     return (
-      <AppShell title={`${editUserType} Details`}>
+      <AppShell title="Library User Details">
         <div className="p-4 md:p-8 space-y-6">
           {/* Back button */}
           <button
@@ -531,69 +551,84 @@ function LibraryAdminUsersPage() {
           >
             {/* Header: Avatar and User Type Selection */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/80">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 dark:bg-secondary/20 border border-slate-200 dark:border-border text-slate-400 dark:text-muted-foreground/60 shadow-inner">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-10 w-10"
+              <div className="relative h-20 w-20 shrink-0">
+                <div
+                  className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-2xl font-extrabold"
+                  style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                 >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                </svg>
+                  {getUserInitials(editName || "U")}
+                </div>
+                <button
+                  type="button"
+                  className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
+                  title="Upload Photo"
+                >
+                  <Camera size={14} />
+                </button>
               </div>
 
               {/* User Type Display with border/label */}
-              <div className="relative w-48 self-start sm:self-center">
-                <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                  User Type
-                </label>
-                <select
-                  value={editUserType}
-                  onChange={(e) => setEditUserType(e.target.value as "Student" | "Staff")}
-                  className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                >
-                  <option value="Student">Student</option>
-                  <option value="Staff">Staff</option>
-                </select>
+              <div className="w-56 self-start sm:self-center">
+                <span className="mb-1.5 block text-sm font-medium text-foreground">User Type</span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex h-14 w-full items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors hover:bg-secondary/40 focus:border-[var(--brand)] shadow-sm">
+                      <span>{editUserType}</span>
+                      <ChevronDown size={16} className="text-muted-foreground" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5">
+                    <DropdownMenuItem
+                      onClick={() => setEditUserType("Student")}
+                      className={`flex items-center px-4 py-2.5 text-sm transition-colors cursor-pointer rounded-lg ${
+                        editUserType === "Student" 
+                          ? "bg-[var(--sidebar-highlight)] font-semibold text-foreground" 
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      Student
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setEditUserType("Staff")}
+                      className={`flex items-center px-4 py-2.5 text-sm transition-colors cursor-pointer rounded-lg ${
+                        editUserType === "Staff" 
+                          ? "bg-[var(--sidebar-highlight)] font-semibold text-foreground" 
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      Staff
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
             {/* Library User Details Section */}
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-foreground">Library User Details</h3>
               {editUserType === "Student" ? (
                 <div className="space-y-5">
                   {/* Row 1: Name & University */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Name */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Name<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Name<span className="text-red-500">*</span></span>
                       <input
                         type="text"
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                        className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                         required
                       />
                     </div>
 
                     {/* University / Institute */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        University / Institute<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">University / Institute<span className="text-red-500">*</span></span>
                       <input
                         type="text"
                         value={editUniv}
                         onChange={(e) => setEditUniv(e.target.value)}
-                        className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                        className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                         required
                       />
                     </div>
@@ -602,47 +637,41 @@ function LibraryAdminUsersPage() {
                   {/* Row 2: Student ID, Enrollment ID, Enrollment Date */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {/* Student ID */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Student ID<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Student ID<span className="text-red-500">*</span></span>
                       <input
                         type="text"
                         value={editStudentId}
                         disabled
-                        className="h-11 w-full rounded-lg border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/15 px-3 text-sm font-semibold text-muted-foreground cursor-not-allowed"
+                        className="h-14 w-full rounded-xl border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/15 px-4 text-sm font-semibold text-muted-foreground cursor-not-allowed"
                       />
                     </div>
 
                     {/* Enrollment ID */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Enrollment ID<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Enrollment ID<span className="text-red-500">*</span></span>
                       <input
                         type="text"
                         value={editEnrollmentId}
                         onChange={(e) => setEditEnrollmentId(e.target.value)}
                         placeholder="Enter Enrollment ID"
-                        className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                        className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                       />
                     </div>
 
                     {/* Enrollment Date */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Enrollment Date
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Enrollment Date</span>
                       <div className="relative">
                         <input
                           type="text"
                           value={editEnrollmentDate}
                           onChange={(e) => setEditEnrollmentDate(e.target.value)}
-                          className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent pl-3 pr-10 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                          className="h-14 w-full rounded-xl border border-border bg-card px-4 pr-11 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                         />
                         <Calendar
-                          size={15}
-                          className="absolute right-3 top-3.5 text-muted-foreground"
+                          size={16}
+                          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                         />
                       </div>
                     </div>
@@ -651,15 +680,13 @@ function LibraryAdminUsersPage() {
                   {/* Row 3: Course & Batch */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Course Selection */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Course<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Course<span className="text-red-500">*</span></span>
                       <div className="relative">
                         <select
                           value={editCourse}
                           onChange={(e) => setEditCourse(e.target.value)}
-                          className="h-11 w-full appearance-none rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                          className="h-14 w-full appearance-none rounded-xl border border-border bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)]"
                         >
                           <option value="B.Com (CA)">B.Com (CA)</option>
                           <option value="B.Sc (CS)">B.Sc (CS)</option>
@@ -668,22 +695,20 @@ function LibraryAdminUsersPage() {
                           <option value="Administration">Administration</option>
                         </select>
                         <ChevronDown
-                          size={15}
-                          className="absolute right-3.5 top-3.5 text-muted-foreground pointer-events-none"
+                          size={16}
+                          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                         />
                       </div>
                     </div>
 
                     {/* Batch Selection */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Batch<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Batch<span className="text-red-500">*</span></span>
                       <div className="relative">
                         <select
                           value={editBatch}
                           onChange={(e) => setEditBatch(e.target.value)}
-                          className="h-11 w-full appearance-none rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                          className="h-14 w-full appearance-none rounded-xl border border-border bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)]"
                         >
                           <option value="2025,2029">2025,2029</option>
                           <option value="2024,2028">2024,2028</option>
@@ -691,8 +716,8 @@ function LibraryAdminUsersPage() {
                           <option value="2022,2026">2022,2026</option>
                         </select>
                         <ChevronDown
-                          size={15}
-                          className="absolute right-3.5 top-3.5 text-muted-foreground pointer-events-none"
+                          size={16}
+                          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                         />
                       </div>
                     </div>
@@ -703,29 +728,25 @@ function LibraryAdminUsersPage() {
                   {/* Row 1: Name & University */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Name */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Name<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Name<span className="text-red-500">*</span></span>
                       <input
                         type="text"
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                        className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                         required
                       />
                     </div>
 
                     {/* University / Institute */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        University / Institute<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">University / Institute<span className="text-red-500">*</span></span>
                       <input
                         type="text"
                         value={editUniv}
                         onChange={(e) => setEditUniv(e.target.value)}
-                        className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                        className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                         required
                       />
                     </div>
@@ -734,15 +755,13 @@ function LibraryAdminUsersPage() {
                   {/* Row 2: Department & Staff ID */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Department */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Department<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Department<span className="text-red-500">*</span></span>
                       <div className="relative">
                         <select
                           value={editCourse}
                           onChange={(e) => setEditCourse(e.target.value)}
-                          className="h-11 w-full appearance-none rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                          className="h-14 w-full appearance-none rounded-xl border border-border bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)]"
                         >
                           <option value="Accountancy">Accountancy</option>
                           <option value="Computer Science">Computer Science</option>
@@ -759,22 +778,20 @@ function LibraryAdminUsersPage() {
                           <option value="Biotechnology">Biotechnology</option>
                         </select>
                         <ChevronDown
-                          size={15}
-                          className="absolute right-3.5 top-3.5 text-muted-foreground pointer-events-none"
+                          size={16}
+                          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                         />
                       </div>
                     </div>
 
                     {/* Staff ID */}
-                    <div className="relative">
-                      <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                        Staff ID<span className="text-red-500">*</span>
-                      </label>
+                    <div>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">Staff ID<span className="text-red-500">*</span></span>
                       <input
                         type="text"
                         value={editStudentId}
                         disabled
-                        className="h-11 w-full rounded-lg border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/15 px-3 text-sm font-semibold text-muted-foreground cursor-not-allowed"
+                        className="h-14 w-full rounded-xl border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary/15 px-4 text-sm font-semibold text-muted-foreground cursor-not-allowed"
                       />
                     </div>
                   </div>
@@ -787,58 +804,50 @@ function LibraryAdminUsersPage() {
               <h3 className="text-sm font-bold text-foreground">Contact Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Address */}
-                <div className="relative">
-                  <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                    Address
-                  </label>
+                <div>
+                  <span className="mb-1.5 block text-sm font-medium text-foreground">Address</span>
                   <input
                     type="text"
                     value={editAddress}
                     onChange={(e) => setEditAddress(e.target.value)}
                     placeholder={`Enter ${editUserType} Address`}
-                    className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                    className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                   />
                 </div>
 
                 {/* Pin Code */}
-                <div className="relative">
-                  <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                    Pin Code
-                  </label>
+                <div>
+                  <span className="mb-1.5 block text-sm font-medium text-foreground">Pin Code</span>
                   <input
                     type="text"
                     value={editPinCode}
                     onChange={(e) => setEditPinCode(e.target.value)}
                     placeholder="Enter Pin Code"
-                    className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                    className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                   />
                 </div>
 
                 {/* Email */}
-                <div className="relative">
-                  <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                    Email
-                  </label>
+                <div>
+                  <span className="mb-1.5 block text-sm font-medium text-foreground">Email</span>
                   <input
                     type="email"
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
                     placeholder={`Enter ${editUserType} Email`}
-                    className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                    className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                   />
                 </div>
 
                 {/* Phone Number */}
-                <div className="relative">
-                  <label className="absolute -top-2 left-3 bg-card px-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                    Phone Number
-                  </label>
+                <div>
+                  <span className="mb-1.5 block text-sm font-medium text-foreground">Phone Number</span>
                   <input
                     type="tel"
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
                     placeholder={`Enter ${editUserType} Phone Number`}
-                    className="h-11 w-full rounded-lg border border-slate-300 dark:border-border bg-transparent px-3 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                    className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                   />
                 </div>
               </div>
@@ -852,15 +861,15 @@ function LibraryAdminUsersPage() {
                   setIsViewOpen(false);
                   setSelectedUser(null);
                 }}
-                className="h-10 rounded-lg border border-slate-300 dark:border-border bg-white dark:bg-card px-5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-secondary/40 transition-colors cursor-pointer"
+                className="h-12 rounded-xl border border-border bg-background px-6 text-sm font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="h-10 rounded-lg bg-[var(--brand)] text-white px-5 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+                className="h-12 rounded-xl bg-[var(--brand)] text-white px-6 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
               >
-                Update Details
+                {selectedUser ? "Update Details" : "Submit"}
               </button>
             </div>
           </form>
@@ -880,7 +889,22 @@ function LibraryAdminUsersPage() {
           <div />
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setIsAddOpen(true)}
+              onClick={() => {
+                setSelectedUser(null);
+                setEditName("");
+                setEditUserType("Student");
+                setEditUniv("Pixelbooks Library");
+                setEditStudentId(""); // Let it be disabled or empty for new user
+                setEditEnrollmentId("");
+                setEditEnrollmentDate("");
+                setEditCourse("B.Com (CA)");
+                setEditBatch("2025,2029");
+                setEditAddress("");
+                setEditPinCode("");
+                setEditEmail("");
+                setEditPhone("");
+                setIsViewOpen(true);
+              }}
               className="h-10 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
               <Plus size={16} />
@@ -1052,7 +1076,7 @@ function LibraryAdminUsersPage() {
                   <th className="pb-3 px-4 font-semibold">User Type</th>
                   <th className="pb-3 px-4 font-semibold">Borrows</th>
                   <th className="pb-3 px-4 font-semibold text-center">Mobile Access</th>
-                  <th className="pb-3 px-4 font-semibold text-center">Status</th>
+                  <th className="pb-3 px-4 font-semibold text-center">Enable/Disable</th>
                   <th className="pb-3 pl-4 font-semibold text-right pr-6"></th>
                 </tr>
               </thead>
@@ -1097,39 +1121,21 @@ function LibraryAdminUsersPage() {
 
                       {/* Mobile Access Switch Toggle */}
                       <td className="py-3.5 px-4 text-center" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center">
                           <Switch
                             checked={u.mobileAccess}
                             onCheckedChange={() => handleMobileAccessToggle(u.id, u.mobileAccess)}
                           />
-                          <span
-                            className={`text-xs font-semibold min-w-14 text-left ${
-                              u.mobileAccess
-                                ? "text-emerald-600 dark:text-emerald-400"
-                                : "text-muted-foreground"
-                            }`}
-                          >
-                            {u.mobileAccess ? "Enabled" : "Disabled"}
-                          </span>
                         </div>
                       </td>
 
                       {/* Status Toggle switch */}
                       <td className="py-3.5 px-4 text-center" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center">
                           <Switch
                             checked={u.status === "Active"}
                             onCheckedChange={() => handleStatusToggle(u.id, u.status)}
                           />
-                          <span
-                            className={`text-xs font-semibold min-w-12 text-left ${
-                              u.status === "Active"
-                                ? "text-[var(--brand)]"
-                                : "text-muted-foreground"
-                            }`}
-                          >
-                            {u.status}
-                          </span>
                         </div>
                       </td>
 
@@ -1202,62 +1208,68 @@ function LibraryAdminUsersPage() {
               </DialogDescription>
             </div>
 
-            <form onSubmit={handleAddSubmit} className="space-y-4 text-xs sm:text-sm">
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground text-xs">Full Name</label>
+            <form onSubmit={handleAddSubmit} className="space-y-5 text-sm mt-6">
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-foreground">Full Name</span>
                 <input
                   type="text"
                   placeholder="e.g. JOHN DOE"
                   value={addName}
                   onChange={(e) => setAddName(e.target.value)}
-                  className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card px-3 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                  className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                   required
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground text-xs">Email Address</label>
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-foreground">Email Address</span>
                 <input
                   type="email"
                   placeholder="e.g. john.doe@university.edu"
                   value={addEmail}
                   onChange={(e) => setAddEmail(e.target.value)}
-                  className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card px-3 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+                  className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
                   required
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground text-xs">User Type</label>
-                <select
-                  value={addUserType}
-                  onChange={(e) => setAddUserType(e.target.value as "Student" | "Staff")}
-                  className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                >
-                  <option value="Student">Student</option>
-                  <option value="Staff">Staff</option>
-                </select>
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-foreground">User Type</span>
+                <div className="relative">
+                  <select
+                    value={addUserType}
+                    onChange={(e) => setAddUserType(e.target.value as "Student" | "Staff")}
+                    className="h-14 w-full appearance-none rounded-xl border border-border bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)]"
+                  >
+                    <option value="Student">Student</option>
+                    <option value="Staff">Staff</option>
+                  </select>
+                  <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground text-xs">Department</label>
-                <select
-                  value={addDept}
-                  onChange={(e) => setAddDept(e.target.value)}
-                  className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                >
-                  {departments.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-foreground">Department</span>
+                <div className="relative">
+                  <select
+                    value={addDept}
+                    onChange={(e) => setAddDept(e.target.value)}
+                    className="h-14 w-full appearance-none rounded-xl border border-border bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)]"
+                  >
+                    {departments.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
 
-              <div className="flex items-center justify-end pt-4 border-t border-border mt-2">
+              <div className="flex items-center justify-end pt-4 border-t border-border mt-6">
                 <button
                   type="submit"
-                  className="h-9 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+                  className="h-12 rounded-xl bg-[var(--brand)] text-white px-6 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
                 >
                   Add User Request
                 </button>

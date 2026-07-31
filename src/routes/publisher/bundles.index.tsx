@@ -173,7 +173,7 @@ function BundlesPage() {
                   <th className="py-4 pl-6 pr-4 font-semibold">Title</th>
                   <th className="py-4 pr-4 text-center font-semibold">Status</th>
                   <th className="py-4 pr-4 text-center font-semibold">Pricing</th>
-                  <th className="py-4 pr-4 text-center font-semibold">Active</th>
+                  <th className="py-4 pr-4 text-center font-semibold">Enable/Disable</th>
                   <th className="py-4 pr-6" />
                 </tr>
               </thead>
