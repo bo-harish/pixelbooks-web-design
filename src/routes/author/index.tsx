@@ -52,7 +52,7 @@ const stats: Stat[] = [
     spark: [8, 10, 9, 14, 12, 18, 16, 22, 20, 25, 24, 28],
   },
   {
-    label: "Total eBooks Purchased",
+    label: "Total eBooks Sold",
     value: "1,284",
     icon: Users,
     delta: 6.1,
@@ -399,42 +399,42 @@ function DashboardContent() {
             <tbody>
               {loading
                 ? Array.from({ length: 3 }).map((_, i) => (
-                    <tr key={i} className="border-b border-border/60 last:border-0">
-                      <td className="py-4 pr-4" colSpan={6}>
-                        <Skeleton className="h-10 w-full" />
-                      </td>
-                    </tr>
-                  ))
+                  <tr key={i} className="border-b border-border/60 last:border-0">
+                    <td className="py-4 pr-4" colSpan={6}>
+                      <Skeleton className="h-10 w-full" />
+                    </td>
+                  </tr>
+                ))
                 : topBooks.map((b) => (
-                    <tr
-                      key={b.title}
-                      className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
-                    >
-                      <td className="py-4 pr-4">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="flex h-12 w-9 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-white"
-                            style={{ background: b.cover }}
-                          >
-                            {b.initials}
-                          </div>
-                          <span className="font-medium text-foreground">{b.title}</span>
+                  <tr
+                    key={b.title}
+                    className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
+                  >
+                    <td className="py-4 pr-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="flex h-12 w-9 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-white"
+                          style={{ background: b.cover }}
+                        >
+                          {b.initials}
                         </div>
-                      </td>
-                      <td className="py-4 pr-4 font-mono text-xs text-muted-foreground">
-                        {b.isbn}
-                      </td>
-                      <td className="py-4 pr-4">
-                        <div className="flex items-center gap-1.5">
-                          <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                          <span>{b.rating}</span>
-                        </div>
-                      </td>
-                      <td className="py-4 pr-4">{b.views.toLocaleString()}</td>
-                      <td className="py-4 pr-4">{b.sales}</td>
-                      <td className="py-4 pl-4 text-right font-medium">{b.revenue}</td>
-                    </tr>
-                  ))}
+                        <span className="font-medium text-foreground">{b.title}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 pr-4 font-mono text-xs text-muted-foreground">
+                      {b.isbn}
+                    </td>
+                    <td className="py-4 pr-4">
+                      <div className="flex items-center gap-1.5">
+                        <Star size={14} className="fill-yellow-400 text-yellow-400" />
+                        <span>{b.rating}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 pr-4">{b.views.toLocaleString()}</td>
+                    <td className="py-4 pr-4">{b.sales}</td>
+                    <td className="py-4 pl-4 text-right font-medium">{b.revenue}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -443,40 +443,40 @@ function DashboardContent() {
         <ul className="mt-4 space-y-3 md:hidden">
           {loading
             ? Array.from({ length: 3 }).map((_, i) => (
-                <li key={i}>
-                  <Skeleton className="h-24 w-full rounded-lg" />
-                </li>
-              ))
+              <li key={i}>
+                <Skeleton className="h-24 w-full rounded-lg" />
+              </li>
+            ))
             : topBooks.map((b) => (
-                <li key={b.title} className="rounded-lg border border-border p-3">
-                  <div className="flex items-start gap-3">
-                    <div
-                      className="flex h-14 w-10 shrink-0 items-center justify-center rounded-md text-[10px] font-bold text-white"
-                      style={{ background: b.cover }}
-                    >
-                      {b.initials}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{b.title}</p>
-                      <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">{b.isbn}</p>
-                      <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]">
-                        <div>
-                          <p className="text-muted-foreground">Rating</p>
-                          <p className="font-semibold">★ {b.rating}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Sales</p>
-                          <p className="font-semibold">{b.sales}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Revenue</p>
-                          <p className="font-semibold">{b.revenue}</p>
-                        </div>
+              <li key={b.title} className="rounded-lg border border-border p-3">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="flex h-14 w-10 shrink-0 items-center justify-center rounded-md text-[10px] font-bold text-white"
+                    style={{ background: b.cover }}
+                  >
+                    {b.initials}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{b.title}</p>
+                    <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">{b.isbn}</p>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]">
+                      <div>
+                        <p className="text-muted-foreground">Rating</p>
+                        <p className="font-semibold">★ {b.rating}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Sales</p>
+                        <p className="font-semibold">{b.sales}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Revenue</p>
+                        <p className="font-semibold">{b.revenue}</p>
                       </div>
                     </div>
                   </div>
-                </li>
-              ))}
+                </div>
+              </li>
+            ))}
         </ul>
       </section>
     </div>

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ShoppingCart, Check, Inbox, ArrowRight, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { BookCover } from "@/components/ui/book-cover";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/library-admin/requests")({
@@ -108,12 +109,12 @@ export function LibraryAdminRequestsPage() {
                         <td className="py-4 pr-4">
                           <div className="flex items-center gap-4">
                             {/* Book Cover */}
-                            <div
-                              className="flex h-14 w-10 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-white shadow-sm select-none"
-                              style={{ background: r.cover }}
-                            >
-                              {r.initials}
-                            </div>
+                            <BookCover
+                              initials={r.initials}
+                              coverGradient={r.cover}
+                              title={r.title}
+                              size="sm"
+                            />
                             <div className="min-w-0">
                               <span className="font-semibold text-foreground block truncate max-w-xs sm:max-w-md">
                                 {r.title}

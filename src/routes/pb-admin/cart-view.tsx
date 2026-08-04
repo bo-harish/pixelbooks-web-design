@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
-  Search, ChevronDown, ChevronRight, ShoppingCart, BookOpen,
-  ArrowLeft, Upload, ScrollText, Table, Calendar, TrendingUp,
-  IndianRupee,
+  ChevronDown, ChevronRight, ShoppingCart, BookOpen,
+  ArrowLeft, Calendar, TrendingUp,
+  IndianRupee, UserCheck,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { toast } from "sonner";
+import { BookCover } from "@/components/ui/book-cover";
 
 export const Route = createFileRoute("/pb-admin/cart-view")({
   head: () => ({
     meta: [
-      { title: "Cart Views — PixelBooks Admin" },
+      { title: "Abandoned Carts — PixelBooks Admin" },
       {
         name: "description",
         content: "Track customers who added books to cart but have not completed their purchase.",
@@ -39,6 +39,7 @@ type CustomerCart = {
   customerName: string;
   avatarLetter: string;
   email: string;
+  phone: string;
   itemCount: number;
   cartValue: number;
   addedDate: string;
@@ -50,7 +51,7 @@ type CustomerCart = {
 
 const cartData: CustomerCart[] = [
   {
-    id: "cc-1", customerName: "Aarav Sharma", avatarLetter: "AS", email: "aarav.sharma@example.com",
+    id: "cc-1", customerName: "Aarav Sharma", avatarLetter: "AS", email: "aarav.sharma@example.com", phone: "98765 43210",
     itemCount: 4, cartValue: 1196, addedDate: "12 Jun 2026", daysInactive: 43,
     items: [
       { id: "ci-1a", title: "A Beautiful Crime: A Novel", publisher: "Harper Perennial", category: "Crime, Thriller, Mystery", coverGradient: "linear-gradient(135deg,#1e3a8a,#3b82f6)", initials: "AB", price: 299, addedDate: "12 Jun 2026" },
@@ -60,7 +61,7 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-2", customerName: "Priya Nair", avatarLetter: "PN", email: "priya.nair@example.com",
+    id: "cc-2", customerName: "Priya Nair", avatarLetter: "PN", email: "priya.nair@example.com", phone: "98123 45678",
     itemCount: 2, cartValue: 598, addedDate: "18 Jun 2026", daysInactive: 37,
     items: [
       { id: "ci-2a", title: "The Glass Palace Chronicle", publisher: "Werley Nortreus", category: "General & Literary Fiction", coverGradient: "linear-gradient(135deg,#d97706,#b45309)", initials: "GP", price: 299, addedDate: "18 Jun 2026" },
@@ -68,7 +69,7 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-3", customerName: "Rohan Mehta", avatarLetter: "RM", email: "rohan.mehta@example.com",
+    id: "cc-3", customerName: "Rohan Mehta", avatarLetter: "RM", email: "rohan.mehta@example.com", phone: "97654 32109",
     itemCount: 3, cartValue: 847, addedDate: "30 Jun 2026", daysInactive: 25,
     items: [
       { id: "ci-3a", title: "A Christmas Carol by Charles Dickens", publisher: "Petals Publishers", category: "Zoho Books", coverGradient: "linear-gradient(135deg,#b45309,#d97706)", initials: "CC", price: 199, addedDate: "30 Jun 2026" },
@@ -77,7 +78,7 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-4", customerName: "Sneha Iyer", avatarLetter: "SI", email: "sneha.iyer@example.com",
+    id: "cc-4", customerName: "Sneha Iyer", avatarLetter: "SI", email: "sneha.iyer@example.com", phone: "96543 21098",
     itemCount: 5, cartValue: 1445, addedDate: "08 Jul 2026", daysInactive: 15,
     items: [
       { id: "ci-4a", title: "A Gift of Ghosts (Tassamara Book 1)", publisher: "Fingerprint Publishing", category: "Fictions", coverGradient: "linear-gradient(135deg,#7f1d1d,#ef4444)", initials: "GG", price: 249, addedDate: "08 Jul 2026" },
@@ -88,14 +89,14 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-5", customerName: "Vikram Das", avatarLetter: "VD", email: "vikram.das@example.com",
+    id: "cc-5", customerName: "Vikram Das", avatarLetter: "VD", email: "vikram.das@example.com", phone: "95432 10987",
     itemCount: 1, cartValue: 299, addedDate: "10 Jul 2026", daysInactive: 13,
     items: [
       { id: "ci-5a", title: "A Man for Every Purpose", publisher: "Cambridge University Press", category: "NEET", coverGradient: "linear-gradient(135deg,#0c4a6e,#0ea5e9)", initials: "ME", price: 299, addedDate: "10 Jul 2026" },
     ],
   },
   {
-    id: "cc-6", customerName: "Ananya Krishnan", avatarLetter: "AK", email: "ananya.k@example.com",
+    id: "cc-6", customerName: "Ananya Krishnan", avatarLetter: "AK", email: "ananya.k@example.com", phone: "94321 09876",
     itemCount: 3, cartValue: 897, addedDate: "15 Jul 2026", daysInactive: 8,
     items: [
       { id: "ci-6a", title: "A Bride for Tom", publisher: "Meadows Publishers", category: "Arts, Cinema, Photography", coverGradient: "linear-gradient(135deg,#7c3aed,#a855f7)", initials: "BT", price: 299, addedDate: "15 Jul 2026" },
@@ -104,7 +105,7 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-7", customerName: "Karan Patel", avatarLetter: "KP", email: "karan.patel@example.com",
+    id: "cc-7", customerName: "Karan Patel", avatarLetter: "KP", email: "karan.patel@example.com", phone: "93210 98765",
     itemCount: 2, cartValue: 548, addedDate: "20 Jul 2026", daysInactive: 3,
     items: [
       { id: "ci-7a", title: "The Glass Palace Chronicle", publisher: "Werley Nortreus", category: "General & Literary Fiction", coverGradient: "linear-gradient(135deg,#d97706,#b45309)", initials: "GP", price: 299, addedDate: "20 Jul 2026" },
@@ -112,7 +113,7 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-8", customerName: "Meera Joshi", avatarLetter: "MJ", email: "meera.joshi@example.com",
+    id: "cc-8", customerName: "Meera Joshi", avatarLetter: "MJ", email: "meera.joshi@example.com", phone: "92109 87654",
     itemCount: 6, cartValue: 1794, addedDate: "21 Jul 2026", daysInactive: 2,
     items: [
       { id: "ci-8a", title: "A Beautiful Crime: A Novel", publisher: "Harper Perennial", category: "Crime, Thriller, Mystery", coverGradient: "linear-gradient(135deg,#1e3a8a,#3b82f6)", initials: "AB", price: 299, addedDate: "21 Jul 2026" },
@@ -124,7 +125,7 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-9", customerName: "Arjun Reddy", avatarLetter: "AR", email: "arjun.reddy@example.com",
+    id: "cc-9", customerName: "Arjun Reddy", avatarLetter: "AR", email: "arjun.reddy@example.com", phone: "91098 76543",
     itemCount: 2, cartValue: 648, addedDate: "22 Jul 2026", daysInactive: 1,
     items: [
       { id: "ci-9a", title: "A Concise History of Computers", publisher: "Orange Publishers", category: "Computer Application", coverGradient: "linear-gradient(135deg,#1e3a8a,#6366f1)", initials: "CH", price: 299, addedDate: "22 Jul 2026" },
@@ -132,7 +133,7 @@ const cartData: CustomerCart[] = [
     ],
   },
   {
-    id: "cc-10", customerName: "Divya Menon", avatarLetter: "DM", email: "divya.menon@example.com",
+    id: "cc-10", customerName: "Divya Menon", avatarLetter: "DM", email: "divya.menon@example.com", phone: "90987 65432",
     itemCount: 4, cartValue: 1196, addedDate: "23 Jul 2026", daysInactive: 0,
     items: [
       { id: "ci-10a", title: "A Beautiful Crime: A Novel", publisher: "Harper Perennial", category: "Crime, Thriller, Mystery", coverGradient: "linear-gradient(135deg,#1e3a8a,#3b82f6)", initials: "AB", price: 299, addedDate: "23 Jul 2026" },
@@ -159,17 +160,20 @@ function applyPresetDates(opt: string, setStart: (v: string) => void, setEnd: (v
 
 // ── Shared components ─────────────────────────────────────────────────────────
 
-function StatCard({ icon: Icon, label, value, accent }: { icon: React.ComponentType<{ size?: number }>; label: string; value: string; accent?: string }) {
+function StatCard({ icon: Icon, label, value, sublabel, accent }: { icon: React.ComponentType<{ size?: number }>; label: string; value: string; sublabel?: string; accent?: string }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-xs flex flex-col justify-between">
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+    <div className="flex flex-col rounded-xl border border-border bg-card p-4 sm:p-5 transition-shadow hover:shadow-md justify-between min-h-[110px] sm:min-h-[120px]">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
           style={{ backgroundColor: accent ? `color-mix(in oklab,${accent} 12%,transparent)` : "var(--sidebar-highlight)", color: accent ?? "var(--brand)" }}>
-          <Icon size={16} />
+          <Icon size={18} />
         </span>
-        <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       </div>
-      <p className="mt-3 text-2xl font-bold tracking-tight text-foreground">{value}</p>
+      <div>
+        <p className="text-2xl font-extrabold tracking-tight text-foreground">{value}</p>
+        {sublabel && <p className="mt-0.5 text-xs text-muted-foreground">{sublabel}</p>}
+      </div>
     </div>
   );
 }
@@ -199,39 +203,44 @@ function Pagination({ page, total, onPage }: { page: number; total: number; onPa
 // ── Cart Detail Drill-down ────────────────────────────────────────────────────
 
 function CartDetail({ customer, onBack }: { customer: CustomerCart; onBack: () => void }) {
-  const [search, setSearch]       = useState("");
-  const [exportOpen, setExportOpen] = useState(false);
-
-  const items = useMemo(() => {
-    if (!search.trim()) return customer.items;
-    const q = search.toLowerCase().trim();
-    return customer.items.filter(i =>
-      i.title.toLowerCase().includes(q) ||
-      i.publisher.toLowerCase().includes(q) ||
-      i.category.toLowerCase().includes(q)
-    );
-  }, [customer, search]);
-
+  const items = customer.items;
   const totalValue = items.reduce((a, i) => a + i.price, 0);
 
   return (
-    <AppShell title="Cart Views" subtitle={`Unpurchased cart items for ${customer.customerName}.`}>
+    <AppShell
+      title={customer.customerName}
+      subtitle="Abandoned Carts - Cart Details"
+      pageIcon={
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20 shadow-2xs">
+          <UserCheck size={20} />
+        </div>
+      }
+    >
       <div className="space-y-6 p-4 md:p-8">
+        {/* Back navigation link matching promo-codes */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs"
+            aria-label="Back to Abandoned Carts"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <span className="text-sm font-normal text-foreground">
+            Back to Abandoned Carts
+          </span>
+        </div>
 
         {/* Header card */}
-        <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs space-y-4">
-          <div className="flex flex-wrap items-center gap-3.5 border-b border-border/60 pb-4">
-            <button type="button" onClick={onBack}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs">
-              <ArrowLeft size={18} />
-            </button>
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold shadow-2xs"
-              style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}>
-              {customer.avatarLetter}
-            </span>
+        <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs">
+          <div className="flex flex-wrap items-center gap-3.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20 shadow-2xs">
+              <UserCheck size={20} />
+            </div>
             <div className="flex-1 min-w-0">
               <h2 className="text-base font-bold text-foreground">{customer.customerName}</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">{customer.email}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{customer.email} / {customer.phone}</p>
             </div>
             <div className="flex items-center gap-6 ml-auto">
               <div className="text-right">
@@ -248,35 +257,6 @@ function CartDetail({ customer, onBack }: { customer: CustomerCart; onBack: () =
                 </p>
                 <p className="text-[11px] text-muted-foreground">Days Inactive</p>
               </div>
-            </div>
-          </div>
-
-          {/* Search + Export */}
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3 min-w-[200px]">
-              <Search size={15} className="mr-2 text-muted-foreground shrink-0" />
-              <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-                placeholder="Search by title, publisher, category"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground text-foreground" />
-            </label>
-            <div className="relative ml-auto">
-              <button type="button" onClick={() => setExportOpen(v => !v)}
-                className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
-                style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}>
-                <Upload size={15} /><span>Export</span><ChevronDown size={14} />
-              </button>
-              {exportOpen && (
-                <div className="absolute right-0 z-30 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1">
-                  <button type="button" onClick={() => { setExportOpen(false); toast.success(`Exporting PDF for ${customer.customerName}...`); }}
-                    className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer">
-                    <ScrollText size={15} className="text-muted-foreground" /><span>Export PDF</span>
-                  </button>
-                  <button type="button" onClick={() => { setExportOpen(false); toast.success(`Exporting Excel for ${customer.customerName}...`); }}
-                    className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer">
-                    <Table size={15} className="text-muted-foreground" /><span>Export Excel</span>
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -301,8 +281,12 @@ function CartDetail({ customer, onBack }: { customer: CustomerCart; onBack: () =
                   <tr key={item.id} className="transition-colors hover:bg-secondary/50">
                     <td className="py-4 pl-6 pr-4">
                       <div className="flex items-center gap-3 max-w-xs">
-                        <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded-sm text-[9px] font-bold text-white shadow-xs"
-                          style={{ background: item.coverGradient }}>{item.initials}</div>
+                        <BookCover
+                          initials={item.initials}
+                          coverGradient={item.coverGradient}
+                          title={item.title}
+                          size="xs"
+                        />
                         <p className="font-semibold text-foreground text-sm leading-snug line-clamp-2">{item.title}</p>
                       </div>
                     </td>
@@ -329,26 +313,13 @@ function CartDetail({ customer, onBack }: { customer: CustomerCart; onBack: () =
 
 function CartViewPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerCart | null>(null);
-  const [search, setSearch]                     = useState("");
   const [preset, setPreset]                     = useState("MTD");
   const [presetOpen, setPresetOpen]             = useState(false);
   const [startDate, setStartDate]               = useState("2026-07-01");
   const [endDate, setEndDate]                   = useState("2026-07-23");
-  const [exportOpen, setExportOpen]             = useState(false);
   const [page, setPage]                         = useState(1);
 
-  const filtered = useMemo(() => {
-    return cartData.filter(row => {
-      if (search.trim()) {
-        const q = search.toLowerCase().trim();
-        return (
-          row.customerName.toLowerCase().includes(q) ||
-          row.email.toLowerCase().includes(q)
-        );
-      }
-      return true;
-    });
-  }, [search]);
+  const filtered = cartData;
 
   const totalCarts = cartData.length;
   const totalItems = cartData.reduce((a, r) => a + r.itemCount, 0);
@@ -362,7 +333,15 @@ function CartViewPage() {
   if (selectedCustomer) return <CartDetail customer={selectedCustomer} onBack={() => setSelectedCustomer(null)} />;
 
   return (
-    <AppShell title="Cart Views" subtitle="Customers who added items to cart but have not completed their purchase.">
+    <AppShell
+      title="Abandoned Carts"
+      subtitle="Customers who added items to cart but have not completed their purchase."
+      pageIcon={
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20 shadow-2xs">
+          <UserCheck size={20} />
+        </div>
+      }
+    >
       <div className="space-y-6 p-4 md:p-8">
 
         {/* Filter header */}
@@ -414,40 +393,9 @@ function CartViewPage() {
 
         {/* Stat cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <StatCard icon={ShoppingCart} label="Unpurchased Carts" value={totalCarts.toString()}                    accent="#f59e0b" />
-          <StatCard icon={BookOpen}     label="Total Items"        value={totalItems.toString()}                    accent="#6366f1" />
-          <StatCard icon={IndianRupee}  label="Value at Risk"      value={`₹${totalValue.toLocaleString("en-IN")}`} accent="#ef4444" />
-        </div>
-
-        {/* Search + Export */}
-        <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3 min-w-[240px] max-w-sm">
-              <Search size={15} className="mr-2 text-muted-foreground shrink-0" />
-              <input type="text" value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-                placeholder="Search by customer name or email"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
-            </label>
-            <div className="relative ml-auto">
-              <button type="button" onClick={() => setExportOpen(v => !v)}
-                className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
-                style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}>
-                <Upload size={15} /><span>Export</span><ChevronDown size={14} />
-              </button>
-              {exportOpen && (
-                <div className="absolute right-0 z-30 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1">
-                  <button type="button" onClick={() => { setExportOpen(false); toast.success("Downloading Cart Views (PDF)..."); }}
-                    className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer">
-                    <ScrollText size={15} className="text-muted-foreground" /><span>Export PDF</span>
-                  </button>
-                  <button type="button" onClick={() => { setExportOpen(false); toast.success("Downloading Cart Views (Excel)..."); }}
-                    className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer">
-                    <Table size={15} className="text-muted-foreground" /><span>Export Excel</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+          <StatCard icon={ShoppingCart} label="Unpurchased Carts" value={totalCarts.toString()}                    sublabel="Active abandoned carts"   accent="#f59e0b" />
+          <StatCard icon={BookOpen}     label="Total Items"        value={totalItems.toString()}                    sublabel="Items waiting in carts"   accent="#6366f1" />
+          <StatCard icon={IndianRupee}  label="Value at Risk"      value={`₹${totalValue.toLocaleString("en-IN")}`} sublabel="Total potential revenue" accent="#ef4444" />
         </div>
 
         {/* Main table */}
@@ -478,13 +426,12 @@ function CartViewPage() {
                     className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50 cursor-pointer group">
                     <td className="py-4 pl-6 pr-4">
                       <div className="flex items-center gap-3">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                          style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}>
-                          {row.avatarLetter}
-                        </span>
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20 shadow-2xs">
+                          <UserCheck size={16} />
+                        </div>
                         <div>
                           <p className="font-semibold text-foreground text-sm">{row.customerName}</p>
-                          <p className="text-xs text-muted-foreground">{row.email}</p>
+                          <p className="text-xs text-muted-foreground">{row.email} / {row.phone}</p>
                         </div>
                       </div>
                     </td>
@@ -495,7 +442,9 @@ function CartViewPage() {
                       {row.daysInactive === 0 ? "Today" : `${row.daysInactive} days`}
                     </td>
                     <td className="py-4 pr-6 text-right">
-                      <ChevronRight size={16} className="text-muted-foreground/60 transition-colors group-hover:text-foreground" />
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
+                        <ChevronRight size={16} />
+                      </span>
                     </td>
                   </tr>
                 ))}

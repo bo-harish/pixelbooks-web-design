@@ -87,23 +87,38 @@ function DropdownSelect<T extends string>({
   options,
   onChange,
   className = "min-w-[170px]",
+  searchable = false,
+  searchPlaceholder = "Search...",
 }: {
   value: T;
   options: T[];
   onChange: (v: T) => void;
   className?: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchTerm.trim()) return options;
+    const q = searchTerm.toLowerCase().trim();
+    return options.filter((opt) => opt.toLowerCase().includes(q));
+  }, [options, searchable, searchTerm]);
+
   return (
     <div className="relative">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
-        className={`flex h-11 items-center justify-between gap-2.5 rounded-lg border border-border bg-card px-3.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] ${className}`}
+        onClick={() => {
+          setOpen((o) => !o);
+          setSearchTerm("");
+        }}
+        className={`flex h-11 items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] ${className}`}
       >
         <span className="truncate">{value}</span>
         <ChevronDown
-          size={15}
+          size={16}
           className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
@@ -111,27 +126,50 @@ function DropdownSelect<T extends string>({
       </button>
       {open && (
         <div
-          className="absolute right-0 top-full z-30 mt-1.5 max-h-56 min-w-[190px] overflow-y-auto rounded-lg border border-border bg-card shadow-lg py-1"
+          className="absolute right-0 top-full z-30 mt-2 max-h-64 min-w-40 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg flex flex-col"
           onMouseLeave={() => setOpen(false)}
         >
-          {options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => {
-                onChange(opt);
-                setOpen(false);
-              }}
-              className={`flex w-full items-center justify-between px-3.5 py-2 text-left text-xs transition-colors hover:bg-secondary ${
-                opt === value
-                  ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
-                  : "text-muted-foreground"
-              }`}
-            >
-              <span className="truncate">{opt}</span>
-              {opt === value && <Check size={14} className="ml-2 shrink-0 text-[var(--brand)]" />}
-            </button>
-          ))}
+          {searchable && (
+            <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
+              <div className="relative flex items-center">
+                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={searchPlaceholder}
+                  autoFocus
+                  className="w-full h-8 pl-8 pr-2 text-xs rounded-md border border-border bg-secondary/50 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+            </div>
+          )}
+          <div className="overflow-y-auto max-h-48 py-1">
+            {filteredOptions.length === 0 ? (
+              <div className="px-4 py-2.5 text-center text-sm text-muted-foreground">
+                No results found
+              </div>
+            ) : (
+              filteredOptions.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt);
+                    setOpen(false);
+                    setSearchTerm("");
+                  }}
+                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${
+                    opt === value
+                      ? "font-medium text-foreground bg-secondary/50"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  <span className="truncate">{opt}</span>
+                </button>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -163,42 +201,18 @@ function StatusFilter({
   value,
   onChange,
 }: {
-  value: string;
+  value: (typeof STATUS_FILTERS)[number];
   onChange: (v: (typeof STATUS_FILTERS)[number]) => void;
 }) {
-  const [open, setOpen] = useState(false);
   return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex h-11 min-w-[130px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium"
-      >
-        {value}
-        <ChevronDown size={16} className="text-muted-foreground" />
-      </button>
-      {open && (
-        <div
-          className="absolute right-0 z-20 mt-2 w-40 overflow-hidden rounded-lg border border-border bg-card shadow-lg"
-          onMouseLeave={() => setOpen(false)}
-        >
-          {STATUS_FILTERS.map((s) => (
-            <button
-              key={s}
-              onClick={() => {
-                onChange(s);
-                setOpen(false);
-              }}
-              className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${
-                s === value ? "text-foreground font-medium" : "text-muted-foreground"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+    <DropdownSelect
+      value={value}
+      options={STATUS_FILTERS as unknown as string[]}
+      onChange={(v) => onChange(v as (typeof STATUS_FILTERS)[number])}
+      searchable
+      searchPlaceholder="Search status..."
+      className="w-full sm:w-auto min-w-[130px]"
+    />
   );
 }
 
@@ -277,7 +291,9 @@ function CataloguePage() {
                 setLanguageFilter(v);
                 setPage(1);
               }}
-              className="w-full sm:w-auto min-w-[130px]"
+              searchable
+              searchPlaceholder="Search language..."
+              className="w-full sm:w-auto min-w-[150px]"
             />
 
             {/* All Genre Dropdown */}
@@ -288,7 +304,9 @@ function CataloguePage() {
                 setGenreFilter(v);
                 setPage(1);
               }}
-              className="w-full sm:w-auto min-w-[130px]"
+              searchable
+              searchPlaceholder="Search genre..."
+              className="w-full sm:w-auto min-w-[150px]"
             />
 
             {/* Status Filter */}

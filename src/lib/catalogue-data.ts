@@ -12,6 +12,8 @@ export type Book = {
   publisher?: string;
   cover: string; // gradient css
   initials: string;
+  dop?: string; // Date of Purchase
+  language?: string; // Language
 };
 
 export const gradients = [
@@ -37,6 +39,8 @@ export const seedBooks: Book[] = [
     publisher: "PixelBooks Press",
     cover: gradients[0],
     initials: "NEP",
+    dop: "12 Jun 2026",
+    language: "English",
   },
   {
     id: "complete-history-music",
@@ -50,6 +54,8 @@ export const seedBooks: Book[] = [
     publisher: "Oxford University Press",
     cover: gradients[1],
     initials: "MUS",
+    dop: "18 May 2026",
+    language: "English",
   },
   {
     id: "knowledge-time",
@@ -62,6 +68,8 @@ export const seedBooks: Book[] = [
     author: "John Timbs",
     cover: gradients[2],
     initials: "KFT",
+    dop: "24 Apr 2026",
+    language: "English",
   },
   {
     id: "just-shaping-letters",
@@ -74,6 +82,8 @@ export const seedBooks: Book[] = [
     author: "Albrecht Durer",
     cover: gradients[3],
     initials: "OJS",
+    dop: "10 Mar 2026",
+    language: "German",
   },
   {
     id: "curtiss-aviation",
@@ -86,6 +96,8 @@ export const seedBooks: Book[] = [
     author: "Glenn Curtiss",
     cover: gradients[4],
     initials: "AVI",
+    dop: "05 Feb 2026",
+    language: "English",
   },
   {
     id: "tangled-tale",
@@ -98,6 +110,8 @@ export const seedBooks: Book[] = [
     author: "Lewis Carroll",
     cover: gradients[5],
     initials: "TAN",
+    dop: "14 Jan 2026",
+    language: "English",
   },
   {
     id: "essays-art",
@@ -110,6 +124,8 @@ export const seedBooks: Book[] = [
     author: "Clutton Brock",
     cover: gradients[6],
     initials: "ART",
+    dop: "22 Dec 2025",
+    language: "English",
   },
   {
     id: "elements-style",
@@ -122,6 +138,8 @@ export const seedBooks: Book[] = [
     author: "William Strunk Jr.",
     cover: gradients[0],
     initials: "STY",
+    dop: "11 Nov 2025",
+    language: "English",
   },
   {
     id: "meditations",
@@ -134,6 +152,8 @@ export const seedBooks: Book[] = [
     author: "Marcus Aurelius",
     cover: gradients[1],
     initials: "MED",
+    dop: "30 Oct 2025",
+    language: "Greek",
   },
   {
     id: "origin-species",
@@ -146,6 +166,8 @@ export const seedBooks: Book[] = [
     author: "Charles Darwin",
     cover: gradients[2],
     initials: "ORI",
+    dop: "15 Sep 2025",
+    language: "English",
   },
   {
     id: "art-of-war",
@@ -158,6 +180,8 @@ export const seedBooks: Book[] = [
     author: "Sun Tzu",
     cover: gradients[3],
     initials: "WAR",
+    dop: "04 Aug 2025",
+    language: "Chinese",
   },
   {
     id: "pride-prejudice",

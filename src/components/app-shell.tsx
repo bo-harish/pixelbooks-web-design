@@ -36,6 +36,7 @@ import {
   Code2,
   Network,
   FolderTree,
+  Sparkles,
   ShieldCheck,
   UserCheck,
   GitMerge,
@@ -157,19 +158,18 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
         ],
       },
       {
-        heading: "Reports & Analytics",
+        heading: "Reports",
         items: [
           { label: "Margin/Royalty Report", icon: Landmark, to: "/pb-admin/margin-report" },
-          {
-            label: "Analytics",
-            icon: TrendingUp,
-            to: "/pb-admin/sales-report",
-            subItems: [
-              { label: "Sales", to: "/pb-admin/sales-report", icon: BarChart3 },
-              { label: "Views", to: "/pb-admin/views-report", icon: Eye },
-              { label: "Cart Views", to: "/pb-admin/cart-view", icon: ShoppingCart },
-            ],
-          },
+          { label: "Sales Report", icon: BarChart3, to: "/pb-admin/sales-report" },
+        ],
+      },
+      {
+        heading: "Analytics",
+        items: [
+          { label: "Views", icon: Eye, to: "/pb-admin/views-report" },
+          { label: "Abandoned Carts", icon: ShoppingCart, to: "/pb-admin/cart-view" },
+          { label: "Book Cart Analysis", icon: ShoppingBag, to: "/pb-admin/cart-analysis" },
         ],
       },
       {
@@ -185,6 +185,7 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
           { label: "Titles", to: "/pb-admin/titles", icon: BookOpen },
           { label: "Bundles", to: "/pb-admin/bundles", icon: Library },
           { label: "Categories", to: "/pb-admin/categories", icon: FolderTree },
+          { label: "Featured Collections", to: "/pb-admin/featured-collections", icon: Sparkles },
         ],
       },
       {
@@ -203,41 +204,25 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
         ],
       },
       {
-        heading: "Marketing & Growth",
+        heading: "Marketing",
         items: [
-          {
-            label: "Marketing",
-            icon: Megaphone,
-            to: "/pb-admin/marketing/schema-meta",
-            subItems: [
-              { label: "Schema & Meta", to: "/pb-admin/marketing/schema-meta", icon: Code2 },
-              { label: "Sitemap", to: "/pb-admin/marketing/sitemap", icon: Network },
-            ],
-          },
+          { label: "Schema & Meta", icon: Code2, to: "/pb-admin/marketing/schema-meta" },
+          { label: "Sitemap", icon: Network, to: "/pb-admin/marketing/sitemap" },
           { label: "Audit Log", icon: ClipboardList, to: "/pb-admin/audit-log" },
         ],
       },
       {
-        heading: "Banners & Engagement",
+        heading: "Banners",
         items: [
-          {
-            label: "Ad Banners",
-            icon: ImageIcon,
-            to: "/pb-admin/ad-banners/image",
-            subItems: [
-              { label: "Image Banners", to: "/pb-admin/ad-banners/image", icon: ImageIcon },
-              { label: "Popup Banners", to: "/pb-admin/ad-banners/popup", icon: BadgePercent },
-            ],
-          },
-          {
-            label: "Quizzes & Rewards",
-            icon: Store,
-            to: "/pb-admin/quizzes-rewards",
-            subItems: [
-              { label: "Quizzes", to: "/pb-admin/quizzes-rewards", icon: HelpCircle },
-              { label: "Promocodes", to: "/pb-admin/promo-codes", icon: TicketPercent },
-            ],
-          },
+          { label: "Image Banners", icon: ImageIcon, to: "/pb-admin/ad-banners/image" },
+          { label: "Popup Banners", icon: BadgePercent, to: "/pb-admin/ad-banners/popup" },
+        ],
+      },
+      {
+        heading: "Quizzes & Rewards",
+        items: [
+          { label: "Quizzes", icon: HelpCircle, to: "/pb-admin/quizzes-rewards" },
+          { label: "Rewards", icon: TicketPercent, to: "/pb-admin/quizz-rewards" },
         ],
       },
     ];
@@ -292,7 +277,7 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
           { label: "My Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
           { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
           { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
-          { label: "Promo Codes", icon: TicketPercent, to: "/publisher/promo-codes" },
+          { label: "Rewards", icon: TicketPercent, to: "/publisher/promo-codes" },
         ],
       },
       {
@@ -321,7 +306,7 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
         { label: "My Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
         { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
         { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
-        { label: "Promo Codes", icon: TicketPercent, to: "/publisher/promo-codes" },
+        { label: "Rewards", icon: TicketPercent, to: "/publisher/promo-codes" },
       ],
     },
     {
@@ -342,11 +327,13 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
   ];
 }
 
-function Logo() {
+function Logo({ className = "h-7 w-7" }: { className?: string }) {
   return (
-    <div className="w-[31px] h-[31px] overflow-hidden relative flex items-center justify-start shrink-0">
-      <img src="/logo.png" alt="PixelBooks Logo Icon" className="h-[26px] max-w-none" />
-    </div>
+    <img
+      src="/logo-app-icon.png"
+      alt="PixelBooks App Icon"
+      className={`object-contain shrink-0 ${className}`}
+    />
   );
 }
 
@@ -393,14 +380,15 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
         <Link
           to="/"
           id="sidebar-logo-link-collapsed"
-          className="flex items-center justify-center shrink-0"
+          className="flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
         >
-          <Logo />
+          <Logo className="h-7 w-7" />
         </Link>
       ) : (
-        <div className="flex min-w-0 items-center gap-2">
-          <Link to="/" id="sidebar-logo-link-expanded" className="flex shrink-0">
-            <img src="/logo.png" alt="PixelBooks Logo" className="h-[31px] object-contain" />
+        <div className="flex min-w-0 items-center gap-2.5">
+          <Link to="/" id="sidebar-logo-link-expanded" className="flex shrink-0 items-center gap-2.5 group">
+            <Logo className="h-7 w-7 transition-transform group-hover:scale-105" />
+            <span className="font-bold text-lg tracking-tight text-foreground">PixelBooks</span>
           </Link>
           <span
             className="shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold"
@@ -487,9 +475,9 @@ function NavRow({
           style={
             isParentOrChildActive
               ? {
-                  backgroundColor: "var(--sidebar-highlight)",
-                  boxShadow: "0 6px 20px -12px var(--brand-glow)",
-                }
+                backgroundColor: "var(--sidebar-highlight)",
+                boxShadow: "0 6px 20px -12px var(--brand-glow)",
+              }
               : undefined
           }
         >
@@ -549,8 +537,8 @@ function NavRow({
                   style={
                     subActive
                       ? {
-                          boxShadow: "0 6px 20px -12px var(--brand-glow)",
-                        }
+                        boxShadow: "0 6px 20px -12px var(--brand-glow)",
+                      }
                       : undefined
                   }
                 >
@@ -899,10 +887,12 @@ function ThemeToggle() {
 export function AppShell({
   title,
   subtitle,
+  pageIcon,
   children,
 }: {
   title: string;
   subtitle?: string;
+  pageIcon?: ReactNode;
   children: ReactNode;
 }) {
   const { collapsed, setCollapsed } = useCollapsed();
@@ -952,13 +942,18 @@ export function AppShell({
                 </button>
               </SheetTrigger>
             </Sheet>
-            <div className="min-w-0">
-              <h1 className="truncate text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
-              {subtitle && (
-                <p className="mt-0.5 hidden truncate text-sm text-muted-foreground sm:block">
-                  {subtitle}
-                </p>
+            <div className="flex items-center gap-3 min-w-0">
+              {pageIcon && (
+                <div className="shrink-0">{pageIcon}</div>
               )}
+              <div className="min-w-0">
+                <h1 className="truncate text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
+                {subtitle && (
+                  <p className="mt-0.5 hidden truncate text-sm text-muted-foreground sm:block">
+                    {subtitle}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2 md:gap-3">
@@ -975,7 +970,7 @@ export function AppShell({
                 </span>
               </Link>
             )}
-            {!isPBAdmin && <NotificationsPopover />}
+            <NotificationsPopover />
             <ProfileDropdown />
           </div>
         </header>

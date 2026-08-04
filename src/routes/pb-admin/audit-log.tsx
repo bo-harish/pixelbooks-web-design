@@ -430,7 +430,7 @@ function AuditLogPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-xs font-medium outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-xs sm:text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
             />
           </div>
 
@@ -439,7 +439,7 @@ function AuditLogPage() {
             <button
               type="button"
               onClick={() => setIsFiltersOpen((prev) => !prev)}
-              className={`flex h-11 items-center gap-2 rounded-lg border px-4 text-xs font-semibold transition-all cursor-pointer outline-none ${
+              className={`flex h-11 items-center gap-2 rounded-lg border px-4 text-xs sm:text-sm font-semibold transition-all cursor-pointer outline-none ${
                 isFiltersOpen || activeFilterCount > 0
                   ? "border-[var(--brand)] bg-[var(--sidebar-highlight)] text-[var(--brand)]"
                   : "border-border bg-card text-foreground hover:bg-secondary/40"
@@ -463,7 +463,7 @@ function AuditLogPage() {
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="flex h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
+                className="flex h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs sm:text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
                 title="Reset all filters"
               >
                 <RotateCcw size={14} />
@@ -479,7 +479,7 @@ function AuditLogPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {/* Date Range Picker */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground block">
+                <label className="text-xs font-semibold text-foreground block">
                   Date Range
                 </label>
                 <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-3 cursor-pointer transition-colors focus-within:border-[var(--brand)]">
@@ -491,7 +491,7 @@ function AuditLogPage() {
                       setDateRange(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground"
+                    className="w-full bg-transparent text-xs sm:text-sm text-foreground outline-none placeholder:text-muted-foreground"
                   />
                   <CalendarIcon size={16} className="text-muted-foreground shrink-0 ml-2" />
                 </label>
@@ -499,14 +499,14 @@ function AuditLogPage() {
 
               {/* Application Dropdown */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground block">
+                <label className="text-xs font-semibold text-foreground block">
                   Application
                 </label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
                       type="button"
-                      className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
+                      className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-xs sm:text-sm font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
                     >
                       <span className="truncate">{appFilter}</span>
                       <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
@@ -520,7 +520,7 @@ function AuditLogPage() {
                           setAppFilter(opt);
                           setCurrentPage(1);
                         }}
-                        className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
+                        className={`flex items-center justify-between px-3.5 py-2 text-xs sm:text-sm cursor-pointer ${
                           appFilter === opt
                             ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
                             : "text-muted-foreground hover:bg-secondary"
@@ -538,14 +538,14 @@ function AuditLogPage() {
 
               {/* Module Dropdown */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground block">
+                <label className="text-xs font-semibold text-foreground block">
                   Module
                 </label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
                       type="button"
-                      className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
+                      className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-xs sm:text-sm font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
                     >
                       <span className="truncate">{moduleFilter}</span>
                       <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
@@ -559,7 +559,7 @@ function AuditLogPage() {
                           setModuleFilter(opt);
                           setCurrentPage(1);
                         }}
-                        className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
+                        className={`flex items-center justify-between px-3.5 py-2 text-xs sm:text-sm cursor-pointer ${
                           moduleFilter === opt
                             ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
                             : "text-muted-foreground hover:bg-secondary"
@@ -577,14 +577,14 @@ function AuditLogPage() {
 
               {/* Event Dropdown */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground block">
+                <label className="text-xs font-semibold text-foreground block">
                   Event
                 </label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
                       type="button"
-                      className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
+                      className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-xs sm:text-sm font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
                     >
                       <span className="truncate">{eventFilter}</span>
                       <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
@@ -598,7 +598,7 @@ function AuditLogPage() {
                           setEventFilter(opt);
                           setCurrentPage(1);
                         }}
-                        className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
+                        className={`flex items-center justify-between px-3.5 py-2 text-xs sm:text-sm cursor-pointer ${
                           eventFilter === opt
                             ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
                             : "text-muted-foreground hover:bg-secondary"
@@ -689,13 +689,13 @@ function AuditLogPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr className="border-b border-border text-xs font-semibold text-foreground bg-muted/20">
-                  <th className="py-4 px-6 w-[45%]">Log</th>
-                  <th className="py-4 px-6 w-[15%]">App</th>
-                  <th className="py-4 px-6 w-[15%]">Module</th>
-                  <th className="py-4 px-6 w-[12%]">Event</th>
-                  <th className="py-4 px-6 w-[10%]">Action</th>
-                  <th className="py-4 px-4 w-[3%] text-right"></th>
+                <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <th className="py-4 px-6 w-[45%] font-semibold">Log</th>
+                  <th className="py-4 px-6 w-[15%] font-semibold">App</th>
+                  <th className="py-4 px-6 w-[15%] font-semibold">Module</th>
+                  <th className="py-4 px-6 w-[12%] font-semibold">Event</th>
+                  <th className="py-4 px-6 w-[10%] font-semibold">Action</th>
+                  <th className="py-4 px-4 w-[3%] text-right font-semibold"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -714,35 +714,35 @@ function AuditLogPage() {
                           >
                             <div className="grid grid-cols-12 w-full items-start gap-4">
                               {/* Log Column */}
-                              <div className="col-span-5 space-y-0.5 pr-2">
-                                <span className="text-[11px] font-medium text-muted-foreground block">
+                              <div className="col-span-5 space-y-1 pr-2">
+                                <span className="text-xs font-medium text-muted-foreground block">
                                   {entry.timestamp}
                                 </span>
-                                <span className="text-xs font-semibold text-foreground block">
+                                <span className="text-sm font-semibold text-foreground block group-hover:text-[var(--brand)] transition-colors">
                                   {entry.user}
                                 </span>
-                                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                                <p className="text-xs sm:text-[13px] text-muted-foreground leading-relaxed mt-1">
                                   {entry.message}
                                 </p>
                               </div>
 
                               {/* App Column */}
-                              <div className="col-span-2 text-xs font-medium text-foreground pt-0.5">
+                              <div className="col-span-2 text-sm font-medium text-foreground pt-0.5">
                                 {entry.app}
                               </div>
 
                               {/* Module Column */}
-                              <div className="col-span-2 text-xs font-medium text-foreground pt-0.5">
+                              <div className="col-span-2 text-sm font-medium text-foreground pt-0.5">
                                 {entry.module}
                               </div>
 
                               {/* Event Column */}
-                              <div className="col-span-1 text-xs font-medium text-foreground pt-0.5">
+                              <div className="col-span-1 text-sm font-medium text-foreground pt-0.5">
                                 {entry.event}
                               </div>
 
                               {/* Action Column */}
-                              <div className="col-span-1 text-xs font-medium text-foreground pt-0.5">
+                              <div className="col-span-1 text-sm font-medium text-foreground pt-0.5">
                                 {entry.action}
                               </div>
 

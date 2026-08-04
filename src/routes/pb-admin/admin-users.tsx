@@ -6,6 +6,8 @@ import {
   Plus,
   Check,
   ShieldCheck,
+  UserCog,
+  Crown,
   ChevronsLeft,
   ChevronsRight,
   Send,
@@ -15,6 +17,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Switch } from "@/components/ui/switch";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +33,65 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
+function AdminUserAvatar({
+  avatarUrl,
+  name,
+  permissions = [],
+  size = "md",
+}: {
+  avatarUrl?: string;
+  name: string;
+  permissions?: string[];
+  size?: "md" | "lg";
+}) {
+  if (avatarUrl) {
+    const sizeClasses = size === "lg" ? "h-14 w-14" : "h-10 w-10";
+    return (
+      <img
+        src={avatarUrl}
+        alt={name}
+        className={`${sizeClasses} shrink-0 rounded-full object-cover ring-1 ring-border shadow-xs`}
+      />
+    );
+  }
+
+  const isSuperAdmin = permissions.includes("all_access");
+
+  if (size === "lg") {
+    return isSuperAdmin ? (
+      <div
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 border border-purple-500/20 shadow-2xs transition-transform group-hover:scale-105"
+        title="Super Admin (All Access)"
+      >
+        <Crown size={26} />
+      </div>
+    ) : (
+      <div
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20 shadow-2xs transition-transform group-hover:scale-105"
+        title="Admin User"
+      >
+        <UserCog size={26} />
+      </div>
+    );
+  }
+
+  return isSuperAdmin ? (
+    <div
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 border border-purple-500/20 shadow-2xs transition-transform group-hover:scale-105"
+      title="Super Admin (All Access)"
+    >
+      <Crown size={18} />
+    </div>
+  ) : (
+    <div
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20 shadow-2xs transition-transform group-hover:scale-105"
+      title="Admin User"
+    >
+      <UserCog size={18} />
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/pb-admin/admin-users")({
   head: () => ({
     meta: [
@@ -43,16 +105,16 @@ export const Route = createFileRoute("/pb-admin/admin-users")({
   component: ManageAdminUsersPage,
 });
 
-export type StatusValue = "All" | "Enabled" | "Disabled" | "Pending";
-export type RoleFilterValue = "All Roles" | "All Access" | "Catalogue" | "People" | "Authors" | "Reports" | "Marketing & Growth" | "Banners & Engagement";
+type StatusValue = "All" | "Enabled" | "Disabled" | "Pending";
+type RoleFilterValue = "All Roles" | "All Access" | "Catalogue" | "People" | "Authors" | "Reports" | "Marketing" | "Banners" | "Quizzes & Rewards";
 
-export interface PermissionSection {
+interface PermissionSection {
   id: string;
   label: string;
   subItems?: { id: string; label: string }[];
 }
 
-export const MENU_SECTIONS: PermissionSection[] = [
+const MENU_SECTIONS: PermissionSection[] = [
   { id: "dashboard", label: "Dashboard" },
   {
     id: "catalogue",
@@ -61,6 +123,7 @@ export const MENU_SECTIONS: PermissionSection[] = [
       { id: "titles", label: "Titles" },
       { id: "bundles", label: "Bundles" },
       { id: "categories", label: "Categories" },
+      { id: "featured_collections", label: "Featured Collections" },
     ],
   },
   {
@@ -89,18 +152,25 @@ export const MENU_SECTIONS: PermissionSection[] = [
     ],
   },
   {
-    id: "reports_analytics",
-    label: "Reports & Analytics",
+    id: "reports",
+    label: "Reports",
     subItems: [
       { id: "margin_royalty_report", label: "Margin/Royalty Report" },
-      { id: "sales_report", label: "Sales (Analytics)" },
+      { id: "sales_report", label: "Sales Report" },
+    ],
+  },
+  {
+    id: "analytics",
+    label: "Analytics",
+    subItems: [
       { id: "analytics_view", label: "View (Analytics)" },
-      { id: "analytics_cart_views", label: "Cart Views (Analytics)" },
+      { id: "analytics_cart_views", label: "Abandoned Carts (Analytics)" },
+      { id: "analytics_cart_analysis", label: "Book Cart Analysis (Analytics)" },
     ],
   },
   {
     id: "marketing_growth",
-    label: "Marketing & Growth",
+    label: "Marketing",
     subItems: [
       { id: "marketing_schema_meta", label: "Schema & Meta (Marketing)" },
       { id: "marketing_sitemap", label: "Sitemap (Marketing)" },
@@ -108,24 +178,31 @@ export const MENU_SECTIONS: PermissionSection[] = [
     ],
   },
   {
-    id: "banners_engagement",
-    label: "Banners & Engagement",
+    id: "banners",
+    label: "Banners",
     subItems: [
       { id: "image_banners", label: "Image Banners" },
       { id: "popup_banners", label: "Popup Banners" },
-      { id: "quizzes_rewards", label: "Quizzes & Rewards" },
+    ],
+  },
+  {
+    id: "quizzes_rewards",
+    label: "Quizzes & Rewards",
+    subItems: [
+      { id: "quizzes", label: "Quizzes" },
+      { id: "promo_codes", label: "Promo Codes" },
     ],
   },
 ];
 
-export const ALL_LEAF_IDS = [
+const ALL_LEAF_IDS = [
   "all_access",
   ...MENU_SECTIONS.flatMap((sec) =>
     sec.subItems ? sec.subItems.map((s) => s.id) : [sec.id]
   ),
 ];
 
-export interface AdminUser {
+interface AdminUser {
   id: string;
   name: string;
   email: string;
@@ -234,11 +311,10 @@ const INITIAL_ADMIN_USERS: AdminUser[] = [
 function CustomCheckbox({ checked, className = "" }: { checked: boolean; className?: string }) {
   return (
     <div
-      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all ${
-        checked
-          ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-xs"
-          : "border-border bg-card"
-      } ${className}`}
+      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all ${checked
+        ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-xs"
+        : "border-border bg-card"
+        } ${className}`}
     >
       {checked && <Check className="h-3.5 w-3.5 stroke-[3]" />}
     </div>
@@ -277,7 +353,7 @@ function ManageAdminUsersPage() {
       if (roleFilter === "People" && !user.permissions.some((p) => ["publisher_author", "customers", "admin_users"].includes(p))) return false;
       if (roleFilter === "Authors" && !user.permissions.some((p) => ["author_management", "merge_authors"].includes(p))) return false;
       if (roleFilter === "Reports" && !user.permissions.some((p) => ["margin_royalty_report", "sales_report"].includes(p))) return false;
-      if (roleFilter === "Marketing & Growth" && !user.permissions.some((p) => ["marketing_schema_meta", "marketing_sitemap", "audit_log"].includes(p))) return false;
+      if (roleFilter === "Marketing" && !user.permissions.some((p) => ["marketing_schema_meta", "marketing_sitemap", "audit_log"].includes(p))) return false;
       if (roleFilter === "Banners & Engagement" && !user.permissions.some((p) => ["image_banners", "popup_banners", "quizzes_rewards"].includes(p))) return false;
 
       if (searchQuery.trim()) {
@@ -448,15 +524,15 @@ function ManageAdminUsersPage() {
     statusFilter === "All"
       ? "All Status"
       : statusFilter === "Enabled"
-      ? "Enabled"
-      : statusFilter === "Disabled"
-      ? "Disabled"
-      : "Pending";
+        ? "Enabled"
+        : statusFilter === "Disabled"
+          ? "Disabled"
+          : "Pending";
 
   return (
     <AppShell title="Manage Admin Users" subtitle="Grant and manage administrative panel access, permissions, and roles">
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-        
+
         {/* Summary Metrics Grid */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:shadow-md">
@@ -464,8 +540,8 @@ function ManageAdminUsersPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Total Admins
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <ShieldCheck size={18} />
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <UserCog size={18} />
               </span>
             </div>
             <div className="mt-3">
@@ -479,8 +555,8 @@ function ManageAdminUsersPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Super Admins
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <UserCheck size={18} />
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                <Crown size={18} />
               </span>
             </div>
             <div className="mt-3">
@@ -543,61 +619,19 @@ function ManageAdminUsersPage() {
           {/* Controls Right Side */}
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             {/* Status Filter Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="flex h-11 min-w-[130px] items-center justify-between gap-2.5 rounded-lg border border-border bg-card px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
-                >
-                  <span className="truncate">{statusLabel}</span>
-                  <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px] rounded-lg bg-card border-border shadow-lg py-1">
-                <DropdownMenuItem
-                  onClick={() => {
-                    setStatusFilter("All");
-                    setCurrentPage(1);
-                  }}
-                  className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
-                    statusFilter === "All" ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]" : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <span>All Status</span>
-                  {statusFilter === "All" && <Check size={14} className="text-[var(--brand)]" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setStatusFilter("Enabled");
-                    setCurrentPage(1);
-                  }}
-                  className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
-                    statusFilter === "Enabled" ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]" : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    Enabled
-                  </span>
-                  {statusFilter === "Enabled" && <Check size={14} className="text-[var(--brand)]" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setStatusFilter("Disabled");
-                    setCurrentPage(1);
-                  }}
-                  className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
-                    statusFilter === "Disabled" ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]" : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-rose-400" />
-                    Disabled
-                  </span>
-                  {statusFilter === "Disabled" && <Check size={14} className="text-[var(--brand)]" />}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <DropdownSelect
+              value={statusLabel}
+              options={["All Status", "Enabled", "Disabled"]}
+              onChange={(v) => {
+                if (v === "All Status") setStatusFilter("All");
+                else if (v === "Enabled") setStatusFilter("Enabled");
+                else if (v === "Disabled") setStatusFilter("Disabled");
+                setCurrentPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search status..."
+              className="w-full sm:w-auto min-w-[140px]"
+            />
 
             {/* + Add Admin User Button */}
             <button
@@ -617,11 +651,11 @@ function ManageAdminUsersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr className="border-b border-border text-xs font-semibold text-foreground bg-muted/20">
-                  <th className="py-4 px-6 w-[36%]">Admin User</th>
-                  <th className="py-4 px-6 w-[18%]">Joined Date</th>
-                  <th className="py-4 px-6 w-[14%] text-center">Status</th>
-                  <th className="py-4 px-6 w-[32%] text-center">Manage Role</th>
+                <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <th className="py-4 px-6 w-[36%] font-semibold">Admin User</th>
+                  <th className="py-4 px-6 w-[18%] font-semibold">Joined Date</th>
+                  <th className="py-4 px-6 w-[14%] text-center font-semibold">Enable/Disable</th>
+                  <th className="py-4 px-6 w-[32%] text-center font-semibold">Manage Role</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -634,20 +668,7 @@ function ManageAdminUsersPage() {
                       {/* Admin User Column */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3.5">
-                          {user.avatarUrl ? (
-                            <img
-                              src={user.avatarUrl}
-                              alt={user.name}
-                              className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border shadow-xs"
-                            />
-                          ) : (
-                            <div
-                              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-xs"
-                              style={{ backgroundColor: user.avatarBg || "var(--brand)" }}
-                            >
-                              {getInitials(user.name)}
-                            </div>
-                          )}
+                          <AdminUserAvatar avatarUrl={user.avatarUrl} name={user.name} permissions={user.permissions} />
                           <div className="flex flex-col min-w-0">
                             <span className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors truncate">
                               {user.name}
@@ -745,11 +766,10 @@ function ManageAdminUsersPage() {
                   key={pageNum}
                   type="button"
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${isActive
+                    ? "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
                 >
                   {pageNum}
                 </button>
@@ -810,257 +830,117 @@ function ManageAdminUsersPage() {
               {/* All Access Main Bar */}
               <div
                 onClick={toggleAllAccess}
-                className={`flex items-center gap-3 p-4 rounded-xl border transition-all cursor-pointer select-none ${
-                  isAllAccessChecked
-                    ? "border-[var(--brand)] bg-[var(--sidebar-highlight)]"
-                    : "border-border bg-card hover:bg-secondary/40"
-                }`}
+                className={`flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer select-none ${isAllAccessChecked
+                  ? "border-purple-500/40 bg-purple-500/8 dark:bg-purple-500/15 shadow-2xs"
+                  : "border-border bg-card hover:bg-secondary/40"
+                  }`}
               >
-                <CustomCheckbox checked={isAllAccessChecked} />
-                <div className="flex flex-col">
-                  <span className={`text-sm font-bold ${isAllAccessChecked ? "text-[var(--brand)]" : "text-foreground"}`}>
-                    All Access
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    Grants full unrestricted administrative privileges to all portal features
-                  </span>
-                </div>
-              </div>
-
-              {/* Permissions Checkbox Grid (Full Left Sidebar Items) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
-                
-                {/* Left Column */}
-                <div className="space-y-5">
-                  {/* Dashboard */}
-                  <div className="space-y-2">
-                    <div
-                      onClick={() => toggleSinglePermission("dashboard")}
-                      className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none"
-                    >
-                      <CustomCheckbox checked={isSinglePermissionChecked("dashboard")} />
-                      <span className={isSinglePermissionChecked("dashboard") ? "text-[var(--brand)]" : "text-foreground"}>
-                        Dashboard
-                      </span>
-                    </div>
+                <div className="flex items-center gap-3">
+                  <CustomCheckbox checked={isAllAccessChecked} />
+                  <div className="flex flex-col">
+                    <span className={`text-sm font-bold ${isAllAccessChecked ? "text-purple-600 dark:text-purple-400" : "text-foreground"}`}>
+                      All Access {isAllAccessChecked ? "(Super Admin)" : ""}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Grants full unrestricted administrative privileges to all portal features
+                    </span>
                   </div>
-
-                  {/* Catalogue */}
-                  {(() => {
-                    const sec = MENU_SECTIONS.find((s) => s.id === "catalogue")!;
-                    const checked = isSectionChecked(sec);
-                    return (
-                      <div className="space-y-2.5">
-                        <div onClick={() => toggleSection(sec)} className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none">
-                          <CustomCheckbox checked={checked} />
-                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
-                        </div>
-                        <div className="ml-7 space-y-2">
-                          {sec.subItems?.map((sub) => {
-                            const subChecked = isSinglePermissionChecked(sub.id);
-                            return (
-                              <div key={sub.id} onClick={(e) => { e.stopPropagation(); toggleSinglePermission(sub.id); }} className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors">
-                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* People */}
-                  {(() => {
-                    const sec = MENU_SECTIONS.find((s) => s.id === "people")!;
-                    const checked = isSectionChecked(sec);
-                    return (
-                      <div className="space-y-2.5">
-                        <div onClick={() => toggleSection(sec)} className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none">
-                          <CustomCheckbox checked={checked} />
-                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
-                        </div>
-                        <div className="ml-7 space-y-2">
-                          {sec.subItems?.map((sub) => {
-                            const subChecked = isSinglePermissionChecked(sub.id);
-                            return (
-                              <div key={sub.id} onClick={(e) => { e.stopPropagation(); toggleSinglePermission(sub.id); }} className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors">
-                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* Authors */}
-                  {(() => {
-                    const sec = MENU_SECTIONS.find((s) => s.id === "authors")!;
-                    const checked = isSectionChecked(sec);
-                    return (
-                      <div className="space-y-2.5">
-                        <div onClick={() => toggleSection(sec)} className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none">
-                          <CustomCheckbox checked={checked} />
-                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
-                        </div>
-                        <div className="ml-7 space-y-2">
-                          {sec.subItems?.map((sub) => {
-                            const subChecked = isSinglePermissionChecked(sub.id);
-                            return (
-                              <div key={sub.id} onClick={(e) => { e.stopPropagation(); toggleSinglePermission(sub.id); }} className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors">
-                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
-                              </div>
-
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
                 </div>
-
-                {/* Right Column */}
+                <span
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all ${
+                    isAllAccessChecked
+                      ? "bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 border-purple-500/20 shadow-2xs"
+                      : "bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border-amber-500/20 shadow-2xs"
+                  }`}
+                  title={isAllAccessChecked ? "Super Admin" : "Admin User"}
+                >
+                  {isAllAccessChecked ? <Crown size={18} /> : <UserCog size={18} />}
+                </span>
+              </div>              {/* Permissions Checkbox Grid (Full Left Sidebar Items) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
+                {/* Left Column (Sections 0 to 3) */}
                 <div className="space-y-5">
-                  {/* Pricing & Promotions */}
-                  {(() => {
-                    const sec = MENU_SECTIONS.find((s) => s.id === "pricing_promotions")!;
+                  {MENU_SECTIONS.slice(0, 4).map((sec) => {
                     const checked = isSectionChecked(sec);
-
                     return (
-                      <div className="space-y-2.5">
+                      <div key={sec.id} className="space-y-2.5">
                         <div
                           onClick={() => toggleSection(sec)}
                           className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none"
                         >
                           <CustomCheckbox checked={checked} />
-                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
+                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>
+                            {sec.label}
+                          </span>
                         </div>
-
-                        <div className="ml-7 space-y-2">
-                          {sec.subItems?.map((sub) => {
-                            const subChecked = isSinglePermissionChecked(sub.id);
-                            return (
-                              <div
-                                key={sub.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleSinglePermission(sub.id);
-                                }}
-                                className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
-                              >
-                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
+                        {sec.subItems && (
+                          <div className="ml-7 space-y-2">
+                            {sec.subItems.map((sub) => {
+                              const subChecked = isSinglePermissionChecked(sub.id);
+                              return (
+                                <div
+                                  key={sub.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleSinglePermission(sub.id);
+                                  }}
+                                  className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
+                                >
+                                  <CustomCheckbox checked={subChecked} className="h-4 w-4" />
+                                  <span className={subChecked ? "text-foreground font-semibold" : ""}>
+                                    {sub.label}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     );
-                  })()}
-
-                  {/* Reports & Analytics */}
-                  {(() => {
-                    const sec = MENU_SECTIONS.find((s) => s.id === "reports_analytics")!;
-                    const checked = isSectionChecked(sec);
-
-                    return (
-                      <div className="space-y-2.5">
-                        <div
-                          onClick={() => toggleSection(sec)}
-                          className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none"
-                        >
-                          <CustomCheckbox checked={checked} />
-                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
-                        </div>
-
-                        <div className="ml-7 space-y-2">
-                          {sec.subItems?.map((sub) => {
-                            const subChecked = isSinglePermissionChecked(sub.id);
-                            return (
-                              <div
-                                key={sub.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleSinglePermission(sub.id);
-                                }}
-                                className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
-                              >
-                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* Marketing & Growth */}
-                  {(() => {
-                    const sec = MENU_SECTIONS.find((s) => s.id === "marketing_growth")!;
-                    const checked = isSectionChecked(sec);
-
-                    return (
-                      <div className="space-y-2.5">
-                        <div
-                          onClick={() => toggleSection(sec)}
-                          className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none"
-                        >
-                          <CustomCheckbox checked={checked} />
-                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
-                        </div>
-
-                        <div className="ml-7 space-y-2">
-                          {sec.subItems?.map((sub) => {
-                            const subChecked = isSinglePermissionChecked(sub.id);
-                            return (
-                              <div
-                                key={sub.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleSinglePermission(sub.id);
-                                }}
-                                className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
-                              >
-                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* Banners & Engagement */}
-                  {(() => {
-                    const sec = MENU_SECTIONS.find((s) => s.id === "banners_engagement")!;
-                    const checked = isSectionChecked(sec);
-                    return (
-                      <div className="space-y-2.5">
-                        <div onClick={() => toggleSection(sec)} className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none">
-                          <CustomCheckbox checked={checked} />
-                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>{sec.label}</span>
-                        </div>
-                        <div className="ml-7 space-y-2">
-                          {sec.subItems?.map((sub) => {
-                            const subChecked = isSinglePermissionChecked(sub.id);
-                            return (
-                              <div key={sub.id} onClick={(e) => { e.stopPropagation(); toggleSinglePermission(sub.id); }} className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors">
-                                <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                <span className={subChecked ? "text-foreground font-semibold" : ""}>{sub.label}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
+                  })}
                 </div>
 
+                {/* Right Column (Sections 4 onwards) */}
+                <div className="space-y-5">
+                  {MENU_SECTIONS.slice(4).map((sec) => {
+                    const checked = isSectionChecked(sec);
+                    return (
+                      <div key={sec.id} className="space-y-2.5">
+                        <div
+                          onClick={() => toggleSection(sec)}
+                          className="flex items-center gap-2.5 text-sm font-bold text-foreground cursor-pointer select-none"
+                        >
+                          <CustomCheckbox checked={checked} />
+                          <span className={checked ? "text-[var(--brand)]" : "text-foreground"}>
+                            {sec.label}
+                          </span>
+                        </div>
+                        {sec.subItems && (
+                          <div className="ml-7 space-y-2">
+                            {sec.subItems.map((sub) => {
+                              const subChecked = isSinglePermissionChecked(sub.id);
+                              return (
+                                <div
+                                  key={sub.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleSinglePermission(sub.id);
+                                  }}
+                                  className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
+                                >
+                                  <CustomCheckbox checked={subChecked} className="h-4 w-4" />
+                                  <span className={subChecked ? "text-foreground font-semibold" : ""}>
+                                    {sub.label}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Action Buttons */}

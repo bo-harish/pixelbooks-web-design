@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Outlet, useMatch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Outlet, useMatch, useMatches } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import {
   Search,
@@ -6,6 +6,7 @@ import {
   Download,
   Building2,
   User,
+  Feather,
   CheckCircle2,
   XCircle,
   Clock,
@@ -26,11 +27,34 @@ import {
 import { AppShell } from "@/components/app-shell";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-admin/publishers-authors")({
   component: PublishersAuthorsWrapper,
 });
+
+function EntityAvatar({ type }: { name?: string; type: EntityRole; avatarBg?: string }) {
+  if (type === "Publisher") {
+    return (
+      <div
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20 shadow-2xs transition-transform group-hover:scale-105"
+        title="Publisher"
+      >
+        <Building2 size={18} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs transition-transform group-hover:scale-105"
+      title="Author"
+    >
+      <Feather size={18} />
+    </div>
+  );
+}
 
 function PublishersAuthorsWrapper() {
   const isChildActive = useMatch({ from: "/pb-admin/publishers-authors/$id", shouldThrow: false });
@@ -383,7 +407,7 @@ function ManagePublisherAuthor() {
                 Authors
               </span>
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <User size={18} />
+                <Feather size={18} />
               </span>
             </div>
             <div className="mt-2">
@@ -409,10 +433,11 @@ function ManagePublisherAuthor() {
         </div>
 
         {/* Filter Toolbar matching pixelbooks style guide */}
-        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 md:flex-row md:flex-nowrap md:items-center md:justify-between md:gap-3">
-          {/* Search box */}
-          <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
-            <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3 min-w-[220px]">
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Left Group: Search Box + Role & Status Filters */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 flex-1 min-w-0">
+            {/* Search box */}
+            <label className="relative flex h-11 w-full sm:w-80 md:w-[380px] shrink-0 items-center rounded-lg border border-border bg-card px-3">
               <Search size={16} className="mr-2.5 text-muted-foreground shrink-0" />
               <input
                 type="text"
@@ -434,62 +459,44 @@ function ManagePublisherAuthor() {
               )}
             </label>
 
-            {/* Role Filter Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex h-11 min-w-[170px] items-center justify-between gap-2 rounded-lg border border-border bg-card px-3.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none">
-                  <span className="truncate">{roleFilter}</span>
-                  <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[180px]">
-                {["Publisher & Author", "Publisher", "Author"].map((role) => (
-                  <DropdownMenuItem
-                    key={role}
-                    onClick={() => {
-                      setRoleFilter(role);
-                      setCurrentPage(1);
-                    }}
-                    className={`cursor-pointer font-medium ${roleFilter === role ? "bg-secondary text-[var(--brand)] font-semibold" : ""}`}
-                  >
-                    {role}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Tightly Grouped Dropdowns: Pub/Auth + All Status */}
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              {/* Role Filter Dropdown */}
+              <DropdownSelect
+                value={roleFilter}
+                options={["Publisher & Author", "Publisher", "Author"]}
+                onChange={(v) => {
+                  setRoleFilter(v);
+                  setCurrentPage(1);
+                }}
+                searchable
+                searchPlaceholder="Search role..."
+                className="w-auto min-w-[170px]"
+              />
 
-            {/* Status Filter Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex h-11 min-w-[150px] items-center justify-between gap-2 rounded-lg border border-border bg-card px-3.5 text-sm font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none">
-                  <span className="truncate">{statusFilter}</span>
-                  <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[160px]">
-                {["All Status", "Approved", "Rejected", "Pending"].map((status) => (
-                  <DropdownMenuItem
-                    key={status}
-                    onClick={() => {
-                      setStatusFilter(status);
-                      setCurrentPage(1);
-                    }}
-                    className={`cursor-pointer font-medium ${statusFilter === status ? "bg-secondary text-[var(--brand)] font-semibold" : ""}`}
-                  >
-                    {status}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+              {/* Status Filter Dropdown */}
+              <DropdownSelect
+                value={statusFilter}
+                options={["All Status", "Approved", "Rejected", "Pending"]}
+                onChange={(v) => {
+                  setStatusFilter(v);
+                  setCurrentPage(1);
+                }}
+                searchable
+                searchPlaceholder="Search status..."
+                className="w-auto min-w-[170px]"
+              />
+            </div>
           </div>
 
           {/* Export Button */}
           <button
             onClick={handleExportCSV}
-            className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-sm font-semibold text-white shadow-xs transition-opacity hover:opacity-90 shrink-0 cursor-pointer"
+            className="flex h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold shadow-2xs transition-opacity hover:opacity-90 cursor-pointer shrink-0 whitespace-nowrap"
+            style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
           >
             <Download size={15} />
-            <span>Export</span>
+            <span>Export CSV</span>
           </button>
         </div>
 
@@ -531,12 +538,7 @@ function ManagePublisherAuthor() {
                       {/* Name + Role */}
                       <td className="py-4 px-4 md:px-6">
                         <div className="flex items-center gap-3">
-                          <div
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-2xs"
-                            style={{ background: item.avatarBg }}
-                          >
-                            {getInitials(item.name)}
-                          </div>
+                          <EntityAvatar name={item.name} type={item.type} avatarBg={item.avatarBg} />
                           <div>
                             <p className="font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
                               {item.name}
@@ -545,7 +547,7 @@ function ManagePublisherAuthor() {
                               {item.type === "Publisher" ? (
                                 <Building2 size={11} className="inline text-muted-foreground/80" />
                               ) : (
-                                <User size={11} className="inline text-muted-foreground/80" />
+                                <Feather size={11} className="inline text-muted-foreground/80" />
                               )}
                               <span>{item.type}</span>
                             </p>

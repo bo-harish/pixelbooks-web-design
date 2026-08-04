@@ -335,14 +335,14 @@ export function PopUpBannerPage() {
               <div className="overflow-x-auto w-full">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground">
-                      <th className="px-6 py-4 min-w-[280px]">Pop Up Banner</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Banner Duration</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Publisher</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Status</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap">Remove</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap">Preview</th>
-                      <th className="px-6 py-4 w-10"></th>
+                    <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      <th className="px-6 py-4 min-w-[280px] font-semibold">Pop Up Banner</th>
+                      <th className="px-6 py-4 whitespace-nowrap font-semibold">Banner Duration</th>
+                      <th className="px-6 py-4 whitespace-nowrap font-semibold">Publisher</th>
+                      <th className="px-6 py-4 whitespace-nowrap font-semibold">Enable/Disable</th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Remove</th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Preview</th>
+                      <th className="px-6 py-4 w-10 font-semibold"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/60">

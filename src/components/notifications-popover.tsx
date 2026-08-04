@@ -1,10 +1,14 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { Bell } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { notifications, groupByDate } from "@/lib/notifications-data";
 
 export function NotificationsPopover() {
+  const location = useLocation();
+  const isPBAdmin = location.pathname.startsWith("/pb-admin");
+  const viewAllPath = isPBAdmin ? "/pb-admin/notifications" : "/notifications";
+
   const preview = notifications.slice(0, 3);
   const groups = groupByDate(preview);
 
@@ -12,7 +16,7 @@ export function NotificationsPopover() {
     <Popover>
       <PopoverTrigger asChild>
         <button
-          className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
+          className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
           aria-label="Notifications"
         >
           <Bell size={18} />
@@ -64,7 +68,7 @@ export function NotificationsPopover() {
         </ScrollArea>
         <div className="flex justify-end border-t border-border px-5 py-3">
           <Link
-            to="/notifications"
+            to={viewAllPath}
             className="text-sm font-semibold"
             style={{ color: "var(--brand)" }}
           >

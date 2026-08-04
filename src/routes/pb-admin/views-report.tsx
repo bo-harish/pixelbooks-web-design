@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import {
   Search, ChevronDown, ChevronRight, Eye, Building2, Users, BookOpen,
   ArrowLeft, Upload, ScrollText, Table, Calendar, TrendingUp, BookMarked,
-  FolderOpen, UserCheck,
+  FolderOpen, UserCheck, Feather,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
@@ -111,16 +111,19 @@ function applyPresetDates(opt: string, setStart: (v: string) => void, setEnd: (v
 
 // ── Shared UI Components ──────────────────────────────────────────────────────
 
-function StatCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ size?: number }>; label: string; value: string }) {
+function StatCard({ icon: Icon, label, value, sublabel, iconClass }: { icon: React.ComponentType<{ size?: number }>; label: string; value: string; sublabel?: string; iconClass?: string }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-xs flex flex-col justify-between">
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0" style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}>
-          <Icon size={16} />
+    <div className="flex flex-col rounded-xl border border-border bg-card p-4 sm:p-5 transition-shadow hover:shadow-md justify-between min-h-[110px] sm:min-h-[120px]">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconClass || "bg-[var(--sidebar-highlight)] text-[var(--brand)]"}`}>
+          <Icon size={18} />
         </span>
-        <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       </div>
-      <p className="mt-3 text-2xl font-bold tracking-tight text-foreground">{value}</p>
+      <div>
+        <p className="text-2xl font-extrabold tracking-tight text-foreground">{value}</p>
+        {sublabel && <p className="mt-0.5 text-xs text-muted-foreground">{sublabel}</p>}
+      </div>
     </div>
   );
 }
@@ -378,9 +381,9 @@ function EntityReport({ type, onBack }: { type: "Publisher" | "Author"; onBack: 
         </FilterHeader>
 
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-          <StatCard icon={Eye}      label="Total Views"  value={totalViews.toLocaleString("en-IN")} />
-          <StatCard icon={BookOpen} label="Total Titles" value={totalTitles.toLocaleString("en-IN")} />
-          <StatCard icon={TrendingUp} label="Top Views"  value={topEntity ? topEntity.totalViews.toLocaleString("en-IN") : "0"} />
+          <StatCard icon={Eye}      label="Total Views"  value={totalViews.toLocaleString("en-IN")} sublabel={`Across ${totalTitles} title${totalTitles !== 1 ? 's' : ''}`} />
+          <StatCard icon={BookOpen} label="Total Titles" value={totalTitles.toLocaleString("en-IN")} sublabel="Linked to this entity" />
+          <StatCard icon={TrendingUp} label="Top Views"  value={topEntity ? topEntity.totalViews.toLocaleString("en-IN") : "0"} sublabel={topEntity ? topEntity.name : "No data"} />
         </div>
 
         <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs">
@@ -419,7 +422,7 @@ function EntityReport({ type, onBack }: { type: "Publisher" | "Author"; onBack: 
                     </td>
                     <td className="py-4 pr-4 text-center font-medium text-foreground">{row.totalTitles}</td>
                     <td className="py-4 pr-4 font-semibold text-foreground whitespace-nowrap">{row.totalViews.toLocaleString("en-IN")}</td>
-                    <td className="py-4 pr-6 text-right"><ChevronRight size={16} className="text-muted-foreground/60 transition-colors group-hover:text-foreground" /></td>
+                    <td className="py-4 pr-6 text-right"><span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground"><ChevronRight size={16} /></span></td>
                   </tr>
                 ))}
               </tbody>
@@ -521,10 +524,10 @@ function TitleReport({ onBack }: { onBack: () => void }) {
         </FilterHeader>
 
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard icon={Eye}        label="Total Views"     value={totalViews.toLocaleString("en-IN")} />
-          <StatCard icon={BookOpen}   label="Titles Shown"    value={filtered.length.toString()} />
-          <StatCard icon={TrendingUp} label="Avg Views/Title" value={filtered.length ? Math.round(totalViews / filtered.length).toString() : "0"} />
-          <StatCard icon={BookMarked} label="Top Views"       value={filtered.length ? Math.max(...filtered.map(r => r.totalViews)).toLocaleString("en-IN") : "0"} />
+          <StatCard icon={Eye}        label="Total Views"     value={totalViews.toLocaleString("en-IN")} sublabel="In current period" />
+          <StatCard icon={BookOpen}   label="Titles Shown"    value={filtered.length.toString()} sublabel="Matching filters" />
+          <StatCard icon={TrendingUp} label="Avg Views/Title" value={filtered.length ? Math.round(totalViews / filtered.length).toString() : "0"} sublabel="Per title average" />
+          <StatCard icon={BookMarked} label="Top Views"       value={filtered.length ? Math.max(...filtered.map(r => r.totalViews)).toLocaleString("en-IN") : "0"} sublabel="Highest single title" />
         </div>
 
         <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs">
@@ -728,10 +731,10 @@ function CategoryReport({ onBack }: { onBack: () => void }) {
         </FilterHeader>
 
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard icon={Eye}        label="Total Views"      value={totalViews.toLocaleString("en-IN")} />
-          <StatCard icon={FolderOpen} label="Categories"       value={categoryData.length.toString()} />
-          <StatCard icon={BookOpen}   label="Total Titles"     value={titleViewsData.length.toString()} />
-          <StatCard icon={TrendingUp} label="Top Category"     value={categoryData[0]?.totalViews.toLocaleString("en-IN") ?? "0"} />
+          <StatCard icon={Eye}        label="Total Views"      value={totalViews.toLocaleString("en-IN")} sublabel="All categories" />
+          <StatCard icon={FolderOpen} label="Categories"       value={categoryData.length.toString()} sublabel="Unique categories" />
+          <StatCard icon={BookOpen}   label="Total Titles"     value={titleViewsData.length.toString()} sublabel="Tracked titles" />
+          <StatCard icon={TrendingUp} label="Top Category"     value={categoryData[0]?.totalViews.toLocaleString("en-IN") ?? "0"} sublabel={categoryData[0]?.category ?? "No data"} />
         </div>
 
         <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs">
@@ -782,7 +785,7 @@ function CategoryReport({ onBack }: { onBack: () => void }) {
                     </td>
                     <td className="py-4 pr-4 text-center font-medium text-foreground">{row.titleCount}</td>
                     <td className="py-4 pr-4 font-semibold text-foreground whitespace-nowrap">{row.totalViews.toLocaleString("en-IN")}</td>
-                    <td className="py-4 pr-6 text-right"><ChevronRight size={16} className="text-muted-foreground/60 transition-colors group-hover:text-foreground" /></td>
+                    <td className="py-4 pr-6 text-right"><span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground"><ChevronRight size={16} /></span></td>
                   </tr>
                 ))}
               </tbody>
@@ -858,10 +861,10 @@ function ViewsDashboard({ onSelect }: { onSelect: (mode: Exclude<ReportMode, nul
       <div className="space-y-6 p-4 md:p-8">
         {/* Summary strip */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard icon={Eye}       label="Total Views"       value={totalViews.toLocaleString("en-IN")} />
-          <StatCard icon={BookOpen}  label="Tracked Titles"    value={titleViewsData.length.toString()} />
-          <StatCard icon={Building2} label="Publishers"        value={publishers.length.toString()} />
-          <StatCard icon={Users}     label="Authors"           value={authors.length.toString()} />
+          <StatCard icon={Eye}       label="Total Views"       value={totalViews.toLocaleString("en-IN")} sublabel="Across all titles" />
+          <StatCard icon={BookOpen}  label="Tracked Titles"    value={titleViewsData.length.toString()} sublabel="In the catalog" />
+          <StatCard icon={Building2} label="Publishers"        value={publishers.length.toString()} sublabel="Active publishers" iconClass="bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20" />
+          <StatCard icon={Feather}   label="Authors"           value={authors.length.toString()} sublabel="Registered authors" iconClass="bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20" />
         </div>
 
         {/* 4 report cards */}

@@ -268,13 +268,13 @@ export function LibraryAdminBannersPage() {
               <div className="overflow-x-auto w-full">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground">
-                      <th className="px-6 py-4 min-w-[240px]">Image</th>
-                      <th className="px-6 py-4 whitespace-nowrap">From Date</th>
-                      <th className="px-6 py-4 whitespace-nowrap">To Date</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Enable/Disable</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap">Remove</th>
-                      <th className="px-6 py-4 w-10"></th>
+                    <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      <th className="px-6 py-4 min-w-[240px] font-semibold">Image</th>
+                      <th className="px-6 py-4 whitespace-nowrap font-semibold">From Date</th>
+                      <th className="px-6 py-4 whitespace-nowrap font-semibold">To Date</th>
+                      <th className="px-6 py-4 whitespace-nowrap font-semibold">Enable/Disable</th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Remove</th>
+                      <th className="px-6 py-4 w-10 font-semibold"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/60">

@@ -16,8 +16,11 @@ import {
   Shield,
   BookOpen,
   Camera,
+  GraduationCap,
+  UserCog,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
@@ -217,6 +220,28 @@ const departments = [
 ];
 
 const PRESETS = ["MTD", "QTD", "YTD", "Last 30 days", "Custom"] as const;
+
+function UserTypeBadge({ type }: { type: "Student" | "Staff" | string }) {
+  if (type === "Staff" || type === "Library Staff") {
+    return (
+      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
+        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+          <UserCog size={9} />
+        </span>
+        <span className="text-[11px] font-medium text-foreground">Library Staff</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
+      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+        <GraduationCap size={9} />
+      </span>
+      <span className="text-[11px] font-medium text-foreground">Student</span>
+    </div>
+  );
+}
 
 function LibraryAdminUsersPage() {
   type Preset = (typeof PRESETS)[number];
@@ -553,10 +578,17 @@ function LibraryAdminUsersPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/80">
               <div className="relative h-20 w-20 shrink-0">
                 <div
-                  className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-2xl font-extrabold"
-                  style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+                  className={`flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md transition-colors ${
+                    editUserType === "Staff"
+                      ? "bg-indigo-500/15 text-indigo-600 dark:bg-indigo-500/25 dark:text-indigo-400"
+                      : "bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400"
+                  }`}
                 >
-                  {getUserInitials(editName || "U")}
+                  {editUserType === "Staff" ? (
+                    <UserCog size={36} strokeWidth={2} />
+                  ) : (
+                    <GraduationCap size={36} strokeWidth={2} />
+                  )}
                 </div>
                 <button
                   type="button"
@@ -573,30 +605,30 @@ function LibraryAdminUsersPage() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex h-14 w-full items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors hover:bg-secondary/40 focus:border-[var(--brand)] shadow-sm">
-                      <span>{editUserType}</span>
+                      <UserTypeBadge type={editUserType} />
                       <ChevronDown size={16} className="text-muted-foreground" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5">
+                  <DropdownMenuContent align="start" className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5 space-y-1">
                     <DropdownMenuItem
                       onClick={() => setEditUserType("Student")}
-                      className={`flex items-center px-4 py-2.5 text-sm transition-colors cursor-pointer rounded-lg ${
+                      className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
                         editUserType === "Student" 
-                          ? "bg-[var(--sidebar-highlight)] font-semibold text-foreground" 
+                          ? "bg-secondary font-semibold text-foreground" 
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
-                      Student
+                      <UserTypeBadge type="Student" />
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => setEditUserType("Staff")}
-                      className={`flex items-center px-4 py-2.5 text-sm transition-colors cursor-pointer rounded-lg ${
+                      className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
                         editUserType === "Staff" 
-                          ? "bg-[var(--sidebar-highlight)] font-semibold text-foreground" 
+                          ? "bg-secondary font-semibold text-foreground" 
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
-                      Staff
+                      <UserTypeBadge type="Staff" />
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -925,66 +957,34 @@ function LibraryAdminUsersPage() {
           {/* Left Side: Status, Type Dropdowns + Search Input */}
           <div className="flex flex-wrap items-center gap-3 flex-1 w-full lg:max-w-4xl">
             {/* Status Dropdown Filter */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex h-11 min-w-[150px] items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground cursor-pointer shrink-0">
-                  <span>{statusFilter === "All" ? "All Statuses" : `${statusFilter} Users`}</span>
-                  <ChevronDown size={15} className="text-muted-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="w-[150px] bg-card border border-border rounded-lg shadow-md z-50"
-              >
-                {(["All", "Active", "Inactive"] as const).map((tab) => (
-                  <DropdownMenuItem
-                    key={tab}
-                    onClick={() => {
-                      setStatusFilter(tab);
-                      setPage(1);
-                    }}
-                    className={`cursor-pointer text-sm font-medium px-4 py-2 hover:bg-secondary outline-none transition-colors ${
-                      statusFilter === tab
-                        ? "text-[var(--brand)] bg-secondary/40 font-medium"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    {tab}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <DropdownSelect
+              value={statusFilter === "All" ? "All Statuses" : `${statusFilter} Users`}
+              options={["All Statuses", "Active Users", "Inactive Users"]}
+              onChange={(label) => {
+                if (label === "All Statuses") setStatusFilter("All");
+                else if (label === "Active Users") setStatusFilter("Active");
+                else if (label === "Inactive Users") setStatusFilter("Inactive");
+                setPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search status..."
+              className="w-full sm:w-auto min-w-[150px]"
+            />
 
             {/* Type Dropdown Filter */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex h-11 min-w-[150px] items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground cursor-pointer shrink-0">
-                  <span>{typeFilter === "All" ? "All Types" : `${typeFilter}s`}</span>
-                  <ChevronDown size={15} className="text-muted-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="w-[150px] bg-card border border-border rounded-lg shadow-md z-50"
-              >
-                {(["All", "Staff", "Student"] as const).map((tab) => (
-                  <DropdownMenuItem
-                    key={tab}
-                    onClick={() => {
-                      setTypeFilter(tab);
-                      setPage(1);
-                    }}
-                    className={`cursor-pointer text-sm font-medium px-4 py-2 hover:bg-secondary outline-none transition-colors ${
-                      typeFilter === tab
-                        ? "text-[var(--brand)] bg-secondary/40 font-medium"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    {tab}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <DropdownSelect
+              value={typeFilter === "All" ? "All Types" : `${typeFilter}s`}
+              options={["All Types", "Staffs", "Students"]}
+              onChange={(label) => {
+                if (label === "All Types") setTypeFilter("All");
+                else if (label === "Staffs") setTypeFilter("Staff");
+                else if (label === "Students") setTypeFilter("Student");
+                setPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search type..."
+              className="w-full sm:w-auto min-w-[150px]"
+            />
 
             {/* Search Input Box */}
             <div className="relative w-full sm:w-60">
@@ -1097,8 +1097,18 @@ function LibraryAdminUsersPage() {
                       {/* Name & Avatar */}
                       <td className="py-3.5 pr-4 font-medium text-foreground">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-border font-bold text-xs text-slate-500 dark:text-muted-foreground shadow-inner border border-border">
-                            {getUserInitials(u.name)}
+                          <div
+                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full shadow-2xs border border-border/80 ${
+                              u.userType === "Staff"
+                                ? "bg-indigo-500/15 text-indigo-600 dark:bg-indigo-500/25 dark:text-indigo-400"
+                                : "bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400"
+                            }`}
+                          >
+                            {u.userType === "Staff" ? (
+                              <UserCog size={17} strokeWidth={2} />
+                            ) : (
+                              <GraduationCap size={17} strokeWidth={2} />
+                            )}
                           </div>
                           <div className="min-w-0">
                             <p className="font-semibold text-foreground truncate text-sm">
@@ -1110,8 +1120,8 @@ function LibraryAdminUsersPage() {
                       </td>
 
                       {/* User Type */}
-                      <td className="py-3.5 px-4 text-muted-foreground text-xs font-medium">
-                        {u.userType}
+                      <td className="py-3.5 px-4">
+                        <UserTypeBadge type={u.userType} />
                       </td>
 
                       {/* Borrows */}
@@ -1235,17 +1245,36 @@ function LibraryAdminUsersPage() {
 
               <div>
                 <span className="mb-1.5 block text-sm font-medium text-foreground">User Type</span>
-                <div className="relative">
-                  <select
-                    value={addUserType}
-                    onChange={(e) => setAddUserType(e.target.value as "Student" | "Staff")}
-                    className="h-14 w-full appearance-none rounded-xl border border-border bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)]"
-                  >
-                    <option value="Student">Student</option>
-                    <option value="Staff">Staff</option>
-                  </select>
-                  <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button type="button" className="flex h-14 w-full items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors hover:bg-secondary/40 focus:border-[var(--brand)] shadow-sm">
+                      <UserTypeBadge type={addUserType} />
+                      <ChevronDown size={16} className="text-muted-foreground" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5 space-y-1">
+                    <DropdownMenuItem
+                      onClick={() => setAddUserType("Student")}
+                      className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
+                        addUserType === "Student" 
+                          ? "bg-secondary font-semibold text-foreground" 
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      <UserTypeBadge type="Student" />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setAddUserType("Staff")}
+                      className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
+                        addUserType === "Staff" 
+                          ? "bg-secondary font-semibold text-foreground" 
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      <UserTypeBadge type="Staff" />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div>

@@ -13,14 +13,15 @@ import {
   CircleOff,
   Building2,
   User,
-  Eye,
   Tag,
   HardDrive,
   Users,
   BookOpen,
+  Feather,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
+import { BookCover } from "@/components/ui/book-cover";
 import { seedBooks, type Book } from "@/lib/catalogue-data";
 import {
   getBundleById,
@@ -186,13 +187,12 @@ function OverlappingCovers({ cover, initials }: { cover: string; initials: strin
         }}
       />
       {/* Front book */}
-      <div
-        className="absolute top-2 left-0 flex h-56 w-38 flex-col items-center justify-center rounded-xl text-base font-black text-white shadow-xl border border-white/20"
-        style={{ background: cover }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10 rounded-xl" />
-        <span className="relative z-10 text-lg font-extrabold tracking-wider">{initials}</span>
-      </div>
+      <BookCover
+        initials={initials}
+        coverGradient={cover}
+        size="xl"
+        className="absolute top-2 left-0 h-56 w-38 shadow-xl"
+      />
     </div>
   );
 }
@@ -370,24 +370,17 @@ export function AdminBundleDetailPage() {
                   {/* Entity Chip Row */}
                   <div className="flex flex-wrap items-center gap-2.5">
                     {bundle.entityRole === "Author" ? (
-                      <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-3 py-1 text-xs font-medium text-foreground shadow-2xs">
-                        <span
-                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
-                          style={{ background: bundle.cover }}
-                        >
-                          {bundle.entityName
-                            .split(" ")
-                            .filter(Boolean)
-                            .map((n) => n[0])
-                            .join("")
-                            .slice(0, 2)
-                            .toUpperCase()}
+                      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-3 py-1 text-xs font-semibold text-foreground shadow-2xs">
+                        <span className="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                          <Feather size={10} />
                         </span>
                         <span>{bundle.entityName}</span>
                       </div>
                     ) : (
-                      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-                        <Building2 size={13} className="shrink-0 text-muted-foreground/80" />
+                      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-3 py-1 text-xs font-semibold text-foreground shadow-2xs">
+                        <span className="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+                          <Building2 size={10} />
+                        </span>
                         <span>{bundle.entityName}</span>
                       </div>
                     )}
@@ -450,17 +443,6 @@ export function AdminBundleDetailPage() {
 
                   {/* Actions */}
                   <div className="pt-2 flex flex-wrap items-center gap-3">
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs"
-                      style={{
-                        backgroundColor: "var(--brand)",
-                        color: "var(--brand-contrast)",
-                      }}
-                    >
-                      <Eye size={16} />
-                      Preview Bundle
-                    </button>
                     <CopyBundleUrlButton bundleId={bundle.id} />
                   </div>
                 </div>
@@ -479,13 +461,13 @@ export function AdminBundleDetailPage() {
                   className="w-40 shrink-0 rounded-xl border border-border/70 bg-card p-3 flex flex-col justify-between transition-shadow hover:shadow-sm"
                 >
                   <div className="space-y-3">
-                    <div
-                      className="mx-auto flex h-40 w-30 items-center justify-center rounded-lg text-xs font-bold text-white shadow-sm ring-1 ring-black/10 overflow-hidden relative"
-                      style={{ background: b.cover }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-                      <span className="relative z-10 text-xs font-extrabold tracking-wider">{b.initials}</span>
-                    </div>
+                    <BookCover
+                      initials={b.initials}
+                      coverGradient={b.cover}
+                      title={b.title}
+                      size="lg"
+                      className="mx-auto"
+                    />
                     <div className="space-y-0.5">
                       <p className="truncate text-xs font-semibold text-foreground">{b.title}</p>
                       <p className="text-[10px] text-muted-foreground truncate">{b.author}</p>

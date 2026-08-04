@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Switch } from "@/components/ui/switch";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -247,28 +248,35 @@ export function SitemapPage() {
       subtitle="Configure XML sitemap index rules, priority weights, update frequencies, and crawling status for search engine bots."
     >
       <div className="p-4 sm:p-6 md:p-8 space-y-6 max-w-[1600px] mx-auto">
-        {/* Top Control Bar matching screenshot design & PixelBooks Style Guide */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-2xs">
-          {/* Search Bar */}
-          <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3.5 shadow-none transition-colors focus-within:border-[var(--brand)]">
-            <Search size={16} className="mr-2 text-muted-foreground shrink-0" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search"
-              className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-            />
-          </label>
+        {/* Search Bar & View Sitemap Link Outside White Box */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+          {/* Search Bar White Box */}
+          <div className="flex-1 rounded-xl border border-border bg-card p-4 shadow-2xs">
+            <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-3.5 shadow-none transition-colors focus-within:border-[var(--brand)]">
+              <Search size={16} className="mr-2 text-muted-foreground shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                placeholder="Search"
+                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              />
+            </label>
+          </div>
 
-          {/* View Sitemap Button */}
-          <button
-            onClick={() => setIsViewSitemapOpen(true)}
-            className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-6 text-sm font-semibold text-white shadow-2xs transition-opacity hover:opacity-90 shrink-0 cursor-pointer"
-          >
-            <FileCode size={16} />
-            <span>View Sitemap</span>
-          </button>
+          {/* View Sitemap Link matching pa-1 style */}
+          <div className="flex items-center justify-end px-1 sm:px-0">
+            <button
+              type="button"
+              onClick={() => setIsViewSitemapOpen(true)}
+              className="inline-flex items-center text-xs font-semibold text-[var(--brand)] hover:underline transition-all group shrink-0 cursor-pointer"
+            >
+              <span>View Sitemap</span>
+            </button>
+          </div>
         </div>
 
         {/* Sitemap Table Container */}
@@ -276,12 +284,12 @@ export function SitemapPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground">
-                  <th className="px-6 py-4">Url</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Category</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Priority</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Change Frequency</th>
-                  <th className="px-6 py-4 text-center whitespace-nowrap">Status</th>
+                <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <th className="px-6 py-4 font-semibold">Url</th>
+                  <th className="px-6 py-4 whitespace-nowrap font-semibold">Category</th>
+                  <th className="px-6 py-4 whitespace-nowrap font-semibold">Priority</th>
+                  <th className="px-6 py-4 whitespace-nowrap font-semibold">Change Frequency</th>
+                  <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Enable/Disable</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
@@ -328,46 +336,24 @@ export function SitemapPage() {
 
                       {/* Priority Dropdown Select Column */}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="flex h-10 w-24 items-center justify-between rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground hover:bg-secondary/40 focus:outline-none cursor-pointer">
-                            <span>{item.priority}</span>
-                            <ChevronDown size={14} className="text-muted-foreground shrink-0" />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="w-24 bg-card border-border shadow-md max-h-48 overflow-y-auto">
-                            {PRIORITIES.map((p) => (
-                              <DropdownMenuItem
-                                key={p}
-                                onClick={() => handleChangePriority(item.id, p)}
-                                className={`cursor-pointer text-xs font-medium ${item.priority === p ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] font-semibold" : ""
-                                  }`}
-                              >
-                                {p}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <DropdownSelect
+                          value={item.priority}
+                          options={PRIORITIES}
+                          onChange={(p) => handleChangePriority(item.id, p)}
+                          className="w-24 min-w-0"
+                          align="left"
+                        />
                       </td>
 
                       {/* Change Frequency Dropdown Select Column */}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="flex h-10 w-32 items-center justify-between rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground hover:bg-secondary/40 focus:outline-none cursor-pointer">
-                            <span>{item.changeFrequency}</span>
-                            <ChevronDown size={14} className="text-muted-foreground shrink-0" />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="w-32 bg-card border-border shadow-md">
-                            {FREQUENCIES.map((freq) => (
-                              <DropdownMenuItem
-                                key={freq}
-                                onClick={() => handleChangeFrequency(item.id, freq)}
-                                className={`cursor-pointer text-xs font-medium ${item.changeFrequency === freq ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] font-semibold" : ""
-                                  }`}
-                              >
-                                {freq}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <DropdownSelect
+                          value={item.changeFrequency}
+                          options={FREQUENCIES}
+                          onChange={(freq) => handleChangeFrequency(item.id, freq as any)}
+                          className="w-32 min-w-0"
+                          align="left"
+                        />
                       </td>
 
                       {/* Status Switch Toggle Column */}

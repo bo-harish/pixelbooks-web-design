@@ -1,11 +1,13 @@
-import { useState, useMemo } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, Link, useNavigate, useMatch, Outlet } from "@tanstack/react-router";
 import {
   ArrowLeft,
+  ArrowRight,
   Copy,
   Check,
   Building2,
   User,
+  Feather,
   CheckCircle2,
   XCircle,
   Clock,
@@ -17,13 +19,13 @@ import {
   Mail,
   Phone,
   Users,
-  Search,
   ExternalLink,
   ShieldCheck,
   DollarSign,
   ShoppingBag,
   CreditCard,
   Percent,
+  Calendar,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -102,6 +104,32 @@ const MOCK_ACCOUNTS_MAP: Record<string, AccountDetails> = {
     royaltyPayable: "₹45.00",
     lastPaymentDate: "22 Jul 2026",
     totalPublished: 11,
+  },
+  "pa-2": {
+    id: "pa-2",
+    name: "qa test pub",
+    type: "Publisher",
+    gstNumber: "27AAACD9988E1Z4",
+    panCard: "QATEST1234P",
+    commissionRate: "16%",
+    profileUrl: "https://pixelbooksapp.com/qa-test-pub",
+    status: "Approved",
+    accountHolderName: "QA Test Pub Bank",
+    bankAccountNumber: "554433221100",
+    ifscCode: "SBIN0004321",
+    bankName: "STATE BANK OF INDIA, Main Branch",
+    addressLine1: "Tech Park Phase 1",
+    addressLine2: "Infopark",
+    city: "Kochi",
+    state: "Kerala",
+    pincode: "682042",
+    email: "qatestpub@pixelbooks.org",
+    phone: "9876543210",
+    totalSales: "₹2,450.00",
+    totalPurchased: 8,
+    royaltyPayable: "₹392.00",
+    lastPaymentDate: "28 Jul 2026",
+    totalPublished: 14,
   },
   "pa-1": {
     id: "pa-1",
@@ -219,24 +247,36 @@ function PublisherAuthorDetailPage() {
 
   const [account, setAccount] = useState<AccountDetails>(initialData);
   const [copied, setCopied] = useState(false);
-  const [salesTimeframe, setSalesTimeframe] = useState("Monthly");
-  const [purchasedTimeframe, setPurchasedTimeframe] = useState("Monthly");
-  const [publishedTimeframe, setPublishedTimeframe] = useState("Monthly");
 
-  // Title Search query
-  const [titleSearch, setTitleSearch] = useState("");
+  // Date Range Filter States matching margin-report
+  const [presetFilter, setPresetFilter] = useState("MTD");
+  const [presetFilterOpen, setPresetFilterOpen] = useState(false);
+  const [startDate, setStartDate] = useState("2026-07-01");
+  const [endDate, setEndDate] = useState("2026-07-31");
 
-  const filteredTitles = useMemo(() => {
-    if (!titleSearch.trim()) return MOCK_TITLES;
-    const q = titleSearch.toLowerCase();
-    return MOCK_TITLES.filter(
-      (t) =>
-        t.title.toLowerCase().includes(q) ||
-        t.category.toLowerCase().includes(q) ||
-        t.author.toLowerCase().includes(q) ||
-        t.isbn.toLowerCase().includes(q)
-    );
-  }, [titleSearch]);
+  const isTitlesActive = useMatch({ from: "/pb-admin/publishers-authors/$id/titles", shouldThrow: false });
+  if (isTitlesActive) {
+    return <Outlet />;
+  }
+
+  const handlePresetSelect = (opt: string) => {
+    setPresetFilter(opt);
+    setPresetFilterOpen(false);
+    if (opt === "MTD") {
+      setStartDate("2026-07-01");
+      setEndDate("2026-07-31");
+    } else if (opt === "QTD") {
+      setStartDate("2026-04-01");
+      setEndDate("2026-07-31");
+    } else if (opt === "YTD") {
+      setStartDate("2026-01-01");
+      setEndDate("2026-07-31");
+    } else if (opt === "Last 30 Days") {
+      setStartDate("2026-07-01");
+      setEndDate("2026-07-31");
+    }
+  };
+
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(account.profileUrl);
@@ -279,131 +319,165 @@ function PublisherAuthorDetailPage() {
         </div>
 
         {/* Top Profile Banner Card */}
-        <div className="rounded-xl border border-border bg-card p-6 shadow-xs transition-shadow hover:shadow-md">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            {/* Entity Avatar & Core Details */}
-            <div className="flex items-start gap-4">
-              <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-border bg-[var(--sidebar-highlight)] text-[var(--brand)] shadow-inner">
-                {account.type === "Publisher" ? (
-                  <Building2 size={30} />
-                ) : (
-                  <User size={30} />
-                )}
-                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brand)] text-white text-[9px] font-bold ring-2 ring-card">
-                  {account.type[0]}
-                </span>
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-2xs transition-shadow hover:shadow-md">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            {/* Left Block: Circular Avatar + Name + Metadata */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              {/* Circular Soft Avatar matching role colors */}
+              <div
+                className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-2xs border ${
+                  account.type === "Publisher"
+                    ? "bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border-indigo-500/20"
+                    : "bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-500/20"
+                }`}
+              >
+                {account.type === "Publisher" ? <Building2 size={28} /> : <Feather size={28} />}
               </div>
 
               <div className="space-y-2">
+                {/* Name, Role & Status Dropdown */}
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 className="text-lg font-extrabold text-foreground">
+                  <h1 className="text-xl font-extrabold text-foreground tracking-tight">
                     {account.name}
                   </h1>
-                  <span className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
-                    {account.type === "Publisher" ? <Building2 size={11} /> : <User size={11} />}
-                    {account.type}
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground">
+                    {account.type === "Publisher" ? <Building2 size={12} /> : <Feather size={12} />}
+                    <span>{account.type}</span>
+                  </span>
+
+                  {/* Status Dropdown Pill */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className={`ml-1 flex h-7 items-center justify-between gap-1.5 rounded-full px-3 text-[11px] font-bold shadow-2xs transition-all outline-none cursor-pointer border ${account.status === "Approved"
+                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+                          : account.status === "Rejected"
+                            ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
+                            : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
+                          }`}
+                      >
+                        <div className="flex items-center gap-1">
+                          {account.status === "Approved" && <CheckCircle2 size={12} />}
+                          {account.status === "Rejected" && <XCircle size={12} />}
+                          {account.status === "Pending" && <Clock size={12} />}
+                          <span>{account.status}</span>
+                        </div>
+                        <ChevronDown size={12} className="opacity-70" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-36">
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange("Pending")}
+                        className="cursor-pointer text-xs font-semibold text-amber-600 dark:text-amber-400 gap-2"
+                      >
+                        <Clock size={14} />
+                        <span>Pending</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange("Approved")}
+                        className="cursor-pointer text-xs font-semibold text-emerald-600 dark:text-emerald-400 gap-2"
+                      >
+                        <CheckCircle2 size={14} />
+                        <span>Approved</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleStatusChange("Rejected")}
+                        className="cursor-pointer text-xs font-semibold text-rose-600 dark:text-rose-400 gap-2"
+                      >
+                        <XCircle size={14} />
+                        <span>Rejected</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                {/* Quick Contact & Location Info Line matching reference screenshot */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground font-medium">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Mail size={13} className="text-muted-foreground/80" />
+                    <span>{account.email}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Phone size={13} className="text-muted-foreground/80" />
+                    <span>+91 {account.phone}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <MapPin size={13} className="text-muted-foreground/80" />
+                    <span>{account.city}, {account.state}</span>
                   </span>
                 </div>
 
-                {/* GST, PAN & Commission Chips */}
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-3 py-1">
-                    <ShieldCheck size={13} className="text-muted-foreground" />
+                {/* GST & PAN row */}
+                <div className="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
+                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-2.5 py-0.5">
+                    <ShieldCheck size={12} className="text-muted-foreground" />
                     <span className="text-muted-foreground font-medium">GST:</span>
-                    <span className="font-bold text-foreground font-mono">{account.gstNumber}</span>
+                    <span className="font-bold text-foreground font-mono text-[11px]">{account.gstNumber}</span>
                   </div>
 
-                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-3 py-1">
-                    <CreditCard size={13} className="text-muted-foreground" />
+                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-2.5 py-0.5">
+                    <CreditCard size={12} className="text-muted-foreground" />
                     <span className="text-muted-foreground font-medium">PAN:</span>
-                    <span className="font-bold text-foreground font-mono">{account.panCard}</span>
-                  </div>
-
-                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-emerald-700 dark:text-emerald-400">
-                    <Percent size={13} />
-                    <span className="font-medium">Commission Rate:</span>
-                    <span className="font-bold">{account.commissionRate}</span>
+                    <span className="font-bold text-foreground font-mono text-[11px]">{account.panCard}</span>
                   </div>
                 </div>
 
-                {/* Profile URL Link & Copy Action */}
-                <div className="pt-1 flex flex-wrap items-center gap-2 text-xs">
-                  <span className="text-muted-foreground font-medium">Profile URL:</span>
-                  <div className="flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1">
+                {/* Profile URL on a dedicated new line */}
+                <div className="flex flex-wrap items-center gap-2 text-xs pt-0.5">
+                  <span className="text-muted-foreground font-medium text-[11.5px]">Profile URL:</span>
+                  <div className="flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 shadow-2xs">
                     <a
                       href={account.profileUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="font-mono text-xs font-medium text-[var(--brand)] hover:underline truncate max-w-[280px] sm:max-w-md"
+                      className="font-mono text-[11px] font-medium text-[var(--brand)] hover:underline truncate max-w-[280px] sm:max-w-md"
                     >
                       {account.profileUrl}
                     </a>
                     <button
                       onClick={handleCopyUrl}
-                      className="inline-flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer transition-colors"
+                      className="inline-flex h-4 w-4 items-center justify-center rounded-md text-muted-foreground hover:text-foreground cursor-pointer"
                       title="Copy Profile URL"
                     >
-                      {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
+                      {copied ? <Check size={11} className="text-emerald-500" /> : <Copy size={11} />}
                     </button>
                     <a
                       href={account.profileUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted"
+                      className="inline-flex h-4 w-4 items-center justify-center rounded-md text-muted-foreground hover:text-foreground"
                       title="Open Profile URL"
                     >
-                      <ExternalLink size={12} />
+                      <ExternalLink size={11} />
                     </a>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Status Dropdown Button on Top Right */}
-            <div className="shrink-0 pt-2 lg:pt-0">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    className={`flex h-10 items-center justify-between gap-2.5 rounded-full px-4 text-xs font-bold shadow-xs transition-all outline-none cursor-pointer border ${account.status === "Approved"
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
-                        : account.status === "Rejected"
-                          ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
-                          : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
-                      }`}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      {account.status === "Approved" && <CheckCircle2 size={15} />}
-                      {account.status === "Rejected" && <XCircle size={15} />}
-                      {account.status === "Pending" && <Clock size={15} />}
-                      <span>{account.status}</span>
-                    </div>
-                    <ChevronDown size={14} className="opacity-70" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-36">
-                  <DropdownMenuItem
-                    onClick={() => handleStatusChange("Pending")}
-                    className="cursor-pointer text-xs font-semibold text-amber-600 dark:text-amber-400 gap-2"
-                  >
-                    <Clock size={14} />
-                    <span>Pending</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => handleStatusChange("Approved")}
-                    className="cursor-pointer text-xs font-semibold text-emerald-600 dark:text-emerald-400 gap-2"
-                  >
-                    <CheckCircle2 size={14} />
-                    <span>Approved</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => handleStatusChange("Rejected")}
-                    className="cursor-pointer text-xs font-semibold text-rose-600 dark:text-rose-400 gap-2"
-                  >
-                    <XCircle size={14} />
-                    <span>Rejected</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            {/* Right Block: Active Commission Rate Box matching reference screenshot */}
+            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 dark:bg-emerald-500/10 p-4.5 min-w-[260px] shrink-0">
+              <div className="flex items-center gap-3.5">
+                {/* Teal percent icon box */}
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-teal-600 text-white shadow-2xs">
+                  <Percent size={20} strokeWidth={2.5} />
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 block">
+                    Active Commission Rate
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-black text-foreground tracking-tight">
+                      {account.commissionRate}
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300">
+                      <CheckCircle2 size={10} />
+                      <span>DEFAULT BASE</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -411,207 +485,292 @@ function PublisherAuthorDetailPage() {
         {/* 3 Information Cards Grid */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           {/* Bank Details Card */}
-          <div className="rounded-xl border border-border bg-card p-5 space-y-3.5 shadow-2xs">
-            <div className="flex items-center gap-2 border-b border-border/80 pb-2.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <Landmark size={15} />
-              </span>
-              <h2 className="text-sm font-bold text-foreground">Bank Details</h2>
-            </div>
-            <div className="space-y-2.5 text-xs">
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                <span className="text-muted-foreground block text-[11px] font-medium">Account Holder Name</span>
-                <span className="font-bold text-foreground">{account.accountHolderName}</span>
+          <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div>
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                  <Landmark size={22} />
+                </span>
+                <div>
+                  <h2 className="text-sm font-extrabold text-foreground leading-tight">Bank Details</h2>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">Primary Bank Account</p>
+                </div>
               </div>
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                <span className="text-muted-foreground block text-[11px] font-medium">Bank Account Number</span>
-                <span className="font-bold text-foreground font-mono text-sm">{account.bankAccountNumber}</span>
-              </div>
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                <span className="text-muted-foreground block text-[11px] font-medium">IFSC Code</span>
-                <span className="font-bold text-foreground font-mono">{account.ifscCode}</span>
-              </div>
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                <span className="text-muted-foreground block text-[11px] font-medium">Bank Name</span>
-                <span className="font-bold text-foreground">{account.bankName}</span>
+
+              {/* Inner Gray Block */}
+              <div className="rounded-xl border border-border/50 bg-muted/40 p-4 space-y-3.5">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    Bank Name & Branch
+                  </span>
+                  <span className="text-sm font-extrabold text-foreground mt-0.5 block">{account.bankName}</span>
+                </div>
+
+                <div className="border-t border-border/50 pt-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    Account Holder Name
+                  </span>
+                  <span className="text-sm font-extrabold text-foreground mt-0.5 block">{account.accountHolderName}</span>
+                </div>
+
+                <div className="border-t border-border/50 pt-3 grid grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      Account Number
+                    </span>
+                    <span className="text-sm font-extrabold font-mono text-foreground mt-0.5 block">
+                      {account.bankAccountNumber}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      IFSC Code
+                    </span>
+                    <span className="text-sm font-extrabold font-mono text-foreground mt-0.5 block">
+                      {account.ifscCode}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Address Card */}
-          <div className="rounded-xl border border-border bg-card p-5 space-y-3.5 shadow-2xs">
-            <div className="flex items-center gap-2 border-b border-border/80 pb-2.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <MapPin size={15} />
-              </span>
-              <h2 className="text-sm font-bold text-foreground">Address</h2>
-            </div>
-            <div className="space-y-2.5 text-xs">
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                <span className="text-muted-foreground block text-[11px] font-medium">Address Line 1</span>
-                <span className="font-bold text-foreground">{account.addressLine1}</span>
-              </div>
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                <span className="text-muted-foreground block text-[11px] font-medium">Address Line 2</span>
-                <span className="font-bold text-foreground">{account.addressLine2}</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                  <span className="text-muted-foreground block text-[11px] font-medium">City</span>
-                  <span className="font-bold text-foreground">{account.city}</span>
-                </div>
-                <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                  <span className="text-muted-foreground block text-[11px] font-medium">State</span>
-                  <span className="font-bold text-foreground">{account.state}</span>
+          <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div>
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/12 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 shadow-2xs">
+                  <MapPin size={22} />
+                </span>
+                <div>
+                  <h2 className="text-sm font-extrabold text-foreground leading-tight">Registered Address</h2>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">{account.city}, {account.state}</p>
                 </div>
               </div>
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-2.5">
-                <span className="text-muted-foreground block text-[11px] font-medium">Pincode</span>
-                <span className="font-bold text-foreground font-mono">{account.pincode}</span>
+
+              {/* Inner Gray Block */}
+              <div className="rounded-xl border border-border/50 bg-muted/40 p-4 space-y-3.5">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    Street Address
+                  </span>
+                  <span className="text-sm font-extrabold text-foreground mt-0.5 block">
+                    {account.addressLine1} {account.addressLine2 !== "-" ? `, ${account.addressLine2}` : ""}
+                  </span>
+                </div>
+
+                <div className="border-t border-border/50 pt-3 grid grid-cols-3 gap-2">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      City
+                    </span>
+                    <span className="text-xs font-extrabold text-foreground mt-0.5 block">{account.city}</span>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      State
+                    </span>
+                    <span className="text-xs font-extrabold text-foreground mt-0.5 block">{account.state}</span>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      Pincode
+                    </span>
+                    <span className="text-xs font-extrabold font-mono text-foreground mt-0.5 block">{account.pincode}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Contact Details Card */}
-          <div className="rounded-xl border border-border bg-card p-5 space-y-3.5 shadow-2xs">
-            <div className="flex items-center gap-2 border-b border-border/80 pb-2.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <Mail size={15} />
-              </span>
-              <h2 className="text-sm font-bold text-foreground">Contact Details</h2>
-            </div>
-            <div className="space-y-3 text-xs">
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-3 space-y-1">
-                <span className="text-muted-foreground block text-[11px] font-medium flex items-center gap-1.5">
-                  <Mail size={12} className="text-muted-foreground" /> Email Address
+          <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div>
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 shadow-2xs">
+                  <Mail size={22} />
                 </span>
-                <a
-                  href={`mailto:${account.email}`}
-                  className="font-bold text-foreground hover:text-[var(--brand)] underline underline-offset-2 break-all block"
-                >
-                  {account.email}
-                </a>
+                <div>
+                  <h2 className="text-sm font-extrabold text-foreground leading-tight">Contact Information</h2>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">Primary Representative</p>
+                </div>
               </div>
-              <div className="rounded-lg border border-border/40 bg-muted/30 p-3 space-y-1">
-                <span className="text-muted-foreground block text-[11px] font-medium flex items-center gap-1.5">
-                  <Phone size={12} className="text-muted-foreground" /> Phone Number
-                </span>
-                <span className="font-bold text-foreground font-mono text-sm">{account.phone}</span>
+
+              {/* Inner Gray Block */}
+              <div className="rounded-xl border border-border/50 bg-muted/40 p-4 space-y-3.5">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    Email Address
+                  </span>
+                  <a
+                    href={`mailto:${account.email}`}
+                    className="text-sm font-extrabold text-foreground hover:text-[var(--brand)] underline underline-offset-2 break-all mt-0.5 block"
+                  >
+                    {account.email}
+                  </a>
+                </div>
+
+                <div className="border-t border-border/50 pt-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                    Phone Number
+                  </span>
+                  <span className="text-sm font-extrabold font-mono text-foreground mt-0.5 block">{account.phone}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stat Cards Row (4 Cards) matching Style Guide Section 1 */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Royalty Payable Section (Placed Above Stat Boxes) */}
+        <div className="rounded-xl border border-border bg-card p-5 md:p-6 shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                <Landmark size={24} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    {account.type === "Publisher" ? "Margin Payable" : "Royalty Payable"}
+                  </span>
+                  <span className="inline-flex items-center rounded-full bg-emerald-500/12 px-2.5 py-0.5 text-[10.5px] font-bold text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                    Payable
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-baseline gap-3 mt-1">
+                  <span className="text-3xl font-extrabold text-foreground">{account.royaltyPayable}</span>
+                  <span className="text-xs text-muted-foreground">
+                    Last payment date: <strong className="text-foreground">{account.lastPaymentDate}</strong>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <Link
+              to="/pb-admin/margin-report"
+              className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-xs font-bold shadow-2xs transition-opacity hover:opacity-90 cursor-pointer shrink-0 self-start sm:self-center"
+              style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+            >
+              <CreditCard size={15} />
+              <span>View Margin Report</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Date Range Filter Bar (Outside Filter matching margin-report) */}
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 md:flex-row md:items-center md:justify-between shadow-2xs">
+          <div>
+            <h3 className="text-sm font-bold text-foreground">Performance Overview</h3>
+            <p className="text-xs text-muted-foreground">Filter sales & publishing metrics by date range</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* MTD Preset Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setPresetFilterOpen((v) => !v)}
+                className="flex h-11 min-w-[130px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-3.5 text-sm font-medium transition-colors hover:bg-secondary/50 cursor-pointer shadow-2xs"
+              >
+                <span>{presetFilter}</span>
+                <ChevronDown size={15} className="text-muted-foreground shrink-0" />
+              </button>
+              {presetFilterOpen && (
+                <div className="absolute right-0 z-30 mt-2 w-44 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1 text-sm">
+                  {["MTD", "QTD", "YTD", "Last 30 Days", "Custom"].map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => handlePresetSelect(opt)}
+                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${opt === presetFilter ? "font-bold text-[var(--brand)] bg-secondary/60" : "text-foreground"
+                        }`}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Date Pickers */}
+            <div className="flex items-center gap-2">
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-3 shadow-2xs">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setPresetFilter("Custom");
+                  }}
+                  className="w-full bg-transparent text-sm outline-none text-foreground cursor-pointer"
+                />
+              </label>
+              <span className="text-xs font-medium text-muted-foreground">to</span>
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-3 shadow-2xs">
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setPresetFilter("Custom");
+                  }}
+                  className="w-full bg-transparent text-sm outline-none text-foreground cursor-pointer"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Stat Cards Row (3 Redesigned Cards matching requested style) */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {/* Total Sales */}
           <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
-            <div className="flex items-center justify-between">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <BookOpen size={18} />
-              </span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex h-7 items-center gap-1 rounded-lg border border-border bg-card px-2.5 text-[11px] font-semibold text-foreground hover:bg-secondary outline-none cursor-pointer">
-                    <span>{salesTimeframe}</span>
-                    <ChevronDown size={12} className="text-muted-foreground" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {["Monthly", "Quarterly", "Yearly"].map((t) => (
-                    <DropdownMenuItem key={t} onClick={() => setSalesTimeframe(t)} className="text-xs font-medium cursor-pointer">
-                      {t}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className="mt-4">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
+            <div className="flex items-start justify-between gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Total Sales
               </span>
-              <span className="text-2xl font-extrabold text-foreground">{account.totalSales}</span>
-            </div>
-          </div>
-
-          {/* Total eBooks Purchased */}
-          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
-            <div className="flex items-center justify-between">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <ShoppingBag size={18} />
-              </span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex h-7 items-center gap-1 rounded-lg border border-border bg-card px-2.5 text-[11px] font-semibold text-foreground hover:bg-secondary outline-none cursor-pointer">
-                    <span>{purchasedTimeframe}</span>
-                    <ChevronDown size={12} className="text-muted-foreground" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {["Monthly", "Quarterly", "Yearly"].map((t) => (
-                    <DropdownMenuItem key={t} onClick={() => setPurchasedTimeframe(t)} className="text-xs font-medium cursor-pointer">
-                      {t}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className="mt-4">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
-                Total eBooks Purchased
-              </span>
-              <span className="text-2xl font-extrabold text-foreground">{account.totalPurchased}</span>
-            </div>
-          </div>
-
-          {/* Royalty Payable */}
-          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
-            <div className="flex items-center justify-between">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600">
-                <Landmark size={18} />
-              </span>
-              <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-                Payable
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                <DollarSign size={22} />
               </span>
             </div>
             <div className="mt-3">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
-                Royalty Payable
+              <p className="text-3xl font-extrabold tracking-tight text-foreground">{account.totalSales}</p>
+              <p className="text-xs text-muted-foreground font-medium mt-1">Total revenue in period</p>
+            </div>
+          </div>
+
+          {/* Total eBooks Sold */}
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
+            <div className="flex items-start justify-between gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Total eBooks Sold
               </span>
-              <span className="text-2xl font-extrabold text-foreground">{account.royaltyPayable}</span>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Last payment Date <span className="font-bold text-foreground">{account.lastPaymentDate}</span>
-              </p>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/12 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 shadow-2xs">
+                <ShoppingBag size={22} />
+              </span>
+            </div>
+            <div className="mt-3">
+              <p className="text-3xl font-extrabold tracking-tight text-foreground">{account.totalPurchased}</p>
+              <p className="text-xs text-muted-foreground font-medium mt-1">eBooks sold in period</p>
             </div>
           </div>
 
           {/* Total eBooks Published */}
           <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
-            <div className="flex items-center justify-between">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <BookOpen size={18} />
-              </span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex h-7 items-center gap-1 rounded-lg border border-border bg-card px-2.5 text-[11px] font-semibold text-foreground hover:bg-secondary outline-none cursor-pointer">
-                    <span>{publishedTimeframe}</span>
-                    <ChevronDown size={12} className="text-muted-foreground" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {["Monthly", "Quarterly", "Yearly"].map((t) => (
-                    <DropdownMenuItem key={t} onClick={() => setPublishedTimeframe(t)} className="text-xs font-medium cursor-pointer">
-                      {t}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className="mt-4">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
+            <div className="flex items-start justify-between gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Total eBooks Published
               </span>
-              <span className="text-2xl font-extrabold text-foreground">{account.totalPublished}</span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 shadow-2xs">
+                <BookOpen size={22} />
+              </span>
+            </div>
+            <div className="mt-3">
+              <p className="text-3xl font-extrabold tracking-tight text-foreground">{account.totalPublished}</p>
+              <p className="text-xs text-muted-foreground font-medium mt-1">Active published titles</p>
             </div>
           </div>
         </div>
@@ -620,30 +779,20 @@ function PublisherAuthorDetailPage() {
         <div className="space-y-4 pt-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2.5">
-              <h2 className="text-lg font-extrabold text-foreground">Titles</h2>
+              <h2 className="text-lg font-extrabold text-foreground">Recent Purchases</h2>
               <span className="inline-flex items-center rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs font-bold text-muted-foreground">
-                20 eBooks
+                5 eBooks
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Search Titles Box */}
-              <label className="relative flex h-10 items-center rounded-lg border border-border bg-card px-3 min-w-[200px]">
-                <Search size={14} className="mr-2 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Search titles..."
-                  value={titleSearch}
-                  onChange={(e) => setTitleSearch(e.target.value)}
-                  className="w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground"
-                />
-              </label>
-
               <Link
-                to="/pb-admin/titles"
-                className="flex h-10 items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white shadow-xs hover:opacity-90 transition-opacity shrink-0"
+                to="/pb-admin/publishers-authors/$id/titles"
+                params={{ id }}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand)] hover:underline transition-all group shrink-0"
               >
-                View All eBooks
+                <span>View All eBooks</span>
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
           </div>
@@ -664,77 +813,69 @@ function PublisherAuthorDetailPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {filteredTitles.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className="py-10 text-center text-muted-foreground text-xs font-medium">
-                        No titles matching "{titleSearch}"
+                  {MOCK_TITLES.map((book) => (
+                    <tr
+                      key={book.id}
+                      onClick={() => navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: book.id } })}
+                      className="group cursor-pointer transition-colors hover:bg-secondary/50"
+                    >
+                      {/* Title + Cover Thumbnail matching Section 6 of Style Guide */}
+                      <td className="py-4 px-4 md:px-6">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="relative flex h-14 w-9 shrink-0 flex-col items-center justify-center rounded-md text-[10px] font-bold text-white shadow-xs ring-1 ring-black/10 overflow-hidden"
+                            style={{ background: book.coverGradient }}
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
+                            <span className="relative z-10 text-[10px] font-extrabold tracking-wider">
+                              {book.initials}
+                            </span>
+                          </div>
+
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <p className="font-semibold text-sm leading-snug text-foreground transition-colors group-hover:text-[var(--brand)]">
+                              {book.title}
+                            </p>
+                            <p className="text-xs text-muted-foreground font-medium">
+                              {book.category}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* ISBN */}
+                      <td className="py-4 px-4 text-muted-foreground font-mono text-xs">{book.isbn}</td>
+
+                      {/* Author */}
+                      <td className="py-4 px-4 font-semibold text-foreground text-xs">{book.author}</td>
+
+                      {/* DOP */}
+                      <td className="py-4 px-4 text-muted-foreground text-xs">{book.dop}</td>
+
+                      {/* Language */}
+                      <td className="py-4 px-4">
+                        <span className="inline-flex items-center rounded-md border border-border bg-muted/40 px-2 py-0.5 text-xs font-medium text-foreground">
+                          {book.language}
+                        </span>
+                      </td>
+
+                      {/* Sale Price */}
+                      <td className="py-4 px-4 font-bold text-foreground text-xs">{book.price}</td>
+
+                      {/* Status */}
+                      <td className="py-4 px-4">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                          <CheckCircle2 size={12} />
+                          Published
+                        </span>
+                      </td>
+
+                      {/* Chevron */}
+                      <td className="py-4 px-4 pr-6 text-right text-muted-foreground group-hover:text-foreground">
+                        <ChevronRight size={18} className="inline transition-transform group-hover:translate-x-0.5" />
                       </td>
                     </tr>
-                  ) : (
-                    filteredTitles.map((book) => (
-                      <tr
-                        key={book.id}
-                        onClick={() => navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: book.id } })}
-                        className="group cursor-pointer transition-colors hover:bg-secondary/50"
-                      >
-                        {/* Title + Cover Thumbnail matching Section 6 of Style Guide */}
-                        <td className="py-4 px-4 md:px-6">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className="relative flex h-14 w-9 shrink-0 flex-col items-center justify-center rounded-md text-[10px] font-bold text-white shadow-xs ring-1 ring-black/10 overflow-hidden"
-                              style={{ background: book.coverGradient }}
-                            >
-                              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-                              <span className="relative z-10 text-[10px] font-extrabold tracking-wider">
-                                {book.initials}
-                              </span>
-                            </div>
-
-                            <div className="min-w-0 flex-1 space-y-1">
-                              <p className="font-semibold text-sm leading-snug text-foreground transition-colors group-hover:text-[var(--brand)]">
-                                {book.title}
-                              </p>
-                              <p className="text-xs text-muted-foreground font-medium">
-                                {book.category}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* ISBN */}
-                        <td className="py-4 px-4 text-muted-foreground font-mono text-xs">{book.isbn}</td>
-
-                        {/* Author */}
-                        <td className="py-4 px-4 font-semibold text-foreground text-xs">{book.author}</td>
-
-                        {/* DOP */}
-                        <td className="py-4 px-4 text-muted-foreground text-xs">{book.dop}</td>
-
-                        {/* Language */}
-                        <td className="py-4 px-4">
-                          <span className="inline-flex items-center rounded-md border border-border bg-muted/40 px-2 py-0.5 text-xs font-medium text-foreground">
-                            {book.language}
-                          </span>
-                        </td>
-
-                        {/* Sale Price */}
-                        <td className="py-4 px-4 font-bold text-foreground text-xs">{book.price}</td>
-
-                        {/* Status */}
-                        <td className="py-4 px-4">
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                            <CheckCircle2 size={12} />
-                            Published
-                          </span>
-                        </td>
-
-                        {/* Chevron */}
-                        <td className="py-4 px-4 pr-6 text-right text-muted-foreground group-hover:text-foreground">
-                          <ChevronRight size={18} className="inline transition-transform group-hover:translate-x-0.5" />
-                        </td>
-                      </tr>
-                    ))
-                  )}
+                  ))}
                 </tbody>
               </table>
             </div>

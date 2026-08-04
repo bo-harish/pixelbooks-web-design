@@ -4,6 +4,7 @@ import {
   Search,
   ChevronDown,
   Users,
+  UserCheck,
   Check,
   Calendar,
   Mail,
@@ -12,6 +13,7 @@ import {
   ChevronsRight,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { Switch } from "@/components/ui/switch";
 import {
   DropdownMenu,
@@ -19,14 +21,40 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
+
+function CustomerAvatar({ avatarUrl, name, size = "md" }: { avatarUrl?: string; name: string; size?: "md" | "lg" }) {
+  if (avatarUrl) {
+    const sizeClasses = size === "lg" ? "h-14 w-14" : "h-10 w-10";
+    return (
+      <img
+        src={avatarUrl}
+        alt={name}
+        className={`${sizeClasses} shrink-0 rounded-full object-cover ring-1 ring-border shadow-xs`}
+      />
+    );
+  }
+
+  if (size === "lg") {
+    return (
+      <div
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20 shadow-2xs transition-transform group-hover:scale-105"
+        title="Customer"
+      >
+        <UserCheck size={26} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20 shadow-2xs transition-transform group-hover:scale-105"
+      title="Customer"
+    >
+      <UserCheck size={18} />
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/pb-admin/customers")({
   head: () => ({
@@ -197,7 +225,6 @@ function ManageCustomerPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusValue>("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const itemsPerPage = 10;
   const simulatedTotalBase = 136;
@@ -279,61 +306,19 @@ function ManageCustomerPage() {
 
           {/* Status Filter Dropdown */}
           <div className="flex items-center gap-2.5 shrink-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="flex h-11 min-w-[140px] items-center justify-between gap-2.5 rounded-lg border border-border bg-card px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer"
-                >
-                  <span className="truncate">{statusLabel}</span>
-                  <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[160px] rounded-lg bg-card border-border shadow-lg py-1">
-                <DropdownMenuItem
-                  onClick={() => {
-                    setStatusFilter("All");
-                    setCurrentPage(1);
-                  }}
-                  className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
-                    statusFilter === "All" ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]" : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <span>All Status</span>
-                  {statusFilter === "All" && <Check size={14} className="text-[var(--brand)]" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setStatusFilter("Enabled");
-                    setCurrentPage(1);
-                  }}
-                  className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
-                    statusFilter === "Enabled" ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]" : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    Enabled
-                  </span>
-                  {statusFilter === "Enabled" && <Check size={14} className="text-[var(--brand)]" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setStatusFilter("Disabled");
-                    setCurrentPage(1);
-                  }}
-                  className={`flex items-center justify-between px-3.5 py-2 text-xs cursor-pointer ${
-                    statusFilter === "Disabled" ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]" : "text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-rose-400" />
-                    Disabled
-                  </span>
-                  {statusFilter === "Disabled" && <Check size={14} className="text-[var(--brand)]" />}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <DropdownSelect
+              value={statusLabel}
+              options={["All Status", "Enabled", "Disabled"]}
+              onChange={(v) => {
+                if (v === "All Status") setStatusFilter("All");
+                else if (v === "Enabled") setStatusFilter("Enabled");
+                else if (v === "Disabled") setStatusFilter("Disabled");
+                setCurrentPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search status..."
+              className="w-full sm:w-auto min-w-[140px]"
+            />
           </div>
         </div>
 
@@ -342,11 +327,11 @@ function ManageCustomerPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr className="border-b border-border text-xs font-semibold text-foreground bg-muted/20">
-                  <th className="py-4 px-6 w-[45%]">Customer</th>
-                  <th className="py-4 px-6 w-[22%]">Joined Date</th>
-                  <th className="py-4 px-6 w-[20%] text-center">Purchased Books</th>
-                  <th className="py-4 px-6 w-[13%] text-right pr-8">Status</th>
+                <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <th className="py-4 px-6 w-[45%] font-semibold">Customer</th>
+                  <th className="py-4 px-6 w-[22%] font-semibold">Joined Date</th>
+                  <th className="py-4 px-6 w-[20%] text-center font-semibold">Purchased Books</th>
+                  <th className="py-4 px-6 w-[13%] text-right pr-8 font-semibold">Enable/Disable</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -354,27 +339,13 @@ function ManageCustomerPage() {
                   paginatedCustomers.map((cust) => (
                     <tr
                       key={cust.id}
-                      onClick={() => setSelectedCustomer(cust)}
-                      className="group border-b border-border/60 transition-colors cursor-pointer hover:bg-secondary/50"
+                      className="group border-b border-border/60 transition-colors hover:bg-secondary/30"
                     >
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3.5">
-                          {cust.avatarUrl ? (
-                            <img
-                              src={cust.avatarUrl}
-                              alt={cust.name}
-                              className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border shadow-xs"
-                            />
-                          ) : (
-                            <div
-                              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-xs"
-                              style={{ backgroundColor: cust.avatarBg || "var(--brand)" }}
-                            >
-                              {getInitials(cust.name)}
-                            </div>
-                          )}
+                          <CustomerAvatar avatarUrl={cust.avatarUrl} name={cust.name} />
                           <div className="flex flex-col min-w-0">
-                            <span className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors">
+                            <span className="font-semibold text-foreground text-sm">
                               {cust.name}
                             </span>
                             {cust.email && (
@@ -395,10 +366,7 @@ function ManageCustomerPage() {
                       </td>
 
                       <td className="py-4 px-6 text-right pr-8">
-                        <div
-                          className="inline-flex items-center justify-end"
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                        <div className="inline-flex items-center justify-end">
                           <Switch
                             checked={cust.status === "Enabled"}
                             onCheckedChange={() => handleToggleStatus(cust.id)}
@@ -477,107 +445,6 @@ function ManageCustomerPage() {
             </button>
           </div>
         </div>
-
-        {/* Detail Modal */}
-        <Dialog open={!!selectedCustomer} onOpenChange={(open) => !open && setSelectedCustomer(null)}>
-          {selectedCustomer && (
-            <DialogContent className="sm:max-w-md rounded-2xl bg-card border-border p-6 shadow-xl">
-              <DialogHeader>
-                <div className="flex items-center gap-4 mb-2">
-                  {selectedCustomer.avatarUrl ? (
-                    <img
-                      src={selectedCustomer.avatarUrl}
-                      alt={selectedCustomer.name}
-                      className="h-14 w-14 rounded-full object-cover ring-2 ring-[var(--brand)]/20"
-                    />
-                  ) : (
-                    <div
-                      className="flex h-14 w-14 items-center justify-center rounded-full text-base font-bold text-white shadow-xs"
-                      style={{ backgroundColor: selectedCustomer.avatarBg || "var(--brand)" }}
-                    >
-                      {getInitials(selectedCustomer.name)}
-                    </div>
-                  )}
-                  <div>
-                    <DialogTitle className="text-xl font-bold text-foreground">
-                      {selectedCustomer.name}
-                    </DialogTitle>
-                    <DialogDescription className="text-xs text-muted-foreground">
-                      Customer Profile & Activity Details
-                    </DialogDescription>
-                  </div>
-                </div>
-              </DialogHeader>
-
-              <div className="space-y-4 py-3">
-                <div className="grid grid-cols-2 gap-3 rounded-xl border border-border/70 bg-muted/20 p-4">
-                  <div>
-                    <span className="text-xs text-muted-foreground block mb-0.5">Status</span>
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${
-                        selectedCustomer.status === "Enabled"
-                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                          : "bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                      }`}
-                    >
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          selectedCustomer.status === "Enabled" ? "bg-emerald-500" : "bg-rose-500"
-                        }`}
-                      />
-                      {selectedCustomer.status}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground block mb-0.5">Purchased Books</span>
-                    <span className="text-sm font-bold text-foreground">
-                      {selectedCustomer.purchasedBooks} Books
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-2.5 text-xs text-foreground">
-                  <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <Mail size={14} className="text-muted-foreground/70" /> Email
-                    </span>
-                    <span className="font-medium">{selectedCustomer.email || "N/A"}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <Calendar size={14} className="text-muted-foreground/70" /> Joined Date
-                    </span>
-                    <span className="font-medium">{selectedCustomer.joinedDate}</span>
-                  </div>
-                  <div className="flex items-center justify-between py-1.5 border-b border-border/40">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <ShoppingBag size={14} className="text-muted-foreground/70" /> Location
-                    </span>
-                    <span className="font-medium">{selectedCustomer.location || "India"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => handleToggleStatus(selectedCustomer.id)}
-                  className="flex-1 inline-flex h-10 items-center justify-center rounded-lg px-4 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
-                  style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-                >
-                  {selectedCustomer.status === "Enabled" ? "Disable Customer" : "Enable Customer"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedCustomer(null)}
-                  className="h-10 px-5 rounded-lg border border-border bg-card text-xs font-medium text-foreground hover:bg-secondary cursor-pointer"
-                >
-                  Close
-                </button>
-              </div>
-            </DialogContent>
-          )}
-        </Dialog>
       </div>
     </AppShell>
   );

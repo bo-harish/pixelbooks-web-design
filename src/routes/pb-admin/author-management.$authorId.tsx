@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
-import { ArrowLeft, User, Pencil } from "lucide-react";
+import { ArrowLeft, User, Feather, Pencil } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { INITIAL_AUTHOR_DATA, AuthorItem } from "./author-management";
 import { toast } from "sonner";
@@ -84,8 +84,8 @@ function AuthorDetailPage() {
                       className="h-28 w-28 rounded-full object-cover ring-2 ring-border shadow-xs"
                     />
                   ) : (
-                    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-                      <User size={48} />
+                    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+                      <Feather size={48} />
                     </div>
                   )}
                   {/* Pencil Edit Icon Badge */}

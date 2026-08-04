@@ -13,6 +13,7 @@ import {
   CircleOff,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Pagination,
   PaginationContent,
@@ -127,33 +128,14 @@ function BundlesPage() {
               className="h-11 w-full rounded-lg border border-border bg-card pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
             />
           </div>
-          <div className="relative">
-            <button
-              onClick={() => setFilterOpen((v) => !v)}
-              className="flex h-11 min-w-[130px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium"
-            >
-              <span>{filter}</span>
-              <ChevronDown size={16} className="text-muted-foreground" />
-            </button>
-            {filterOpen && (
-              <div className="absolute right-0 z-20 mt-2 w-40 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
-                {filters.map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => {
-                      setFilter(f);
-                      setFilterOpen(false);
-                    }}
-                    className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-colors hover:bg-secondary ${
-                      f === filter ? "font-semibold text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <DropdownSelect
+            value={filter}
+            options={filters}
+            onChange={(f) => setFilter(f)}
+            searchable
+            searchPlaceholder="Search status..."
+            className="w-full sm:w-auto min-w-[130px]"
+          />
           <Link
             to="/publisher/bundles/new"
             className="flex h-11 items-center gap-2 rounded-lg px-5 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"

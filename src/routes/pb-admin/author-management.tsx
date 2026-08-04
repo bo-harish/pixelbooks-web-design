@@ -5,6 +5,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   User,
+  Feather,
   Pencil,
   Edit,
 } from "lucide-react";
@@ -257,9 +258,9 @@ function AuthorManagementPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr className="border-b border-border text-xs font-semibold text-foreground bg-muted/20">
-                  <th className="py-4 px-6 w-[75%]">Name</th>
-                  <th className="py-4 px-6 w-[25%] text-center">Edit</th>
+                <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <th className="py-4 px-6 w-[75%] font-semibold">Name</th>
+                  <th className="py-4 px-6 w-[25%] text-center font-semibold">Edit</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -280,8 +281,8 @@ function AuthorManagementPage() {
                               className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-border shadow-xs"
                             />
                           ) : (
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-                              <User size={20} />
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+                              <Feather size={18} />
                             </div>
                           )}
                           <div className="flex flex-col min-w-0">
@@ -313,7 +314,7 @@ function AuthorManagementPage() {
                   <tr>
                     <td colSpan={2} className="py-12 text-center text-muted-foreground">
                       <div className="flex flex-col items-center justify-center gap-2">
-                        <User size={32} className="text-muted-foreground/50" />
+                        <Feather size={32} className="text-muted-foreground/50" />
                         <p className="text-base font-medium">No authors found</p>
                         <p className="text-xs">Try adjusting your search query.</p>
                       </div>
@@ -399,8 +400,8 @@ function AuthorManagementPage() {
                       className="h-24 w-24 rounded-full object-cover ring-2 ring-border shadow-xs"
                     />
                   ) : (
-                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-                      <User size={40} />
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+                      <Feather size={40} />
                     </div>
                   )}
                   {/* Pencil Edit Icon Badge */}

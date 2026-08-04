@@ -15,6 +15,7 @@ import {
   CreditCard,
   Building,
   ShieldCheck,
+  Feather,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 
@@ -91,12 +92,21 @@ function CommissionRatesDetail() {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 {/* Profile Pic matching pb-admin/publishers-authors avatar style */}
                 <div className="flex items-start sm:items-center gap-5">
-                  <div
-                    className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-base font-bold text-white shadow-sm"
-                    style={{ background: authorData.avatarBg }}
-                  >
-                    {getInitials(authorData.name)}
-                  </div>
+                  {authorData.type === "Publisher" ? (
+                    <div
+                      className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20 shadow-2xs"
+                      title="Publisher"
+                    >
+                      <Building2 size={28} />
+                    </div>
+                  ) : (
+                    <div
+                      className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs"
+                      title="Author"
+                    >
+                      <Feather size={28} />
+                    </div>
+                  )}
 
                   <div className="space-y-1.5 min-w-0">
                     <div className="flex flex-wrap items-center gap-2.5">
@@ -107,7 +117,7 @@ function CommissionRatesDetail() {
                         {authorData.type === "Publisher" ? (
                           <Building2 size={13} className="text-muted-foreground/80" />
                         ) : (
-                          <User size={13} className="text-muted-foreground/80" />
+                          <Feather size={13} className="text-muted-foreground/80" />
                         )}
                         <span>{authorData.type}</span>
                       </span>

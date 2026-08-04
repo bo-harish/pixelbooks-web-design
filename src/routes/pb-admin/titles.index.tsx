@@ -13,8 +13,14 @@ import {
   User,
   Building2,
   Check,
+  Feather,
+  Upload,
+  ScrollText,
+  Table,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { BookCover } from "@/components/ui/book-cover";
+import { toast } from "sonner";
 import {
   Pagination,
   PaginationContent,
@@ -93,23 +99,38 @@ function DropdownSelect<T extends string>({
   options,
   onChange,
   className = "min-w-[170px]",
+  searchable = false,
+  searchPlaceholder = "Search...",
 }: {
   value: T;
   options: T[];
   onChange: (v: T) => void;
   className?: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchTerm.trim()) return options;
+    const q = searchTerm.toLowerCase().trim();
+    return options.filter((opt) => opt.toLowerCase().includes(q));
+  }, [options, searchable, searchTerm]);
+
   return (
     <div className="relative">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
-        className={`flex h-11 items-center justify-between gap-2.5 rounded-lg border border-border bg-card px-3.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] ${className}`}
+        onClick={() => {
+          setOpen((o) => !o);
+          setSearchTerm("");
+        }}
+        className={`flex h-11 items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] ${className}`}
       >
         <span className="truncate">{value}</span>
         <ChevronDown
-          size={15}
+          size={16}
           className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
             open ? "rotate-180" : ""
           }`}
@@ -117,27 +138,50 @@ function DropdownSelect<T extends string>({
       </button>
       {open && (
         <div
-          className="absolute right-0 top-full z-30 mt-1.5 max-h-56 min-w-[190px] overflow-y-auto rounded-lg border border-border bg-card shadow-lg py-1"
+          className="absolute right-0 top-full z-30 mt-2 max-h-64 min-w-40 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg flex flex-col"
           onMouseLeave={() => setOpen(false)}
         >
-          {options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => {
-                onChange(opt);
-                setOpen(false);
-              }}
-              className={`flex w-full items-center justify-between px-3.5 py-2 text-left text-xs transition-colors hover:bg-secondary ${
-                opt === value
-                  ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
-                  : "text-muted-foreground"
-              }`}
-            >
-              <span className="truncate">{opt}</span>
-              {opt === value && <Check size={14} className="ml-2 shrink-0 text-[var(--brand)]" />}
-            </button>
-          ))}
+          {searchable && (
+            <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
+              <div className="relative flex items-center">
+                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={searchPlaceholder}
+                  autoFocus
+                  className="w-full h-8 pl-8 pr-2 text-xs rounded-md border border-border bg-secondary/50 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+            </div>
+          )}
+          <div className="overflow-y-auto max-h-48 py-1">
+            {filteredOptions.length === 0 ? (
+              <div className="px-4 py-2.5 text-center text-sm text-muted-foreground">
+                No results found
+              </div>
+            ) : (
+              filteredOptions.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt);
+                    setOpen(false);
+                    setSearchTerm("");
+                  }}
+                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${
+                    opt === value
+                      ? "font-medium text-foreground bg-secondary/50"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  <span className="truncate">{opt}</span>
+                </button>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -169,41 +213,18 @@ function StatusFilter({
   value,
   onChange,
 }: {
-  value: string;
+  value: (typeof STATUS_FILTERS)[number];
   onChange: (v: (typeof STATUS_FILTERS)[number]) => void;
 }) {
-  const [open, setOpen] = useState(false);
   return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex h-11 min-w-[130px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium"
-      >
-        {value}
-        <ChevronDown size={16} className="text-muted-foreground" />
-      </button>
-      {open && (
-        <div
-          className="absolute right-0 z-20 mt-2 w-40 overflow-hidden rounded-lg border border-border bg-card shadow-lg"
-          onMouseLeave={() => setOpen(false)}
-        >
-          {STATUS_FILTERS.map((s) => (
-            <button
-              key={s}
-              onClick={() => {
-                onChange(s);
-                setOpen(false);
-              }}
-              className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${s === value ? "text-foreground font-medium" : "text-muted-foreground"
-                }`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+    <DropdownSelect
+      value={value}
+      options={STATUS_FILTERS as unknown as string[]}
+      onChange={(v) => onChange(v as (typeof STATUS_FILTERS)[number])}
+      searchable
+      searchPlaceholder="Search status..."
+      className="w-full sm:w-auto min-w-[130px]"
+    />
   );
 }
 
@@ -215,6 +236,7 @@ function TitlesCataloguePage() {
   const [languageFilter, setLanguageFilter] = useState("All Languages");
   const [genreFilter, setGenreFilter] = useState("All Genre");
   const [page, setPage] = useState(1);
+  const [exportOpen, setExportOpen] = useState(false);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -287,7 +309,9 @@ function TitlesCataloguePage() {
                 setEntityFilter(v);
                 setPage(1);
               }}
-              className="w-full sm:w-auto min-w-[170px]"
+              searchable
+              searchPlaceholder="Search entity..."
+              className="w-full sm:w-auto min-w-[180px]"
             />
 
             {/* All Languages Dropdown */}
@@ -298,7 +322,9 @@ function TitlesCataloguePage() {
                 setLanguageFilter(v);
                 setPage(1);
               }}
-              className="w-full sm:w-auto min-w-[130px]"
+              searchable
+              searchPlaceholder="Search language..."
+              className="w-full sm:w-auto min-w-[150px]"
             />
 
             {/* All Genre Dropdown */}
@@ -309,7 +335,9 @@ function TitlesCataloguePage() {
                 setGenreFilter(v);
                 setPage(1);
               }}
-              className="w-full sm:w-auto min-w-[130px]"
+              searchable
+              searchPlaceholder="Search genre..."
+              className="w-full sm:w-auto min-w-[150px]"
             />
 
             {/* Status Filter */}
@@ -321,15 +349,45 @@ function TitlesCataloguePage() {
               }}
             />
 
-            {/* Add New Title Button */}
-            <Link
-              to="/pb-admin/titles/new"
-              className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 shrink-0"
-              style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              Add New Title
-            </Link>
+            {/* Export Dropdown */}
+            <div className="relative ml-auto">
+              <button
+                type="button"
+                onClick={() => setExportOpen((v) => !v)}
+                className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-2xs transition-opacity hover:opacity-90 cursor-pointer shrink-0"
+                style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+              >
+                <Upload size={15} />
+                <span>Export</span>
+                <ChevronDown size={14} />
+              </button>
+              {exportOpen && (
+                <div className="absolute right-0 z-30 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExportOpen(false);
+                      toast.success("Downloading Titles Catalogue (PDF)...");
+                    }}
+                    className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer"
+                  >
+                    <ScrollText size={15} className="text-muted-foreground" />
+                    <span>Export PDF</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExportOpen(false);
+                      toast.success("Downloading Titles Catalogue (Excel)...");
+                    }}
+                    className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer"
+                  >
+                    <Table size={15} className="text-muted-foreground" />
+                    <span>Export Excel</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -342,15 +400,17 @@ function TitlesCataloguePage() {
                 <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <th className="py-4 pl-6 pr-4 font-semibold">Title Details</th>
                   <th className="py-4 pr-4 font-semibold">ISBN</th>
+                  <th className="py-4 pr-4 font-semibold">Language</th>
+                  <th className="py-4 pr-4 font-semibold">DOP</th>
                   <th className="py-4 pr-4 font-semibold">Status</th>
-                  <th className="py-4 pr-4 font-semibold">Pricing</th>
+                  <th className="py-4 pr-4 font-semibold">Sale Price</th>
                   <th className="py-4 pr-6" />
                 </tr>
               </thead>
               <tbody>
                 {pageItems.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-16 text-center text-sm text-muted-foreground">
+                    <td colSpan={7} className="py-16 text-center text-sm text-muted-foreground">
                       No eBooks match your filters.
                     </td>
                   </tr>
@@ -366,13 +426,12 @@ function TitlesCataloguePage() {
                     <td className="py-4 pl-6 pr-4">
                       <div className="flex items-start gap-4">
                         {/* Cover thumbnail */}
-                        <div
-                          className="relative flex h-16 w-12 shrink-0 flex-col items-center justify-center rounded-lg text-[10px] font-bold text-white shadow-sm ring-1 ring-black/10 overflow-hidden"
-                          style={{ background: b.cover }}
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-                          <span className="relative z-10 text-[11px] font-extrabold tracking-wider">{b.initials}</span>
-                        </div>
+                        <BookCover
+                          initials={b.initials}
+                          coverGradient={b.cover}
+                          title={b.title}
+                          size="sm"
+                        />
 
                         {/* Title & Metadata */}
                         <div className="min-w-0 flex-1 space-y-1.5">
@@ -382,16 +441,22 @@ function TitlesCataloguePage() {
 
                           {/* Author & Publisher Chips */}
                           <div className="flex flex-wrap items-center gap-2 text-xs">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-1 shadow-2xs">
-                              <AuthorAvatar author={b.author} size="sm" />
-                              <span className="text-[11.5px] font-semibold text-foreground">
+                            <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
+                              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                                <Feather size={9} />
+                              </span>
+                              <span className="text-[11px] font-medium text-foreground">
                                 {b.author}
                               </span>
                             </div>
 
-                            <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/60 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
-                              <Building2 size={11} className="shrink-0 text-muted-foreground/80" />
-                              <span>{b.publisher ?? "PixelBooks Press"}</span>
+                            <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
+                              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+                                <Building2 size={9} />
+                              </span>
+                              <span className="text-[11px] font-medium text-foreground">
+                                {b.publisher ?? "PixelBooks Press"}
+                              </span>
                             </div>
                           </div>
 
@@ -414,14 +479,20 @@ function TitlesCataloguePage() {
                         <span className="text-muted-foreground">—</span>
                       )}
                     </td>
+                    <td className="py-4 pr-4 text-xs font-medium text-foreground whitespace-nowrap">
+                      {b.language ?? "English"}
+                    </td>
+                    <td className="py-4 pr-4 text-xs text-muted-foreground whitespace-nowrap">
+                      {b.dop ?? "12 Jun 2026"}
+                    </td>
                     <td className="py-4 pr-4">
                       <StatusPill status={b.status} />
                     </td>
-                    <td className="py-4 pr-4">
+                    <td className="py-4 pr-4 whitespace-nowrap">
                       {b.price === null ? (
-                        <span className="font-medium text-foreground">Free</span>
+                        <span className="font-semibold text-foreground">Free</span>
                       ) : (
-                        <span className="font-medium">₹{b.price.toFixed(2)}</span>
+                        <span className="font-semibold text-foreground">₹{b.price.toFixed(2)}</span>
                       )}
                     </td>
                     <td className="py-4 pr-6 text-right">
@@ -485,11 +556,15 @@ function TitlesCataloguePage() {
                         {b.format}
                       </span>
                       <span className="text-muted-foreground">{b.category}</span>
+                      <span className="text-muted-foreground">• {b.language ?? "English"}</span>
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs pt-1">
                       <StatusPill status={b.status} />
-                      <span className="font-semibold">
-                        {b.price === null ? "Free" : `₹${b.price.toFixed(2)}`}
+                      <span className="font-semibold text-foreground">
+                        Sale Price: {b.price === null ? "Free" : `₹${b.price.toFixed(2)}`}
+                      </span>
+                      <span className="text-muted-foreground text-[11px]">
+                        DOP: {b.dop ?? "12 Jun 2026"}
                       </span>
                     </div>
                     {b.isbn && (

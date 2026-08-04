@@ -66,10 +66,41 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
        DropdownMenuItem,
      } from "@/components/ui/dropdown-menu";
      ```
-4. **Book Covers (No Image Files)**:
-   - Do NOT create or download image files for book covers in any case.
-   - Use CSS gradients and centered initials (matching the styling from the publisher catalogue page).
-   - The preferred ratio/size for book covers is 438 × 678 (width-to-height ratio of ~1:1.55, e.g., using `aspect-[438/678]` or classes like `w-11 h-17` / `w-10 h-15` or inline styles representing this ratio).
+4. **Book Covers (Standard Brand Component)**:
+   - Always use the standard `<BookCover />` component imported from `@/components/ui/book-cover`.
+   - Do NOT create external image files for book covers.
+   - The standard book cover features a 3D left-edge spine shadow (`bg-gradient-to-r from-black/40 via-black/15 to-transparent`), glossy paper shimmer (`bg-gradient-to-tr from-black/30 via-transparent to-white/20`), an embedded green ribbon app icon emblem (`/logo-app-icon.png`), and initials badge (`initials`).
+   - Supports standard size props: `xs`, `sm`, `md`, `lg`, and `xl`.
+   ```tsx
+   import { BookCover } from "@/components/ui/book-cover";
+
+   <BookCover
+     initials="AB"
+     coverGradient="linear-gradient(135deg, #1e3a8a, #3b82f6)"
+     title="A Beautiful Crime: A Novel"
+     size="sm"
+   />
+   ```
+
+   - **Bundle Cover Style (Layered Stack Effect)**:
+     - For eBook Bundles, always pair the front `<BookCover />` with an offset back-card layer (`absolute -right-1.5 -top-1.5 opacity-40`) or overlapping rotated cards to visually indicate a multi-book collection while preserving the standard book cover branding.
+     ```tsx
+     {/* 3D Bundle Book Stack Thumbnail */}
+     <div className="relative h-16 w-12 shrink-0">
+       {/* Offset Back-Card Layer */}
+       <div
+         className="absolute -right-1.5 -top-1.5 h-14 w-10 rounded-md opacity-40 shadow-2xs border border-white/20"
+         style={{ background: bundle.cover }}
+       />
+       {/* Main Front Book Cover */}
+       <BookCover
+         initials={bundle.initials}
+         coverGradient={bundle.cover}
+         title={bundle.title}
+         size="sm"
+       />
+     </div>
+     ```
 
 5. **Filter Toolbars, Inputs, Dropdowns, and Calendar Controls (Sales Report Style)**:
    - **Toolbar Container**: Use a rounded container card for filters:
@@ -101,17 +132,16 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
      ```
 
 6. **Title Section Table Cell Layout (Catalogue & PB Admin Titles)**:
-   - Combine cover thumbnail, title, author chip, and publisher chip into a single structured cell:
+   - Combine standard `<BookCover />`, title, author chip, and publisher chip into a single structured cell:
      ```tsx
      <div className="flex items-start gap-4">
        {/* Cover thumbnail */}
-       <div
-         className="relative flex h-16 w-12 shrink-0 flex-col items-center justify-center rounded-lg text-[10px] font-bold text-white shadow-sm ring-1 ring-black/10 overflow-hidden"
-         style={{ background: b.cover }}
-       >
-         <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-         <span className="relative z-10 text-[11px] font-extrabold tracking-wider">{b.initials}</span>
-       </div>
+       <BookCover
+         initials={b.initials}
+         coverGradient={b.coverGradient}
+         title={b.title}
+         size="sm"
+       />
 
        {/* Title & Entity Chips */}
        <div className="min-w-0 flex-1 space-y-1.5">
@@ -249,17 +279,45 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
      ```
 
 12. **Dropdown Menu Filters (Redesigned Unified Toolbar)**
-  - All standard toolbar dropdown filters (Languages, Genre, Roles, Borrow Date, Statuses) should be fully custom implementations instead of native standard browser `<select>` dropdowns. The dropdowns need to be styled cohesively using `h-11`, a `rounded-lg` container, `bg-card`, and custom popup shadow layers containing clickable buttons matching the publisher catalogue approach.
-   ```tsx
+   - All standard toolbar dropdown filters (Languages, Genre, Roles, Entities, Statuses) should be fully custom implementations using `DropdownSelect` instead of native standard browser `<select>` dropdowns. Dropdowns must be styled cohesively using `h-11`, `rounded-lg`, `bg-card`, `text-sm font-medium`, and optional embedded sticky search support (`searchable`). Selection highlights use clean background styling (`bg-secondary/50`) without tick mark icons:
+    ```tsx
+    function DropdownSelect<T extends string>({
+      value,
+      options,
+      onChange,
+      className = "min-w-[170px]",
+      searchable = false,
+      searchPlaceholder = "Search...",
+    }: {
+      value: T;
+      options: T[];
+      onChange: (v: T) => void;
+      className?: string;
+      searchable?: boolean;
+      searchPlaceholder?: string;
+    }) {
+      const [open, setOpen] = useState(false);
+      const [searchTerm, setSearchTerm] = useState("");
+
+      const filteredOptions = useMemo(() => {
+        if (!searchable || !searchTerm.trim()) return options;
+        const q = searchTerm.toLowerCase().trim();
+        return options.filter((opt) => opt.toLowerCase().includes(q));
+      }, [options, searchable, searchTerm]);
+
+      return (
         <div className="relative">
           <button
             type="button"
-            onClick={() => setOpen((o) => !o)}
-            className={`flex h-11 items-center justify-between gap-2.5 rounded-lg border border-border bg-card px-3.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] ${className}`}
+            onClick={() => {
+              setOpen((o) => !o);
+              setSearchTerm("");
+            }}
+            className={`flex h-11 items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] ${className}`}
           >
             <span className="truncate">{value}</span>
             <ChevronDown
-              size={15}
+              size={16}
               className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
                 open ? "rotate-180" : ""
               }`}
@@ -268,28 +326,68 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
 
           {open && (
             <div
-              className="absolute right-0 top-full z-50 mt-1.5 max-h-56 min-w-[190px] overflow-y-auto rounded-lg border border-border bg-card shadow-lg py-1"
+              className="absolute right-0 top-full z-30 mt-2 max-h-64 min-w-40 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg flex flex-col"
               onMouseLeave={() => setOpen(false)}
             >
-              {options.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => {
-                    onChange(opt);
-                    setOpen(false);
-                  }}
-                  className={`flex w-full items-center justify-between px-3.5 py-2 text-left text-xs transition-colors hover:bg-secondary ${
-                    opt === value
-                      ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {opt}
-                  {opt === value && <Check size={14} className="text-[var(--brand)]" />}
-                </button>
-              ))}
+              {searchable && (
+                <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
+                  <div className="relative flex items-center">
+                    <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      placeholder={searchPlaceholder}
+                      autoFocus
+                      className="w-full h-8 pl-8 pr-2 text-xs rounded-md border border-border bg-secondary/50 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                </div>
+              )}
+              <div className="overflow-y-auto max-h-48 py-1">
+                {filteredOptions.length === 0 ? (
+                  <div className="px-4 py-2.5 text-center text-sm text-muted-foreground">
+                    No results found
+                  </div>
+                ) : (
+                  filteredOptions.map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => {
+                        onChange(opt);
+                        setOpen(false);
+                        setSearchTerm("");
+                      }}
+                      className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${
+                        opt === value
+                          ? "font-medium text-foreground bg-secondary/50"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      <span className="truncate">{opt}</span>
+                    </button>
+                  ))
+                )}
+              </div>
             </div>
           )}
         </div>
-   ```
+      );
+    }
+    ```
+
+13. **Entity Avatars & Unique Role Icons System**:
+    - Every primary entity (Publisher, Author, Customer, Library Staff, Student, Admin User, Super Admin) across table listings, profile details, user detail screens, fallback avatars, and metric cards MUST use a unified circular avatar design (`rounded-full`) with a distinct Lucide icon and soft light background tint:
+      - **Publisher**: `<Building2 />` — Circular Light Indigo (`bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20`)
+      - **Author**: `<Feather />` (Quill Pen) — Circular Light Emerald (`bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20`)
+      - **Student**: `<GraduationCap />` — Circular Light Emerald (`bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400 border border-emerald-500/20`)
+      - **Library Staff**: `<UserCog />` — Circular Light Indigo (`bg-indigo-500/15 text-indigo-600 dark:bg-indigo-500/25 dark:text-indigo-400 border border-indigo-500/20`)
+      - **Customer**: `<UserCheck />` — Circular Light Sky (`bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20`)
+      - **Admin User**: `<UserCog />` — Circular Light Amber (`bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20`)
+      - **Super Admin**: `<Crown />` — Circular Light Purple (`bg-purple-500/10 text-purple-600 dark:text-purple-400`)
+
+    - **Role Badges & User Detail Screen Avatars**:
+      - On User Detail and Edit screens, replace generic text initials with the role-specific icon avatar (`<GraduationCap size={36} />` for Student or `<UserCog size={36} />` for Staff).
+      - In tables and dropdown selectors, display rounded role pills (`inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5`) with embedded circular role icons.
+

@@ -12,6 +12,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
+import { BookCover } from "@/components/ui/book-cover";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -481,35 +483,17 @@ function LibraryCataloguePage() {
           {/* Left Side: Status Dropdown + Search Input */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 w-full lg:max-w-xl">
             {/* Dropdown Filter */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex h-11 min-w-[120px] items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground shrink-0 cursor-pointer">
-                  <span>{activeTab}</span>
-                  <ChevronDown size={15} className="text-muted-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="w-[120px] bg-card border border-border rounded-lg shadow-md z-50"
-              >
-                {(["All", "Active", "Inactive"] as const).map((tab) => (
-                  <DropdownMenuItem
-                    key={tab}
-                    onClick={() => {
-                      setActiveTab(tab);
-                      setPage(1);
-                    }}
-                    className={`cursor-pointer text-sm font-medium px-4 py-2 hover:bg-secondary outline-none transition-colors ${
-                      activeTab === tab
-                        ? "text-[var(--brand)] bg-secondary/40 font-medium"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    {tab}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <DropdownSelect
+              value={activeTab}
+              options={["All", "Active", "Inactive"]}
+              onChange={(tab) => {
+                setActiveTab(tab as "All" | "Active" | "Inactive");
+                setPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search status..."
+              className="w-full sm:w-auto min-w-[120px]"
+            />
 
             {/* Search Input */}
             <div className="relative flex-1">
@@ -622,12 +606,12 @@ function LibraryCataloguePage() {
                           {/* Book Details */}
                           <td className="py-4 pl-6 pr-4">
                             <div className="flex items-center gap-4">
-                              <div
-                                className="flex h-14 w-10 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-white shadow-sm"
-                                style={{ background: book.cover }}
-                              >
-                                {book.initials}
-                              </div>
+                              <BookCover
+                                initials={book.initials}
+                                coverGradient={book.cover}
+                                title={book.title}
+                                size="sm"
+                              />
                               <div className="min-w-0">
                                 <span className="font-semibold text-foreground block truncate max-w-sm md:max-w-md lg:max-w-lg">
                                   {book.title}
@@ -843,12 +827,12 @@ function LibraryCataloguePage() {
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div className="flex items-center gap-3">
-                <div
-                  className="w-8 h-11 rounded flex items-center justify-center text-[8px] font-bold text-white shadow-sm shrink-0"
-                  style={{ background: readerBook.cover }}
-                >
-                  {readerBook.initials}
-                </div>
+                <BookCover
+                  initials={readerBook.initials}
+                  coverGradient={readerBook.cover}
+                  title={readerBook.title}
+                  size="xs"
+                />
                 <div>
                   <DialogTitle className="text-base font-semibold leading-none">
                     {readerBook.title}

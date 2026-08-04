@@ -298,26 +298,35 @@ function StatCard({
   icon: Icon,
   label,
   value,
+  subtitle,
 }: {
   icon: React.ComponentType<{ size?: number }>;
   label: string;
   value: string;
+  subtitle?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-xs flex flex-col justify-between">
-      <div className="flex items-center gap-2.5">
+    <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          {label}
+        </span>
         <span
-          className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+          className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
           style={{
             backgroundColor: "var(--sidebar-highlight)",
             color: "var(--brand)",
           }}
         >
-          <Icon size={16} />
+          <Icon size={18} />
         </span>
-        <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       </div>
-      <p className="mt-3 text-2xl font-bold tracking-tight text-foreground">{value}</p>
+      <div>
+        <p className="text-2xl font-extrabold text-foreground tracking-tight">
+          {value}
+        </p>
+        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+      </div>
     </div>
   );
 }
@@ -438,56 +447,25 @@ function AdminSalesReportPage() {
     const discountColumnTitle = selectedEntity.type === "Author" ? "Author Discount" : "Publisher Discount";
 
     return (
-      <AppShell title="Sales Report" subtitle={`Detailed sales breakdown for ${selectedEntity.name}.`}>
+      <AppShell title={selectedEntity.name} subtitle="Sales Report - Sales Details">
         <div className="space-y-6 p-4 md:p-8">
-          {/* Top Entity Header & Filters Combined Card matching margin-report.tsx */}
-          <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs space-y-4">
-            {/* Row 1: Back Button + Avatar + Name + Type Tag */}
-            <div className="flex items-center justify-between border-b border-border/60 pb-3.5">
-              <div className="flex items-center gap-3.5">
-                <button
-                  type="button"
-                  onClick={() => setSelectedEntity(null)}
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs"
-                  title="Back to Sales Report"
-                >
-                  <ArrowLeft size={18} />
-                </button>
+          {/* Back to Sales Report Link matching promo-codes */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setSelectedEntity(null)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs"
+              aria-label="Back to Sales Report"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <span className="text-sm font-normal text-foreground">
+              Back to Sales Report
+            </span>
+          </div>
 
-                <div className="flex items-center gap-3">
-                  <span
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-2xs"
-                    style={{
-                      backgroundColor: "var(--sidebar-highlight)",
-                      color: "var(--brand)",
-                    }}
-                  >
-                    {selectedEntity.avatarLetter}
-                  </span>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-base font-bold text-foreground leading-snug">
-                        {selectedEntity.name}
-                      </h2>
-                      <span
-                        className="rounded-md px-2 py-0.5 text-[11px] font-semibold"
-                        style={{
-                          backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
-                          color: "var(--brand)",
-                        }}
-                      >
-                        {selectedEntity.type}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Total: {werleyNortreusItems.length} eBooks
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 2: Search, View Mode, Sale Type, Preset, Date Pickers & Export Button */}
+          {/* Filters Toolbar Card */}
+          <div className="rounded-xl border border-border bg-card p-4 md:p-5 shadow-xs">
             <div className="flex flex-wrap items-center gap-2.5">
               {/* Search Input */}
               <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3 min-w-[200px]">
@@ -946,21 +924,25 @@ function AdminSalesReportPage() {
             icon={Tag}
             label="Total Sales"
             value="₹48,896.46"
+            subtitle="Net Period Revenue"
           />
           <StatCard
             icon={BookMarked}
             label="Total Books Sold"
             value="44"
+            subtitle="Units Sold"
           />
           <StatCard
             icon={Building2}
             label="Total Publishers"
             value="165"
+            subtitle="Active Publishers"
           />
           <StatCard
             icon={Users}
             label="Total Authors"
             value="13"
+            subtitle="Active Authors"
           />
         </div>
 
@@ -1108,7 +1090,9 @@ function AdminSalesReportPage() {
 
                       {/* Action Arrow */}
                       <td className="py-4 pr-6 text-right">
-                        <ChevronRight size={16} className="text-muted-foreground/60 transition-colors group-hover:text-foreground" />
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
+                          <ChevronRight size={16} />
+                        </span>
                       </td>
                     </tr>
                   ))

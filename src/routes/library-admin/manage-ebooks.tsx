@@ -8,6 +8,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { AppShell } from "@/components/app-shell";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
+import { BookCover } from "@/components/ui/book-cover";
 
 export const Route = createFileRoute("/library-admin/manage-ebooks")({
   component: ManageEbooksPage,
@@ -138,47 +140,17 @@ function ManageEbooksPage() {
           </div>
 
           <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-            <div className="relative w-full sm:w-auto">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex h-11 w-full sm:w-[150px] items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground cursor-pointer shrink-0 outline-none">
-                    <span>{dateField === "borrowDate" ? "Borrow Date" : "Exp. Return Date"}</span>
-                    <ChevronDown size={15} className="text-muted-foreground" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-[150px] bg-card border border-border rounded-lg shadow-md z-50 p-1"
-                >
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setDateField("borrowDate");
-                      setPage(1);
-                    }}
-                    className={`flex items-center px-4 py-2 text-sm transition-colors cursor-pointer rounded-md ${
-                      dateField === "borrowDate"
-                        ? "bg-secondary font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
-                  >
-                    Borrow Date
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setDateField("expReturnDate");
-                      setPage(1);
-                    }}
-                    className={`flex items-center px-4 py-2 text-sm transition-colors cursor-pointer rounded-md ${
-                      dateField === "expReturnDate"
-                        ? "bg-secondary font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
-                  >
-                    Exp. Return Date
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <DropdownSelect
+              value={dateField === "borrowDate" ? "Borrow Date" : "Exp. Return Date"}
+              options={["Borrow Date", "Exp. Return Date"]}
+              onChange={(v) => {
+                setDateField(v === "Borrow Date" ? "borrowDate" : "expReturnDate");
+                setPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search field..."
+              className="w-full sm:w-auto min-w-[160px]"
+            />
 
             <div className="w-full sm:w-[200px]">
               <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3">
@@ -245,12 +217,12 @@ function ManageEbooksPage() {
                           {/* Title */}
                           <td className="py-4 pl-6 pr-4">
                             <div className="flex items-center gap-4">
-                              <div
-                                className="flex h-14 w-10 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-white shadow-sm"
-                                style={{ background: row.cover }}
-                              >
-                                {row.initials}
-                              </div>
+                              <BookCover
+                                initials={row.initials}
+                                coverGradient={row.cover}
+                                title={row.title}
+                                size="sm"
+                              />
                               <span className="font-semibold text-foreground block truncate max-w-sm md:max-w-md lg:max-w-lg">
                                 {row.title}
                               </span>

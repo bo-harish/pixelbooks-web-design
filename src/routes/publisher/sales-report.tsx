@@ -109,26 +109,35 @@ function StatCard({
   icon: Icon,
   label,
   value,
+  subtitle,
 }: {
   icon: React.ComponentType<{ size?: number }>;
   label: string;
   value: string;
+  subtitle?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-xs flex flex-col justify-between">
-      <div className="flex items-center gap-2.5">
+    <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          {label}
+        </span>
         <span
-          className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+          className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
           style={{
             backgroundColor: "var(--sidebar-highlight)",
             color: "var(--brand)",
           }}
         >
-          <Icon size={16} />
+          <Icon size={18} />
         </span>
-        <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       </div>
-      <p className="mt-3 text-2xl font-bold tracking-tight text-foreground">{value}</p>
+      <div>
+        <p className="text-2xl font-extrabold text-foreground tracking-tight">
+          {value}
+        </p>
+        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+      </div>
     </div>
   );
 }
@@ -293,8 +302,8 @@ function SalesReportPage() {
 
         {/* Compact Stat cards */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <StatCard icon={Tag} label="Total Sales" value={formatINR(totalNet)} />
-          <StatCard icon={BookMarked} label="Total Books Sold" value={String(totalBooks)} />
+          <StatCard icon={Tag} label="Total Sales" value={formatINR(totalNet)} subtitle="Net Period Sales" />
+          <StatCard icon={BookMarked} label="Total Books Sold" value={String(totalBooks)} subtitle="Units Sold" />
         </div>
 
         {/* Filters & Export Card */}

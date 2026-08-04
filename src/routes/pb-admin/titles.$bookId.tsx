@@ -20,8 +20,10 @@ import {
   BookOpen,
   HardDrive,
   Users,
+  Feather,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { BookCover } from "@/components/ui/book-cover";
 import { seedBooks, type Status } from "@/lib/catalogue-data";
 
 export const Route = createFileRoute("/pb-admin/titles/$bookId")({
@@ -432,13 +434,13 @@ function EBookDetailPage() {
         <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
             {/* Cover */}
-            <div
-              className="relative flex h-72 w-52 shrink-0 flex-col items-center justify-center rounded-xl text-base font-bold text-white shadow-md ring-1 ring-black/10 overflow-hidden self-center lg:self-start"
-              style={{ background: book.cover }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-              <span className="relative z-10 text-lg font-extrabold tracking-wider">{book.initials}</span>
-            </div>
+            <BookCover
+              initials={book.initials}
+              coverGradient={book.cover}
+              title={book.title}
+              size="xl"
+              className="self-center lg:self-start shadow-md"
+            />
 
             {/* Info Container */}
             <div className="flex-1 min-w-0 space-y-5">
@@ -451,15 +453,19 @@ function EBookDetailPage() {
                 {/* Badges & Entity Row */}
                 <div className="flex flex-wrap items-center gap-2.5">
                   {/* Author Chip */}
-                  <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-3 py-1 text-xs font-semibold text-foreground shadow-2xs">
-                    <AuthorAvatar author={book.author} size="sm" />
-                    <span>{book.author}</span>
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-xs font-semibold text-foreground shadow-2xs">
+                    <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                      <Feather size={9} />
+                    </span>
+                    <span className="text-[11px] font-medium text-foreground">{book.author}</span>
                   </div>
 
                   {/* Publisher Chip */}
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-                    <Building2 size={13} className="shrink-0 text-muted-foreground/80" />
-                    <span>{book.publisher ?? "PixelBooks Press"}</span>
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-xs font-semibold text-foreground shadow-2xs">
+                    <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+                      <Building2 size={9} />
+                    </span>
+                    <span className="text-[11px] font-medium text-foreground">{book.publisher ?? "PixelBooks Press"}</span>
                   </div>
 
                   {/* Category Pill */}

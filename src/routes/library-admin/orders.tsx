@@ -19,6 +19,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
@@ -1126,38 +1127,18 @@ function LibraryAdminOrdersPage() {
           {/* Left Side: Status Dropdown + Search Input */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 w-full lg:max-w-xl">
             {/* Dropdown Filter */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex h-11 min-w-[150px] items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground shrink-0 cursor-pointer">
-                  <span>{activeTab === "Pending" ? "Pending Approval" : activeTab}</span>
-                  <ChevronDown size={15} className="text-muted-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="w-[150px] bg-card border border-border rounded-lg shadow-md z-50"
-              >
-                {(["All", "Approved", "Pending", "Rejected"] as const).map((tab) => {
-                  const label = tab === "Pending" ? "Pending Approval" : tab;
-                  return (
-                    <DropdownMenuItem
-                      key={tab}
-                      onClick={() => {
-                        setActiveTab(tab);
-                        setPage(1);
-                      }}
-                      className={`cursor-pointer text-sm font-medium px-4 py-2 hover:bg-secondary outline-none transition-colors ${
-                        activeTab === tab
-                          ? "text-[var(--brand)] bg-secondary/40 font-medium"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {label}
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <DropdownSelect
+              value={activeTab === "Pending" ? "Pending Approval" : activeTab}
+              options={["All", "Approved", "Pending Approval", "Rejected"]}
+              onChange={(label) => {
+                const tab = label === "Pending Approval" ? "Pending" : (label as "All" | "Approved" | "Pending" | "Rejected");
+                setActiveTab(tab);
+                setPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search status..."
+              className="w-full sm:w-auto min-w-[160px]"
+            />
 
             {/* Search Input */}
             <div className="relative flex-1">

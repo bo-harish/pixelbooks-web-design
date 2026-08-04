@@ -97,8 +97,9 @@ function WorkspaceSelector() {
       {/* Header */}
       <header className="mx-auto w-full max-w-7xl flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link to="/" id="landing-logo-link" className="flex shrink-0">
-            <img src="/logo.png" alt="PixelBooks Logo" className="h-10 object-contain" />
+          <Link to="/" id="landing-logo-link" className="flex items-center gap-3 shrink-0">
+            <img src="/logo-app-icon.png" alt="PixelBooks App Icon" className="h-9 w-9 object-contain" />
+            <span className="font-extrabold text-2xl tracking-tight text-foreground">PixelBooks</span>
           </Link>
         </div>
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground bg-secondary/80 backdrop-blur-sm border border-border px-3 py-1.5 rounded-full shadow-sm">

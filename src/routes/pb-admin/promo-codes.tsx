@@ -5,373 +5,610 @@ import {
   ChevronDown,
   Plus,
   ArrowLeft,
-  Calendar,
-  Sparkles,
+  Calendar as CalendarIcon,
   TicketPercent,
-  ChevronRight,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  CalendarDays,
+  Sparkles,
+  Building2,
+  Feather,
+  Copy,
+  Check,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { Switch } from "@/components/ui/switch";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { type DateRange } from "react-day-picker";
+import { format, isValid, addDays, startOfMonth, endOfMonth } from "date-fns";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-admin/promo-codes")({
   head: () => ({
     meta: [
-      { title: "Coupon Code — PixelBooks Admin" },
+      { title: "Promo Code — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage reward coupon codes, discount percentages, and campaign durations in PixelBooks.",
+        content: "Manage promotional discount codes, approval status, and campaign durations in PixelBooks.",
       },
     ],
   }),
-  component: CouponCodePage,
+  component: PromoCodePage,
 });
 
-export interface CouponItem {
+export type PromoStatus = "Approved" | "Pending" | "Rejected";
+export type CreatorType = "Publisher" | "Author";
+
+export interface PromoCodeItem {
   id: string;
   code: string;
-  duration: string; // e.g. "Jul 24 – Jul 31, 2026"
+  creatorType: CreatorType;
+  publisherOrAuthorName: string;
+  ebookName: string;
+  duration: string;
   startDate: string;
   endDate: string;
-  discountPercentage: string; // e.g. "32%"
-  rewardPoints: number;
-  description: string;
-  actionStatus: "In Use" | "Expired" | "Available";
-  status: boolean; // toggle state
+  discount: string;
+  targetEntity: string;
+  status: PromoStatus;
+  minimumAmount?: string;
+  description?: string;
 }
 
-const INITIAL_COUPONS: CouponItem[] = [
+const INITIAL_PROMO_CODES: PromoCodeItem[] = [
   {
-    id: "coup-1",
-    code: "JFTBGNG320",
-    duration: "Jul 24 – Jul 31, 2026",
-    startDate: "2026-07-24",
-    endDate: "2026-07-31",
-    discountPercentage: "32%",
-    rewardPoints: 500,
-    description: "Special reader reward coupon code for summer literary festival.",
-    actionStatus: "In Use",
-    status: true,
+    id: "pc-1",
+    code: "FHXDJWW963",
+    creatorType: "Author",
+    publisherOrAuthorName: "Ruskin Bond",
+    ebookName: "1 Epub",
+    duration: "Aug 03 – Aug 10, 2026",
+    startDate: "2026-08-03",
+    endDate: "2026-08-10",
+    discount: "50 %",
+    targetEntity: "1 Epub",
+    status: "Approved",
+    minimumAmount: "₹500",
+    description: "Special author promo code for 1 Epub edition.",
   },
   {
-    id: "coup-2",
-    code: "PXBOOK2026",
-    duration: "Jul 01 – Aug 15, 2026",
-    startDate: "2026-07-01",
-    endDate: "2026-08-15",
-    discountPercentage: "25%",
-    rewardPoints: 750,
-    description: "Back to school reward coupon for academic eBook bundles.",
-    actionStatus: "Available",
-    status: true,
+    id: "pc-2",
+    code: "PAFPQRC584",
+    creatorType: "Publisher",
+    publisherOrAuthorName: "Penguin India",
+    ebookName: "Little Miracles-english",
+    duration: "Aug 03 – Aug 03, 2026",
+    startDate: "2026-08-03",
+    endDate: "2026-08-03",
+    discount: "5%",
+    targetEntity: "Little Miracles-english",
+    status: "Approved",
+    minimumAmount: "₹299",
+    description: "Publisher release promo code for Little Miracles English.",
   },
   {
-    id: "coup-3",
-    code: "SPRING2026",
-    duration: "Jan 01 – Mar 31, 2026",
-    startDate: "2026-01-01",
-    endDate: "2026-03-31",
-    discountPercentage: "15%",
-    rewardPoints: 300,
-    description: "Spring festival promotional discount code.",
-    actionStatus: "Expired",
-    status: false,
+    id: "pc-3",
+    code: "FUZONVN032",
+    creatorType: "Publisher",
+    publisherOrAuthorName: "Rupa Publications",
+    ebookName: "Kleine Wunder-german",
+    duration: "Aug 03 – Aug 03, 2026",
+    startDate: "2026-08-03",
+    endDate: "2026-08-03",
+    discount: "5%",
+    targetEntity: "Kleine Wunder-german",
+    status: "Approved",
+    minimumAmount: "₹299",
+    description: "German edition launch discount promo code.",
+  },
+  {
+    id: "pc-4",
+    code: "RWCBGAJ90122",
+    creatorType: "Publisher",
+    publisherOrAuthorName: "HarperCollins",
+    ebookName: "Fragmented Control (The Salvation of Tempestria Book 4)",
+    duration: "Aug 23 – Aug 24, 2026",
+    startDate: "2026-08-23",
+    endDate: "2026-08-24",
+    discount: "23%",
+    targetEntity: "Fragmented Control (The Salvation of Tempestria Book 4)",
+    status: "Pending",
+    minimumAmount: "₹499",
+    description: "Pre-order campaign promo code for Tempestria Book 4.",
+  },
+  {
+    id: "pc-5",
+    code: "DBLCHXL056",
+    creatorType: "Publisher",
+    publisherOrAuthorName: "Oxford University Press",
+    ebookName: "Aix-Marseille University,",
+    duration: "Jul 31 – Aug 21, 2026",
+    startDate: "2026-07-31",
+    endDate: "2026-08-21",
+    discount: "23%",
+    targetEntity: "Aix-Marseille University,",
+    status: "Rejected",
+    minimumAmount: "₹1,000",
+    description: "Institutional academic literature campaign promo code.",
   },
 ];
 
-export function CouponCodePage() {
-  const [viewMode, setViewMode] = useState<"list" | "create">("list");
-  const [coupons, setCoupons] = useState<CouponItem[]>(INITIAL_COUPONS);
+const TYPE_FILTER_OPTIONS = ["Publisher & Author", "All Types", "Publisher", "Author"];
+const STATUS_FILTER_OPTIONS = ["All Status", "Approved", "Pending", "Rejected"];
+
+function DropdownSelect<T extends string>({
+  value,
+  options,
+  onChange,
+  className = "min-w-[160px]",
+  searchable = false,
+  searchPlaceholder = "Search...",
+}: {
+  value: T;
+  options: T[];
+  onChange: (v: T) => void;
+  className?: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredOptions = useMemo(() => {
+    if (!searchable || !searchTerm.trim()) return options;
+    const q = searchTerm.toLowerCase().trim();
+    return options.filter((opt) => opt.toLowerCase().includes(q));
+  }, [options, searchable, searchTerm]);
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => {
+          setOpen((o) => !o);
+          setSearchTerm("");
+        }}
+        className={`flex h-11 items-center justify-between gap-3 rounded-lg border border-border bg-card px-3.5 text-sm font-medium transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer shadow-2xs ${className}`}
+      >
+        <span className="truncate text-foreground">{value}</span>
+        <ChevronDown
+          size={16}
+          className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {open && (
+        <div
+          className="absolute right-0 top-full z-30 mt-2 max-h-64 min-w-40 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg flex flex-col py-1"
+          onMouseLeave={() => setOpen(false)}
+        >
+          {searchable && (
+            <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
+              <div className="relative flex items-center">
+                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={searchPlaceholder}
+                  autoFocus
+                  className="w-full h-8 pl-8 pr-2 text-xs rounded-md border border-border bg-secondary/50 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+            </div>
+          )}
+          <div className="overflow-y-auto max-h-48 py-1">
+            {filteredOptions.length === 0 ? (
+              <div className="px-4 py-2.5 text-center text-xs text-muted-foreground">
+                No results found
+              </div>
+            ) : (
+              filteredOptions.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt);
+                    setOpen(false);
+                    setSearchTerm("");
+                  }}
+                  className={`block w-full px-3.5 py-2 text-left text-xs font-medium hover:bg-secondary transition-colors cursor-pointer ${
+                    opt === value
+                      ? "font-bold text-[var(--brand)] bg-secondary/60"
+                      : "text-foreground"
+                  }`}
+                >
+                  <span className="truncate">{opt}</span>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function PromoCodePage() {
+  const [viewMode, setViewMode] = useState<"list" | "form">("list");
+  const [promoCodes, setPromoCodes] = useState<PromoCodeItem[]>(INITIAL_PROMO_CODES);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive" | "Expired">("All Status");
+  const [typeFilter, setTypeFilter] = useState("Publisher & Author");
+  const [statusFilter, setStatusFilter] = useState("All Status");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Active editing item (null = creating new coupon)
-  const [editingCoupon, setEditingCoupon] = useState<CouponItem | null>(null);
+  // Copy promo code helper
+  const handleCopyCode = (code: string, id: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedId(id);
+    toast.success(`Copied "${code}" to clipboard!`);
+    setTimeout(() => {
+      setCopiedId((prev) => (prev === id ? null : prev));
+    }, 1500);
+  };
 
-  // Form State matching screenshot 2
-  const [couponCodeInput, setCouponCodeInput] = useState("COUPON CODE");
+  // Form State Matching Exact User Screenshot
+  const [editingItem, setEditingItem] = useState<PromoCodeItem | null>(null);
+  const [publisherAuthorType, setPublisherAuthorType] = useState<CreatorType>("Publisher");
+  const [selectedPublisherOrAuthor, setSelectedPublisherOrAuthor] = useState("Choose from list");
+  const [selectedEbook, setSelectedEbook] = useState("Choose eBook");
   const [percentageInput, setPercentageInput] = useState("");
-  const [rewardPointsInput, setRewardPointsInput] = useState("");
-  const [startDateInput, setStartDateInput] = useState("2026-07-24");
-  const [endDateInput, setEndDateInput] = useState("2026-07-31");
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [minimumAmountInput, setMinimumAmountInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
+  const [startDateInput, setStartDateInput] = useState("2026-08-03");
+  const [endDateInput, setEndDateInput] = useState("2026-08-10");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: new Date("2026-08-03T00:00:00"),
+    to: new Date("2026-08-10T00:00:00"),
+  });
 
-  // Filtered Coupons
-  const filteredCoupons = useMemo(() => {
-    return coupons.filter((c) => {
-      // Status filter
-      if (statusFilter === "Active" && (!c.status || c.actionStatus === "Expired")) return false;
-      if (statusFilter === "Inactive" && (c.status || c.actionStatus === "Expired")) return false;
-      if (statusFilter === "Expired" && c.actionStatus !== "Expired") return false;
+  // Filtered List
+  const filteredItems = useMemo(() => {
+    return promoCodes.filter((item) => {
+      if (typeFilter === "Publisher" && item.creatorType !== "Publisher") return false;
+      if (typeFilter === "Author" && item.creatorType !== "Author") return false;
+      if (statusFilter !== "All Status" && item.status !== statusFilter) return false;
 
-      // Search filter
       if (!searchQuery.trim()) return true;
-      const term = searchQuery.toLowerCase().trim();
+      const q = searchQuery.toLowerCase().trim();
       return (
-        c.code.toLowerCase().includes(term) ||
-        c.discountPercentage.toLowerCase().includes(term) ||
-        c.description.toLowerCase().includes(term)
+        item.code.toLowerCase().includes(q) ||
+        item.targetEntity.toLowerCase().includes(q) ||
+        item.creatorType.toLowerCase().includes(q) ||
+        item.publisherOrAuthorName.toLowerCase().includes(q)
       );
     });
-  }, [coupons, searchQuery, statusFilter]);
+  }, [promoCodes, typeFilter, statusFilter, searchQuery]);
 
-  // Generate random promo coupon code
-  const handleGenerateCode = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let generated = "";
-    for (let i = 0; i < 10; i++) {
-      generated += chars.charAt(Math.floor(Math.random() * chars.length));
+  // Handle Date Range Selection
+  const handleDateRangeSelect = (range: DateRange | undefined) => {
+    setDateRange(range);
+    if (range?.from) {
+      setStartDateInput(format(range.from, "yyyy-MM-dd"));
     }
-    setCouponCodeInput(generated);
-    toast.success(`Generated new coupon code: ${generated}`);
+    if (range?.to) {
+      setEndDateInput(format(range.to, "yyyy-MM-dd"));
+    } else if (range?.from) {
+      setEndDateInput(format(range.from, "yyyy-MM-dd"));
+    }
   };
 
-  // Toggle status
-  const handleToggleStatus = (id: string) => {
-    setCoupons((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          const next = !item.status;
-          toast.success(`Coupon status updated to ${next ? "Active" : "Inactive"}`);
-          return { ...item, status: next };
-        }
-        return item;
-      })
+  // Change Status inline from dropdown
+  const handleChangeStatus = (id: string, newStatus: PromoStatus) => {
+    setPromoCodes((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
     );
+    toast.success(`Status updated to ${newStatus}`);
   };
 
-  // Open Edit Coupon screen for clicked row
-  const handleOpenEditCoupon = (item: CouponItem) => {
-    setEditingCoupon(item);
-    setCouponCodeInput(item.code);
-    setPercentageInput(item.discountPercentage.replace("%", ""));
-    setRewardPointsInput(String(item.rewardPoints || "500"));
-    setStartDateInput(item.startDate || "2026-07-24");
-    setEndDateInput(item.endDate || "2026-07-31");
-    setDescriptionInput(item.description || "");
-    setViewMode("create");
+  // Open Form for Adding New
+  const handleOpenAdd = () => {
+    setEditingItem(null);
+    setPublisherAuthorType("Publisher");
+    setSelectedPublisherOrAuthor("Choose from list");
+    setSelectedEbook("Choose eBook");
+    setPercentageInput("");
+    setPromoCodeInput(`PROMO${Math.floor(100000 + Math.random() * 900000)}`);
+    setMinimumAmountInput("");
+    setDescriptionInput("");
+    setStartDateInput("2026-08-03");
+    setEndDateInput("2026-08-10");
+    setDateRange({
+      from: new Date("2026-08-03T00:00:00"),
+      to: new Date("2026-08-10T00:00:00"),
+    });
+    setViewMode("form");
   };
 
-  // Open Add New Coupon form
-  const handleOpenAddNewCoupon = () => {
-    setEditingCoupon(null);
-    resetForm();
-    handleGenerateCode(); // auto generate initial code
-    setViewMode("create");
+  // Open Form for Editing Row
+  const handleOpenEdit = (item: PromoCodeItem) => {
+    setEditingItem(item);
+    setPublisherAuthorType(item.creatorType);
+    setSelectedPublisherOrAuthor(item.publisherOrAuthorName || "Choose from list");
+    setSelectedEbook(item.ebookName || "Choose eBook");
+    setPercentageInput(item.discount.replace(/%/g, "").trim());
+    setPromoCodeInput(item.code);
+    setMinimumAmountInput(item.minimumAmount || "₹500");
+    setDescriptionInput(item.description || "Special promotional discount code.");
+    setStartDateInput(item.startDate);
+    setEndDateInput(item.endDate);
+
+    const fromD = new Date(item.startDate + "T00:00:00");
+    const toD = new Date(item.endDate + "T00:00:00");
+    setDateRange({
+      from: isValid(fromD) ? fromD : undefined,
+      to: isValid(toD) ? toD : undefined,
+    });
+    setViewMode("form");
   };
 
-  // Submit Save/Create Form
-  const handleSaveCoupon = (e: React.FormEvent) => {
+  // Save Promo Code
+  const handleSavePromoCode = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!couponCodeInput.trim() || couponCodeInput === "COUPON CODE") {
-      toast.error("Please enter or generate a Coupon Code.");
+    if (!promoCodeInput.trim()) {
+      toast.error("Please enter a valid Promo Code.");
       return;
     }
 
-    const formatMonthDay = (dateStr: string) => {
-      if (!dateStr) return "Jul 24";
-      const d = new Date(dateStr);
-      return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    const formatRangeStr = (fromStr: string, toStr: string) => {
+      const f = new Date(fromStr);
+      const t = new Date(toStr);
+      if (!isValid(f) || !isValid(t)) return "Aug 03 – Aug 10, 2026";
+      const fFormatted = format(f, "MMM dd");
+      const tFormatted = format(t, "MMM dd, yyyy");
+      return `${fFormatted} – ${tFormatted}`;
     };
 
-    const pct = percentageInput.trim() ? `${percentageInput.replace("%", "")}%` : "10%";
-    const pts = parseInt(rewardPointsInput, 10) || 500;
+    const durationStr = formatRangeStr(startDateInput, endDateInput);
+    const formattedDiscount = percentageInput ? `${percentageInput}%` : "10%";
+    const targetStr = selectedEbook !== "Choose eBook" ? selectedEbook : selectedPublisherOrAuthor !== "Choose from list" ? selectedPublisherOrAuthor : "All eBooks";
 
-    if (editingCoupon) {
-      // Update existing item
-      setCoupons((prev) =>
-        prev.map((c) =>
-          c.id === editingCoupon.id
+    if (editingItem) {
+      setPromoCodes((prev) =>
+        prev.map((item) =>
+          item.id === editingItem.id
             ? {
-                ...c,
-                code: couponCodeInput,
-                discountPercentage: pct,
-                rewardPoints: pts,
-                duration: `${formatMonthDay(startDateInput)} – ${formatMonthDay(endDateInput)}`,
+                ...item,
+                code: promoCodeInput.toUpperCase(),
+                creatorType: publisherAuthorType,
+                publisherOrAuthorName: selectedPublisherOrAuthor !== "Choose from list" ? selectedPublisherOrAuthor : "National Book Trust",
+                ebookName: selectedEbook !== "Choose eBook" ? selectedEbook : "General eBook",
+                targetEntity: targetStr,
+                discount: formattedDiscount,
                 startDate: startDateInput,
                 endDate: endDateInput,
-                description: descriptionInput || c.description,
+                duration: durationStr,
+                minimumAmount: minimumAmountInput || "₹500",
+                description: descriptionInput || "Promotional discount code.",
               }
-            : c
+            : item
         )
       );
-      toast.success(`Coupon code "${couponCodeInput}" updated successfully!`);
+      toast.success(`Promo code "${promoCodeInput.toUpperCase()}" updated successfully!`);
     } else {
-      // Add new item
-      const newCoupon: CouponItem = {
-        id: `coup-${Date.now()}`,
-        code: couponCodeInput,
-        duration: `${formatMonthDay(startDateInput)} – ${formatMonthDay(endDateInput)}`,
+      const newItem: PromoCodeItem = {
+        id: `pc-${Date.now()}`,
+        code: promoCodeInput.toUpperCase(),
+        creatorType: publisherAuthorType,
+        publisherOrAuthorName: selectedPublisherOrAuthor !== "Choose from list" ? selectedPublisherOrAuthor : "National Book Trust",
+        ebookName: selectedEbook !== "Choose eBook" ? selectedEbook : "General eBook",
+        targetEntity: targetStr,
+        discount: formattedDiscount,
+        status: "Approved",
         startDate: startDateInput,
         endDate: endDateInput,
-        discountPercentage: pct,
-        rewardPoints: pts,
-        description: descriptionInput || "Reward points redemption coupon.",
-        actionStatus: "In Use",
-        status: true,
+        duration: durationStr,
+        minimumAmount: minimumAmountInput || "₹500",
+        description: descriptionInput || "Promotional discount code.",
       };
-      setCoupons((prev) => [newCoupon, ...prev]);
-      toast.success(`Coupon code "${couponCodeInput}" created successfully!`);
+      setPromoCodes((prev) => [newItem, ...prev]);
+      toast.success(`Promo code "${promoCodeInput.toUpperCase()}" created successfully!`);
     }
 
-    resetForm();
     setViewMode("list");
   };
 
-  const resetForm = () => {
-    setCouponCodeInput("COUPON CODE");
-    setPercentageInput("");
-    setRewardPointsInput("");
-    setStartDateInput("2026-07-24");
-    setEndDateInput("2026-07-31");
-    setDescriptionInput("");
-    setEditingCoupon(null);
-  };
-
-  const pageTitle =
-    viewMode === "create"
-      ? editingCoupon
-        ? `Edit Coupon — ${editingCoupon.code}`
-        : "Create Coupon"
-      : "Coupon Code";
-
-  const pageSubtitle =
-    viewMode === "create"
-      ? "Generate reward coupon codes, configure discounts, and set redemption dates."
-      : "Manage promotional coupons, discount rates, reward points redemption, and usage status.";
-
   return (
-    <AppShell title={pageTitle} subtitle={pageSubtitle}>
+    <AppShell
+      title="Promo Code"
+      subtitle="Manage promotional discount codes, approval status, and campaign durations."
+      pageIcon={
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+          <TicketPercent size={20} />
+        </div>
+      }
+    >
       <div className="p-4 sm:p-6 md:p-8 space-y-6 w-full">
         {viewMode === "list" ? (
-          /* ========================================================================
-           * MAIN COUPON CODE LISTING VIEW - FULL WIDTH (Matching Screenshot 1)
-           * ======================================================================== */
           <>
-            {/* Top Toolbar matching screenshot design */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-2xs w-full">
+            {/* Top Toolbar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-2xs w-full">
               {/* Search Box */}
-              <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3.5 shadow-none transition-colors focus-within:border-[var(--brand)]">
-                <Search size={16} className="mr-2 text-muted-foreground shrink-0" />
+              <div className="relative flex-1">
+                <Search
+                  size={17}
+                  className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search"
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                  placeholder="Search by promo code, title"
+                  className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
                 />
-              </label>
+              </div>
 
-              {/* Status Filter Dropdown & Add Coupon Button */}
-              <div className="flex items-center gap-3">
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex h-11 items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground hover:bg-secondary/40 focus:outline-none min-w-[130px] shadow-none cursor-pointer">
-                    <span>{statusFilter}</span>
-                    <ChevronDown size={16} className="text-muted-foreground shrink-0" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[140px] bg-card border-border shadow-md">
-                    {(["All Status", "Active", "Inactive", "Expired"] as const).map((st) => (
-                      <DropdownMenuItem
-                        key={st}
-                        onClick={() => setStatusFilter(st)}
-                        className={`cursor-pointer font-medium text-xs ${
-                          statusFilter === st ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]" : ""
-                        }`}
-                      >
-                        {st}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              {/* Right Group: Filters & Action Button */}
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0">
+                {/* Publisher & Author Filter Dropdown */}
+                <DropdownSelect
+                  value={typeFilter}
+                  options={TYPE_FILTER_OPTIONS}
+                  onChange={setTypeFilter}
+                  className="w-full sm:w-auto min-w-[160px]"
+                />
 
+                {/* All Status Filter Dropdown */}
+                <DropdownSelect
+                  value={statusFilter}
+                  options={STATUS_FILTER_OPTIONS}
+                  onChange={setStatusFilter}
+                  className="w-full sm:w-auto min-w-[140px]"
+                />
+
+                {/* + Add Promo Code Button */}
                 <button
-                  onClick={handleOpenAddNewCoupon}
-                  className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-sm font-semibold text-white shadow-2xs transition-opacity hover:opacity-90 shrink-0 cursor-pointer"
+                  type="button"
+                  onClick={handleOpenAdd}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 cursor-pointer shrink-0"
                 >
                   <Plus size={16} />
-                  <span>Add Coupon</span>
+                  <span>Add Promo Code</span>
                 </button>
               </div>
             </div>
 
-            {/* Coupons Table Container - Full Width */}
-            <div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs w-full">
-              <div className="overflow-x-auto w-full">
-                <table className="w-full text-left text-sm">
+            {/* Table Card Container */}
+            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs w-full">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground">
-                      <th className="px-6 py-4 min-w-[220px]">Rewards</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Coupon Duration</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Discount</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Action</th>
-                      <th className="px-6 py-4 whitespace-nowrap">Current Status</th>
-                      <th className="px-6 py-4 w-10"></th>
+                    <tr className="border-b border-border text-left text-xs font-semibold tracking-wider text-foreground/80 bg-secondary/15">
+                      <th className="py-4 pl-6 pr-4 font-bold">Promo Code</th>
+                      <th className="py-4 pr-4 font-bold">Promo Duration</th>
+                      <th className="py-4 pr-4 font-bold">Discount</th>
+                      <th className="py-4 pr-4 font-bold">eBook/Publisher/Author</th>
+                      <th className="py-4 pr-4 font-bold text-center">Action</th>
+                      <th className="py-4 pr-6 font-bold">Current Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/60">
-                    {filteredCoupons.length === 0 ? (
+                    {filteredItems.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
-                          <div className="flex flex-col items-center justify-center gap-2">
-                            <TicketPercent size={32} className="text-muted-foreground/60" />
-                            <p className="font-medium text-sm">No coupons found</p>
-                            <p className="text-xs text-muted-foreground">
-                              Click "+ Add Coupon" to generate your first coupon code.
-                            </p>
-                          </div>
+                        <td colSpan={6} className="py-16 text-center text-sm text-muted-foreground">
+                          No promo codes found matching your selected filters.
                         </td>
                       </tr>
                     ) : (
-                      filteredCoupons.map((item) => (
+                      filteredItems.map((item) => (
                         <tr
                           key={item.id}
-                          onClick={() => handleOpenEditCoupon(item)}
-                          className="group cursor-pointer border-b border-border/60 transition-colors hover:bg-secondary/50"
+                          className="transition-colors hover:bg-secondary/40"
                         >
-                          {/* Rewards Monospace Pill Column matching screenshot */}
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="inline-flex h-10 min-w-[160px] items-center justify-center rounded-lg bg-muted/60 px-4 text-xs font-bold tracking-wider text-foreground border border-border/60 shadow-2xs font-mono">
-                              {item.code}
+                          {/* Promo Code Column */}
+                          <td className="py-4 pl-6 pr-4 align-middle">
+                            <div className="inline-flex items-center gap-2 rounded-md border border-border/80 bg-secondary/30 px-3 py-1.5 text-xs font-mono font-bold tracking-wider text-foreground shadow-2xs">
+                              {item.creatorType === "Publisher" ? (
+                                <span title="Publisher" className="inline-flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                  <Building2 size={14} className="shrink-0" />
+                                </span>
+                              ) : (
+                                <span title="Author" className="inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                  <Feather size={14} className="shrink-0" />
+                                </span>
+                              )}
+                              <span>{item.code}</span>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCopyCode(item.code, item.id);
+                                }}
+                                className="inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer ml-0.5"
+                                title="Copy Promo Code"
+                              >
+                                {copiedId === item.id ? (
+                                  <Check size={13} className="text-emerald-500 shrink-0" />
+                                ) : (
+                                  <Copy size={13} className="shrink-0" />
+                                )}
+                              </button>
                             </div>
                           </td>
 
-                          {/* Coupon Duration Column */}
-                          <td className="px-6 py-4 whitespace-nowrap font-medium text-foreground text-sm">
+                          {/* Promo Duration Column */}
+                          <td className="py-4 pr-4 text-sm font-medium text-foreground whitespace-nowrap align-middle">
                             {item.duration}
                           </td>
 
                           {/* Discount Column */}
-                          <td className="px-6 py-4 whitespace-nowrap font-medium text-foreground text-sm">
-                            {item.discountPercentage}
+                          <td className="py-4 pr-4 text-sm font-bold text-foreground whitespace-nowrap align-middle">
+                            {item.discount}
                           </td>
 
-                          {/* Action Status Pill Column */}
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="inline-flex items-center rounded-full bg-muted/80 px-3 py-1 text-xs font-semibold text-muted-foreground">
-                              {item.actionStatus}
-                            </span>
+                          {/* eBook/Publisher/Author Column */}
+                          <td className="py-4 pr-4 text-sm font-medium text-foreground align-middle max-w-xs">
+                            <span className="line-clamp-2">{item.targetEntity}</span>
                           </td>
 
-                          {/* Current Status Switch Toggle Column */}
-                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                            <Switch
-                              checked={item.status}
-                              onCheckedChange={() => handleToggleStatus(item.id)}
-                              className="data-[state=checked]:bg-[var(--brand)] shadow-xs"
-                            />
+                          {/* Action Column */}
+                          <td className="py-4 pr-4 text-center align-middle whitespace-nowrap">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEdit(item)}
+                              className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
+                            >
+                              View/Edit
+                            </button>
                           </td>
 
-                          {/* Chevron Arrow Column */}
-                          <td className="px-6 py-4 text-right">
-                            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
-                              <ChevronRight size={16} />
-                            </span>
+                          {/* Current Status Dropdown Column */}
+                          <td className="py-4 pr-6 align-middle whitespace-nowrap">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger className="outline-none cursor-pointer">
+                                {item.status === "Approved" && (
+                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60 shadow-2xs">
+                                    <CheckCircle2 size={14} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+                                    <span>Approved</span>
+                                    <ChevronDown size={12} className="ml-0.5 opacity-75" />
+                                  </span>
+                                )}
+                                {item.status === "Pending" && (
+                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200/80 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60 shadow-2xs">
+                                    <AlertTriangle size={14} className="shrink-0 text-amber-600 dark:text-amber-400" />
+                                    <span>Pending</span>
+                                    <ChevronDown size={12} className="ml-0.5 opacity-75" />
+                                  </span>
+                                )}
+                                {item.status === "Rejected" && (
+                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200/80 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/60 shadow-2xs">
+                                    <XCircle size={14} className="shrink-0 text-rose-600 dark:text-rose-400" />
+                                    <span>Rejected</span>
+                                    <ChevronDown size={12} className="ml-0.5 opacity-75" />
+                                  </span>
+                                )}
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-36 bg-card border-border shadow-lg rounded-xl py-1">
+                                <DropdownMenuItem
+                                  onClick={() => handleChangeStatus(item.id, "Approved")}
+                                  className="cursor-pointer px-3 py-2 text-xs font-semibold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
+                                >
+                                  <CheckCircle2 size={13} className="mr-2" /> Approved
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleChangeStatus(item.id, "Pending")}
+                                  className="cursor-pointer px-3 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/30"
+                                >
+                                  <AlertTriangle size={13} className="mr-2" /> Pending
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleChangeStatus(item.id, "Rejected")}
+                                  className="cursor-pointer px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                                >
+                                  <XCircle size={13} className="mr-2" /> Rejected
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </td>
                         </tr>
                       ))
@@ -379,180 +616,287 @@ export function CouponCodePage() {
                   </tbody>
                 </table>
               </div>
-            </div>
 
-            {/* Pagination Footer matching screenshot design */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-2 w-full">
-              <div className="text-xs sm:text-sm text-foreground font-normal">
-                Showing <span className="font-semibold">{filteredCoupons.length}</span> from{" "}
-                <span className="font-semibold">{filteredCoupons.length}</span> results
-              </div>
-
-              <div className="flex items-center gap-1.5 self-center sm:self-auto text-xs sm:text-sm">
-                <button
-                  type="button"
-                  disabled
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-medium text-muted-foreground transition-colors opacity-40 pointer-events-none"
-                >
-                  « Previous
-                </button>
-
-                <button
-                  type="button"
-                  className="flex h-8 w-8 items-center justify-center rounded-lg font-bold bg-[var(--sidebar-highlight)] text-[var(--brand)] border border-[var(--brand)]/30"
-                >
-                  1
-                </button>
-
-                <button
-                  type="button"
-                  disabled
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-medium text-muted-foreground transition-colors opacity-40 pointer-events-none"
-                >
-                  Next »
-                </button>
+              {/* Table Footer */}
+              <div className="flex items-center justify-between border-t border-border bg-secondary/10 px-6 py-4">
+                <span className="text-xs text-muted-foreground">
+                  Showing <strong className="text-foreground">{filteredItems.length}</strong> from <strong className="text-foreground">{promoCodes.length}</strong> promo codes
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Page 1 of 1
+                </span>
               </div>
             </div>
           </>
         ) : (
           /* ========================================================================
-           * CREATE / EDIT COUPON FORM VIEW (Matching Screenshot 2)
+           * ADD / EDIT PROMO CODE FORM VIEW (MATCHING ATTACHED SCREENSHOT)
            * ======================================================================== */
-          <div className="space-y-6 w-full">
-            {/* Back Navigation Control Style matching Section 8 of style guide */}
+          <div className="space-y-6 w-full max-w-5xl mx-auto">
+            {/* Header Navigation matching screenshot header */}
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => {
-                  setViewMode("list");
-                  setEditingCoupon(null);
-                }}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs"
-                aria-label="Back to Coupon Code"
+                onClick={() => setViewMode("list")}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
+                aria-label="Back"
               >
-                <ArrowLeft size={16} />
+                <ArrowLeft size={18} />
               </button>
-              <span className="text-sm font-normal text-foreground">
-                Back to Coupon Code
-              </span>
+              <h2 className="text-xl font-bold text-foreground">
+                {editingItem ? "Edit Promo Code" : "Create Promo Code"}
+              </h2>
             </div>
 
-            {/* Main Form Wrapper */}
-            <form onSubmit={handleSaveCoupon} className="space-y-6 w-full">
-              {/* Card Container Box */}
-              <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-2xs space-y-6 w-full">
-                {/* Form 2-Column Grid matching screenshot 2 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                  {/* Coupon Code with Generate Code Button */}
+            {/* Form Card Container */}
+            <form onSubmit={handleSavePromoCode} className="space-y-6 w-full">
+              <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-2xs space-y-6">
+                
+                {/* Row 1: Publisher/Author Dropdown */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Coupon Code <span className="text-red-500">*</span>
+                      Publisher/Author<span className="text-red-500">*</span>
                     </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="text"
-                        value={couponCodeInput}
-                        onChange={(e) => setCouponCodeInput(e.target.value)}
-                        placeholder="COUPON CODE"
-                        className="flex-1 h-11 rounded-lg border border-border bg-muted/30 px-3.5 text-sm font-bold tracking-wider text-foreground outline-none focus:border-[var(--brand)] font-mono uppercase"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleGenerateCode}
-                        className="text-xs font-bold text-slate-800 dark:text-slate-200 underline hover:text-[var(--brand)] transition-colors shrink-0 cursor-pointer"
-                      >
-                        Generate Code
-                      </button>
-                    </div>
+                    <DropdownSelect
+                      value={publisherAuthorType}
+                      options={["Publisher", "Author"] as CreatorType[]}
+                      onChange={(v) => {
+                        setPublisherAuthorType(v as CreatorType);
+                        setSelectedPublisherOrAuthor("Choose from list");
+                      }}
+                      className="w-full"
+                    />
                   </div>
+                  <div />
+                </div>
 
-                  {/* Percentage % */}
+                {/* Row 2: Publisher or Author Selection + eBook */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Percentage % <span className="text-red-500">*</span>
+                      {publisherAuthorType}<span className="text-red-500">*</span>
+                    </label>
+                    <DropdownSelect
+                      value={selectedPublisherOrAuthor}
+                      options={
+                        publisherAuthorType === "Publisher"
+                          ? ["Choose from list", "National Book Trust", "Penguin India", "Rupa Publications", "HarperCollins", "Oxford University Press"]
+                          : ["Choose from list", "Ruskin Bond", "Arundhati Roy", "Chetan Bhagat", "Vikram Seth", "Jhumpa Lahiri"]
+                      }
+                      onChange={setSelectedPublisherOrAuthor}
+                      className="w-full"
+                      searchable
+                      searchPlaceholder={`Search ${publisherAuthorType}...`}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      eBook
+                    </label>
+                    <DropdownSelect
+                      value={selectedEbook}
+                      options={[
+                        "Choose eBook",
+                        "All eBooks",
+                        "1 Epub",
+                        "Little Miracles-english",
+                        "Kleine Wunder-german",
+                        "Fragmented Control (The Salvation of Tempestria Book 4)",
+                        "Aix-Marseille University,",
+                      ]}
+                      onChange={setSelectedEbook}
+                      className="w-full"
+                      searchable
+                      searchPlaceholder="Search eBook..."
+                    />
+                  </div>
+                </div>
+
+                {/* Row 3: Percentage % + Promo Code with Generate Code link */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Percentage %<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       value={percentageInput}
                       onChange={(e) => setPercentageInput(e.target.value)}
                       placeholder="Enter Percentage"
-                      className="w-full h-11 rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)]"
+                      className="w-full h-11 rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground"
                     />
                   </div>
-
-                  {/* Reward Points */}
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Reward Points <span className="text-red-500">*</span>
+                      Promo Code<span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      value={rewardPointsInput}
-                      onChange={(e) => setRewardPointsInput(e.target.value)}
-                      placeholder="Enter Reward Points"
-                      className="w-full h-11 rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)]"
-                    />
-                  </div>
-
-                  {/* Start Date - End Date */}
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Start Date - End Date <span className="text-red-500">*</span>
-                    </label>
-                    <div className="flex items-center gap-2 w-full">
-                      <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">
+                    <div className="flex items-center gap-3">
+                      <div className="relative flex-1">
                         <input
-                          type="date"
-                          value={startDateInput}
-                          onChange={(e) => setStartDateInput(e.target.value)}
-                          className="w-full bg-transparent text-xs text-foreground outline-none cursor-pointer"
+                          type="text"
+                          value={promoCodeInput}
+                          onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
+                          placeholder="PROMO CODE"
+                          className="w-full h-11 rounded-lg border border-border/80 bg-secondary/30 px-3.5 text-sm font-mono font-bold uppercase text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground/60 placeholder:font-normal"
                         />
-                      </label>
-                      <span className="text-muted-foreground text-xs font-medium">to</span>
-                      <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">
-                        <input
-                          type="date"
-                          value={endDateInput}
-                          onChange={(e) => setEndDateInput(e.target.value)}
-                          className="w-full bg-transparent text-xs text-foreground outline-none cursor-pointer"
-                        />
-                      </label>
+                        {promoCodeInput && (
+                          <button
+                            type="button"
+                            onClick={() => handleCopyCode(promoCodeInput, "form-code")}
+                            className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
+                            title="Copy Code"
+                          >
+                            {copiedId === "form-code" ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
+                          </button>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setPromoCodeInput(`PROMO${Math.floor(100000 + Math.random() * 900000)}`)}
+                        className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white shadow-2xs transition-opacity hover:opacity-90 shrink-0 cursor-pointer whitespace-nowrap"
+                      >
+                        <Sparkles size={14} />
+                        <span>Generate Code</span>
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Coupon Description */}
+                {/* Row 4: Minimum Amount + Start Date-End Date */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Minimum Amount<span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={minimumAmountInput}
+                      onChange={(e) => setMinimumAmountInput(e.target.value)}
+                      placeholder="Select Minimum Amount"
+                      className="w-full h-11 rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Start Date-End Date<span className="text-red-500">*</span>
+                    </label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          className="flex h-11 w-full items-center justify-between rounded-lg border border-border bg-card px-3.5 text-sm text-foreground hover:bg-secondary/40 focus:outline-none focus:border-[var(--brand)] transition-colors cursor-pointer shadow-none"
+                        >
+                          <span className="truncate text-sm font-normal text-foreground">
+                            {dateRange?.from ? (
+                              dateRange.to ? (
+                                `${format(dateRange.from, "MMM dd, yyyy")} to ${format(dateRange.to, "MMM dd, yyyy")}`
+                              ) : (
+                                format(dateRange.from, "MMM dd, yyyy")
+                              )
+                            ) : (
+                              <span className="text-muted-foreground font-normal">Choose Date</span>
+                            )}
+                          </span>
+                          <CalendarDays size={18} className="text-muted-foreground shrink-0 ml-2" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent align="end" className="w-auto p-4 bg-card border-border shadow-xl rounded-xl">
+                        <div className="flex items-center justify-between pb-3 mb-2 border-b border-border text-xs">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-muted-foreground">From:</span>
+                            <span className="font-semibold text-foreground">
+                              {dateRange?.from ? format(dateRange.from, "MMM dd, yyyy") : "—"}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-muted-foreground">To:</span>
+                            <span className="font-semibold text-foreground">
+                              {dateRange?.to ? format(dateRange.to, "MMM dd, yyyy") : "—"}
+                            </span>
+                          </div>
+                        </div>
+
+                        <Calendar
+                          mode="range"
+                          defaultMonth={dateRange?.from || new Date("2026-08-01")}
+                          selected={dateRange}
+                          onSelect={handleDateRangeSelect}
+                          numberOfMonths={1}
+                          className="rounded-md border-0"
+                        />
+
+                        <div className="pt-3 mt-2 border-t border-border flex flex-wrap items-center justify-between gap-1.5 text-xs">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const today = new Date();
+                              const next7 = addDays(today, 7);
+                              handleDateRangeSelect({ from: today, to: next7 });
+                            }}
+                            className="px-2.5 py-1 rounded-md bg-muted/60 hover:bg-muted text-foreground transition-colors font-medium cursor-pointer"
+                          >
+                            Next 7 Days
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const today = new Date();
+                              const next30 = addDays(today, 30);
+                              handleDateRangeSelect({ from: today, to: next30 });
+                            }}
+                            className="px-2.5 py-1 rounded-md bg-muted/60 hover:bg-muted text-foreground transition-colors font-medium cursor-pointer"
+                          >
+                            Next 30 Days
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const today = new Date();
+                              const startM = startOfMonth(today);
+                              const endM = endOfMonth(today);
+                              handleDateRangeSelect({ from: startM, to: endM });
+                            }}
+                            className="px-2.5 py-1 rounded-md bg-muted/60 hover:bg-muted text-foreground transition-colors font-medium cursor-pointer"
+                          >
+                            This Month
+                          </button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {/* Row 5: Promo Code Description */}
                 <div>
                   <label className="block text-xs font-semibold text-foreground mb-1.5">
-                    Coupon Description <span className="text-red-500">*</span>
+                    Promo Code Description<span className="text-red-500">*</span>
                   </label>
                   <textarea
+                    rows={3}
                     value={descriptionInput}
                     onChange={(e) => setDescriptionInput(e.target.value)}
                     placeholder="Enter Description"
-                    rows={4}
-                    className="w-full rounded-lg border border-border bg-card p-3 text-sm text-foreground outline-none focus:border-[var(--brand)] resize-none"
+                    className="w-full rounded-lg border border-border bg-card p-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground resize-y min-h-[90px]"
                   />
                 </div>
               </div>
 
-              {/* Form Action Buttons - Outside Card Box */}
-              <div className="flex items-center justify-end gap-3 pt-2 w-full">
+              {/* Form Action Buttons matching screenshot bottom */}
+              <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setViewMode("list");
-                    setEditingCoupon(null);
-                  }}
-                  className="inline-flex h-11 items-center justify-center px-6 rounded-lg border border-border bg-card text-sm font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  onClick={() => setViewMode("list")}
+                  className="rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer shadow-2xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="inline-flex h-11 items-center justify-center px-6 rounded-lg bg-[var(--brand)] text-white text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-2xs"
+                  className="rounded-lg px-6 py-2.5 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
+                  style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                 >
-                  {editingCoupon ? "Save Coupon" : "Create Coupon"}
+                  {editingItem ? "Save Changes" : "Create Promo Code"}
                 </button>
               </div>
             </form>

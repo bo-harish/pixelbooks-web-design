@@ -2,10 +2,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ChevronRight,
-  Search,
   ChevronDown,
+  Search,
   Building2,
   User,
+  Feather,
   Percent,
   Sparkles,
   Users,
@@ -14,12 +15,44 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
+
+function EntityAvatar({ type }: { name?: string; type: "Publisher" | "Author"; avatarBg?: string }) {
+  if (type === "Publisher") {
+    return (
+      <div
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20 shadow-2xs transition-transform group-hover:scale-105"
+        title="Publisher"
+      >
+        <Building2 size={18} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20 shadow-2xs transition-transform group-hover:scale-105"
+      title="Author"
+    >
+      <Feather size={18} />
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/pb-admin/commission-rates")({
+  head: () => ({
+    meta: [
+      { title: "Commission Rates — PixelBooks Admin" },
+      {
+        name: "description",
+        content: "View and manage publisher and author commission rates, default rates, and custom tier contracts.",
+      },
+    ],
+  }),
   component: CommissionRates,
 });
 
-interface CommissionItem {
+export interface CommissionItem {
   id: string;
   name: string;
   type: "Publisher" | "Author";
@@ -35,123 +68,87 @@ interface CommissionItem {
 const commissionData: CommissionItem[] = [
   {
     id: "1",
-    name: "Werley Nortreus",
+    name: "Ruskin Bond",
     type: "Author",
     rate: "15%",
     rateValue: 15,
     isCustom: false,
-    date: "14 Jul 2026",
-    avatarBg: "oklch(0.55 0.11 195)",
-    email: "werley@brandoptics.com",
-    location: "Noida, India",
+    date: "12 Jul 2026",
+    avatarBg: "oklch(0.48 0.18 260)",
+    email: "ruskin.bond@brandoptics.com",
+    location: "Mussoorie, India",
   },
   {
     id: "2",
-    name: "RJ Authors",
+    name: "HarperCollins India",
+    type: "Publisher",
+    rate: "12%",
+    rateValue: 12,
+    isCustom: true,
+    date: "11 Jul 2026",
+    avatarBg: "oklch(0.55 0.22 25)",
+    email: "harpercollins@brandoptics.com",
+    location: "Noida, India",
+  },
+  {
+    id: "3",
+    name: "Penguin Random House",
+    type: "Publisher",
+    rate: "10%",
+    rateValue: 10,
+    isCustom: true,
+    date: "11 Jul 2026",
+    avatarBg: "oklch(0.50 0.18 145)",
+    email: "penguin@brandoptics.com",
+    location: "Gurugram, India",
+  },
+  {
+    id: "4",
+    name: "Chetan Bhagat",
+    type: "Author",
+    rate: "15%",
+    rateValue: 15,
+    isCustom: false,
+    date: "10 Jul 2026",
+    avatarBg: "oklch(0.58 0.15 200)",
+    email: "chetan.bhagat@brandoptics.com",
+    location: "Mumbai, India",
+  },
+  {
+    id: "5",
+    name: "Rupa Publications",
+    type: "Publisher",
+    rate: "15%",
+    rateValue: 15,
+    isCustom: false,
+    date: "10 Jul 2026",
+    avatarBg: "oklch(0.45 0.14 310)",
+    email: "rupa@brandoptics.com",
+    location: "New Delhi, India",
+  },
+  {
+    id: "6",
+    name: "Shashi Tharoor",
     type: "Author",
     rate: "18%",
     rateValue: 18,
     isCustom: true,
     date: "10 Jul 2026",
-    avatarBg: "oklch(0.55 0.15 260)",
-    email: "rj.authors@brandoptics.com",
-    location: "Delhi, India",
-  },
-  {
-    id: "3",
-    name: "QA-TBH Publishers",
-    type: "Publisher",
-    rate: "15%",
-    rateValue: 15,
-    isCustom: false,
-    date: "10 Jul 2026",
-    avatarBg: "oklch(0.50 0.12 150)",
-    email: "qa.tbh@brandoptics.com",
-    location: "Mumbai, India",
-  },
-  {
-    id: "4",
-    name: "Abu",
-    type: "Publisher",
-    rate: "12.5%",
-    rateValue: 12.5,
-    isCustom: true,
-    date: "10 Jul 2026",
-    avatarBg: "oklch(0.55 0.13 320)",
-    email: "abu@brandoptics.com",
-    location: "Bengaluru, India",
-  },
-  {
-    id: "5",
-    name: "qa test pub",
-    type: "Publisher",
-    rate: "15%",
-    rateValue: 15,
-    isCustom: false,
-    date: "10 Jul 2026",
-    avatarBg: "oklch(0.52 0.08 230)",
-    email: "qatest@brandoptics.com",
-    location: "Chennai, India",
-  },
-  {
-    id: "6",
-    name: "Veena",
-    type: "Publisher",
-    rate: "20%",
-    rateValue: 20,
-    isCustom: true,
-    date: "10 Jul 2026",
-    avatarBg: "oklch(0.55 0.13 260)",
-    email: "veena@brandoptics.com",
-    location: "Hyderabad, India",
+    avatarBg: "oklch(0.52 0.20 120)",
+    email: "shashi.tharoor@brandoptics.com",
+    location: "Thiruvananthapuram, India",
   },
   {
     id: "7",
-    name: "QA",
-    type: "Publisher",
+    name: "QA Author User",
+    type: "Author",
     rate: "15%",
     rateValue: 15,
     isCustom: false,
     date: "10 Jul 2026",
-    avatarBg: "oklch(0.48 0.10 200)",
+    avatarBg: "oklch(0.60 0.16 350)",
     email: "qa@brandoptics.com",
     location: "Pune, India",
-  },
-  {
-    id: "8",
-    name: "QA-TBH Publishers And Distributors",
-    type: "Publisher",
-    rate: "15%",
-    rateValue: 15,
-    isCustom: false,
-    date: "10 Jul 2026",
-    avatarBg: "oklch(0.52 0.12 170)",
-    email: "distributors@brandoptics.com",
-    location: "Kolkata, India",
-  },
-  {
-    id: "9",
-    name: "OBook Publication",
-    type: "Publisher",
-    rate: "14%",
-    rateValue: 14,
-    isCustom: true,
-    date: "10 Jul 2026",
-    avatarBg: "oklch(0.58 0.14 80)",
-    email: "obook@brandoptics.com",
-    location: "Ahmedabad, India",
-  },
-  {
-    id: "10",
-    name: "SP Publications",
-    type: "Publisher",
-    rate: "15%",
-    rateValue: 15,
-    isCustom: false,
-    date: "10 Jul 2026",
-    avatarBg: "oklch(0.50 0.14 275)",
-    email: "sp.pub@brandoptics.com",
-    location: "Jaipur, India",
   },
 ];
 
@@ -159,10 +156,7 @@ function CommissionRates() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [publisherFilter, setPublisherFilter] = useState("Publisher & Author");
-  const [publisherFilterOpen, setPublisherFilterOpen] = useState(false);
-
   const [rateFilter, setRateFilter] = useState("Rate Type");
-  const [rateFilterOpen, setRateFilterOpen] = useState(false);
 
   const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false);
   const [newCommissionRate, setNewCommissionRate] = useState("");
@@ -206,7 +200,6 @@ function CommissionRates() {
       subtitle="View and manage commission rates across your network."
     >
       <div className="space-y-6 p-4 md:p-8">
-        {/* Metric Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
             <div className="flex items-center justify-between">
@@ -228,33 +221,14 @@ function CommissionRates() {
           <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Avg Commission
+                Default Rate
               </span>
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <Percent size={18} />
               </span>
             </div>
             <div>
-              <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
-                15.4%
-              </p>
-              <p className="text-xs text-muted-foreground mt-0.5">Network Average Rate</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Default Base Rate
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400">
-                <TrendingUp size={18} />
-              </span>
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold text-sky-600 dark:text-sky-400 tracking-tight">
-                15.0%
-              </p>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">15%</p>
               <p className="text-xs text-muted-foreground mt-0.5">Standard Platform Commission</p>
             </div>
           </div>
@@ -262,14 +236,35 @@ function CommissionRates() {
           <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Custom Override Rates
+                Avg. Commission Rate
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <TrendingUp size={18} />
+              </span>
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">
+                {(
+                  commissionData.reduce((acc, curr) => acc + curr.rateValue, 0) /
+                  commissionData.length
+                ).toFixed(1)}
+                %
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">Across All Accounts</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Custom Contracts
               </span>
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
                 <Sparkles size={18} />
               </span>
             </div>
             <div>
-              <p className="text-2xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">
                 {commissionData.filter((d) => d.isCustom).length}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">Special Tier Contracts</p>
@@ -277,101 +272,47 @@ function CommissionRates() {
           </div>
         </div>
 
-        {/* Top Controls: Search & Filters */}
-        <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between lg:p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 w-full lg:max-w-xl">
-            {/* Search Input */}
-            <div className="relative flex-1">
-              <Search
-                size={16}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-              />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search Publisher or Author name..."
-                className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] text-foreground"
-              />
-            </div>
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative flex-1">
+            <Search
+              size={17}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search Publisher or Author name..."
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
+            />
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center md:gap-3 w-full lg:w-auto">
-            {/* Publisher & Author Custom Dropdown */}
-            <div className="relative w-full sm:w-auto">
-              <button
-                onClick={() => {
-                  setPublisherFilterOpen(!publisherFilterOpen);
-                  setRateFilterOpen(false);
-                }}
-                className="flex h-11 w-full items-center justify-between gap-4 rounded-lg border border-border bg-card px-3.5 text-sm font-medium sm:w-52 text-foreground cursor-pointer transition-colors hover:bg-secondary/40"
-              >
-                <span className="truncate">{publisherFilter}</span>
-                <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-              </button>
-              {publisherFilterOpen && (
-                <div className="absolute right-0 z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-52 py-1">
-                  {["Publisher & Author", "Publisher", "Author"].map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => {
-                        setPublisherFilter(p);
-                        setPublisherFilterOpen(false);
-                      }}
-                      className={`flex w-full items-center px-3.5 py-2 text-left text-sm transition-colors hover:bg-secondary/60 cursor-pointer ${
-                        p === publisherFilter
-                          ? "font-semibold text-[var(--brand)] bg-[var(--brand)]/5"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0">
+            <DropdownSelect
+              value={publisherFilter}
+              options={["Publisher & Author", "Publisher", "Author"]}
+              onChange={setPublisherFilter}
+              searchable
+              searchPlaceholder="Search publisher..."
+              className="w-full sm:w-auto min-w-[170px]"
+            />
 
-            {/* Rate Type Custom Dropdown */}
-            <div className="relative w-full sm:w-auto">
-              <button
-                onClick={() => {
-                  setRateFilterOpen(!rateFilterOpen);
-                  setPublisherFilterOpen(false);
-                }}
-                className="flex h-11 w-full items-center justify-between gap-4 rounded-lg border border-border bg-card px-3.5 text-sm font-medium sm:w-40 text-foreground cursor-pointer transition-colors hover:bg-secondary/40"
-              >
-                <span className="truncate">{rateFilter}</span>
-                <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-              </button>
-              {rateFilterOpen && (
-                <div className="absolute right-0 z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-40 py-1">
-                  {["Rate Type", "All", "Default Rate", "Other Rate"].map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => {
-                        setRateFilter(p);
-                        setRateFilterOpen(false);
-                      }}
-                      className={`flex w-full items-center px-3.5 py-2 text-left text-sm transition-colors hover:bg-secondary/60 cursor-pointer ${
-                        p === rateFilter
-                          ? "font-semibold text-[var(--brand)] bg-[var(--brand)]/5"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <DropdownSelect
+              value={rateFilter}
+              options={["Rate Type", "All", "Default Rate", "Other Rate"]}
+              onChange={setRateFilter}
+              searchable
+              searchPlaceholder="Search rate..."
+              className="w-full sm:w-auto min-w-[140px]"
+            />
 
-            {/* Bulk Update Action */}
             <button
+              type="button"
               onClick={() => setIsCommissionModalOpen(true)}
-              className="flex h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-[var(--brand)] text-white px-4 py-2 text-sm font-semibold transition-all hover:opacity-90 active:scale-[0.98] shadow-xs cursor-pointer"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 cursor-pointer shrink-0"
             >
               <SlidersHorizontal size={16} />
-              Bulk Update Rates
+              <span>Bulk Update Rates</span>
             </button>
           </div>
         </div>
@@ -409,15 +350,10 @@ function CommissionRates() {
                       }
                       className="group border-b border-border/60 transition-colors last:border-0 cursor-pointer hover:bg-secondary/50"
                     >
-                      {/* Column 1: Publisher / Author Name with pb-admin/publishers-authors exact profile pic style */}
+                      {/* Column 1: Publisher / Author Name with distinct profile pic style */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <div
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-2xs"
-                            style={{ background: item.avatarBg }}
-                          >
-                            {getInitials(item.name)}
-                          </div>
+                          <EntityAvatar name={item.name} type={item.type} avatarBg={item.avatarBg} />
                           <div>
                             <p className="font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
                               {item.name}
@@ -446,7 +382,7 @@ function CommissionRates() {
                               Custom
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
                               Default
                             </span>
                           )}

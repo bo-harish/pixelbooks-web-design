@@ -18,8 +18,11 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Feather,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { BookCover } from "@/components/ui/book-cover";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -365,7 +368,7 @@ export function SchemaMetaPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("Titles");
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // Modals state
   const [editingMetaItem, setEditingMetaItem] = useState<SchemaMetaItem | null>(null);
   const [editingSchemaItem, setEditingSchemaItem] = useState<SchemaMetaItem | null>(null);
@@ -376,6 +379,7 @@ export function SchemaMetaPage() {
   const [metaKeywordsInput, setMetaKeywordsInput] = useState("");
   const [canonicalUrlInput, setCanonicalUrlInput] = useState("");
   const [robotsInput, setRobotsInput] = useState("index, follow");
+  const [isGeneratingMetaAI, setIsGeneratingMetaAI] = useState(false);
 
   // Schema Form fields state
   const [schemaJsonInput, setSchemaJsonInput] = useState("");
@@ -417,15 +421,15 @@ export function SchemaMetaPage() {
     setMetaTitleInput(item.metaTitle || `${item.title} | PixelBooks`);
     setMetaDescInput(
       item.metaDescription ||
-        `Read or download ${item.title} by ${item.author || "PixelBooks Publishing"} on PixelBooks.`
+      `Read or download ${item.title} by ${item.author || "PixelBooks Publishing"} on PixelBooks.`
     );
     setMetaKeywordsInput(item.keywords || `${item.title}, PixelBooks, ebook, digital reading`);
     setCanonicalUrlInput(
       item.canonicalUrl ||
-        `https://pixelbooks.com/${item.type === "Title" ? "titles" : "bundles"}/${item.title
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "")}`
+      `https://pixelbooks.com/${item.type === "Title" ? "titles" : "bundles"}/${item.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")}`
     );
     setRobotsInput(item.robots || "index, follow");
   };
@@ -443,14 +447,14 @@ export function SchemaMetaPage() {
       prev.map((i) =>
         i.id === editingMetaItem.id
           ? {
-              ...i,
-              metaStatus: nowStr,
-              metaTitle: metaTitleInput,
-              metaDescription: metaDescInput,
-              keywords: metaKeywordsInput,
-              canonicalUrl: canonicalUrlInput,
-              robots: robotsInput,
-            }
+            ...i,
+            metaStatus: nowStr,
+            metaTitle: metaTitleInput,
+            metaDescription: metaDescInput,
+            keywords: metaKeywordsInput,
+            canonicalUrl: canonicalUrlInput,
+            robots: robotsInput,
+          }
           : i
       )
     );
@@ -459,10 +463,40 @@ export function SchemaMetaPage() {
     setEditingMetaItem(null);
   };
 
+  // AI Meta Generator Action
+  const handleGenerateMetaAI = () => {
+    if (!editingMetaItem) return;
+    setIsGeneratingMetaAI(true);
+
+    setTimeout(() => {
+      const cleanSlug = editingMetaItem.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      setMetaTitleInput(`${editingMetaItem.title} | PixelBooks`);
+      setMetaDescInput(
+        `Read or download ${editingMetaItem.title} by ${
+          editingMetaItem.author || "PixelBooks Publishing"
+        }. Discover ratings, chapters, and instant digital reading on PixelBooks.`
+      );
+      setMetaKeywordsInput(
+        `${editingMetaItem.title}, ${editingMetaItem.author}, PixelBooks, ebook, digital reading, ${editingMetaItem.publisher}`
+      );
+      setCanonicalUrlInput(
+        `https://pixelbooks.com/${editingMetaItem.type === "Title" ? "titles" : "bundles"}/${cleanSlug}`
+      );
+      setRobotsInput("index, follow");
+
+      setIsGeneratingMetaAI(false);
+      toast.success(`AI Meta tags successfully generated for "${editingMetaItem.title}"`);
+    }, 600);
+  };
+
   // Open Edit Schema Modal
   const handleOpenEditSchema = (item: SchemaMetaItem) => {
     setEditingSchemaItem(item);
-    
+
     if (item.schemaJson) {
       setSchemaJsonInput(item.schemaJson);
     } else {
@@ -594,10 +628,10 @@ export function SchemaMetaPage() {
       prev.map((i) =>
         i.id === editingSchemaItem.id
           ? {
-              ...i,
-              schemaStatus: nowStr,
-              schemaJson: schemaJsonInput,
-            }
+            ...i,
+            schemaStatus: nowStr,
+            schemaJson: schemaJsonInput,
+          }
           : i
       )
     );
@@ -617,6 +651,11 @@ export function SchemaMetaPage() {
     <AppShell
       title="Schema & Meta"
       subtitle="Manage search engine schemas, indexing rules, and rich structured data for catalog titles and bundles."
+      pageIcon={
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+          <Feather size={20} />
+        </div>
+      }
     >
       <div className="p-4 sm:p-6 md:p-8 space-y-6 w-full">
         {/* Filter Toolbar matching Sales Report / PixelBooks Style Guide */}
@@ -634,30 +673,15 @@ export function SchemaMetaPage() {
           </label>
 
           {/* Type Filter Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex h-11 items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground hover:bg-secondary/40 focus:outline-none min-w-[140px] shadow-none cursor-pointer">
-              <span>{typeFilter}</span>
-              <ChevronDown size={16} className="text-muted-foreground shrink-0" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[140px] bg-card border-border shadow-md">
-              <DropdownMenuItem
-                onClick={() => setTypeFilter("Titles")}
-                className={`cursor-pointer font-medium text-xs ${
-                  typeFilter === "Titles" ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]" : ""
-                }`}
-              >
-                Titles
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setTypeFilter("Bundle")}
-                className={`cursor-pointer font-medium text-xs ${
-                  typeFilter === "Bundle" ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]" : ""
-                }`}
-              >
-                Bundle
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DropdownSelect
+            value={typeFilter}
+            options={["Titles", "Bundle"]}
+            onChange={(v) => {
+              setTypeFilter(v as TypeFilter);
+              setCurrentPage(1);
+            }}
+            className="min-w-[140px]"
+          />
         </div>
 
         {/* Data Table Container */}
@@ -665,11 +689,11 @@ export function SchemaMetaPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-border bg-muted/40 text-xs font-semibold text-muted-foreground">
-                  <th className="px-6 py-4">Title</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Meta Status</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Schema Status</th>
-                  <th className="px-6 py-4 text-center whitespace-nowrap min-w-[300px]">SEO Actions</th>
+                <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <th className="px-6 py-4 font-semibold">Title</th>
+                  <th className="px-6 py-4 whitespace-nowrap font-semibold">Meta Status</th>
+                  <th className="px-6 py-4 whitespace-nowrap font-semibold">Schema Status</th>
+                  <th className="px-6 py-4 text-center whitespace-nowrap min-w-[300px] font-semibold">SEO Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
@@ -689,13 +713,6 @@ export function SchemaMetaPage() {
                   paginatedItems.map((item) => {
                     const isMetaNotDone = item.metaStatus === "Not Done";
                     const isSchemaNotDone = item.schemaStatus === "Not Done";
-                    const authorInitials = item.author
-                      .split(" ")
-                      .filter(Boolean)
-                      .map((n) => n[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase();
 
                     return (
                       <tr
@@ -706,15 +723,12 @@ export function SchemaMetaPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-start gap-4 max-w-[550px]">
                             {/* Book cover thumbnail */}
-                            <div
-                              className="relative flex h-14 w-10 shrink-0 flex-col items-center justify-center rounded-md text-[9px] font-bold text-white shadow-2xs ring-1 ring-black/10 overflow-hidden"
-                              style={{ background: item.cover }}
-                            >
-                              <div className="absolute inset-0 bg-gradient-to-tr from-black/25 via-transparent to-white/15" />
-                              <span className="relative z-10 text-[9.5px] font-extrabold tracking-wider">
-                                {item.initials}
-                              </span>
-                            </div>
+                            <BookCover
+                              initials={item.initials}
+                              coverGradient={item.cover}
+                              title={item.title}
+                              size="sm"
+                            />
 
                             {/* Title & Meta Entity Chips */}
                             <div className="min-w-0 flex-1 space-y-1">
@@ -724,19 +738,18 @@ export function SchemaMetaPage() {
                               <div className="flex flex-wrap items-center gap-2 text-xs pt-0.5">
                                 {/* Author Chip */}
                                 <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
-                                  <span
-                                    className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[7.5px] font-bold text-white"
-                                    style={{ background: item.cover }}
-                                  >
-                                    {authorInitials}
+                                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                                    <Feather size={9} />
                                   </span>
                                   <span className="text-[11px] font-medium text-foreground">{item.author}</span>
                                 </div>
 
                                 {/* Publisher Chip */}
-                                <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/60 px-2 py-0.5 text-[10.5px] font-medium text-muted-foreground">
-                                  <Building2 size={10} className="shrink-0 text-muted-foreground/80" />
-                                  <span>{item.publisher}</span>
+                                <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
+                                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+                                    <Building2 size={9} />
+                                  </span>
+                                  <span className="text-[11px] font-medium text-foreground">{item.publisher}</span>
                                 </div>
                               </div>
                             </div>
@@ -746,7 +759,7 @@ export function SchemaMetaPage() {
                         {/* Meta Status Column */}
                         <td className="px-6 py-4 whitespace-nowrap">
                           {isMetaNotDone ? (
-                            <span className="text-red-500 font-semibold text-sm">Not Done</span>
+                            <span className="text-red-500/90 dark:text-red-400 text-sm font-medium">Action Required</span>
                           ) : (
                             <span className="text-muted-foreground text-xs font-normal">
                               {item.metaStatus}
@@ -757,7 +770,7 @@ export function SchemaMetaPage() {
                         {/* Schema Status Column */}
                         <td className="px-6 py-4 whitespace-nowrap">
                           {isSchemaNotDone ? (
-                            <span className="text-red-500 font-semibold text-sm">Not Done</span>
+                            <span className="text-red-500/90 dark:text-red-400 text-sm font-medium">Action Required</span>
                           ) : (
                             <span className="text-muted-foreground text-xs font-normal">
                               {item.schemaStatus}
@@ -819,11 +832,10 @@ export function SchemaMetaPage() {
                   key={pageNum}
                   type="button"
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold border border-[var(--brand)]/30"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${isActive
+                    ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold border border-[var(--brand)]/30"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
                 >
                   {pageNum}
                 </button>
@@ -857,6 +869,30 @@ export function SchemaMetaPage() {
           </DialogHeader>
 
           <div className="space-y-4 py-2">
+            {/* Header row with "Generate with AI" button */}
+            <div className="flex items-center justify-between gap-4">
+              <label className="text-xs font-semibold text-foreground">Meta Configuration</label>
+
+              {/* AI Meta Generator Button */}
+              <button
+                onClick={handleGenerateMetaAI}
+                disabled={isGeneratingMetaAI}
+                className="inline-flex items-center gap-2 rounded-lg bg-[var(--brand)] hover:opacity-90 disabled:opacity-60 text-white px-4 py-2 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+              >
+                {isGeneratingMetaAI ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Generating with AI...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={14} className="text-amber-300" />
+                    <span>Generate with AI</span>
+                  </>
+                )}
+              </button>
+            </div>
+
             {/* Meta Title */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
@@ -988,7 +1024,7 @@ export function SchemaMetaPage() {
             {/* Header row with "Generate Schema with AI" button */}
             <div className="flex items-center justify-between gap-4">
               <label className="text-xs font-semibold text-foreground">Schema Configuration</label>
-              
+
               {/* AI Schema Generator Button */}
               <button
                 onClick={handleGenerateSchemaAI}

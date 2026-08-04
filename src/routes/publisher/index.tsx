@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Tag, Users, Clock, BookOpen, Star, ArrowUpRight, ArrowDownRight, ChevronDown, TrendingUp, Wallet } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { Tag, Users, BookOpen, Star, ArrowUpRight, ArrowDownRight, ChevronDown, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,10 +15,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -37,7 +33,7 @@ function PublisherDashboard() {
   );
 }
 
-const RANGES = ["7d", "30d", "90d", "1y", "Till Date"] as const;
+const RANGES = ["7d", "30d", "90d", "Yearly", "Till Date"] as const;
 type Range = (typeof RANGES)[number];
 
 type Stat = {
@@ -46,7 +42,6 @@ type Stat = {
   sub?: string;
   icon: LucideIcon;
   delta: number;
-  spark: number[];
 };
 
 const stats: Stat[] = [
@@ -55,310 +50,158 @@ const stats: Stat[] = [
     value: "₹42,180",
     icon: Tag,
     delta: 12.4,
-    spark: [8, 10, 9, 14, 12, 18, 16, 22, 20, 25, 24, 28],
   },
   {
-    label: "Total eBooks Purchased",
+    label: "Total eBooks Sold",
     value: "1,284",
     icon: Users,
     delta: 6.1,
-    spark: [20, 22, 21, 24, 23, 28, 27, 30, 32, 31, 34, 36],
   },
   {
     label: "Total eBooks Published",
     value: "184",
     icon: BookOpen,
     delta: 2.8,
-    spark: [10, 11, 11, 12, 13, 13, 14, 15, 16, 16, 17, 18],
   },
 ];
 
-const salesDataByFy: Record<string, { month: string; sales: number }[]> = {
-  "FY (2025 - 2026)": [
-    { month: "Apr", sales: 12 },
-    { month: "May", sales: 18 },
-    { month: "Jun", sales: 14 },
-    { month: "Jul", sales: 22 },
-    { month: "Aug", sales: 26 },
-    { month: "Sep", sales: 19 },
-    { month: "Oct", sales: 31 },
-    { month: "Nov", sales: 28 },
-    { month: "Dec", sales: 42 },
-    { month: "Jan", sales: 35 },
-    { month: "Feb", sales: 39 },
-    { month: "Mar", sales: 47 },
-  ],
-  "FY (2024 - 2025)": [
-    { month: "Apr", sales: 10 },
-    { month: "May", sales: 14 },
-    { month: "Jun", sales: 12 },
-    { month: "Jul", sales: 18 },
-    { month: "Aug", sales: 20 },
-    { month: "Sep", sales: 15 },
-    { month: "Oct", sales: 25 },
-    { month: "Nov", sales: 22 },
-    { month: "Dec", sales: 34 },
-    { month: "Jan", sales: 28 },
-    { month: "Feb", sales: 31 },
-    { month: "Mar", sales: 38 },
-  ],
-  "FY (2023 - 2024)": [
-    { month: "Apr", sales: 8 },
-    { month: "May", sales: 11 },
-    { month: "Jun", sales: 9 },
-    { month: "Jul", sales: 14 },
-    { month: "Aug", sales: 16 },
-    { month: "Sep", sales: 12 },
-    { month: "Oct", sales: 20 },
-    { month: "Nov", sales: 18 },
-    { month: "Dec", sales: 28 },
-    { month: "Jan", sales: 22 },
-    { month: "Feb", sales: 25 },
-    { month: "Mar", sales: 30 },
-  ],
-};
-
-const fyGrowth: Record<string, string> = {
-  "FY (2025 - 2026)": "+18.6% Growth",
-  "FY (2024 - 2025)": "+15.2% Growth",
-  "FY (2023 - 2024)": "+12.0% Growth",
-};
-
-const categoryData = [
-  { name: "Academic", value: 42 },
-  { name: "Fiction", value: 26 },
-  { name: "Philosophy", value: 18 },
-  { name: "Reference", value: 14 },
-];
-
-const categoryColors = [
-  "var(--brand)",
-  "oklch(0.62 0.11 195)",
-  "oklch(0.55 0.13 260)",
-  "oklch(0.72 0.14 70)",
-];
-
-const topBooks = [
+const topSellingBooks = [
   {
-    title: "NEP 2020 · Policy Formulation In Education",
-    isbn: "9789356781234",
+    title: "NEP 2020: Policy in Education",
+    category: "Academic & Research",
     rating: 4.6,
-    views: 1240,
-    sales: 312,
-    revenue: "₹982.80",
-    initials: "NEP",
+    baseViews: 195,
+    baseSales: 240,
+    baseRevenue: 59800,
+    initials: "NP",
     cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
   },
   {
-    title: "A Complete History of Music for Schools",
-    isbn: "1176559435",
+    title: "A Complete History of Music",
+    category: "Arts & Culture",
     rating: 4.2,
-    views: 986,
-    sales: 218,
-    revenue: "₹686.70",
-    initials: "MUS",
+    baseViews: 110,
+    baseSales: 190,
+    baseRevenue: 47500,
+    initials: "HM",
     cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
   },
   {
     title: "Knowledge for the Time",
-    isbn: "9781019041857",
-    rating: 4.0,
-    views: 812,
-    sales: 174,
-    revenue: "₹548.10",
-    initials: "KFT",
+    category: "History & Society",
+    rating: 4.1,
+    baseViews: 98,
+    baseSales: 160,
+    baseRevenue: 39600,
+    initials: "KT",
     cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
   },
   {
     title: "The Elements of Style",
-    isbn: "9780205309023",
+    category: "Education & Reference",
     rating: 4.8,
-    views: 742,
-    sales: 168,
-    revenue: "₹352.80",
-    initials: "STY",
+    baseViews: 310,
+    baseSales: 150,
+    baseRevenue: 37200,
+    initials: "ES",
     cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
+  },
+  {
+    title: "Heart's Key",
+    category: "Action & Adventure",
+    rating: 4.5,
+    baseViews: 145,
+    baseSales: 140,
+    baseRevenue: 35000,
+    initials: "HK",
+    cover: "linear-gradient(160deg, oklch(0.20 0.06 200), oklch(0.12 0.04 200))",
+  },
+  {
+    title: "The Psychology of Money",
+    category: "Biography & Wealth",
+    rating: 4.8,
+    baseViews: 248,
+    baseSales: 135,
+    baseRevenue: 33750,
+    initials: "PM",
+    cover: "linear-gradient(160deg, oklch(0.45 0.12 140), oklch(0.25 0.08 140))",
+  },
+  {
+    title: "Digital Marketing Essentials",
+    category: "Business & Management",
+    rating: 4.4,
+    baseViews: 165,
+    baseSales: 120,
+    baseRevenue: 30000,
+    initials: "DM",
+    cover: "linear-gradient(160deg, oklch(0.60 0.15 60), oklch(0.40 0.10 60))",
+  },
+  {
+    title: "Data Structures in JavaScript",
+    category: "Computer Science",
+    rating: 4.7,
+    baseViews: 280,
+    baseSales: 105,
+    baseRevenue: 26250,
+    initials: "DS",
+    cover: "linear-gradient(160deg, oklch(0.40 0.16 260), oklch(0.22 0.09 260))",
+  },
+  {
+    title: "Financial Management 101",
+    category: "Finance & Accounting",
+    rating: 4.3,
+    baseViews: 140,
+    baseSales: 90,
+    baseRevenue: 22500,
+    initials: "FM",
+    cover: "linear-gradient(160deg, oklch(0.50 0.11 180), oklch(0.30 0.07 180))",
+  },
+  {
+    title: "Contemporary Literature Studies",
+    category: "Literature",
+    rating: 4.0,
+    baseViews: 85,
+    baseSales: 75,
+    baseRevenue: 18750,
+    initials: "CL",
+    cover: "linear-gradient(160deg, oklch(0.38 0.10 320), oklch(0.20 0.06 320))",
   },
 ];
 
-const topBooksByRange: Record<Range, typeof topBooks> = {
-  "7d": [
-    {
-      title: "NEP 2020 · Policy Formulation In Education",
-      isbn: "9789356781234",
-      rating: 4.6,
-      views: 142,
-      sales: 38,
-      revenue: "₹119.70",
-      initials: "NEP",
-      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
-    },
-    {
-      title: "Knowledge for the Time",
-      isbn: "9781019041857",
-      rating: 4.0,
-      views: 98,
-      sales: 24,
-      revenue: "₹75.60",
-      initials: "KFT",
-      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
-    },
-    {
-      title: "A Complete History of Music for Schools",
-      isbn: "1176559435",
-      rating: 4.2,
-      views: 86,
-      sales: 19,
-      revenue: "₹59.85",
-      initials: "MUS",
-      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
-    },
-    {
-      title: "The Elements of Style",
-      isbn: "9780205309023",
-      rating: 4.8,
-      views: 65,
-      sales: 14,
-      revenue: "₹29.40",
-      initials: "STY",
-      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
-    },
-  ],
-  "30d": topBooks,
-  "90d": [
-    {
-      title: "NEP 2020 · Policy Formulation In Education",
-      isbn: "9789356781234",
-      rating: 4.6,
-      views: 3420,
-      sales: 840,
-      revenue: "₹2,646.00",
-      initials: "NEP",
-      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
-    },
-    {
-      title: "A Complete History of Music for Schools",
-      isbn: "1176559435",
-      rating: 4.2,
-      views: 2750,
-      sales: 610,
-      revenue: "₹1,921.50",
-      initials: "MUS",
-      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
-    },
-    {
-      title: "Knowledge for the Time",
-      isbn: "9781019041857",
-      rating: 4.0,
-      views: 2100,
-      sales: 480,
-      revenue: "₹1,512.00",
-      initials: "KFT",
-      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
-    },
-    {
-      title: "The Elements of Style",
-      isbn: "9780205309023",
-      rating: 4.8,
-      views: 1950,
-      sales: 440,
-      revenue: "₹924.00",
-      initials: "STY",
-      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
-    },
-  ],
-  "1y": [
-    {
-      title: "NEP 2020 · Policy Formulation In Education",
-      isbn: "9789356781234",
-      rating: 4.6,
-      views: 12400,
-      sales: 3120,
-      revenue: "₹9,828.00",
-      initials: "NEP",
-      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
-    },
-    {
-      title: "A Complete History of Music for Schools",
-      isbn: "1176559435",
-      rating: 4.2,
-      views: 9860,
-      sales: 2180,
-      revenue: "₹6,867.00",
-      initials: "MUS",
-      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
-    },
-    {
-      title: "Knowledge for the Time",
-      isbn: "9781019041857",
-      rating: 4.0,
-      views: 8120,
-      sales: 1740,
-      revenue: "₹5,481.00",
-      initials: "KFT",
-      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
-    },
-    {
-      title: "The Elements of Style",
-      isbn: "9780205309023",
-      rating: 4.8,
-      views: 7420,
-      sales: 1680,
-      revenue: "₹3,528.00",
-      initials: "STY",
-      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
-    },
-  ],
-  "Till Date": [
-    {
-      title: "NEP 2020 · Policy Formulation In Education",
-      isbn: "9789356781234",
-      rating: 4.6,
-      views: 28450,
-      sales: 6840,
-      revenue: "₹21,546.00",
-      initials: "NEP",
-      cover: "linear-gradient(160deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
-    },
-    {
-      title: "A Complete History of Music for Schools",
-      isbn: "1176559435",
-      rating: 4.2,
-      views: 22100,
-      sales: 4950,
-      revenue: "₹15,592.50",
-      initials: "MUS",
-      cover: "linear-gradient(160deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
-    },
-    {
-      title: "Knowledge for the Time",
-      isbn: "9781019041857",
-      rating: 4.0,
-      views: 18600,
-      sales: 3980,
-      revenue: "₹12,537.00",
-      initials: "KFT",
-      cover: "linear-gradient(160deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
-    },
-    {
-      title: "The Elements of Style",
-      isbn: "9780205309023",
-      rating: 4.8,
-      views: 16800,
-      sales: 3820,
-      revenue: "₹8,022.00",
-      initials: "STY",
-      cover: "linear-gradient(160deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
-    },
-  ],
-};
+function RangeDropdown({
+  value,
+  onSelect,
+  options,
+}: {
+  value: string;
+  onSelect: (value: string) => void;
+  options: string[];
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="inline-flex h-[38px] items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs">
+          <span>{value}</span>
+          <ChevronDown size={14} className="text-muted-foreground" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-[160px]">
+        {options.map((opt) => (
+          <DropdownMenuItem key={opt} onClick={() => onSelect(opt)} className="text-xs font-medium cursor-pointer">
+            {opt}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 function RangePicker({ value, onChange }: { value: Range; onChange: (r: Range) => void }) {
   return (
     <div
       role="group"
       aria-label="Select time range"
-      className="inline-flex items-center rounded-lg border border-border bg-card p-1 text-xs font-medium"
+      className="inline-flex items-center rounded-xl border border-border bg-card p-1 text-xs font-semibold shadow-2xs"
     >
       {RANGES.map((r) => (
         <button
@@ -366,36 +209,17 @@ function RangePicker({ value, onChange }: { value: Range; onChange: (r: Range) =
           type="button"
           onClick={() => onChange(r)}
           aria-pressed={r === value}
-          className="rounded-md px-3 py-1.5 transition-colors"
+          className="rounded-lg px-3.5 py-1.5 transition-all cursor-pointer"
           style={
             r === value
               ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
               : { color: "var(--muted-foreground)" }
           }
         >
-          {r === "1y" ? "1 year" : r}
+          {r}
         </button>
       ))}
     </div>
-  );
-}
-
-function Sparkline({ data, up }: { data: number[]; up: boolean }) {
-  const points = data.map((v, i) => ({ i, v }));
-  const color = up ? "var(--success)" : "var(--danger)";
-  return (
-    <ResponsiveContainer width="100%" height={44}>
-      <LineChart data={points} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
-        <Line
-          type="monotone"
-          dataKey="v"
-          stroke={color}
-          strokeWidth={2}
-          dot={false}
-          isAnimationActive={false}
-        />
-      </LineChart>
-    </ResponsiveContainer>
   );
 }
 
@@ -403,34 +227,31 @@ function StatCard({ stat }: { stat: Stat }) {
   const Icon = stat.icon;
   const up = stat.delta >= 0;
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-3">
-          <span
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-            style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
-          >
-            <Icon size={18} strokeWidth={2} />
-          </span>
-          <span className="truncate text-sm font-medium text-muted-foreground">{stat.label}</span>
-        </div>
+    <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          {stat.label}
+        </span>
         <span
-          className="inline-flex shrink-0 items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-semibold"
-          style={{
-            color: up ? "var(--success)" : "var(--danger)",
-            backgroundColor: up
-              ? "color-mix(in oklab, var(--success) 12%, transparent)"
-              : "color-mix(in oklab, var(--danger) 12%, transparent)",
-          }}
+          className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
+          style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
         >
-          {up ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-          {Math.abs(stat.delta).toFixed(1)}%
+          <Icon size={18} />
         </span>
       </div>
-      <p className="mt-5 text-3xl font-semibold tracking-tight">{stat.value}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{stat.sub ?? "vs previous period"}</p>
-      <div className="mt-3 -mx-1">
-        <Sparkline data={stat.spark} up={up} />
+
+      <div className="mt-2">
+        <p className="text-2xl font-extrabold tracking-tight text-foreground">{stat.value}</p>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <span
+            className="inline-flex items-center gap-0.5 text-xs font-semibold"
+            style={{ color: up ? "var(--success)" : "var(--danger)" }}
+          >
+            {up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
+            {Math.abs(stat.delta).toFixed(1)}%
+          </span>
+          <span className="text-xs text-muted-foreground">vs last period</span>
+        </div>
       </div>
     </div>
   );
@@ -439,29 +260,117 @@ function StatCard({ stat }: { stat: Stat }) {
 function StatSkeleton() {
   return (
     <div className="rounded-xl border border-border bg-card p-5">
-      <div className="flex items-center gap-3">
-        <Skeleton className="h-9 w-9 rounded-lg" />
+      <div className="flex items-center justify-between">
         <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-9 w-9 rounded-lg" />
       </div>
-      <Skeleton className="mt-5 h-8 w-24" />
+      <Skeleton className="mt-4 h-8 w-24" />
       <Skeleton className="mt-2 h-3 w-40" />
-      <Skeleton className="mt-4 h-10 w-full" />
     </div>
   );
 }
 
 function DashboardContent() {
   const [range, setRange] = useState<Range>("30d");
-  const [topBooksRange, setTopBooksRange] = useState<Range>("30d");
   const [salesFy, setSalesFy] = useState("FY (2025 - 2026)");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 500);
+    const t = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(t);
   }, []);
 
-  const currentSalesData = salesDataByFy[salesFy] ?? salesDataByFy["FY (2025 - 2026)"];
-  const currentTopBooks = topBooksByRange[topBooksRange] ?? topBooks;
+  const dynamicChartConfig = useMemo(() => {
+    switch (range) {
+      case "7d":
+        return {
+          subtitle: "Last 7 Days (25 Jul - 31 Jul 2026)",
+          data: [
+            { label: "25 Jul", sales: 45 },
+            { label: "26 Jul", sales: 120 },
+            { label: "27 Jul", sales: 310 },
+            { label: "28 Jul", sales: 240 },
+            { label: "29 Jul", sales: 180 },
+            { label: "30 Jul", sales: 390 },
+            { label: "31 Jul", sales: 290 },
+          ],
+        };
+      case "30d":
+        return {
+          subtitle: "Last 30 Days (02 Jul - 31 Jul 2026)",
+          data: [
+            { label: "Jul 01-05", sales: 120 },
+            { label: "Jul 06-10", sales: 280 },
+            { label: "Jul 11-15", sales: 340 },
+            { label: "Jul 16-20", sales: 190 },
+            { label: "Jul 21-25", sales: 430 },
+            { label: "Jul 26-31", sales: 310 },
+          ],
+        };
+      case "90d":
+        return {
+          subtitle: "Last 90 Days (May 2026 - Jul 2026)",
+          data: [
+            { label: "May 01-15", sales: 210 },
+            { label: "May 16-31", sales: 380 },
+            { label: "Jun 01-15", sales: 290 },
+            { label: "Jun 16-30", sales: 410 },
+            { label: "Jul 01-15", sales: 320 },
+            { label: "Jul 16-31", sales: 480 },
+          ],
+        };
+      case "Yearly":
+        return {
+          subtitle: `Fiscal Year (${salesFy})`,
+          data: [
+            { label: "Apr", sales: 80 },
+            { label: "May", sales: 420 },
+            { label: "Jun", sales: 280 },
+            { label: "Jul", sales: 150 },
+            { label: "Aug", sales: 210 },
+            { label: "Sep", sales: 340 },
+            { label: "Oct", sales: 190 },
+            { label: "Nov", sales: 260 },
+            { label: "Dec", sales: 410 },
+            { label: "Jan", sales: 320 },
+            { label: "Feb", sales: 180 },
+            { label: "Mar", sales: 290 },
+          ],
+        };
+      case "Till Date":
+      default:
+        return {
+          subtitle: "All-Time Cumulative Sales (2023 - 2026)",
+          data: [
+            { label: "2023", sales: 180 },
+            { label: "2024", sales: 340 },
+            { label: "2025", sales: 490 },
+            { label: "2026 (YTD)", sales: 380 },
+          ],
+        };
+    }
+  }, [range, salesFy]);
+
+  const dynamicTopBooks = useMemo(() => {
+    let multiplier = 1;
+    if (range === "7d") multiplier = 0.25;
+    else if (range === "30d") multiplier = 1.0;
+    else if (range === "90d") multiplier = 2.4;
+    else if (range === "Yearly") multiplier = 7.5;
+    else multiplier = 18.0;
+
+    return topSellingBooks.map((b) => {
+      const sales = Math.round(b.baseSales * multiplier);
+      const views = Math.round(b.baseViews * multiplier);
+      const revVal = Math.round(b.baseRevenue * multiplier);
+      return {
+        ...b,
+        sales: sales.toLocaleString("en-IN"),
+        views: views.toLocaleString("en-IN"),
+        revenue: `₹${revVal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`,
+      };
+    });
+  }, [range, salesFy]);
 
   return (
     <div className="space-y-6 p-4 md:p-8">
@@ -471,14 +380,7 @@ function DashboardContent() {
         style={{ background: "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))" }}
       >
         <div className="relative rounded-[15px] bg-card p-5 sm:p-6">
-          {/* Subtle background glow */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.07]"
-            style={{ background: "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)" }}
-          />
-
           <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            {/* Left: Label + Amount */}
             <div className="flex items-center gap-4">
               <span
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
@@ -498,11 +400,7 @@ function DashboardContent() {
                 </p>
               </div>
             </div>
-
-            {/* Divider */}
             <div className="hidden h-10 w-px bg-border sm:block self-center" />
-
-            {/* Right: Info pillars */}
             <div className="flex items-center gap-6 sm:shrink-0">
               <div className="text-center">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Last Payout</p>
@@ -514,16 +412,26 @@ function DashboardContent() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
+      {/* Top Header Control Bar with FY Dropdown and RangePicker */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Overview
           </h2>
           <p className="text-xs text-muted-foreground">
-            Metrics update automatically based on the selected range.
+            Metrics update automatically based on the selected period and range.
           </p>
         </div>
-        <RangePicker value={range} onChange={setRange} />
+        <div className="flex flex-wrap items-center gap-2.5">
+          {range === "Yearly" && (
+            <RangeDropdown
+              value={salesFy}
+              onSelect={setSalesFy}
+              options={["FY (2025 - 2026)", "FY (2024 - 2025)", "FY (2023 - 2024)"]}
+            />
+          )}
+          <RangePicker value={range} onChange={setRange} />
+        </div>
       </div>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -532,64 +440,35 @@ function DashboardContent() {
           : stats.map((s) => <StatCard key={s.label} stat={s} />)}
       </section>
 
-      <section className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        <div className="rounded-xl border border-border bg-card p-4 md:p-6 lg:col-span-2">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight">eBook Sales</h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">Monthly breakdown ({salesFy})</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span
-                className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
-                style={{
-                  color: "var(--success)",
-                  backgroundColor: "color-mix(in oklab, var(--success) 12%, transparent)",
-                }}
-              >
-                {fyGrowth[salesFy] ?? "+18.6% Growth"}
-              </span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground transition-colors hover:bg-secondary">
-                    <span>{salesFy}</span>
-                    <ChevronDown size={14} className="text-muted-foreground" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="min-w-[150px]">
-                  {Object.keys(salesDataByFy).map((fy) => (
-                    <DropdownMenuItem
-                      key={fy}
-                      onClick={() => setSalesFy(fy)}
-                      className={salesFy === fy ? "font-semibold text-brand" : ""}
-                    >
-                      {fy}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+      {/* Full Width eBook Sales Chart Card */}
+      <section>
+        <div className="rounded-xl border border-border bg-card p-4 md:p-6">
+          <div className="mb-6">
+            <h2 className="text-[1.35rem] font-semibold tracking-tight">eBook Sales</h2>
+            <p className="text-xs text-muted-foreground">{dynamicChartConfig.subtitle}</p>
           </div>
-          <div className="mt-6 h-[280px] w-full md:h-[320px]">
+
+          <div className="h-[160px] w-full md:h-[190px]">
             {loading ? (
               <Skeleton className="h-full w-full" />
             ) : (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={currentSalesData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
-                  <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                <BarChart data={dynamicChartConfig.data} margin={{ top: 8, right: 6, left: -22, bottom: 0 }}>
+                  <CartesianGrid stroke="var(--border)" vertical={false} />
                   <XAxis
-                    dataKey="month"
+                    dataKey="label"
                     stroke="var(--muted-foreground)"
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
-                    interval="preserveStartEnd"
                   />
                   <YAxis
                     stroke="var(--muted-foreground)"
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
+                    domain={[0, 500]}
+                    ticks={[0, 100, 200, 300, 400, 500]}
                   />
                   <Tooltip
                     cursor={{ fill: "color-mix(in oklab, var(--brand) 10%, transparent)" }}
@@ -600,172 +479,88 @@ function DashboardContent() {
                       fontSize: 12,
                     }}
                   />
-                  <Bar dataKey="sales" fill="var(--brand)" radius={[4, 4, 0, 0]} barSize={22} />
+                  <Bar dataKey="sales" radius={[5, 5, 0, 0]} barSize={16}>
+                    {dynamicChartConfig.data.map((entry, index) => (
+                      <Cell
+                        key={`${entry.label}-${index}`}
+                        fill={index % 2 === 1 ? "var(--brand)" : "oklch(0.72 0.16 165)"}
+                      />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             )}
           </div>
         </div>
-
-        <div className="rounded-xl border border-border bg-card p-4 md:p-6">
-          <h2 className="text-lg font-semibold tracking-tight">Revenue by Category</h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">Share of total sales</p>
-          <div className="mt-4 h-[200px] w-full">
-            {loading ? (
-              <Skeleton className="h-full w-full rounded-full" />
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    dataKey="value"
-                    innerRadius={52}
-                    outerRadius={82}
-                    paddingAngle={2}
-                    stroke="var(--card)"
-                    strokeWidth={2}
-                  >
-                    {categoryData.map((_, i) => (
-                      <Cell key={i} fill={categoryColors[i % categoryColors.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      background: "var(--card)",
-                      border: "1px solid var(--border)",
-                      borderRadius: 8,
-                      fontSize: 12,
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-          <ul className="mt-4 space-y-2">
-            {categoryData.map((c, i) => (
-              <li key={c.name} className="flex items-center justify-between text-xs">
-                <span className="flex items-center gap-2">
-                  <span
-                    className="h-2.5 w-2.5 rounded-sm"
-                    style={{ backgroundColor: categoryColors[i] }}
-                  />
-                  <span className="text-muted-foreground">{c.name}</span>
-                </span>
-                <span className="font-semibold">{c.value}%</span>
-              </li>
-            ))}
-          </ul>
-        </div>
       </section>
 
+      {/* Top 10 Selling eBooks Section */}
       <section className="rounded-xl border border-border bg-card p-4 md:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-semibold tracking-tight">Top Selling eBooks</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {topBooksRange === "Till Date"
-                ? "All-time top titles by sales & revenue"
-                : `Top titles performance (${topBooksRange === "1y" ? "1 year" : topBooksRange})`}
-            </p>
-          </div>
-          <RangePicker value={topBooksRange} onChange={setTopBooksRange} />
+        <div className="mb-6">
+          <h2 className="text-[1.35rem] font-semibold tracking-tight">Top 10 Selling eBooks</h2>
+          <p className="text-xs text-muted-foreground">Filtered by: {dynamicChartConfig.subtitle}</p>
         </div>
 
-        {/* Desktop table */}
-        <div className="mt-5 hidden overflow-x-auto md:block">
+        <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <th className="pb-3 pr-4 font-semibold">Title</th>
-                <th className="pb-3 pr-4 font-semibold">ISBN</th>
-                <th className="pb-3 pr-4 font-semibold">Rating</th>
-                <th className="pb-3 pr-4 font-semibold">Views</th>
-                <th className="pb-3 pr-4 font-semibold">Sales</th>
-                <th className="pb-3 pl-4 text-right font-semibold">Revenue</th>
+              <tr className="border-b border-border/40 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <th className="pb-4 pr-3 pl-2 w-8">#</th>
+                <th className="pb-4 pr-4 pl-2">Title</th>
+                <th className="pb-4 px-4 text-center">Rating</th>
+                <th className="pb-4 px-4 text-center">No. of Views</th>
+                <th className="pb-4 px-4 text-center">Sales</th>
+                <th className="pb-4 pl-4 pr-2 text-right">Revenue</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border/20">
               {loading
-                ? Array.from({ length: 3 }).map((_, i) => (
-                    <tr key={i} className="border-b border-border/60 last:border-0">
-                      <td className="py-4 pr-4" colSpan={6}>
-                        <Skeleton className="h-10 w-full" />
-                      </td>
-                    </tr>
-                  ))
-                : currentTopBooks.map((b) => (
-                    <tr
-                      key={b.title}
-                      className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
-                    >
-                      <td className="py-4 pr-4">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="flex h-12 w-9 shrink-0 items-center justify-center rounded-md text-[9px] font-bold text-white"
-                            style={{ background: b.cover }}
-                          >
-                            {b.initials}
-                          </div>
-                          <span className="font-medium text-foreground">{b.title}</span>
+                ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-b border-border/60 last:border-0">
+                    <td className="py-4 pr-4" colSpan={6}>
+                      <Skeleton className="h-10 w-full" />
+                    </td>
+                  </tr>
+                ))
+                : dynamicTopBooks.map((book, index) => (
+                  <tr key={book.title} className="hover:bg-secondary/50 transition-colors">
+                    <td className="py-4 pr-3 pl-2 text-xs font-bold text-muted-foreground">{index + 1}</td>
+                    <td className="py-4 pr-4 pl-2">
+                      <div className="flex items-center gap-4">
+                        <div
+                          className="flex h-16 w-11 shrink-0 items-center justify-center rounded-[4px] shadow-sm text-[10px] font-bold text-white/90"
+                          style={{ background: book.cover }}
+                        >
+                          {book.initials}
                         </div>
-                      </td>
-                      <td className="py-4 pr-4 font-mono text-xs text-muted-foreground">
-                        {b.isbn}
-                      </td>
-                      <td className="py-4 pr-4">
-                        <div className="flex items-center gap-1.5">
-                          <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                          <span>{b.rating}</span>
+                        <div className="min-w-0">
+                          <p className="font-semibold text-foreground">{book.title}</p>
+                          <p className="text-xs text-muted-foreground">{book.category}</p>
                         </div>
-                      </td>
-                      <td className="py-4 pr-4">{b.views.toLocaleString()}</td>
-                      <td className="py-4 pr-4">{b.sales.toLocaleString()}</td>
-                      <td className="py-4 pl-4 text-right font-medium">{b.revenue}</td>
-                    </tr>
-                  ))}
+                      </div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="flex justify-center">
+                        <div className="inline-flex items-center gap-1 rounded bg-[#FBBF24] px-2 py-0.5 text-xs font-bold text-white shadow-sm">
+                          <span>{book.rating}</span>
+                          <Star size={12} className="fill-white" />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 text-center font-medium text-foreground">
+                      {book.views}
+                    </td>
+                    <td className="py-4 px-4 text-center font-medium text-foreground">
+                      {book.sales}
+                    </td>
+                    <td className="py-4 pl-4 pr-2 text-right font-semibold text-foreground">
+                      {book.revenue}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
-
-        {/* Mobile stacked cards */}
-        <ul className="mt-4 space-y-3 md:hidden">
-          {loading
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <li key={i}>
-                  <Skeleton className="h-24 w-full rounded-lg" />
-                </li>
-              ))
-            : currentTopBooks.map((b) => (
-                <li key={b.title} className="rounded-lg border border-border p-3">
-                  <div className="flex items-start gap-3">
-                    <div
-                      className="flex h-14 w-10 shrink-0 items-center justify-center rounded-md text-[10px] font-bold text-white"
-                      style={{ background: b.cover }}
-                    >
-                      {b.initials}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{b.title}</p>
-                      <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">{b.isbn}</p>
-                      <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]">
-                        <div>
-                          <p className="text-muted-foreground">Rating</p>
-                          <p className="font-semibold">★ {b.rating}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Sales</p>
-                          <p className="font-semibold">{b.sales}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Revenue</p>
-                          <p className="font-semibold">{b.revenue}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-        </ul>
       </section>
     </div>
   );

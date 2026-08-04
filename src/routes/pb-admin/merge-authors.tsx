@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import {
   Search,
   User,
+  Feather,
   GitMerge,
   Check,
   AlertTriangle,
@@ -243,7 +244,7 @@ function MergeAuthorsPage() {
             {/* Left Column: Search Duplicate Authors */}
             <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                   <span>Search Duplicate Authors</span>
                 </h3>
                 {selectedDuplicates.length > 0 && (
@@ -277,6 +278,46 @@ function MergeAuthorsPage() {
                 )}
               </div>
 
+              {/* Selected Duplicates Chips inside Left Column */}
+              {selectedDuplicateAuthors.length > 0 && (
+                <div className="rounded-xl border border-orange-500/25 bg-orange-500/10 dark:bg-orange-500/15 dark:border-orange-500/30 p-3.5 space-y-2.5 shadow-2xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-orange-950 dark:text-orange-200 uppercase tracking-wider flex items-center gap-1.5">
+                      <GitMerge size={13} className="text-orange-600 dark:text-orange-400" />
+                      Selected Duplicates ({selectedDuplicateAuthors.length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDuplicates([])}
+                      className="text-[11px] font-semibold text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-200 cursor-pointer transition-colors"
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto custom-scrollbar">
+                    {selectedDuplicateAuthors.map((author) => (
+                      <span
+                        key={author.id}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-card px-3 py-1 text-xs font-semibold text-foreground shadow-2xs"
+                      >
+                        <span className="truncate max-w-[170px]">{author.name}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDuplicateSelection(author.id);
+                          }}
+                          className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive cursor-pointer transition-colors"
+                          title="Remove"
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Scrollable Duplicate Author List */}
               <div className="max-h-[360px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                 {filteredDuplicates.length > 0 ? (
@@ -303,8 +344,8 @@ function MergeAuthorsPage() {
                               className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-border"
                             />
                           ) : (
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-                              <User size={18} />
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+                              <Feather size={16} />
                             </div>
                           )}
                           <div className="flex flex-col min-w-0">
@@ -344,7 +385,7 @@ function MergeAuthorsPage() {
             {/* Right Column: Merge Into (Target Author) */}
             <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-foreground">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Merge Into (Target Author)
                 </h3>
                 {selectedTargetAuthor && (
@@ -404,8 +445,8 @@ function MergeAuthorsPage() {
                               className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-border"
                             />
                           ) : (
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
-                              <User size={18} />
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+                              <Feather size={16} />
                             </div>
                           )}
                           <div className="flex flex-col min-w-0">
@@ -445,24 +486,62 @@ function MergeAuthorsPage() {
           </div>
 
           {/* Live Preview Transfer Callout Banner */}
-          {canMerge ? (
-            <div className="mb-6 p-4 rounded-xl border border-[var(--brand)]/30 bg-[var(--sidebar-highlight)]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--brand)] text-white shadow-xs">
-                  <GitMerge size={20} />
+          {selectedDuplicateAuthors.length > 0 ? (
+            <div className="mb-6 p-5 rounded-xl border border-orange-500/25 bg-orange-500/10 dark:bg-orange-500/15 dark:border-orange-500/30 space-y-3.5 transition-all shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-500 text-white shadow-xs">
+                    <GitMerge size={20} />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-orange-950 dark:text-orange-100">
+                      {selectedTargetAuthor
+                        ? `Merging ${selectedDuplicateAuthors.length} duplicate profile(s) into "${selectedTargetAuthor.name}"`
+                        : `${selectedDuplicateAuthors.length} Duplicate Profile(s) Selected`}
+                    </span>
+                    <span className="text-[11px] text-orange-900/80 dark:text-orange-300">
+                      {canMerge
+                        ? `Combined catalogue titles: ${selectedTargetAuthor?.publishedTitlesCount} + ${duplicateTitlesSum} = ${totalTitlesAfterMerge} total titles`
+                        : "Select a target author on the right column to proceed with merging."}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-foreground">
-                    Merging {selectedDuplicateAuthors.length} profile(s) into "{selectedTargetAuthor?.name}"
+
+                {canMerge && (
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20 shrink-0">
+                    <Check size={14} /> Ready to Merge
                   </span>
-                  <span className="text-[11px] text-muted-foreground">
-                    Combined catalogue titles: {selectedTargetAuthor?.publishedTitlesCount} + {duplicateTitlesSum} ={" "}
-                    <strong className="text-foreground">{totalTitlesAfterMerge} total titles</strong>
-                  </span>
-                </div>
+                )}
               </div>
 
-
+              {/* Selected Duplicate Authors Itemized List */}
+              <div className="pt-2.5 border-t border-orange-500/20">
+                <span className="text-[11px] font-bold text-orange-950 dark:text-orange-200 uppercase tracking-wider block mb-2">
+                  Selected Duplicate Authors to Merge ({selectedDuplicateAuthors.length}):
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {selectedDuplicateAuthors.map((author) => (
+                    <div
+                      key={author.id}
+                      className="inline-flex items-center gap-2 rounded-lg border border-orange-500/30 bg-card px-3 py-1.5 text-xs shadow-2xs"
+                    >
+                      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                        <Feather size={11} />
+                      </div>
+                      <span className="font-semibold text-foreground">{author.name}</span>
+                      <span className="text-[11px] text-muted-foreground">({author.publishedTitlesCount} titles)</span>
+                      <button
+                        type="button"
+                        onClick={() => toggleDuplicateSelection(author.id)}
+                        className="ml-1 text-muted-foreground hover:text-destructive cursor-pointer transition-colors"
+                        title="Remove author"
+                      >
+                        <X size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="mb-6 p-3.5 rounded-xl border border-border bg-muted/20 flex items-center gap-2.5 text-xs text-muted-foreground">
