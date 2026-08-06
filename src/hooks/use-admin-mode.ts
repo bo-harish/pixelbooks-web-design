@@ -14,7 +14,7 @@ export function useAdminMode(): [AdminMode, (mode: AdminMode) => void] {
       const stored = localStorage.getItem(ADMIN_MODE_KEY);
       if (stored === "retail" || stored === "library") return stored;
     }
-    return "library"; // Defaulting to library for PB Admin Library Dashboard view
+    return "retail"; // Defaulting to retail for PB Admin Dashboard view
   });
 
   const setMode = (newMode: AdminMode) => {

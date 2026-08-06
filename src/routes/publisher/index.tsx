@@ -380,6 +380,12 @@ function DashboardContent() {
         style={{ background: "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))" }}
       >
         <div className="relative rounded-[15px] bg-card p-5 sm:p-6">
+          {/* Subtle background glow */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.07]"
+            style={{ background: "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)" }}
+          />
+
           <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
               <span
