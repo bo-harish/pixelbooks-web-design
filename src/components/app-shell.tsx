@@ -40,10 +40,12 @@ import {
   ShieldCheck,
   UserCheck,
   GitMerge,
+  Copy,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { useTheme } from "@/hooks/theme-context";
+import { useAdminMode } from "@/hooks/use-admin-mode";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -124,28 +126,22 @@ function isActivePath(pathname: string, to: string) {
 
 function getSections(pathname: string, adminMode?: "retail" | "library"): NavSection[] {
   if (pathname.startsWith("/pb-admin")) {
-    if (adminMode === "library") {
+    if (adminMode === "library" || pathname.startsWith("/pb-admin-lib")) {
       return [
         {
           heading: "Main",
           items: [
-            { label: "Dashboard", icon: LayoutDashboard, to: "/pb-admin" },
-            {
-              label: "Manage Library",
-              icon: BookMarked,
-              to: "/library-admin/manage-ebooks",
-              subItems: [
-                { label: "Library Admin", to: "/library-admin/users", icon: Users },
-                { label: "Manage Orders", to: "/library-admin/orders", icon: ShoppingBag },
-                { label: "Catalogue Mapper", to: "/library-admin/catalogue", icon: Users },
-              ],
-            },
-            { label: "Report", icon: BarChart3, to: "/library-admin/reports" },
+            { label: "Dashboard", icon: LayoutDashboard, to: "/pb-admin-lib" },
           ],
         },
         {
-          heading: "Settings",
-          items: [{ label: "Settings", icon: Settings, to: "/library-admin/support" }],
+          heading: "Manage Library",
+          items: [
+            { label: "Libraries", icon: Users, to: "/pb-admin-lib/libraries" },
+            { label: "Manage Orders", icon: ShoppingBag, to: "/pb-admin-lib/orders" },
+            { label: "eBook Assignment", icon: BookOpen, to: "/pb-admin-lib/catalogue" },
+            { label: "Clone Library", icon: Copy, to: "/pb-admin-lib/clone" },
+          ],
         },
       ];
     }
@@ -224,6 +220,10 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
           { label: "Quizzes", icon: HelpCircle, to: "/pb-admin/quizzes-rewards" },
           { label: "Rewards", icon: TicketPercent, to: "/pb-admin/quizz-rewards" },
         ],
+      },
+      {
+        heading: "Settings",
+        items: [{ label: "Settings", icon: Settings, to: "/pb-admin/settings" }],
       },
     ];
   }
@@ -580,9 +580,19 @@ function NavRow({
 
 function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const isPBAdmin = pathname.startsWith("/pb-admin");
-  const [adminMode, setAdminMode] = useState<"retail" | "library">("retail");
+  const [adminMode, setAdminMode] = useAdminMode();
   const currentSections = getSections(pathname, adminMode);
+
+  const handleModeSwitch = (newMode: "retail" | "library") => {
+    setAdminMode(newMode);
+    if (newMode === "retail" && pathname.startsWith("/pb-admin-lib")) {
+      navigate({ to: "/pb-admin" });
+    } else if (newMode === "library" && !pathname.startsWith("/pb-admin-lib") && pathname.startsWith("/pb-admin")) {
+      navigate({ to: "/pb-admin-lib" });
+    }
+  };
 
   return (
     <TooltipProvider delayDuration={100}>
@@ -594,10 +604,10 @@ function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate
             </p>
             <div className="flex items-center gap-1 rounded-full border border-sidebar-border p-1">
               <button
-                onClick={() => setAdminMode("retail")}
+                onClick={() => handleModeSwitch("retail")}
                 aria-pressed={adminMode === "retail"}
                 className={[
-                  "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150",
+                  "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer",
                   adminMode === "retail"
                     ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                     : "text-sidebar-foreground/60 hover:text-sidebar-foreground",
@@ -606,10 +616,10 @@ function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate
                 Retail
               </button>
               <button
-                onClick={() => setAdminMode("library")}
+                onClick={() => handleModeSwitch("library")}
                 aria-pressed={adminMode === "library"}
                 className={[
-                  "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150",
+                  "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer",
                   adminMode === "library"
                     ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
                     : "text-sidebar-foreground/60 hover:text-sidebar-foreground",

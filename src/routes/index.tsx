@@ -25,6 +25,18 @@ function WorkspaceSelector() {
 
   const roles = [
     {
+      id: "pb-admin",
+      title: "PB Admin",
+      subtitle: "System Administrator",
+      description:
+        "Manage global settings, onboard publishers & library accounts, approve promo codes, and monitor overall platform health.",
+      icon: ShieldAlert,
+      path: "/pb-admin",
+      color: "oklch(0.60 0.18 30)", // warm coral
+      shadow: "rgba(224, 86, 36, 0.15)",
+      badge: "System Controller",
+    },
+    {
       id: "publisher",
       title: "Publisher",
       subtitle: "Content & Royalty Manager",
@@ -59,18 +71,6 @@ function WorkspaceSelector() {
       color: "oklch(0.55 0.13 260)", // royal blue/purple
       shadow: "rgba(79, 70, 229, 0.15)",
       badge: "IIT Delhi Portal",
-    },
-    {
-      id: "pb-admin",
-      title: "PB Admin",
-      subtitle: "System Administrator",
-      description:
-        "Manage global settings, onboard publishers & library accounts, approve promo codes, and monitor overall platform health.",
-      icon: ShieldAlert,
-      path: "/pb-admin",
-      color: "oklch(0.60 0.18 30)", // warm coral
-      shadow: "rgba(224, 86, 36, 0.15)",
-      badge: "System Controller",
     },
   ];
 

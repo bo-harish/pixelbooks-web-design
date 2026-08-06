@@ -8,6 +8,8 @@ import {
   Sparkles,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   AlertCircle,
   X,
   Search,
@@ -31,6 +33,7 @@ import {
   Quote,
   Link as LinkIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 
 export const Route = createFileRoute("/publisher/catalogue/new")({
@@ -288,6 +291,7 @@ function UploadTile({
   onFileChange,
   isCover = false,
   externalFile,
+  onPreview,
 }: {
   step: number;
   title: string;
@@ -301,6 +305,7 @@ function UploadTile({
   onFileChange?: (file: File | null) => void;
   isCover?: boolean;
   externalFile?: File | null;
+  onPreview?: () => void;
 }) {
   const [dragging, setDragging] = useState(false);
   const [internalFile, setInternalFile] = useState<File | null>(null);
@@ -440,7 +445,13 @@ function UploadTile({
               </div>
             ) : (
               /* eBook Document / PDF / ePUB Page Preview */
-              <EbookDocumentPreview file={file} />
+              <div
+                onClick={onPreview ? (e) => { e.stopPropagation(); onPreview(); } : undefined}
+                className={onPreview ? "cursor-pointer" : undefined}
+                title={onPreview ? "Click to open Sample Preview" : undefined}
+              >
+                <EbookDocumentPreview file={file} />
+              </div>
             )}
 
             <p className="max-w-[180px] truncate text-xs font-bold text-foreground">
@@ -450,15 +461,27 @@ function UploadTile({
               {formatBytes(file.size)}
             </p>
 
-            {/* Actions: Replace / Remove */}
+            {/* Actions: Replace / Remove / Preview */}
             <div className="mt-3 flex items-center gap-2">
+              {onPreview && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPreview();
+                  }}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--brand)]/30 bg-[var(--sidebar-highlight)] px-2.5 text-[11px] font-semibold text-[var(--brand)] transition-colors hover:bg-[var(--brand)] hover:text-white cursor-pointer shadow-2xs"
+                >
+                  <Eye size={12} /> Preview
+                </button>
+              )}
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   inputRef.current?.click();
                 }}
-                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 text-[11px] font-semibold text-foreground transition-colors hover:bg-secondary"
+                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 text-[11px] font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
               >
                 <RefreshCw size={12} /> Replace
               </button>
@@ -468,7 +491,7 @@ function UploadTile({
                   e.stopPropagation();
                   updateFile(null);
                 }}
-                className={`inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold transition-all ${isUploading
+                className={`inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold transition-all cursor-pointer ${isUploading
                     ? "border-2 border-dotted border-rose-500/60 bg-rose-500/5 text-rose-600/80 animate-pulse cursor-wait"
                     : "border border-rose-500/20 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400"
                   }`}
@@ -529,11 +552,262 @@ function UploadTile({
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Sample Preview Dialog                                                     */
+/* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*  Sample & Source eBook Preview Dialog                                      */
+/* -------------------------------------------------------------------------- */
+
+function SamplePreviewDialog({
+  sampleFile,
+  ebookFile,
+  isSample = true,
+  onClose,
+  onApprove,
+  onRejectUploadOwn,
+}: {
+  sampleFile?: File | null;
+  ebookFile?: File | null;
+  isSample?: boolean;
+  onClose: () => void;
+  onApprove?: () => void;
+  onRejectUploadOwn?: () => void;
+}) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = isSample ? 6 : 12;
+  const fileName = isSample
+    ? (sampleFile?.name || (ebookFile ? `Sample_${ebookFile.name.replace(/\.[^/.]+$/, "")}.epub` : "Sample_eBook.epub"))
+    : (ebookFile?.name || "Source_eBook.epub");
+  const bookTitle =
+    ebookFile?.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ") ||
+    "The Complete Guide to Modern Architecture";
+
+  const samplePages = [
+    {
+      title: "Chapter 1: Foundations of Modern Design",
+      content: `Architecture in the 21st century has transitioned from rigid structural paradigms to dynamic, human-centric spatial experiences. As urban environments expand, the interplay between sustainable materials, light diffusion, and natural ventilation becomes the cornerstone of forward-thinking design.
+
+This chapter explores the principles of spatial rhythm, material authenticity, and how environmental integration forms the backbone of contemporary structures worldwide.`,
+      quote: "Design is not just what it looks like and feels like. Design is how it works.",
+      quoteAuthor: "Steve Jobs",
+    },
+    {
+      title: "1.1 The Evolution of Form & Function",
+      content: `The historic debate between form following function has given way to form and function operating in complete symbiosis. Modern architects utilize computational modeling and parametric tools to craft organic shapes that were once mathematically impossible to execute.
+
+Key Takeaways:
+• Material selection dictates thermal performance and aesthetic longevity.
+• Daylight harvesting reduces building energy consumption by up to 35%.
+• Acoustic damping buffers urban noise for optimized indoor wellness.`,
+      quote: "Space and light and order. Those are the things that men need just as much as they need bread or a place to sleep.",
+      quoteAuthor: "Le Corbusier",
+    },
+    {
+      title: "1.2 Sustainable Materials & Eco-conscious Building",
+      content: `Cross-laminated timber (CLT), recycled steel composites, and ultra-high-performance concrete are redefining the physical footprint of new structures. By prioritizing low embodied carbon materials, developers can achieve net-zero lifecycle goals while enhancing structural resilience.
+
+When evaluating sustainable material pipelines, architects must balance regional availability, supply chain transport emissions, and long-term maintenance cycles.`,
+      quote: "The mother art is architecture. Without an architecture of our own we have no soul of our own civilization.",
+      quoteAuthor: "Frank Lloyd Wright",
+    },
+    {
+      title: "Chapter 2: Spatial Optimization & Natural Light",
+      content: `Light is the ultimate building material. It defines volume, invokes emotion, and shapes human circadian rhythms. Integrating passive solar design, clerestory windows, and light wells allows interior spaces to shift dynamically throughout the day.
+
+In dense metropolitan areas, light optimization requires strategic orientation and reflective surface treatments to maximize ambient indirect illumination.`,
+      quote: "Sunlight does not know how wonderful it is until it falls on the wall of a building.",
+      quoteAuthor: "Louis Kahn",
+    },
+    {
+      title: "2.1 Passive Heating & Cooling Strategies",
+      content: `Thermal mass strategies utilize materials with high heat capacity to absorb thermal energy during peak sun hours and slowly release it during cooler night periods. Combined with cross-ventilation corridors, mechanical HVAC requirements can be dramatically reduced.`,
+      quote: "Architecture is the learned game, correct and magnificent, of forms assembled in the light.",
+      quoteAuthor: "Le Corbusier",
+    },
+    {
+      title: "2.2 Conclusion & Further Reading",
+      content: isSample
+        ? `This concludes your auto-generated sample preview (Chapters 1 & 2). The full publication includes all 12 chapters, interactive blueprints, high-resolution rendering galleries, and full index references.
+
+You have reached the end of the free preview sample.`
+        : `This is page 6 of your full manuscript source file. You can continue paging through the remaining chapters to verify layout integrity and formatting.`,
+      quote: isSample ? "End of Sample Preview — PixelBooks Auto-Parser" : "Source Manuscript — PixelBooks Publisher",
+      quoteAuthor: "PixelBooks System",
+    },
+  ];
+
+  const pageData = samplePages[currentPage - 1] || samplePages[0];
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="flex h-[88vh] max-h-[850px] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="flex items-center justify-between border-b border-border px-6 py-4 bg-muted/20 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--sidebar-highlight)] text-[var(--brand)] border border-[var(--brand)]/20 shadow-2xs">
+              {isSample ? <Sparkles size={20} className="animate-pulse" /> : <BookOpen size={20} />}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-foreground">
+                  {isSample ? "Auto-Generated Sample Preview" : "Source eBook Preview"}
+                </h3>
+                <span className="rounded-full bg-[var(--sidebar-highlight)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--brand)] border border-[var(--brand)]/20">
+                  {isSample ? "ePUB Sample" : "Full Manuscript"}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground font-mono mt-0.5 truncate max-w-md">
+                {fileName}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* eReader Simulated Sheet View */}
+        <div className="flex-1 overflow-y-auto bg-muted/20 p-6 md:p-8">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-border bg-card p-8 md:p-10 shadow-lg min-h-[500px] md:min-h-[530px] flex flex-col justify-between relative">
+            <div>
+              <div className="flex items-center justify-between border-b border-border/40 pb-3 mb-6">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--brand)]">
+                  {isSample ? "Free Sample Extract" : "Full Manuscript View"}
+                </span>
+                <span className="text-[11px] text-muted-foreground font-mono">
+                  Pg {currentPage}
+                </span>
+              </div>
+
+              <h4 className="text-xl font-extrabold text-foreground tracking-tight mb-4">
+                {pageData.title}
+              </h4>
+
+              <div className="space-y-4 text-sm leading-relaxed text-foreground/90 font-serif">
+                {pageData.content.split("\n\n").map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
+
+              {pageData.quote && (
+                <blockquote className="my-6 border-l-3 border-[var(--brand)] bg-[var(--sidebar-highlight)]/40 p-4 rounded-r-xl italic text-xs text-foreground/90 font-sans space-y-1">
+                  <p>&ldquo;{pageData.quote}&rdquo;</p>
+                  <cite className="block font-semibold not-italic text-[11px] text-muted-foreground text-right">
+                    — {pageData.quoteAuthor}
+                  </cite>
+                </blockquote>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Fixed Page Navigation Section Below the Book */}
+        <div className="shrink-0 border-t border-border bg-card/95 backdrop-blur-md px-6 py-2.5">
+          <div className="mx-auto max-w-2xl flex items-center justify-center">
+            <div className="flex items-center gap-2 bg-secondary/50 rounded-lg border border-border/80 px-3.5 py-1.5 shadow-2xs text-xs font-semibold text-foreground">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground cursor-pointer rounded-md hover:bg-background transition-colors"
+                title="Previous Page"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <span className="px-2 select-none tracking-tight">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground cursor-pointer rounded-md hover:bg-background transition-colors"
+                title="Next Page"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Modal Action Footer */}
+        {isSample ? (
+          /* Sample Review Warning Footer (only shown for Auto-Generated Sample) */
+          <div className="border-t border-amber-500/25 bg-amber-500/10 px-6 py-4 text-amber-900 dark:text-amber-100 shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle size={20} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                <div>
+                  <p className="text-xs font-bold leading-tight">
+                    Please review and make sure the sample is generated correctly.
+                  </p>
+                  <p className="text-[11px] opacity-90 leading-normal mt-0.5">
+                    Verify the extracted chapters, text layout, and formatting above before approving.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={onRejectUploadOwn}
+                  className="inline-flex items-center gap-2 rounded-lg border border-amber-600/30 bg-background/90 px-4 py-2 text-xs font-semibold text-foreground transition-all hover:bg-background hover:border-amber-600/50 shadow-2xs cursor-pointer"
+                >
+                  <Upload size={14} className="text-muted-foreground" />
+                  No I will upload my own
+                </button>
+                <button
+                  type="button"
+                  onClick={onApprove}
+                  className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:opacity-95 active:scale-[0.98] cursor-pointer"
+                  style={{ backgroundColor: "var(--brand)" }}
+                >
+                  <CheckCircle2 size={15} />
+                  Approve Sample
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Standard Source Preview Footer (without warning message or sample approve buttons) */
+          <div className="flex items-center justify-between border-t border-border bg-card px-6 py-4 shrink-0">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <BookOpen size={14} className="text-[var(--brand)]" />
+              <span>Full source manuscript preview ({fileName})</span>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-xs font-semibold text-foreground transition-all hover:bg-secondary cursor-pointer"
+            >
+              Close Preview
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function UploadRow() {
   const [autofill, setAutofill] = useState(true);
   const [ebookFile, setEbookFile] = useState<File | null>(null);
   const [sampleFile, setSampleFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [samplePreviewOpen, setSamplePreviewOpen] = useState(false);
+  const [sourcePreviewOpen, setSourcePreviewOpen] = useState(false);
+  const sampleInputRef = useRef<HTMLInputElement>(null);
 
   const handleGenerateSample = () => {
     if (!ebookFile) return;
@@ -543,101 +817,156 @@ function UploadRow() {
       { type: "application/epub+zip" }
     );
     setSampleFile(generatedSample);
+    setSamplePreviewOpen(true);
+  };
+
+  const handleApproveSample = () => {
+    setSamplePreviewOpen(false);
+    toast.success("Sample approved and attached to catalog entry!");
+  };
+
+  const handleRejectUploadOwn = () => {
+    setSampleFile(null);
+    setSamplePreviewOpen(false);
+    toast.info("Auto-generated sample discarded. Please select your custom sample file.");
+    setTimeout(() => {
+      sampleInputRef.current?.click();
+    }, 150);
   };
 
   return (
-    <SectionCard
-      title="Upload eBook Files & Metadata"
-      description="Provide your main eBook file, preview sample, and high-resolution cover image."
-    >
-      <div className="grid gap-6 md:grid-cols-3">
-        <UploadTile
-          step={1}
-          title="Upload Your eBook"
-          subtitle="Drop your primary manuscript file"
-          hint=""
-          ctaLabel="Upload ePUB or PDF"
-          icon={<BookOpen size={20} />}
-          formats={["ePUB", "PDF", "Max 30 MB"]}
-          required
-          onFileChange={setEbookFile}
-          externalFile={ebookFile}
-        />
-
-        <UploadTile
-          step={2}
-          title="Upload Free Sample"
-          subtitle="Preview sample for readers"
-          hint=""
-          ctaLabel="Upload Sample File"
-          icon={<FileText size={20} />}
-          formats={["ePUB", "PDF", "Max 10 MB"]}
-          onFileChange={setSampleFile}
-          externalFile={sampleFile}
-          extra={
-            ebookFile ? (
-              <button
-                type="button"
-                onClick={handleGenerateSample}
-                className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--brand)]/30 bg-gradient-to-r from-[var(--brand)]/15 via-[var(--brand)]/10 to-[var(--brand)]/5 px-3 text-xs font-bold text-[var(--brand)] shadow-2xs transition-all hover:border-[var(--brand)] hover:shadow-xs active:scale-[0.99]"
-              >
-                <Sparkles size={14} className="animate-pulse text-[var(--brand)]" />
-                Generate Sample from Source
-              </button>
-            ) : (
-              <div
-                title="Upload your eBook in Step 1 first to auto-generate a sample"
-                className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border/80 bg-muted/40 px-3 text-xs font-medium text-muted-foreground/70 cursor-not-allowed"
-              >
-                <Sparkles size={13} className="opacity-40" />
-                <span>Upload eBook to Enable Auto Sample</span>
-              </div>
-            )
-          }
-        />
-
-        <UploadTile
-          step={3}
-          title="Upload Cover Image"
-          subtitle="High-resolution book cover"
-          hint="438 × 678 px recommended"
-          ctaLabel="Upload Cover Image"
-          icon={<ImageIcon size={20} />}
-          formats={["JPEG", "PNG", "Max 5 MB"]}
-          required
-          isCover
-          onFileChange={setCoverFile}
-          externalFile={coverFile}
-        />
-      </div>
-
-      <div
-        className="mt-8 flex items-start gap-3 rounded-xl border p-4 text-[13px] shadow-2xs"
-        style={{
-          borderColor: "color-mix(in oklab, var(--destructive) 40%, transparent)",
-          backgroundColor: "color-mix(in oklab, var(--destructive) 6%, transparent)",
-          color: "color-mix(in oklab, var(--destructive) 85%, var(--foreground))",
-        }}
+    <>
+      <SectionCard
+        title="Upload eBook Files & Metadata"
+        description="Provide your main eBook file, preview sample, and high-resolution cover image."
       >
-        <AlertCircle size={16} className="mt-0.5 shrink-0" />
-        <p className="leading-relaxed">
-          PixelBooks&apos; auto content generation API uses automated parsing to extract and
-          autofill metadata from your eBook files (ePub &amp; PDF). Because automated extraction is
-          inherently subject to inaccuracies, some data may be incomplete, malformatted, or
-          incorrectly assigned depending on the structure and quality of the source file. You are
-          solely responsible for reviewing and verifying all auto-populated information. Please
-          ensure that all generated metadata is manually reviewed and verified before publishing. If
-          you prefer, you may disable this option and enter all details manually.
-        </p>
-      </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          <UploadTile
+            step={1}
+            title="Upload Your eBook"
+            subtitle="Drop your primary manuscript file"
+            hint=""
+            ctaLabel="Upload ePUB or PDF"
+            icon={<BookOpen size={20} />}
+            formats={["ePUB", "PDF", "Max 30 MB"]}
+            required
+            onFileChange={setEbookFile}
+            externalFile={ebookFile}
+            onPreview={ebookFile ? () => setSourcePreviewOpen(true) : undefined}
+          />
 
-      <Check
-        checked={autofill}
-        onChange={setAutofill}
-        label={<span className="font-medium">Autofill metadata from eBook</span>}
-        className="mt-5"
+          <UploadTile
+            step={2}
+            title="Upload Free Sample"
+            subtitle="Preview sample for readers"
+            hint=""
+            ctaLabel="Upload Sample File"
+            icon={<FileText size={20} />}
+            formats={["ePUB", "PDF", "Max 10 MB"]}
+            onFileChange={setSampleFile}
+            externalFile={sampleFile}
+            onPreview={sampleFile ? () => setSamplePreviewOpen(true) : undefined}
+            extra={
+              ebookFile ? (
+                <button
+                  type="button"
+                  onClick={handleGenerateSample}
+                  className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--brand)]/30 bg-gradient-to-r from-[var(--brand)]/15 via-[var(--brand)]/10 to-[var(--brand)]/5 px-3 text-xs font-bold text-[var(--brand)] shadow-2xs transition-all hover:border-[var(--brand)] hover:shadow-xs active:scale-[0.99] cursor-pointer"
+                >
+                  <Sparkles size={14} className="animate-pulse text-[var(--brand)]" />
+                  Generate Sample from Source
+                </button>
+              ) : (
+                <div
+                  title="Upload your eBook in Step 1 first to auto-generate a sample"
+                  className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border/80 bg-muted/40 px-3 text-xs font-medium text-muted-foreground/70 cursor-not-allowed"
+                >
+                  <Sparkles size={13} className="opacity-40" />
+                  <span>Upload eBook to Enable Auto Sample</span>
+                </div>
+              )
+            }
+          />
+
+          <UploadTile
+            step={3}
+            title="Upload Cover Image"
+            subtitle="High-resolution book cover"
+            hint="438 × 678 px recommended"
+            ctaLabel="Upload Cover Image"
+            icon={<ImageIcon size={20} />}
+            formats={["JPEG", "PNG", "Max 5 MB"]}
+            required
+            isCover
+            onFileChange={setCoverFile}
+            externalFile={coverFile}
+          />
+        </div>
+
+        <div
+          className="mt-8 flex items-start gap-3 rounded-xl border p-4 text-[13px] shadow-2xs"
+          style={{
+            borderColor: "color-mix(in oklab, var(--destructive) 40%, transparent)",
+            backgroundColor: "color-mix(in oklab, var(--destructive) 6%, transparent)",
+            color: "color-mix(in oklab, var(--destructive) 85%, var(--foreground))",
+          }}
+        >
+          <AlertCircle size={16} className="mt-0.5 shrink-0" />
+          <p className="leading-relaxed">
+            PixelBooks&apos; auto content generation API uses automated parsing to extract and
+            autofill metadata from your eBook files (ePub &amp; PDF). Because automated extraction is
+            inherently subject to inaccuracies, some data may be incomplete, malformatted, or
+            incorrectly assigned depending on the structure and quality of the source file. You are
+            solely responsible for reviewing and verifying all auto-populated information. Please
+            ensure that all generated metadata is manually reviewed and verified before publishing. If
+            you prefer, you may disable this option and enter all details manually.
+          </p>
+        </div>
+
+        <Check
+          checked={autofill}
+          onChange={setAutofill}
+          label={<span className="font-medium">Autofill metadata from eBook</span>}
+          className="mt-5"
+        />
+      </SectionCard>
+
+      {/* Hidden file input for custom sample upload */}
+      <input
+        ref={sampleInputRef}
+        type="file"
+        accept=".epub,.pdf"
+        className="hidden"
+        onChange={(e) => {
+          const picked = e.target.files?.[0];
+          if (picked) {
+            setSampleFile(picked);
+            toast.success(`Custom sample file "${picked.name}" uploaded successfully!`);
+          }
+        }}
       />
-    </SectionCard>
+
+      {/* Source eBook Preview Popup Modal */}
+      {sourcePreviewOpen && (
+        <SamplePreviewDialog
+          isSample={false}
+          ebookFile={ebookFile}
+          onClose={() => setSourcePreviewOpen(false)}
+        />
+      )}
+
+      {/* Auto-Generated Sample Preview Popup Modal */}
+      {samplePreviewOpen && (
+        <SamplePreviewDialog
+          isSample={true}
+          sampleFile={sampleFile}
+          ebookFile={ebookFile}
+          onClose={() => setSamplePreviewOpen(false)}
+          onApprove={handleApproveSample}
+          onRejectUploadOwn={handleRejectUploadOwn}
+        />
+      )}
+    </>
   );
 }
 

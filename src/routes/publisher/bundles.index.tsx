@@ -79,10 +79,15 @@ function BundlesPage() {
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
     return bundles.filter((b) => {
-      const matchesFilter = filter === "All" || b.status === filter;
-      const matchesQuery = b.title.toLowerCase().includes(query.toLowerCase());
-      return matchesFilter && matchesQuery;
+      if (filter !== "All" && b.status !== filter) return false;
+      if (!q) return true;
+      return (
+        b.title.toLowerCase().includes(q) ||
+        b.bookCount.toString().includes(q) ||
+        b.pricing.toString().includes(q)
+      );
     });
   }, [bundles, filter, query]);
 
@@ -115,35 +120,67 @@ function BundlesPage() {
     <AppShell title="eBook Bundles" subtitle="Group multiple titles into curated bundles.">
       <div className="space-y-6 p-4 md:p-8">
         {/* Toolbar */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Search
               size={17}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search"
-              className="h-11 w-full rounded-lg border border-border bg-card pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Search by bundle title, books..."
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
             />
           </div>
-          <DropdownSelect
-            value={filter}
-            options={filters}
-            onChange={(f) => setFilter(f)}
-            searchable
-            searchPlaceholder="Search status..."
-            className="w-full sm:w-auto min-w-[130px]"
-          />
-          <Link
-            to="/publisher/bundles/new"
-            className="flex h-11 items-center gap-2 rounded-lg px-5 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
-            style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-          >
-            <Plus size={17} strokeWidth={2.4} />
-            Add New Bundle
-          </Link>
+          <div className="flex items-center gap-2.5">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setFilterOpen((v) => !v)}
+                className="flex h-11 min-w-[150px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)]"
+              >
+                <span className="truncate">{filter}</span>
+                <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
+              </button>
+              {filterOpen && (
+                <div
+                  className="absolute right-0 z-20 mt-1.5 w-52 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1"
+                  onMouseLeave={() => setFilterOpen(false)}
+                >
+                  {filters.map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      onClick={() => {
+                        setFilter(f);
+                        setFilterOpen(false);
+                        setPage(1);
+                      }}
+                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs transition-colors hover:bg-secondary ${
+                        f === filter
+                          ? "font-semibold text-foreground bg-[var(--sidebar-highlight)]"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Link
+              to="/publisher/bundles/new"
+              className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 shrink-0"
+              style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+            >
+              <Plus size={16} strokeWidth={2.5} />
+              Add New Bundle
+            </Link>
+          </div>
         </div>
 
         {/* Table */}

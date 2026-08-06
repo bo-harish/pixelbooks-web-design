@@ -10,6 +10,8 @@ import {
   TicketPercent,
   ChevronRight,
   CalendarDays,
+  Copy,
+  Check,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Switch } from "@/components/ui/switch";
@@ -29,7 +31,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/pb-admin/quizz-rewards")({
   head: () => ({
     meta: [
-      { title: "Coupon Code — PixelBooks Admin" },
+      { title: "Rewards — PixelBooks Admin" },
       {
         name: "description",
         content: "Manage reward coupon codes, discount percentages, and campaign durations in PixelBooks.",
@@ -99,6 +101,17 @@ export function CouponCodePage() {
 
   // Active editing item (null = creating new coupon)
   const [editingCoupon, setEditingCoupon] = useState<CouponItem | null>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const handleCopyCode = (code: string) => {
+    if (!code || code === "COUPON CODE") return;
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    toast.success(`Copied coupon code "${code}" to clipboard!`);
+    setTimeout(() => {
+      setCopiedCode((prev) => (prev === code ? null : prev));
+    }, 2000);
+  };
 
   // Form State matching screenshot 2
   const [couponCodeInput, setCouponCodeInput] = useState("COUPON CODE");
@@ -274,9 +287,9 @@ export function CouponCodePage() {
   const pageTitle =
     viewMode === "create"
       ? editingCoupon
-        ? `Edit Coupon — ${editingCoupon.code}`
-        : "Create Coupon"
-      : "Coupon Code";
+        ? `Edit Reward — ${editingCoupon.code}`
+        : "Create Reward"
+      : "Rewards";
 
   const pageSubtitle =
     viewMode === "create"
@@ -330,7 +343,7 @@ export function CouponCodePage() {
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      <th className="px-6 py-4 min-w-[220px] font-semibold">Rewards</th>
+                      <th className="px-6 py-4 min-w-[220px] font-semibold">Coupon Code</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Coupon Duration</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Discount</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Action</th>
@@ -358,10 +371,23 @@ export function CouponCodePage() {
                           onClick={() => handleOpenEditCoupon(item)}
                           className="group cursor-pointer border-b border-border/60 transition-colors hover:bg-secondary/50"
                         >
-                          {/* Rewards Monospace Pill Column matching screenshot */}
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="inline-flex h-10 min-w-[160px] items-center justify-center rounded-lg bg-muted/60 px-4 text-xs font-bold tracking-wider text-foreground border border-border/60 shadow-2xs font-mono">
-                              {item.code}
+                          {/* Coupon Code Monospace Pill Column matching screenshot */}
+                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                            <div className="inline-flex h-10 min-w-[170px] items-center justify-between gap-3 rounded-lg bg-muted/60 pl-3.5 pr-2 text-xs font-bold tracking-wider text-foreground border border-border/60 shadow-2xs font-mono">
+                              <span>{item.code}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyCode(item.code)}
+                                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-card hover:text-foreground transition-colors cursor-pointer"
+                                title="Copy coupon code"
+                                aria-label="Copy coupon code"
+                              >
+                                {copiedCode === item.code ? (
+                                  <Check size={14} className="text-emerald-500 shrink-0" />
+                                ) : (
+                                  <Copy size={14} className="shrink-0" />
+                                )}
+                              </button>
                             </div>
                           </td>
 
@@ -452,12 +478,12 @@ export function CouponCodePage() {
                   setEditingCoupon(null);
                 }}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs"
-                aria-label="Back to Coupon Code"
+                aria-label="Back to Rewards"
               >
                 <ArrowLeft size={16} />
               </button>
               <span className="text-sm font-normal text-foreground">
-                Back to Coupon Code
+                Back to Rewards
               </span>
             </div>
 
@@ -467,19 +493,40 @@ export function CouponCodePage() {
               <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-2xs space-y-6 w-full">
                 {/* Form 2-Column Grid matching screenshot 2 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                  {/* Coupon Code with Generate Code Button */}
+                  {/* Coupon Code with Generate Code Button & Copy Option */}
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Coupon Code <span className="text-red-500">*</span>
                     </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="text"
-                        value={couponCodeInput}
-                        onChange={(e) => setCouponCodeInput(e.target.value)}
-                        placeholder="COUPON CODE"
-                        className="flex-1 h-11 rounded-lg border border-border bg-muted/30 px-3.5 text-sm font-bold tracking-wider text-foreground outline-none focus:border-[var(--brand)] font-mono uppercase"
-                      />
+                    <div className="flex items-center gap-2.5">
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          value={couponCodeInput}
+                          onChange={(e) => setCouponCodeInput(e.target.value)}
+                          placeholder="COUPON CODE"
+                          className="w-full h-11 rounded-lg border border-border bg-muted/30 pl-3.5 pr-10 text-sm font-bold tracking-wider text-foreground outline-none focus:border-[var(--brand)] font-mono uppercase"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (couponCodeInput.trim() && couponCodeInput !== "COUPON CODE") {
+                              handleCopyCode(couponCodeInput);
+                            } else {
+                              toast.error("Please enter or generate a coupon code first");
+                            }
+                          }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-card hover:text-foreground transition-colors cursor-pointer"
+                          title="Copy coupon code"
+                          aria-label="Copy coupon code"
+                        >
+                          {copiedCode === couponCodeInput ? (
+                            <Check size={14} className="text-emerald-500 shrink-0" />
+                          ) : (
+                            <Copy size={14} className="shrink-0" />
+                          )}
+                        </button>
+                      </div>
                       <button
                         type="button"
                         onClick={handleGenerateCode}
