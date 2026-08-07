@@ -504,9 +504,9 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
                 style={
                   p === page
                     ? {
-                        backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
-                        color: "var(--brand)",
-                      }
+                      backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
+                      color: "var(--brand)",
+                    }
                     : undefined
                 }
               >
@@ -630,7 +630,7 @@ function MarginReportPage() {
                       ₹8,425
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      All-time cumulative balance · unaffected by range filters
+                      All-time cumulative balance.
                     </p>
                   </div>
                 </div>
@@ -686,9 +686,8 @@ function MarginReportPage() {
                         key={p}
                         type="button"
                         onClick={() => handlePresetSelect(p)}
-                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
-                          p === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
-                        }`}
+                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${p === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
+                          }`}
                       >
                         {p}
                       </button>
@@ -759,9 +758,8 @@ function MarginReportPage() {
                             setLedgerType(t);
                             setLedgerOpen(false);
                           }}
-                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
-                            t === ledgerType ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
-                          }`}
+                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${t === ledgerType ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
+                            }`}
                         >
                           {t}
                         </button>
@@ -861,9 +859,8 @@ function MarginReportPage() {
                             if (isClickable) setSelectedTxn(TXN_DETAILS[r.ref]);
                             else if (isPayment) setSelectedPayment(PAYMENT_DETAILS[r.ref]);
                           }}
-                          className={`group border-b border-border/60 transition-colors hover:bg-secondary/40 ${
-                            isActionable ? "cursor-pointer" : ""
-                          }`}
+                          className={`group border-b border-border/60 transition-colors hover:bg-secondary/40 ${isActionable ? "cursor-pointer" : ""
+                            }`}
                         >
                           <td className="py-4 pl-6 pr-4">{r.date}</td>
                           <td className="py-4 pr-4">{r.type}</td>
@@ -976,10 +973,10 @@ function MarginReportPage() {
                           style={
                             n === currentPage
                               ? {
-                                  backgroundColor: "var(--brand)",
-                                  color: "var(--brand-contrast)",
-                                  borderColor: "transparent",
-                                }
+                                backgroundColor: "var(--brand)",
+                                color: "var(--brand-contrast)",
+                                borderColor: "transparent",
+                              }
                               : undefined
                           }
                         >

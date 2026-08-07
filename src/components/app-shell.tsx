@@ -63,6 +63,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { NotificationsPopover } from "@/components/notifications-popover";
+import { getHeaderProfile } from "@/components/headers/get-header-profile";
 import { toast } from "sonner";
 
 type NavItem = {
@@ -666,20 +667,9 @@ function ProfileDropdown() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const roleTheme = getRoleTheme(pathname);
-  const isAuthor = pathname.startsWith("/author");
-  const isPBAdmin = pathname.startsWith("/pb-admin");
-  const isLibraryAdmin = pathname.startsWith("/library-admin");
+  const headerProfile = getHeaderProfile(pathname);
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  const userName = isAuthor ? "Dr. K. Raghavan" : "Anya Ramanathan";
-  const userRole = isPBAdmin
-    ? "PB Admin"
-    : isLibraryAdmin
-      ? "Library Admin"
-      : isAuthor
-        ? "Author"
-        : "Publisher";
 
   const handleConfirmLogout = () => {
     setShowLogoutModal(false);
@@ -701,7 +691,7 @@ function ProfileDropdown() {
                   boxShadow: `0 0 0 2px color-mix(in oklab, ${roleTheme.color} 40%, transparent)`,
                 }}
               >
-                {isAuthor ? "KR" : "AR"}
+                {headerProfile.initials}
               </span>
               <span
                 className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-card"
@@ -711,10 +701,10 @@ function ProfileDropdown() {
             </div>
             <span className="hidden min-w-0 sm:block">
               <span className="block truncate text-sm font-semibold text-foreground">
-                {userName}
+                {headerProfile.name}
               </span>
               <span className="block truncate text-[11px] font-medium text-muted-foreground">
-                {userRole} · Pro
+                {headerProfile.role} · {headerProfile.status}
               </span>
             </span>
             <ChevronDown size={14} className="hidden text-muted-foreground sm:block" />
@@ -778,13 +768,13 @@ function ProfileDropdown() {
                   Confirm Log Out
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                  Logged in as <span className="font-semibold text-foreground">{userName}</span> ({roleTheme.name})
+                  Logged in as <span className="font-semibold text-foreground">{headerProfile.name}</span> ({headerProfile.role})
                 </DialogDescription>
               </div>
             </div>
 
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Are you sure you want to log out of your <span className="font-medium text-foreground">{userRole}</span> account? You will need to sign in again to access your workspace.
+              Are you sure you want to log out of your <span className="font-medium text-foreground">{headerProfile.role}</span> account? You will need to sign in again to access your workspace.
             </p>
 
             {/* Action Buttons */}

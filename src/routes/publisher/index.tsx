@@ -402,7 +402,7 @@ function DashboardContent() {
                   ₹8,425
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  All-time cumulative balance · unaffected by range filters
+                  All-time cumulative balance.
                 </p>
               </div>
             </div>
