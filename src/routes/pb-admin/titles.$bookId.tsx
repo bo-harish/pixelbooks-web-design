@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -21,10 +21,23 @@ import {
   HardDrive,
   Users,
   Feather,
+  Library,
+  Clock,
+  Save,
+  ShieldCheck,
 } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { BookCover } from "@/components/ui/book-cover";
 import { seedBooks, type Status } from "@/lib/catalogue-data";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/pb-admin/titles/$bookId")({
   component: EBookDetailPage,
@@ -229,155 +242,313 @@ function CopyBookUrlButton({ bookId }: { bookId: string }) {
   );
 }
 
-const AVAILABLE_LIBRARIES = [
-  "Central University Digital Library",
-  "National Science & Tech Consortium",
-  "City Academic Library System",
-  "Delhi Public Library",
-  "State Institute of Technology Library",
+const ALL_LIBRARIES = [
+  { id: "lib-1", name: "Central University Digital Library", city: "New Delhi" },
+  { id: "lib-2", name: "National Science & Tech Consortium", city: "Bangalore" },
+  { id: "lib-3", name: "City Academic Library System", city: "Mumbai" },
+  { id: "lib-4", name: "Delhi Public Library", city: "New Delhi" },
+  { id: "lib-5", name: "State Institute of Technology Library", city: "Pune" },
+  { id: "lib-6", name: "IIT Delhi Central Library", city: "New Delhi" },
+  { id: "lib-7", name: "Indian Institute of Science Library", city: "Bangalore" },
 ];
 
-function LibraryStoreAllocationCard() {
-  const [selectedLibraries, setSelectedLibraries] = useState<string[]>([]);
-  const [open, setOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+function LibraryMultiSelectDropdown({
+  selected,
+  onChange,
+}: {
+  selected: string[];
+  onChange: (libs: string[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const filteredLibraries = AVAILABLE_LIBRARIES.filter((lib) =>
-    lib.toLowerCase().includes(searchQuery.trim().toLowerCase()),
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredLibraries = ALL_LIBRARIES.filter(
+    (lib) =>
+      lib.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lib.city.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const toggleLibrary = (lib: string) => {
-    if (selectedLibraries.includes(lib)) {
-      setSelectedLibraries(selectedLibraries.filter((item) => item !== lib));
+  const toggleLibrary = (libName: string) => {
+    if (selected.includes(libName)) {
+      onChange(selected.filter((item) => item !== libName));
     } else {
-      setSelectedLibraries([...selectedLibraries, lib]);
+      onChange([...selected, libName]);
     }
   };
 
-  const removeLibrary = (lib: string) => {
-    setSelectedLibraries(selectedLibraries.filter((item) => item !== lib));
+  const isAllSelected =
+    filteredLibraries.length > 0 &&
+    filteredLibraries.every((lib) => selected.includes(lib.name));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      const filteredNames = filteredLibraries.map((l) => l.name);
+      onChange(selected.filter((name) => !filteredNames.includes(name)));
+    } else {
+      const newSelected = new Set([...selected, ...filteredLibraries.map((l) => l.name)]);
+      onChange(Array.from(newSelected));
+    }
   };
 
   return (
-    <SectionCard title="Library Store Allocation">
-      <div className="space-y-5 pt-1">
-        {/* Field 1: Select Library */}
-        <div>
-          <span className="mb-1.5 block text-sm font-medium text-foreground">
-            Select Library
-          </span>
-          <div className="relative">
+    <div className="relative w-full" ref={dropdownRef}>
+      {/* Trigger Area */}
+      <div
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
+          }`}
+      >
+        <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
+          {selected.length === 0 ? (
+            <span className="text-muted-foreground text-xs font-normal px-2">
+              Select one or more libraries...
+            </span>
+          ) : (
+            selected.map((libName) => (
+              <span
+                key={libName}
+                className="inline-flex items-center gap-1 rounded-lg border border-[var(--brand)]/30 bg-[var(--brand)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--brand)]"
+              >
+                <span>{libName}</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleLibrary(libName);
+                  }}
+                  className="rounded-md hover:bg-[var(--brand)]/20 p-0.5 transition-colors cursor-pointer"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            ))
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0 px-1">
+          {selected.length > 0 && (
             <button
               type="button"
-              onClick={() => setOpen((o) => !o)}
-              className="flex h-14 w-full items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary/30 outline-none focus:border-[var(--brand)]"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange([]);
+              }}
+              className="text-xs text-muted-foreground hover:text-foreground underline pr-1 cursor-pointer"
             >
-              <span className="text-muted-foreground">Select From Library List</span>
-              <ChevronDown
-                size={16}
-                className={`text-muted-foreground transition-transform duration-200 ${
-                  open ? "rotate-180" : ""
-                }`}
-              />
+              Clear
             </button>
-
-            {/* Dropdown Menu with Sticky Search Header */}
-            {open && (
-              <div
-                className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-xl border border-border bg-card shadow-lg"
-                onMouseLeave={() => setOpen(false)}
-              >
-                {/* Search Bar inside Dropdown */}
-                <div className="sticky top-0 z-10 border-b border-border bg-card p-2.5">
-                  <div className="relative flex items-center">
-                    <Search
-                      size={15}
-                      className="pointer-events-none absolute left-3 text-muted-foreground"
-                    />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search library..."
-                      className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-8 text-xs text-foreground outline-none placeholder:text-muted-foreground focus:border-[var(--brand)]"
-                      autoFocus
-                    />
-                    {searchQuery && (
-                      <button
-                        type="button"
-                        onClick={() => setSearchQuery("")}
-                        className="absolute right-3 text-muted-foreground hover:text-foreground"
-                      >
-                        <X size={13} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Options List */}
-                <div className="max-h-56 overflow-y-auto p-1.5 space-y-0.5">
-                  {filteredLibraries.length === 0 ? (
-                    <div className="p-3.5 text-center text-xs text-muted-foreground">
-                      No libraries found
-                    </div>
-                  ) : (
-                    filteredLibraries.map((lib) => {
-                      const isSelected = selectedLibraries.includes(lib);
-                      return (
-                        <button
-                          key={lib}
-                          type="button"
-                          onClick={() => toggleLibrary(lib)}
-                          className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-xs font-medium transition-colors ${
-                            isSelected
-                              ? "bg-[var(--sidebar-highlight)] font-semibold text-foreground"
-                              : "text-foreground/90 hover:bg-secondary"
-                          }`}
-                        >
-                          <span className="truncate">{lib}</span>
-                          {isSelected && (
-                            <Check size={15} className="ml-2 shrink-0 text-[var(--brand)]" />
-                          )}
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Field 2: Selected Libraries */}
-        <div>
-          <span className="mb-1.5 block text-sm font-medium text-foreground">
-            Selected Libraries
-          </span>
-          <div className="flex min-h-[56px] w-full flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-3">
-            {selectedLibraries.length === 0 ? (
-              <span className="text-sm text-muted-foreground">No libraries selected</span>
-            ) : (
-              selectedLibraries.map((lib) => (
-                <span
-                  key={lib}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary/80 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-                >
-                  {lib}
-                  <button
-                    type="button"
-                    onClick={() => removeLibrary(lib)}
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                    aria-label={`Remove ${lib}`}
-                  >
-                    <X size={13} />
-                  </button>
-                </span>
-              ))
-            )}
-          </div>
+          )}
+          <ChevronDown
+            size={16}
+            className={`text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          />
         </div>
       </div>
-    </SectionCard>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-72 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
+          {/* Search Box Header */}
+          <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
+            <div className="relative flex items-center">
+              <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search libraries by name..."
+                autoFocus
+                className="w-full h-9 pl-9 pr-8 text-xs rounded-lg border border-border bg-secondary/40 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-2.5 text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+
+            {/* Select All Row */}
+            <div className="flex items-center justify-between px-1 text-xs">
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="text-[11px] font-semibold text-[var(--brand)] hover:underline cursor-pointer"
+              >
+                {isAllSelected ? "Deselect All" : "Select All Libraries"}
+              </button>
+              <span className="text-[11px] text-muted-foreground font-medium">
+                {selected.length} of {ALL_LIBRARIES.length} selected
+              </span>
+            </div>
+          </div>
+
+          {/* Options List */}
+          <div className="overflow-y-auto max-h-52 py-1 divide-y divide-border/30">
+            {filteredLibraries.length === 0 ? (
+              <div className="px-4 py-6 text-center text-xs text-muted-foreground">
+                No matching libraries found.
+              </div>
+            ) : (
+              filteredLibraries.map((lib) => {
+                const checked = selected.includes(lib.name);
+                return (
+                  <label
+                    key={lib.id}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${
+                      checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleLibrary(lib.name)}
+                        className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                      />
+                      <span className="truncate">{lib.name}</span>
+                    </div>
+                  </label>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LibraryStoreAllocationCard() {
+  const [restrictToSpecific, setRestrictToSpecific] = useState(true);
+  const [selectedLibraries, setSelectedLibraries] = useState<string[]>([
+    "Central University Digital Library",
+    "National Science & Tech Consortium",
+  ]);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleSaveAllocations = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmSave = () => {
+    setIsConfirmOpen(false);
+    toast.success("Library store allocations updated successfully");
+  };
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+      {/* Card Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-2xs">
+            <Library size={22} />
+          </span>
+          <div>
+            <h2 className="text-base font-extrabold text-foreground leading-tight">
+              Library Allocation
+            </h2>
+            <p className="text-xs text-muted-foreground font-medium mt-0.5">
+              Configure authorized libraries where this eBook title will be available in digital catalogues.
+            </p>
+          </div>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
+          <CheckCircle2 size={13} />
+          {selectedLibraries.length} Libraries Allocated
+        </span>
+      </div>
+
+      <div className="space-y-4">
+        {/* Multi-Select Dropdown Container */}
+        <div className="space-y-2 pt-1">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-extrabold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+              <span>Select Authorized Libraries</span>
+              <span className="text-red-500">*</span>
+            </label>
+            <span className="text-xs text-muted-foreground font-medium">
+              {selectedLibraries.length} libraries selected
+            </span>
+          </div>
+
+          <LibraryMultiSelectDropdown
+            selected={selectedLibraries}
+            onChange={setSelectedLibraries}
+          />
+
+          {selectedLibraries.length === 0 && (
+            <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
+              <span>⚠️ Please select at least one library for allocation to take effect.</span>
+            </p>
+          )}
+        </div>
+
+        {/* Action Footer Row with Save Button */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-border/50">
+          <span className="text-xs text-muted-foreground font-medium">
+            {`${selectedLibraries.length} libraries selected for title allocation`}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleSaveAllocations}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-bold text-white shadow-2xs transition-all hover:opacity-90 active:scale-98 cursor-pointer shrink-0 self-end sm:self-auto"
+          >
+            <Save size={15} />
+            <span>Save Allocations</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Confirmation Modal */}
+      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <DialogContent className="max-w-md bg-card border border-border rounded-xl p-6 shadow-xl">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+              <Library size={20} className="text-[var(--brand)]" />
+              <span>Confirm Library Allocations</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground pt-1 leading-relaxed">
+              Are you sure you want to update the library store allocations for this title?
+              {restrictToSpecific
+                ? ` This eBook will be restricted exclusively to ${selectedLibraries.length} authorized library catalogues.`
+                : " This eBook will be available to all institutional libraries globally."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="mt-4 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setIsConfirmOpen(false)}
+              className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirmSave}
+              className="inline-flex h-9 items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-xs font-bold text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
+            >
+              Confirm & Save
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
 
@@ -491,7 +662,7 @@ function EBookDetailPage() {
                 {/* 2. File Size */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">File Size</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">eBook Size (in MB)</span>
                     <HardDrive size={14} className="text-muted-foreground/80" />
                   </div>
                   <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>
@@ -565,7 +736,7 @@ function EBookDetailPage() {
             <MetaRow label="Language:" value={extra.language} valueClass="text-[var(--brand)]" />
             <MetaRow label="Regional Name:" value={extra.regionalName} />
             <MetaRow label="Date of Publications:" value={extra.dateOfPublication} />
-            <MetaRow label="eBook Size:" value={`${extra.sizeMB} MB`} />
+            <MetaRow label="eBook Size (in MB):" value={`${extra.sizeMB} MB`} />
           </div>
 
           {/* Summary */}

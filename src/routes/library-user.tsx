@@ -176,18 +176,32 @@ function LibraryUserDashboard() {
             </div>
           </div>
 
-          <div className="relative max-w-xs w-full hidden sm:block">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              size={14}
-            />
-            <input
-              type="text"
-              placeholder="Search books, authors..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-secondary border border-border rounded-lg pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
+          <div className="flex items-center gap-3">
+            <div className="relative max-w-xs w-full hidden sm:block">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                size={14}
+              />
+              <input
+                type="text"
+                placeholder="Search books, authors..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-secondary border border-border rounded-lg pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+            </div>
+
+            <Link
+              to="/library-user/profile"
+              id="library-user-btn-profile"
+              className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5 text-left transition-all hover:bg-secondary hover:border-border/80"
+              title="View Student Profile"
+            >
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[oklch(0.62_0.15_155)]/15 text-[oklch(0.62_0.15_155)] text-xs font-bold">
+                AR
+              </div>
+              <span className="hidden text-xs font-semibold text-foreground md:inline">Ananya Roy</span>
+            </Link>
           </div>
         </div>
       </header>

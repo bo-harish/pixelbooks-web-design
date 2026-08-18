@@ -916,154 +916,148 @@ function LibraryAdminUsersPage() {
       subtitle="Manage university library users, mobile access, and borrowing active statuses."
     >
       <div className="space-y-6 p-4 md:p-8">
-        {/* Top Action Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div />
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                setSelectedUser(null);
-                setEditName("");
-                setEditUserType("Student");
-                setEditUniv("Pixelbooks Library");
-                setEditStudentId(""); // Let it be disabled or empty for new user
-                setEditEnrollmentId("");
-                setEditEnrollmentDate("");
-                setEditCourse("B.Com (CA)");
-                setEditBatch("2025,2029");
-                setEditAddress("");
-                setEditPinCode("");
-                setEditEmail("");
-                setEditPhone("");
-                setIsViewOpen(true);
+        {/* Single Line Filter Toolbar */}
+        <div className="flex flex-col xl:flex-row xl:items-center gap-2.5 rounded-xl border border-border bg-card p-4 overflow-x-auto">
+          {/* Main Search Bar */}
+          <div className="relative flex-1 min-w-[200px] w-full">
+            <Search
+              size={17}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
               }}
-              className="h-10 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
-            >
-              <Plus size={16} />
-              Add User
-            </button>
-            <button
-              onClick={() => setIsUploadOpen(true)}
-              className="h-10 rounded-lg border border-border bg-white dark:bg-card px-4 text-xs font-semibold text-muted-foreground hover:bg-secondary/40 hover:text-foreground transition-all flex items-center gap-1.5 cursor-pointer"
-            >
-              <Download size={15} />
-              Import
-            </button>
+              placeholder="Search by user name, email, department..."
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+            />
           </div>
-        </div>
 
-        {/* Redesigned Unified Toolbar */}
-        <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between lg:p-5">
-          {/* Left Side: Status, Type Dropdowns + Search Input */}
-          <div className="flex flex-wrap items-center gap-3 flex-1 w-full lg:max-w-4xl">
-            {/* Status Dropdown Filter */}
-            <DropdownSelect
-              value={statusFilter === "All" ? "All Statuses" : `${statusFilter} Users`}
-              options={["All Statuses", "Active Users", "Inactive Users"]}
-              onChange={(label) => {
-                if (label === "All Statuses") setStatusFilter("All");
-                else if (label === "Active Users") setStatusFilter("Active");
-                else if (label === "Inactive Users") setStatusFilter("Inactive");
-                setPage(1);
-              }}
-              searchable
-              searchPlaceholder="Search status..."
-              className="w-full sm:w-auto min-w-[150px]"
-            />
+          {/* Status Dropdown Filter */}
+          <DropdownSelect
+            value={statusFilter === "All" ? "All Statuses" : `${statusFilter} Users`}
+            options={["All Statuses", "Active Users", "Inactive Users"]}
+            onChange={(label) => {
+              if (label === "All Statuses") setStatusFilter("All");
+              else if (label === "Active Users") setStatusFilter("Active");
+              else if (label === "Inactive Users") setStatusFilter("Inactive");
+              setPage(1);
+            }}
+            searchable
+            searchPlaceholder="Search status..."
+            className="w-full sm:w-auto min-w-[130px] shrink-0"
+          />
 
-            {/* Type Dropdown Filter */}
-            <DropdownSelect
-              value={typeFilter === "All" ? "All Types" : `${typeFilter}s`}
-              options={["All Types", "Staffs", "Students"]}
-              onChange={(label) => {
-                if (label === "All Types") setTypeFilter("All");
-                else if (label === "Staffs") setTypeFilter("Staff");
-                else if (label === "Students") setTypeFilter("Student");
-                setPage(1);
-              }}
-              searchable
-              searchPlaceholder="Search type..."
-              className="w-full sm:w-auto min-w-[150px]"
-            />
+          {/* Type Dropdown Filter */}
+          <DropdownSelect
+            value={typeFilter === "All" ? "All Types" : `${typeFilter}s`}
+            options={["All Types", "Staffs", "Students"]}
+            onChange={(label) => {
+              if (label === "All Types") setTypeFilter("All");
+              else if (label === "Staffs") setTypeFilter("Staff");
+              else if (label === "Students") setTypeFilter("Student");
+              setPage(1);
+            }}
+            searchable
+            searchPlaceholder="Search type..."
+            className="w-full sm:w-auto min-w-[120px] shrink-0"
+          />
 
-            {/* Search Input Box */}
-            <div className="relative w-full sm:w-60">
-              <Search
-                size={16}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-              />
+          {/* Preset Dropdown */}
+          <div className="relative shrink-0 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => setPresetOpen((v) => !v)}
+              className="flex h-11 w-full sm:w-auto items-center justify-between gap-3 rounded-lg border border-border bg-card px-3.5 text-sm font-medium text-foreground cursor-pointer min-w-[100px]"
+            >
+              <span>{preset}</span>
+              <ChevronDown size={15} className="text-muted-foreground" />
+            </button>
+            {presetOpen && (
+              <div className="absolute right-0 z-20 mt-1.5 w-36 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+                {PRESETS.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => handlePresetSelect(p)}
+                    className={`flex w-full items-center px-3.5 py-2 text-left text-sm transition-colors hover:bg-secondary ${
+                      p === preset ? "font-semibold text-foreground" : "text-muted-foreground"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Custom Date Pickers */}
+          <div className="flex items-center gap-1.5 shrink-0 w-full sm:w-auto">
+            <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
               <input
-                type="text"
-                placeholder="Search users..."
-                value={searchQuery}
+                type="date"
+                value={from}
                 onChange={(e) => {
-                  setSearchQuery(e.target.value);
+                  setFrom(e.target.value);
+                  setPreset("Custom");
                   setPage(1);
                 }}
-                className="h-10 w-full rounded-lg border border-border bg-white dark:bg-card pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] text-foreground"
+                className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
               />
-            </div>
+            </label>
+            <span className="text-xs font-medium text-muted-foreground">to</span>
+            <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
+              <input
+                type="date"
+                value={to}
+                onChange={(e) => {
+                  setTo(e.target.value);
+                  setPreset("Custom");
+                  setPage(1);
+                }}
+                className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
+              />
+            </label>
           </div>
 
-          {/* Right Side: Date Presets & Custom Date Pickers (filters Join Date) */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center md:gap-3 w-full lg:w-auto shrink-0">
-            {/* Preset Dropdown */}
-            <div className="relative w-full sm:w-auto">
-              <button
-                onClick={() => setPresetOpen((v) => !v)}
-                className="flex h-11 w-full items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium sm:w-40 text-foreground cursor-pointer"
-              >
-                <span>{preset}</span>
-                <ChevronDown size={15} className="text-muted-foreground" />
-              </button>
-              {presetOpen && (
-                <div className="absolute right-0 z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-40">
-                  {PRESETS.map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => handlePresetSelect(p)}
-                      className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary ${
-                        p === preset ? "font-medium text-foreground" : "text-muted-foreground"
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+          {/* Import Button */}
+          <button
+            type="button"
+            onClick={() => setIsUploadOpen(true)}
+            className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-card px-3.5 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer shrink-0"
+          >
+            <Download size={15} />
+            Import
+          </button>
 
-            {/* Custom Dates Container */}
-            <div className="flex items-center gap-2">
-              <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36">
-                <input
-                  type="date"
-                  value={from}
-                  onChange={(e) => {
-                    setFrom(e.target.value);
-                    setPreset("Custom");
-                    setPage(1);
-                  }}
-                  className="w-full bg-transparent text-sm outline-none text-foreground cursor-pointer"
-                />
-              </label>
-
-              <span className="text-muted-foreground text-xs font-semibold self-center">to</span>
-
-              <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36">
-                <input
-                  type="date"
-                  value={to}
-                  onChange={(e) => {
-                    setTo(e.target.value);
-                    setPreset("Custom");
-                    setPage(1);
-                  }}
-                  className="w-full bg-transparent text-sm outline-none text-foreground cursor-pointer"
-                />
-              </label>
-            </div>
-          </div>
+          {/* Add User Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedUser(null);
+              setEditName("");
+              setEditUserType("Student");
+              setEditUniv("Pixelbooks Library");
+              setEditStudentId("");
+              setEditEnrollmentId("");
+              setEditEnrollmentDate("");
+              setEditCourse("B.Com (CA)");
+              setEditBatch("2025,2029");
+              setEditAddress("");
+              setEditPinCode("");
+              setEditEmail("");
+              setEditPhone("");
+              setIsViewOpen(true);
+            }}
+            className="inline-flex h-11 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 shrink-0 cursor-pointer"
+            style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+          >
+            <Plus size={16} />
+            Add User
+          </button>
         </div>
 
         {/* Users Table Container */}

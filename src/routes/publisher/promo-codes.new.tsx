@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import { ArrowLeft, ChevronDown, Sparkles } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { getPromos, savePromos, type Promo } from "@/lib/promo-codes-data";
@@ -131,6 +132,17 @@ function generatePromoCode() {
 
 function CreatePromoCodePage() {
   const navigate = useNavigate();
+  const [publisherType] = usePublisherType();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
   const [ebook, setEbook] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [percentage, setPercentage] = useState("");

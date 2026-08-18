@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -291,6 +292,17 @@ function SectionCard({ title, children }: { title: string; children: React.React
 function EBookBundleDetailPage() {
   const { bundleId } = Route.useParams();
   const navigate = useNavigate();
+  const [publisherType] = usePublisherType();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
   const [bundle, setBundle] = useState<Bundle | undefined>(() => getBundleById(bundleId));
 
   if (!bundle) {
@@ -419,7 +431,7 @@ function EBookBundleDetailPage() {
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">Size</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">Size (in MB)</span>
                         <HardDrive size={14} />
                       </div>
                       <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>

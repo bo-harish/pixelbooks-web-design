@@ -31,7 +31,7 @@ function EntityAvatar({ type }: { name?: string; type: "Publisher" | "Author"; a
 
   return (
     <div
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20 shadow-2xs transition-transform group-hover:scale-105"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs transition-transform group-hover:scale-105"
       title="Author"
     >
       <Feather size={18} />
@@ -362,7 +362,7 @@ function CommissionRates() {
                               {item.type === "Publisher" ? (
                                 <Building2 size={11} className="inline text-muted-foreground/80" />
                               ) : (
-                                <User size={11} className="inline text-muted-foreground/80" />
+                                <Feather size={11} className="inline text-muted-foreground/80" />
                               )}
                               <span>{item.type}</span>
                             </p>

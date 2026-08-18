@@ -63,8 +63,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { NotificationsPopover } from "@/components/notifications-popover";
-import { getHeaderProfile } from "@/components/headers/get-header-profile";
+import { getHeaderProfile, getProfileRoute } from "@/components/headers/get-header-profile";
 import { toast } from "sonner";
+import { usePublisherType, type PublisherUserType } from "@/hooks/use-publisher-type";
+import { useLibraryAdminType, type LibraryAdminUserType } from "@/hooks/use-library-admin-type";
+
 
 type NavItem = {
   label: string;
@@ -125,7 +128,42 @@ function isActivePath(pathname: string, to: string) {
   return normPath === normTo || normPath.startsWith(`${normTo}/`);
 }
 
-function getSections(pathname: string, adminMode?: "retail" | "library"): NavSection[] {
+function useHideRetailBookStore() {
+  const [hide, setHide] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("pb_hide_retail_bookstore") === "true";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleStorage = (e: Event) => {
+      const customEvent = e as CustomEvent<boolean>;
+      if (typeof customEvent.detail === "boolean") {
+        setHide(customEvent.detail);
+      } else if (typeof window !== "undefined") {
+        setHide(localStorage.getItem("pb_hide_retail_bookstore") === "true");
+      }
+    };
+
+    window.addEventListener("pb-hide-bookstore-change", handleStorage);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("pb-hide-bookstore-change", handleStorage);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  return hide;
+}
+
+function getSections(
+  pathname: string,
+  adminMode?: "retail" | "library",
+  hideRetailBookStore?: boolean,
+  publisherUserType?: PublisherUserType,
+  libraryAdminUserType?: LibraryAdminUserType
+): NavSection[] {
   if (pathname.startsWith("/pb-admin")) {
     if (adminMode === "library" || pathname.startsWith("/pb-admin-lib")) {
       return [
@@ -230,44 +268,52 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
   }
 
   if (pathname.startsWith("/library-admin")) {
-    return [
-      {
-        heading: "Main",
-        items: [
-          { label: "Dashboard", icon: LayoutDashboard, to: "/library-admin" },
-          { label: "Reports", icon: BarChart3, to: "/library-admin/reports" },
-        ],
-      },
-      {
-        heading: "Inventory & Content",
-        items: [
-          { label: "Catalogue", icon: BookMarked, to: "/library-admin/catalogue" },
-          { label: "Manage Borrowings", icon: FileEdit, to: "/library-admin/manage-ebooks" },
-          { label: "Book Store", icon: Store, to: "/library-admin/book-store" },
-          { label: "Banners", icon: ImageIcon, to: "/library-admin/banners" },
-        ],
-      },
-      {
-        heading: "Operations",
-        items: [
-          { label: "Orders", icon: ShoppingBag, to: "/library-admin/orders" },
-          { label: "Requests", icon: Inbox, to: "/library-admin/requests" },
-        ],
-      },
-      {
-        heading: "Users & Structure",
-        items: [
-          { label: "Courses", icon: GraduationCap, to: "/library-admin/courses" },
-          { label: "Library Users", icon: Users, to: "/library-admin/users" },
-          { label: "Departments", icon: Building2, to: "/library-admin/departments" },
-        ],
-      },
-      {
-        heading: "Support",
-        items: [{ label: "Support", icon: LifeBuoy, to: "/library-admin/support" }],
-      },
-    ];
+    const isStandardAdmin = libraryAdminUserType === "Standard Library Admin";
+    return (
+      [
+        {
+          heading: "Main",
+          items: [
+            { label: "Dashboard", icon: LayoutDashboard, to: "/library-admin" },
+            { label: "Reports", icon: BarChart3, to: "/library-admin/reports" },
+          ],
+        },
+        {
+          heading: "Inventory & Content",
+          items: (
+            [
+              { label: "Catalogue", icon: BookMarked, to: "/library-admin/catalogue" },
+              { label: "Manage Borrowings", icon: FileEdit, to: "/library-admin/manage-ebooks" },
+              !hideRetailBookStore && !isStandardAdmin && { label: "Book Store", icon: Store, to: "/library-admin/book-store" },
+              !isStandardAdmin && { label: "Banners", icon: ImageIcon, to: "/library-admin/banners" },
+            ] as (NavItem | false)[]
+          ).filter(Boolean) as NavItem[],
+        },
+        !isStandardAdmin && {
+          heading: "Operations",
+          items: [
+            { label: "Orders", icon: ShoppingBag, to: "/library-admin/orders" },
+            { label: "Requests", icon: Inbox, to: "/library-admin/requests" },
+          ],
+        },
+        {
+          heading: "Users & Structure",
+          items: (
+            [
+              { label: "Courses", icon: GraduationCap, to: "/library-admin/courses" },
+              { label: "Library Users", icon: Users, to: "/library-admin/users" },
+              !isStandardAdmin && { label: "Departments", icon: Building2, to: "/library-admin/departments" },
+            ] as (NavItem | false)[]
+          ).filter(Boolean) as NavItem[],
+        },
+        {
+          heading: "Support",
+          items: [{ label: "Support", icon: LifeBuoy, to: "/library-admin/support" }],
+        },
+      ] as (NavSection | false)[]
+    ).filter(Boolean) as NavSection[];
   }
+
 
   if (pathname.startsWith("/author")) {
     return [
@@ -275,7 +321,7 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
         heading: "Main",
         items: [
           { label: "Dashboard", icon: LayoutDashboard, to: "/author" },
-          { label: "My Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
+          { label: "eBook Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
           { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
           { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
           { label: "Rewards", icon: TicketPercent, to: "/publisher/promo-codes" },
@@ -299,25 +345,28 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
     ];
   }
 
+  const isLibraryOnlyPublisher = publisherUserType === "Library-Only Publisher";
   return [
     {
       heading: "Main",
-      items: [
-        { label: "Dashboard", icon: LayoutDashboard, to: "/publisher" },
-        { label: "My Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
-        { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
-        { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
-        { label: "Rewards", icon: TicketPercent, to: "/publisher/promo-codes" },
-      ],
+      items: (
+        [
+          !isLibraryOnlyPublisher && { label: "Dashboard", icon: LayoutDashboard, to: "/publisher" },
+          { label: "eBook Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
+          { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
+          !isLibraryOnlyPublisher && { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
+          !isLibraryOnlyPublisher && { label: "Rewards", icon: TicketPercent, to: "/publisher/promo-codes" },
+        ] as (NavItem | false)[]
+      ).filter(Boolean) as NavItem[],
     },
-    {
+    !isLibraryOnlyPublisher && {
       heading: "Reports",
       items: [
         { label: "Margin Report", icon: TrendingUp, to: "/publisher/margin-report" },
         { label: "Sales Report", icon: BarChart3, to: "/publisher/sales-report" },
       ],
     },
-    {
+    !isLibraryOnlyPublisher && {
       heading: "Payment",
       items: [{ label: "Bank Accounts", icon: Landmark, to: "/publisher/bank-accounts" }],
     },
@@ -325,8 +374,9 @@ function getSections(pathname: string, adminMode?: "retail" | "library"): NavSec
       heading: "Utilities",
       items: [{ label: "Support", icon: LifeBuoy, to: "/publisher/support" }],
     },
-  ];
+  ].filter(Boolean) as NavSection[];
 }
+
 
 function Logo({ className = "h-7 w-7" }: { className?: string }) {
   return (
@@ -366,10 +416,6 @@ function useCollapsed() {
 }
 
 function SidebarBrand({ collapsed }: { collapsed: boolean }) {
-  const { pathname } = useLocation();
-  const isLibraryAdmin = pathname.startsWith("/library-admin");
-  const isPBAdmin = pathname.startsWith("/pb-admin");
-  const isAuthor = pathname.startsWith("/author");
   return (
     <div
       className={[
@@ -386,33 +432,10 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
           <Logo className="h-7 w-7" />
         </Link>
       ) : (
-        <div className="flex min-w-0 items-center gap-2.5">
-          <Link to="/" id="sidebar-logo-link-expanded" className="flex shrink-0 items-center gap-2.5 group">
-            <Logo className="h-7 w-7 transition-transform group-hover:scale-105" />
-            <span className="font-bold text-lg tracking-tight text-foreground">PixelBooks</span>
-          </Link>
-          <span
-            className="shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold"
-            style={{
-              backgroundColor: isPBAdmin
-                ? "color-mix(in oklab, oklch(0.60 0.18 30) 16%, transparent)"
-                : isLibraryAdmin
-                  ? "color-mix(in oklab, oklch(0.55 0.13 260) 12%, transparent)"
-                  : isAuthor
-                    ? "color-mix(in oklab, oklch(0.62 0.15 155) 16%, transparent)"
-                    : "var(--sidebar-highlight)",
-              color: isPBAdmin
-                ? "oklch(0.60 0.18 30)"
-                : isLibraryAdmin
-                  ? "oklch(0.55 0.13 260)"
-                  : isAuthor
-                    ? "oklch(0.62 0.15 155)"
-                    : "var(--sidebar-accent-foreground)",
-            }}
-          >
-            {isPBAdmin ? "Admin" : isLibraryAdmin ? "Library Admin" : isAuthor ? "Author" : "Publisher"}
-          </span>
-        </div>
+        <Link to="/" id="sidebar-logo-link-expanded" className="flex items-center gap-2.5 group">
+          <Logo className="h-7 w-7 transition-transform group-hover:scale-105 shrink-0" />
+          <span className="font-bold text-lg tracking-tight text-foreground">PixelBooks</span>
+        </Link>
       )}
     </div>
   );
@@ -584,7 +607,11 @@ function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate
   const navigate = useNavigate();
   const isPBAdmin = pathname.startsWith("/pb-admin");
   const [adminMode, setAdminMode] = useAdminMode();
-  const currentSections = getSections(pathname, adminMode);
+  const hideBookStore = useHideRetailBookStore();
+  const [publisherType] = usePublisherType();
+  const [libraryAdminType] = useLibraryAdminType();
+  const currentSections = getSections(pathname, adminMode, hideBookStore, publisherType, libraryAdminType);
+
 
   const handleModeSwitch = (newMode: "retail" | "library") => {
     setAdminMode(newMode);
@@ -668,6 +695,19 @@ function ProfileDropdown() {
   const navigate = useNavigate();
   const roleTheme = getRoleTheme(pathname);
   const headerProfile = getHeaderProfile(pathname);
+  const isLibraryAdmin = pathname.startsWith("/library-admin");
+  const isPBAdmin = pathname.startsWith("/pb-admin");
+  const isAuthor = pathname.startsWith("/author");
+  const [publisherType] = usePublisherType();
+  const [libraryAdminType] = useLibraryAdminType();
+
+  const userTypeLabel = isPBAdmin
+    ? "Admin"
+    : isLibraryAdmin
+      ? libraryAdminType
+      : isAuthor
+        ? "Author"
+        : publisherType;
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -699,12 +739,30 @@ function ProfileDropdown() {
                 title={`${roleTheme.name} Online`}
               />
             </div>
-            <span className="hidden min-w-0 sm:block">
-              <span className="block truncate text-sm font-semibold text-foreground">
+            <span className="hidden min-w-0 sm:flex sm:flex-col sm:items-start gap-0.5">
+              <span className="block truncate text-sm font-semibold text-foreground leading-tight">
                 {headerProfile.name}
               </span>
-              <span className="block truncate text-[11px] font-medium text-muted-foreground">
-                {headerProfile.role} · {headerProfile.status}
+              <span
+                className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
+                style={{
+                  backgroundColor: isPBAdmin
+                    ? "color-mix(in oklab, oklch(0.60 0.18 30) 16%, transparent)"
+                    : isLibraryAdmin
+                      ? "color-mix(in oklab, oklch(0.55 0.13 260) 12%, transparent)"
+                      : isAuthor
+                        ? "color-mix(in oklab, oklch(0.62 0.15 155) 16%, transparent)"
+                        : "var(--sidebar-highlight)",
+                  color: isPBAdmin
+                    ? "oklch(0.60 0.18 30)"
+                    : isLibraryAdmin
+                      ? "oklch(0.55 0.13 260)"
+                      : isAuthor
+                        ? "oklch(0.62 0.15 155)"
+                        : "var(--sidebar-accent-foreground)",
+                }}
+              >
+                {userTypeLabel}
               </span>
             </span>
             <ChevronDown size={14} className="hidden text-muted-foreground sm:block" />
@@ -722,7 +780,7 @@ function ProfileDropdown() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link to="/publisher/profile">
+            <Link to={getProfileRoute(pathname)}>
               <UserCircle size={16} className="mr-2" /> Profile
             </Link>
           </DropdownMenuItem>
@@ -805,8 +863,8 @@ function ProfileDropdown() {
 
 function SidebarFooter({ collapsed }: { collapsed: boolean }) {
   return (
-    <div className="border-t border-sidebar-border px-3 py-3">
-      {!collapsed && <p className="text-center text-[10px] text-muted-foreground">v2.1.12</p>}
+    <div className="border-t border-sidebar-border px-3 py-2">
+      {!collapsed && <p className="text-[10px] text-muted-foreground">v2.1.12</p>}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-export type Status = "Published" | "Rejected" | "Unpublished";
+export type Status = "Published" | "Unpublished" | "Draft" | "Rejected";
 
 export type Book = {
   id: string;
@@ -14,6 +14,7 @@ export type Book = {
   initials: string;
   dop?: string; // Date of Purchase
   language?: string; // Language
+  licenseCount?: number; // License Count (No. of copies)
 };
 
 export const gradients = [
@@ -41,6 +42,7 @@ export const seedBooks: Book[] = [
     initials: "NEP",
     dop: "12 Jun 2026",
     language: "English",
+    licenseCount: 100,
   },
   {
     id: "complete-history-music",

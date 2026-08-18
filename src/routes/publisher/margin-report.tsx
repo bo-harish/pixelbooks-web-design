@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState, useEffect } from "react";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import {
   Tag,
   Clock,
@@ -535,6 +536,19 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
 }
 
 function MarginReportPage() {
+  const [publisherType] = usePublisherType();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
+
   const [preset, setPreset] = useState<Preset>("MTD");
   const [presetOpen, setPresetOpen] = useState(false);
   const [from, setFrom] = useState("2026-07-01");

@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import { Tag, Users, BookOpen, Star, ArrowUpRight, ArrowDownRight, ChevronDown, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
@@ -26,6 +27,19 @@ export const Route = createFileRoute("/publisher/")({
 });
 
 function PublisherDashboard() {
+  const [publisherType] = usePublisherType();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
+
   return (
     <AppShell title="Dashboard" subtitle="A quick pulse on your sales, royalties and top titles.">
       <DashboardContent />

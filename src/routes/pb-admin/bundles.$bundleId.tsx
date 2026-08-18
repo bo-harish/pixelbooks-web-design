@@ -400,7 +400,7 @@ export function AdminBundleDetailPage() {
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">Size</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">Size (in MB)</span>
                         <HardDrive size={14} />
                       </div>
                       <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>

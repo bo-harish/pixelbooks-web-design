@@ -481,8 +481,8 @@ function EBookDetailsSection() {
         <Field label="Date of Publication">
           <TextInput defaultValue="Harry Potter" />
         </Field>
-        <Field label="eBook Size">
-          <TextInput defaultValue="25455955" />
+        <Field label="eBook Size (in MB)">
+          <TextInput defaultValue="25.4" placeholder="e.g. 25.4" />
         </Field>
       </div>
 

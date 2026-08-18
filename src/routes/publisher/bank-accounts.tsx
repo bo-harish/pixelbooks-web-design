@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import {
   Plus,
   Pencil,
@@ -68,6 +69,19 @@ const seed: BankAccount[] = [
 ];
 
 function BankAccountsPage() {
+  const [publisherType] = usePublisherType();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
+
   const [accounts, setAccounts] = useState<BankAccount[]>(seed);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

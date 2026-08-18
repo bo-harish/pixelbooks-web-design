@@ -13,6 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import { Switch } from "@/components/ui/switch";
 import {
   getPromoById,
@@ -201,6 +202,17 @@ function generatePromoCode() {
 
 function EditPromoCodePage() {
   const navigate = useNavigate();
+  const [publisherType] = usePublisherType();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
   const { promoId } = Route.useParams();
   const existingPromo = getPromoById(promoId);
 

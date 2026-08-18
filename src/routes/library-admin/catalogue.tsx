@@ -478,60 +478,60 @@ function LibraryCataloguePage() {
       subtitle="Overview of digital catalogue, copies, and active availability."
     >
       <div className="space-y-6 p-4 md:p-8">
-        {/* Redesigned Unified Toolbar */}
-        <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between lg:p-5">
-          {/* Left Side: Status Dropdown + Search Input */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 w-full lg:max-w-xl">
-            {/* Dropdown Filter */}
-            <DropdownSelect
-              value={activeTab}
-              options={["All", "Active", "Inactive"]}
-              onChange={(tab) => {
-                setActiveTab(tab as "All" | "Active" | "Inactive");
+        {/* Single Line Filter Toolbar */}
+        <div className="flex flex-col xl:flex-row xl:items-center gap-2.5 rounded-xl border border-border bg-card p-4 overflow-x-auto">
+          {/* Main Search Bar */}
+          <div className="relative flex-1 min-w-[200px] w-full max-w-md">
+            <Search
+              size={17}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
                 setPage(1);
               }}
-              searchable
-              searchPlaceholder="Search status..."
-              className="w-full sm:w-auto min-w-[120px]"
+              placeholder="Search by title, ISBN, author..."
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
             />
-
-            {/* Search Input */}
-            <div className="relative flex-1">
-              <Search
-                size={16}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-              />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setPage(1);
-                }}
-                placeholder="Search"
-                className="h-10 w-full rounded-lg border border-border bg-white dark:bg-card pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] text-foreground"
-              />
-            </div>
           </div>
 
-          {/* Right Side: Date Presets & Date Pickers */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center md:gap-3 w-full lg:w-auto">
+          {/* Status Dropdown Filter */}
+          <DropdownSelect
+            value={activeTab === "All" ? "All Statuses" : `${activeTab} Status`}
+            options={["All Statuses", "Active Status", "Inactive Status"]}
+            onChange={(tab) => {
+              const next = tab === "All Statuses" ? "All" : tab === "Active Status" ? "Active" : "Inactive";
+              setActiveTab(next as "All" | "Active" | "Inactive");
+              setPage(1);
+            }}
+            searchable
+            searchPlaceholder="Search status..."
+            className="w-full sm:w-auto min-w-[130px] shrink-0"
+          />
+
+          {/* Right Aligned Date Filter Group */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0 xl:ml-auto">
             {/* Preset Dropdown */}
-            <div className="relative w-full sm:w-auto">
+            <div className="relative shrink-0 w-full sm:w-auto">
               <button
+                type="button"
                 onClick={() => setPresetOpen((v) => !v)}
-                className="flex h-11 w-full items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium sm:w-40 text-foreground cursor-pointer"
+                className="flex h-11 w-full sm:w-auto items-center justify-between gap-3 rounded-lg border border-border bg-card px-3.5 text-sm font-medium text-foreground cursor-pointer min-w-[100px]"
               >
-                <span> {preset}</span>
+                <span>{preset}</span>
                 <ChevronDown size={15} className="text-muted-foreground" />
               </button>
               {presetOpen && (
-                <div className="absolute right-0 z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-40">
+                <div className="absolute right-0 z-20 mt-1.5 w-36 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
                   {PRESETS.map((p) => (
                     <button
                       key={p}
+                      type="button"
                       onClick={() => handlePresetSelect(p)}
-                      className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary ${p === preset ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+                      className={`flex w-full items-center px-3.5 py-2 text-left text-sm transition-colors hover:bg-secondary ${p === preset ? "font-semibold text-foreground" : "text-muted-foreground"}`}
                     >
                       {p}
                     </button>
@@ -540,33 +540,34 @@ function LibraryCataloguePage() {
               )}
             </div>
 
-            {/* Start Date */}
-            <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36">
-              <input
-                type="date"
-                value={from}
-                onChange={(e) => {
-                  setFrom(e.target.value);
-                  setPreset("Custom");
-                  setPage(1);
-                }}
-                className="w-full bg-transparent text-sm outline-none text-foreground"
-              />
-            </label>
-
-            {/* End Date */}
-            <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36">
-              <input
-                type="date"
-                value={to}
-                onChange={(e) => {
-                  setTo(e.target.value);
-                  setPreset("Custom");
-                  setPage(1);
-                }}
-                className="w-full bg-transparent text-sm outline-none text-foreground"
-              />
-            </label>
+            {/* Custom Date Pickers */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
+                <input
+                  type="date"
+                  value={from}
+                  onChange={(e) => {
+                    setFrom(e.target.value);
+                    setPreset("Custom");
+                    setPage(1);
+                  }}
+                  className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
+                />
+              </label>
+              <span className="text-xs font-medium text-muted-foreground">to</span>
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
+                <input
+                  type="date"
+                  value={to}
+                  onChange={(e) => {
+                    setTo(e.target.value);
+                    setPreset("Custom");
+                    setPage(1);
+                  }}
+                  className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
+                />
+              </label>
+            </div>
           </div>
         </div>
 

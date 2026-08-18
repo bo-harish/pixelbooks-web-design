@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import {
   Search,
   Plus,
@@ -71,7 +72,19 @@ function StatusPill({ status }: { status: BundleStatus }) {
 }
 
 function BundlesPage() {
+  const [publisherType] = usePublisherType();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
+
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("All");
   const [filterOpen, setFilterOpen] = useState(false);

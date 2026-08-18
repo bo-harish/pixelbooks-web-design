@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import {
   Search,
   Plus,
@@ -10,6 +11,8 @@ import {
   XCircle,
   CircleOff,
   FileX2,
+  FileText,
+  Clock,
   Building2,
   Check,
 } from "lucide-react";
@@ -27,7 +30,8 @@ export const Route = createFileRoute("/publisher/catalogue/")({
   component: CataloguePage,
 });
 
-const STATUS_FILTERS: Array<"All" | Status> = ["All", "Published", "Unpublished", "Rejected"];
+const LIB_ONLY_STATUS_FILTERS: Array<"All" | Status> = ["All", "Draft", "Published", "Unpublished"];
+const STANDARD_STATUS_FILTERS: Array<"All" | Status> = ["All", "Published", "Unpublished", "Rejected", "Draft"];
 
 const LANGUAGE_FILTERS = [
   "All Languages",
@@ -176,39 +180,217 @@ function DropdownSelect<T extends string>({
   );
 }
 
-function StatusPill({ status }: { status: Status }) {
-  const map = {
-    Published: { color: "var(--success)", Icon: CheckCircle2 },
-    Rejected: { color: "var(--danger)", Icon: FileX2 },
-    Unpublished: { color: "#6b7280", Icon: CircleOff },
-  } as const;
-  const { color, Icon } = map[status];
+type StatusConfig = {
+  label: string;
+  bgClass: string;
+  textColor: string;
+  borderColor: string;
+  Icon: React.ElementType;
+};
+
+const STATUS_CONFIGS: Record<Status, StatusConfig> = {
+  Published: {
+    label: "Published",
+    bgClass: "bg-emerald-500/12 dark:bg-emerald-500/20",
+    textColor: "text-emerald-600 dark:text-emerald-400 font-semibold",
+    borderColor: "border-emerald-500/30 dark:border-emerald-500/40",
+    Icon: CheckCircle2,
+  },
+  Draft: {
+    label: "Draft",
+    bgClass: "bg-amber-500/12 dark:bg-amber-500/20",
+    textColor: "text-amber-600 dark:text-amber-400 font-semibold",
+    borderColor: "border-amber-500/30 dark:border-amber-500/40",
+    Icon: Clock,
+  },
+  Unpublished: {
+    label: "Unpublished",
+    bgClass: "bg-slate-500/12 dark:bg-slate-500/20",
+    textColor: "text-slate-600 dark:text-slate-400 font-semibold",
+    borderColor: "border-slate-500/30 dark:border-slate-500/40",
+    Icon: CircleOff,
+  },
+  Rejected: {
+    label: "Rejected",
+    bgClass: "bg-rose-500/12 dark:bg-rose-500/20",
+    textColor: "text-rose-600 dark:text-rose-400 font-semibold",
+    borderColor: "border-rose-500/30 dark:border-rose-500/40",
+    Icon: FileX2,
+  },
+};
+
+function StatusSelectPill({
+  status,
+  onChange,
+  allowedStatuses,
+  readOnly = false,
+}: {
+  status: Status;
+  onChange?: (newStatus: Status) => void;
+  allowedStatuses?: Status[];
+  readOnly?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<Status | null>(null);
+  const cfg = STATUS_CONFIGS[status] ?? STATUS_CONFIGS.Published;
+  const CurrentIcon = cfg.Icon;
+  const options = allowedStatuses ?? ["Published", "Draft", "Unpublished", "Rejected"];
+
+  const handleItemClick = (st: Status, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen(false);
+    if (st === status) return;
+
+    if (st === "Published" || st === "Unpublished") {
+      setPendingStatus(st);
+    } else {
+      onChange?.(st);
+    }
+  };
+
   return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-      style={{
-        backgroundColor: `color-mix(in oklch, ${color} 12%, transparent)`,
-        color,
-      }}
-    >
-      <Icon size={14} />
-      {status}
-    </span>
+    <div className="relative inline-block text-left">
+      <button
+        type="button"
+        disabled={readOnly}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!readOnly) setOpen((o) => !o);
+        }}
+        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${
+          readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
+        }`}
+      >
+        <CurrentIcon size={15} className="shrink-0" />
+        <span>{cfg.label}</span>
+        {!readOnly && (
+          <ChevronDown
+            size={14}
+            className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          />
+        )}
+      </button>
+
+      {open && !readOnly && (
+        <>
+          <div
+            className="fixed inset-0 z-30"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+            }}
+          />
+          <div className="absolute left-0 top-full z-40 mt-1.5 min-w-[155px] overflow-hidden rounded-2xl border border-border bg-card p-1.5 shadow-xl animate-in fade-in zoom-in-95 duration-150">
+            {options.map((st) => {
+              const itemCfg = STATUS_CONFIGS[st];
+              const ItemIcon = itemCfg.Icon;
+              const isSelected = st === status;
+              return (
+                <button
+                  key={st}
+                  type="button"
+                  onClick={(e) => handleItemClick(st, e)}
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
+                    isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
+                  } ${itemCfg.textColor}`}
+                >
+                  <ItemIcon size={16} className="shrink-0" />
+                  <span>{itemCfg.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Confirmation Modal for Publish / Unpublish */}
+      {pendingStatus && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPendingStatus(null);
+          }}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl bg-card border border-border p-6 shadow-2xl space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                  pendingStatus === "Published"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                    : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
+                }`}
+              >
+                {pendingStatus === "Published" ? (
+                  <CheckCircle2 size={22} />
+                ) : (
+                  <CircleOff size={22} />
+                )}
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-foreground">
+                  {pendingStatus === "Published" ? "Confirm Publish eBook" : "Confirm Unpublish eBook"}
+                </h3>
+                <p className="text-xs text-muted-foreground">Confirmation required</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {pendingStatus === "Published"
+                ? "Are you sure you want to publish this eBook? Once published, it will become active and accessible to readers and libraries."
+                : "Are you sure you want to unpublish this eBook? Unpublishing will hide it from active catalogue views and new borrowings."}
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setPendingStatus(null)}
+                className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = pendingStatus;
+                  setPendingStatus(null);
+                  onChange?.(target);
+                }}
+                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${
+                  pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
+                }`}
+              >
+                {pendingStatus === "Published" ? "Confirm & Publish" : "Confirm & Unpublish"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
+}
+
+function StatusPill({ status }: { status: Status }) {
+  return <StatusSelectPill status={status} readOnly />;
 }
 
 function StatusFilter({
   value,
+  options,
   onChange,
 }: {
-  value: (typeof STATUS_FILTERS)[number];
-  onChange: (v: (typeof STATUS_FILTERS)[number]) => void;
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
 }) {
   return (
     <DropdownSelect
       value={value}
-      options={STATUS_FILTERS as unknown as string[]}
-      onChange={(v) => onChange(v as (typeof STATUS_FILTERS)[number])}
+      options={options}
+      onChange={onChange}
       searchable
       searchPlaceholder="Search status..."
       className="w-full sm:w-auto min-w-[130px]"
@@ -218,28 +400,39 @@ function StatusFilter({
 
 function CataloguePage() {
   const navigate = useNavigate();
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]>("All");
   const [languageFilter, setLanguageFilter] = useState("All Languages");
   const [genreFilter, setGenreFilter] = useState("All Genre");
   const [page, setPage] = useState(1);
 
+  const statusOptions = isLibraryOnly ? LIB_ONLY_STATUS_FILTERS : STANDARD_STATUS_FILTERS;
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return seedBooks.filter((b) => {
-      if (filter !== "All" && b.status !== filter) return false;
-      if (genreFilter !== "All Genre") {
-        if (b.category !== genreFilter) return false;
-      }
-      if (!q) return true;
-      return (
-        b.title.toLowerCase().includes(q) ||
-        b.author.toLowerCase().includes(q) ||
-        (b.publisher ?? "").toLowerCase().includes(q) ||
-        (b.isbn ?? "").toLowerCase().includes(q)
-      );
-    });
-  }, [query, filter, languageFilter, genreFilter]);
+    return seedBooks
+      .map((b) => {
+        if (isLibraryOnly && (b.status as string) === "Rejected") {
+          return { ...b, status: "Draft" as Status };
+        }
+        return b;
+      })
+      .filter((b) => {
+        if (filter !== "All" && b.status !== filter) return false;
+        if (genreFilter !== "All Genre") {
+          if (b.category !== genreFilter) return false;
+        }
+        if (!q) return true;
+        return (
+          b.title.toLowerCase().includes(q) ||
+          b.author.toLowerCase().includes(q) ||
+          (b.publisher ?? "").toLowerCase().includes(q) ||
+          (b.isbn ?? "").toLowerCase().includes(q)
+        );
+      });
+  }, [query, filter, languageFilter, genreFilter, isLibraryOnly]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -259,7 +452,7 @@ function CataloguePage() {
   }, [totalPages, currentPage]);
 
   return (
-    <AppShell title="My Catalogue" subtitle="Manage every eBook in your storefront.">
+    <AppShell title="eBook Catalogue" subtitle="Manage every eBook in your storefront.">
       <div className="space-y-6 p-4 md:p-8">
         {/* Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center">
@@ -312,8 +505,9 @@ function CataloguePage() {
             {/* Status Filter */}
             <StatusFilter
               value={filter}
+              options={statusOptions}
               onChange={(v) => {
-                setFilter(v);
+                setFilter(v as typeof filter);
                 setPage(1);
               }}
             />
@@ -340,7 +534,7 @@ function CataloguePage() {
                   <th className="py-4 pl-6 pr-4 font-semibold">Title</th>
                   <th className="py-4 pr-4 font-semibold">ISBN</th>
                   <th className="py-4 pr-4 font-semibold">Status</th>
-                  <th className="py-4 pr-4 font-semibold">Pricing</th>
+                  <th className="py-4 pr-4 font-semibold">{isLibraryOnly ? "Copies" : "Pricing"}</th>
                   <th className="py-4 pr-6" />
                 </tr>
               </thead>
@@ -400,7 +594,9 @@ function CataloguePage() {
                       <StatusPill status={b.status} />
                     </td>
                     <td className="py-4 pr-4">
-                      {b.price === null ? (
+                      {isLibraryOnly ? (
+                        <span className="font-semibold text-foreground">{b.licenseCount ?? 50} copies</span>
+                      ) : b.price === null ? (
                         <span className="font-medium text-foreground">Free</span>
                       ) : (
                         <span className="font-medium">₹{b.price.toFixed(2)}</span>
@@ -454,7 +650,11 @@ function CataloguePage() {
                     <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
                       <StatusPill status={b.status} />
                       <span className="font-semibold">
-                        {b.price === null ? "Free" : `₹${b.price.toFixed(2)}`}
+                        {isLibraryOnly
+                          ? `${b.licenseCount ?? 50} copies`
+                          : b.price === null
+                          ? "Free"
+                          : `₹${b.price.toFixed(2)}`}
                       </span>
                     </div>
                     {b.isbn && (

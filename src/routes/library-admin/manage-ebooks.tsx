@@ -120,11 +120,12 @@ function ManageEbooksPage() {
       subtitle="Track borrowed titles and revoke access for individual or all borrowers."
     >
       <div className="space-y-6 p-4 md:p-8">
-        {/* Toolbar */}
-        <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between lg:p-5">
-          <div className="relative w-full lg:max-w-xs">
+        {/* Single Line Filter Toolbar */}
+        <div className="flex flex-col xl:flex-row xl:items-center gap-2.5 rounded-xl border border-border bg-card p-4 overflow-x-auto">
+          {/* Main Search Bar */}
+          <div className="relative flex-1 min-w-[200px] w-full max-w-md">
             <Search
-              size={16}
+              size={17}
               className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <input
@@ -134,12 +135,14 @@ function ManageEbooksPage() {
                 setSearchQuery(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search"
-              className="h-10 w-full rounded-lg border border-border bg-white dark:bg-card pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] text-foreground"
+              placeholder="Search by title..."
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
             />
           </div>
 
-          <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+          {/* Right Aligned Date Filter Group */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0 xl:ml-auto">
+            {/* Date Field Dropdown */}
             <DropdownSelect
               value={dateField === "borrowDate" ? "Borrow Date" : "Exp. Return Date"}
               options={["Borrow Date", "Exp. Return Date"]}
@@ -149,11 +152,12 @@ function ManageEbooksPage() {
               }}
               searchable
               searchPlaceholder="Search field..."
-              className="w-full sm:w-auto min-w-[160px]"
+              className="w-full sm:w-auto min-w-[160px] shrink-0"
             />
 
-            <div className="w-full sm:w-[200px]">
-              <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3">
+            {/* Date Range Pickers */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
                 <input
                   type="date"
                   value={fromDate}
@@ -161,14 +165,12 @@ function ManageEbooksPage() {
                     setFromDate(e.target.value);
                     setPage(1);
                   }}
-                  className="w-full bg-transparent text-sm outline-none text-foreground"
+                  className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
                   aria-label="From Date"
                 />
               </label>
-            </div>
-
-            <div className="w-full sm:w-[200px]">
-              <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3">
+              <span className="text-xs font-medium text-muted-foreground">to</span>
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
                 <input
                   type="date"
                   value={toDate}
@@ -176,7 +178,7 @@ function ManageEbooksPage() {
                     setToDate(e.target.value);
                     setPage(1);
                   }}
-                  className="w-full bg-transparent text-sm outline-none text-foreground"
+                  className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
                   aria-label="To Date"
                 />
               </label>

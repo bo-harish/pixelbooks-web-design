@@ -32,9 +32,13 @@ import {
   ListOrdered,
   Quote,
   Link as LinkIcon,
+  Library,
+  Clock,
+  Save,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 
 export const Route = createFileRoute("/publisher/catalogue/new")({
   head: () => ({
@@ -492,8 +496,8 @@ function UploadTile({
                   updateFile(null);
                 }}
                 className={`inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold transition-all cursor-pointer ${isUploading
-                    ? "border-2 border-dotted border-rose-500/60 bg-rose-500/5 text-rose-600/80 animate-pulse cursor-wait"
-                    : "border border-rose-500/20 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400"
+                  ? "border-2 border-dotted border-rose-500/60 bg-rose-500/5 text-rose-600/80 animate-pulse cursor-wait"
+                  : "border border-rose-500/20 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400"
                   }`}
               >
                 {isUploading ? (
@@ -975,51 +979,39 @@ function UploadRow() {
 /*  Section: Guidelines                                                        */
 /* -------------------------------------------------------------------------- */
 
-const GUIDELINES = [
-  {
-    icon: <FileText size={18} />,
-    title: "File Format",
-    description: "Upload your eBook in PDF, ePUB format, ensuring DRM protection for security.",
-  },
-  {
-    icon: <List size={18} />,
-    title: "Formatting",
-    description:
-      "Maintain clarity with distinct chapter breaks and headings for seamless navigation.",
-  },
-  {
-    icon: <ImageIcon size={18} />,
-    title: "Cover Image",
-    description:
-      "Capture reader's attention with an enticing cover image (minimum 600 × 800 pixels).",
-  },
-  {
-    icon: <HardDrive size={18} />,
-    title: "Size Limit",
-    description: "Keep file sizes under 30 MB to ensure smooth downloading.",
-  },
-  {
-    icon: <Info size={18} />,
-    title: "Metadata",
-    description:
-      "Provide essential book details such as title, author, genre, and additional information.",
-  },
-  {
-    icon: <Tag size={18} />,
-    title: "Pricing",
-    description:
-      "Choose between free or paid options, set competitive prices, and specify tax rates.",
-  },
-  {
-    icon: <CheckCircle size={18} />,
-    title: "Review and Publish",
-    description:
-      'Take a final look and ensure everything is in order before hitting "Submit eBook."',
-  },
-];
+
 
 function GuidelinesSection() {
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [open, setOpen] = useState(false);
+
+  const guidelines = [
+    {
+      icon: <HardDrive size={18} />,
+      title: "Size Limit",
+      description: "Keep file sizes under 30 MB to ensure smooth downloading.",
+    },
+    {
+      icon: <Info size={18} />,
+      title: "Metadata",
+      description:
+        "Provide essential book details such as title, author, genre, and additional information.",
+    },
+    {
+      icon: <Tag size={18} />,
+      title: "Pricing",
+      description:
+        "Choose between free or paid options, set competitive prices, and specify tax rates.",
+    },
+    {
+      icon: <CheckCircle size={18} />,
+      title: "Review and Publish",
+      description:
+        `Take a final look and ensure everything is in order before hitting "${isLibraryOnly ? "Publish eBook" : "Submit eBook for Review"}."`,
+    },
+  ];
+
   return (
     <SectionCard>
       <button
@@ -1045,7 +1037,7 @@ function GuidelinesSection() {
       </button>
       {open && (
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {GUIDELINES.map((g, i) => (
+          {guidelines.map((g, i) => (
             <div key={i} className="flex gap-3 rounded-xl border border-border bg-secondary/30 p-4">
               <span
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
@@ -1188,6 +1180,8 @@ function RichTextEditor({
 /* -------------------------------------------------------------------------- */
 
 function EBookDetailsSection() {
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [summary, setSummary] = useState("Arun m");
   const [tags, setTags] = useState<string[]>([
     "Promised Land 2024",
@@ -1227,9 +1221,14 @@ function EBookDetailsSection() {
         <Field label="Date of Publication">
           <TextInput defaultValue="Harry Potter" />
         </Field>
-        <Field label="eBook Size">
-          <TextInput defaultValue="25455955" />
+        <Field label="eBook Size (in MB)">
+          <TextInput defaultValue="25.4" placeholder="e.g. 25.4" />
         </Field>
+        {isLibraryOnly && (
+          <Field label="No. of copies" required>
+            <TextInput type="number" defaultValue="50" placeholder="e.g. 50" min="1" />
+          </Field>
+        )}
       </div>
 
       <div className="mt-4">
@@ -1479,6 +1478,8 @@ function SelectedAuthorCard({
   onRemove: () => void;
   unavailable: boolean;
 }) {
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [showBooksPopup, setShowBooksPopup] = useState(false);
   const booksPopupRef = useRef<HTMLDivElement | null>(null);
   const books = AUTHOR_BOOK_LISTS[author.name] ?? [];
@@ -1592,27 +1593,29 @@ function SelectedAuthorCard({
         </button>
       </div>
 
-      <div className="mt-3">
-        <Field
-          label="Author Profile URL"
-          required
-          error={
-            unavailable ? "This URL is already in use. Please try a different one." : undefined
-          }
-          hint={!unavailable ? "The URL is available" : undefined}
-        >
-          <div className="flex overflow-hidden rounded-lg border border-border bg-background">
-            <span className="flex items-center bg-secondary/60 px-3 text-xs text-muted-foreground">
-              https://azdevlibcustomer.pixelbooksapp.com/author/
-            </span>
-            <input
-              value={author.profileSlug}
-              onChange={(e) => onChange({ ...author, profileSlug: slugify(e.target.value) })}
-              className="h-11 flex-1 bg-background px-3 text-sm outline-none"
-            />
-          </div>
-        </Field>
-      </div>
+      {!isLibraryOnly && (
+        <div className="mt-3">
+          <Field
+            label="Author Profile URL"
+            required
+            error={
+              unavailable ? "This URL is already in use. Please try a different one." : undefined
+            }
+            hint={!unavailable ? "The URL is available" : undefined}
+          >
+            <div className="flex overflow-hidden rounded-lg border border-border bg-background">
+              <span className="flex items-center bg-secondary/60 px-3 text-xs text-muted-foreground">
+                https://azdevlibcustomer.pixelbooksapp.com/author/
+              </span>
+              <input
+                value={author.profileSlug}
+                onChange={(e) => onChange({ ...author, profileSlug: slugify(e.target.value) })}
+                className="h-11 flex-1 bg-background px-3 text-sm outline-none"
+              />
+            </div>
+          </Field>
+        </div>
+      )}
     </div>
   );
 }
@@ -2529,11 +2532,9 @@ function RentalDialog({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Section: Rental                                                            */
-/* -------------------------------------------------------------------------- */
-
 function RentalSection() {
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [enabled, setEnabled] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [entries, setEntries] = useState<RentalEntry[]>([
@@ -2554,9 +2555,9 @@ function RentalSection() {
                 <tr className="text-left text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <th className="pb-3 pr-4">Year</th>
                   <th className="pb-3 pr-4">Days</th>
-                  <th className="pb-3 pr-4">Unit Price</th>
-                  <th className="pb-3 pr-4">Offer Price</th>
-                  <th className="pb-3 pr-4">Selling Price</th>
+                  {!isLibraryOnly && <th className="pb-3 pr-4">Unit Price</th>}
+                  {!isLibraryOnly && <th className="pb-3 pr-4">Offer Price</th>}
+                  {!isLibraryOnly && <th className="pb-3 pr-4">Selling Price</th>}
                   <th className="pb-3" />
                 </tr>
               </thead>
@@ -2565,13 +2566,15 @@ function RentalSection() {
                   <tr key={r.id} className="border-t border-border/60">
                     <td className="py-3 pr-4 font-medium">{r.year}</td>
                     <td className="py-3 pr-4 text-muted-foreground">{r.days}</td>
-                    <td className="py-3 pr-4">₹{r.unit}.00</td>
-                    <td className="py-3 pr-4">₹{r.offer}.00</td>
-                    <td className="py-3 pr-4">
-                      <span style={{ color: "var(--brand)" }} className="font-semibold">
-                        ₹{calcSelling(r.unit, r.offer)}
-                      </span>
-                    </td>
+                    {!isLibraryOnly && <td className="py-3 pr-4">₹{r.unit}.00</td>}
+                    {!isLibraryOnly && <td className="py-3 pr-4">₹{r.offer}.00</td>}
+                    {!isLibraryOnly && (
+                      <td className="py-3 pr-4">
+                        <span style={{ color: "var(--brand)" }} className="font-semibold">
+                          ₹{calcSelling(r.unit, r.offer)}
+                        </span>
+                      </td>
+                    )}
                     <td className="py-3 text-right">
                       <button
                         type="button"
@@ -2589,36 +2592,277 @@ function RentalSection() {
           <button
             type="button"
             onClick={() => setDialogOpen(true)}
-            className="mt-4 inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-semibold"
-            style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold hover:bg-secondary"
           >
-            <Plus size={14} /> Add/Edit Rental
+            <Plus size={14} /> Add / Edit Rental
           </button>
+
+          {dialogOpen && (
+            <RentalDialog
+              entries={entries}
+              onClose={() => setDialogOpen(false)}
+              onSave={(rows) => setEntries(rows)}
+            />
+          )}
         </>
-      )}
-      {dialogOpen && (
-        <RentalDialog
-          entries={entries}
-          onClose={() => setDialogOpen(false)}
-          onSave={(rows) => setEntries(rows)}
-        />
       )}
     </SectionCard>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Page                                                                       */
-/* -------------------------------------------------------------------------- */
+const ALL_LIBRARIES = [
+  { id: "lib-1", name: "Central University Digital Library", city: "New Delhi" },
+  { id: "lib-2", name: "National Science & Tech Consortium", city: "Bangalore" },
+  { id: "lib-3", name: "City Academic Library System", city: "Mumbai" },
+  { id: "lib-4", name: "Delhi Public Library", city: "New Delhi" },
+  { id: "lib-5", name: "State Institute of Technology Library", city: "Pune" },
+  { id: "lib-6", name: "IIT Delhi Central Library", city: "New Delhi" },
+  { id: "lib-7", name: "Indian Institute of Science Library", city: "Bangalore" },
+];
+
+function LibraryMultiSelectDropdown({
+  selected,
+  onChange,
+}: {
+  selected: string[];
+  onChange: (libs: string[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredLibraries = ALL_LIBRARIES.filter(
+    (lib) =>
+      lib.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lib.city.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const toggleLibrary = (libName: string) => {
+    if (selected.includes(libName)) {
+      onChange(selected.filter((item) => item !== libName));
+    } else {
+      onChange([...selected, libName]);
+    }
+  };
+
+  const isAllSelected =
+    filteredLibraries.length > 0 &&
+    filteredLibraries.every((lib) => selected.includes(lib.name));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      const filteredNames = filteredLibraries.map((l) => l.name);
+      onChange(selected.filter((name) => !filteredNames.includes(name)));
+    } else {
+      const newSelected = new Set([...selected, ...filteredLibraries.map((l) => l.name)]);
+      onChange(Array.from(newSelected));
+    }
+  };
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <div
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
+          isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
+        }`}
+      >
+        <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
+          {selected.length === 0 ? (
+            <span className="text-muted-foreground text-xs font-normal px-2">
+              Select one or more libraries...
+            </span>
+          ) : (
+            selected.map((libName) => (
+              <span
+                key={libName}
+                className="inline-flex items-center gap-1 rounded-lg border border-[var(--brand)]/30 bg-[var(--brand)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--brand)]"
+              >
+                <span>{libName}</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleLibrary(libName);
+                  }}
+                  className="rounded-md hover:bg-[var(--brand)]/20 p-0.5 transition-colors cursor-pointer"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            ))
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0 px-1">
+          {selected.length > 0 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange([]);
+              }}
+              className="text-xs text-muted-foreground hover:text-foreground underline pr-1 cursor-pointer"
+            >
+              Clear
+            </button>
+          )}
+          <ChevronDown
+            size={16}
+            className={`text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          />
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-72 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
+          <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
+            <div className="relative flex items-center">
+              <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search libraries by name..."
+                autoFocus
+                className="w-full h-9 pl-9 pr-8 text-xs rounded-lg border border-border bg-secondary/40 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-2.5 text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between px-1 text-xs">
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="text-[11px] font-semibold text-[var(--brand)] hover:underline cursor-pointer"
+              >
+                {isAllSelected ? "Deselect All" : "Select All Libraries"}
+              </button>
+              <span className="text-[11px] text-muted-foreground font-medium">
+                {selected.length} of {ALL_LIBRARIES.length} selected
+              </span>
+            </div>
+          </div>
+
+          <div className="overflow-y-auto max-h-52 py-1 divide-y divide-border/30">
+            {filteredLibraries.length === 0 ? (
+              <div className="px-4 py-6 text-center text-xs text-muted-foreground">
+                No matching libraries found.
+              </div>
+            ) : (
+              filteredLibraries.map((lib) => {
+                const checked = selected.includes(lib.name);
+                return (
+                  <label
+                    key={lib.id}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${
+                      checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleLibrary(lib.name)}
+                        className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                      />
+                      <span className="truncate">{lib.name}</span>
+                    </div>
+                  </label>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LibraryAllocationSection() {
+  const [selectedLibraries, setSelectedLibraries] = useState<string[]>([
+    "Central University Digital Library",
+    "National Science & Tech Consortium",
+  ]);
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+      {/* Card Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-2xs">
+            <Library size={22} />
+          </span>
+          <div>
+            <h2 className="text-base font-extrabold text-foreground leading-tight">
+              Library Allocation
+            </h2>
+            <p className="text-xs text-muted-foreground font-medium mt-0.5">
+              Configure authorized libraries where this eBook title will be available in digital catalogues.
+            </p>
+          </div>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
+          <CheckCircle2 size={13} />
+          {selectedLibraries.length} Libraries Allocated
+        </span>
+      </div>
+
+      <div className="space-y-4">
+        <div className="space-y-2 pt-1">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-extrabold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+              <span>Select Authorized Libraries</span>
+              <span className="text-red-500">*</span>
+            </label>
+            <span className="text-xs text-muted-foreground font-medium">
+              {selectedLibraries.length} libraries selected
+            </span>
+          </div>
+
+          <LibraryMultiSelectDropdown
+            selected={selectedLibraries}
+            onChange={setSelectedLibraries}
+          />
+
+          {selectedLibraries.length === 0 && (
+            <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
+              <span>⚠️ Please select at least one library for allocation to take effect.</span>
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function AddEBookPage() {
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [submitted, setSubmitted] = useState(false);
 
   return (
     <AppShell title="Add eBook">
       <div className="p-4 md:p-8">
         <Link
-          to="/publisher/catalogue/"
+          to="/publisher/catalogue"
           className="mb-5 inline-flex items-center gap-1.5 text-sm font-normal text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft size={15} /> Back to Catalogue
@@ -2629,11 +2873,12 @@ function AddEBookPage() {
           <GuidelinesSection />
           <EBookDetailsSection />
           <AuthorsSection />
-          <BookUrlSection />
+          {!isLibraryOnly && <BookUrlSection />}
           <CategoriesSection />
-          <PaymentSection />
-          <PriceDetailsSection />
-          <RentalSection />
+          {!isLibraryOnly && <PaymentSection />}
+          {!isLibraryOnly && <PriceDetailsSection />}
+          {!isLibraryOnly && <RentalSection />}
+          {isLibraryOnly && <LibraryAllocationSection />}
 
           {submitted && (
             <div
@@ -2643,14 +2888,14 @@ function AddEBookPage() {
                 color: "var(--brand)",
               }}
             >
-              <CheckCircle2 size={16} /> eBook submitted for review.
+              <CheckCircle2 size={16} /> {isLibraryOnly ? "eBook published successfully." : "eBook submitted for review."}
             </div>
           )}
         </div>
 
         <div className="sticky bottom-0 -mx-4 mt-6 flex items-center justify-end gap-2 border-t border-border bg-background/90 px-4 py-4 backdrop-blur md:-mx-8 md:px-8">
           <Link
-            to="/publisher/catalogue/"
+            to="/publisher/catalogue"
             className="inline-flex h-11 items-center rounded-lg border border-border bg-background px-5 text-sm font-semibold hover:bg-secondary"
           >
             Cancel
@@ -2667,7 +2912,7 @@ function AddEBookPage() {
             className="inline-flex h-11 items-center rounded-lg px-5 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
             style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
           >
-            Submit eBook
+            {isLibraryOnly ? "Publish eBook" : "Submit eBook for Review"}
           </button>
         </div>
       </div>

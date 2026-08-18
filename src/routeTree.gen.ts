@@ -31,6 +31,7 @@ import { Route as PbAdminQuizzesRewardsRouteImport } from './routes/pb-admin/qui
 import { Route as PbAdminQuizzRewardsRouteImport } from './routes/pb-admin/quizz-rewards'
 import { Route as PbAdminPublishersAuthorsRouteImport } from './routes/pb-admin/publishers-authors'
 import { Route as PbAdminPromoCodesRouteImport } from './routes/pb-admin/promo-codes'
+import { Route as PbAdminProfileRouteImport } from './routes/pb-admin/profile'
 import { Route as PbAdminPrivacyPolicyRouteImport } from './routes/pb-admin/privacy-policy'
 import { Route as PbAdminNotificationsRouteImport } from './routes/pb-admin/notifications'
 import { Route as PbAdminMergeAuthorsRouteImport } from './routes/pb-admin/merge-authors'
@@ -52,10 +53,12 @@ import { Route as PbAdminLibOrdersRouteImport } from './routes/pb-admin-lib/orde
 import { Route as PbAdminLibLibrariesRouteImport } from './routes/pb-admin-lib/libraries'
 import { Route as PbAdminLibCloneRouteImport } from './routes/pb-admin-lib/clone'
 import { Route as PbAdminLibCatalogueRouteImport } from './routes/pb-admin-lib/catalogue'
+import { Route as LibraryUserProfileRouteImport } from './routes/library-user.profile'
 import { Route as LibraryAdminUsersRouteImport } from './routes/library-admin/users'
 import { Route as LibraryAdminSupportRouteImport } from './routes/library-admin/support'
 import { Route as LibraryAdminRequestsRouteImport } from './routes/library-admin/requests'
 import { Route as LibraryAdminReportsRouteImport } from './routes/library-admin/reports'
+import { Route as LibraryAdminProfileRouteImport } from './routes/library-admin/profile'
 import { Route as LibraryAdminOrdersRouteImport } from './routes/library-admin/orders'
 import { Route as LibraryAdminManageEbooksRouteImport } from './routes/library-admin/manage-ebooks'
 import { Route as LibraryAdminDepartmentsRouteImport } from './routes/library-admin/departments'
@@ -63,6 +66,7 @@ import { Route as LibraryAdminCoursesRouteImport } from './routes/library-admin/
 import { Route as LibraryAdminCatalogueRouteImport } from './routes/library-admin/catalogue'
 import { Route as LibraryAdminCartRouteImport } from './routes/library-admin/cart'
 import { Route as LibraryAdminBannersRouteImport } from './routes/library-admin/banners'
+import { Route as AuthorProfileRouteImport } from './routes/author/profile'
 import { Route as PublisherPromoCodesIndexRouteImport } from './routes/publisher/promo-codes.index'
 import { Route as PublisherCatalogueIndexRouteImport } from './routes/publisher/catalogue.index'
 import { Route as PublisherCatalogueImportIndexRouteImport } from './routes/publisher/catalogue-import.index'
@@ -212,6 +216,11 @@ const PbAdminPromoCodesRoute = PbAdminPromoCodesRouteImport.update({
   path: '/pb-admin/promo-codes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PbAdminProfileRoute = PbAdminProfileRouteImport.update({
+  id: '/pb-admin/profile',
+  path: '/pb-admin/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PbAdminPrivacyPolicyRoute = PbAdminPrivacyPolicyRouteImport.update({
   id: '/pb-admin/privacy-policy',
   path: '/pb-admin/privacy-policy',
@@ -319,6 +328,11 @@ const PbAdminLibCatalogueRoute = PbAdminLibCatalogueRouteImport.update({
   path: '/pb-admin-lib/catalogue',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibraryUserProfileRoute = LibraryUserProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LibraryUserRoute,
+} as any)
 const LibraryAdminUsersRoute = LibraryAdminUsersRouteImport.update({
   id: '/library-admin/users',
   path: '/library-admin/users',
@@ -337,6 +351,11 @@ const LibraryAdminRequestsRoute = LibraryAdminRequestsRouteImport.update({
 const LibraryAdminReportsRoute = LibraryAdminReportsRouteImport.update({
   id: '/library-admin/reports',
   path: '/library-admin/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryAdminProfileRoute = LibraryAdminProfileRouteImport.update({
+  id: '/library-admin/profile',
+  path: '/library-admin/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryAdminOrdersRoute = LibraryAdminOrdersRouteImport.update({
@@ -373,6 +392,11 @@ const LibraryAdminCartRoute = LibraryAdminCartRouteImport.update({
 const LibraryAdminBannersRoute = LibraryAdminBannersRouteImport.update({
   id: '/library-admin/banners',
   path: '/library-admin/banners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthorProfileRoute = AuthorProfileRouteImport.update({
+  id: '/author/profile',
+  path: '/author/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublisherPromoCodesIndexRoute =
@@ -581,8 +605,9 @@ const PbAdminPublishersAuthorsIdTitlesRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/library-user': typeof LibraryUserRoute
+  '/library-user': typeof LibraryUserRouteWithChildren
   '/notifications': typeof NotificationsRoute
+  '/author/profile': typeof AuthorProfileRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -590,10 +615,12 @@ export interface FileRoutesByFullPath {
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
   '/library-admin/orders': typeof LibraryAdminOrdersRoute
+  '/library-admin/profile': typeof LibraryAdminProfileRoute
   '/library-admin/reports': typeof LibraryAdminReportsRoute
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
   '/pb-admin-lib/clone': typeof PbAdminLibCloneRoute
   '/pb-admin-lib/libraries': typeof PbAdminLibLibrariesRoute
@@ -615,6 +642,7 @@ export interface FileRoutesByFullPath {
   '/pb-admin/merge-authors': typeof PbAdminMergeAuthorsRoute
   '/pb-admin/notifications': typeof PbAdminNotificationsRoute
   '/pb-admin/privacy-policy': typeof PbAdminPrivacyPolicyRoute
+  '/pb-admin/profile': typeof PbAdminProfileRoute
   '/pb-admin/promo-codes': typeof PbAdminPromoCodesRoute
   '/pb-admin/publishers-authors': typeof PbAdminPublishersAuthorsRouteWithChildren
   '/pb-admin/quizz-rewards': typeof PbAdminQuizzRewardsRoute
@@ -674,8 +702,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/library-user': typeof LibraryUserRoute
+  '/library-user': typeof LibraryUserRouteWithChildren
   '/notifications': typeof NotificationsRoute
+  '/author/profile': typeof AuthorProfileRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -683,10 +712,12 @@ export interface FileRoutesByTo {
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
   '/library-admin/orders': typeof LibraryAdminOrdersRoute
+  '/library-admin/profile': typeof LibraryAdminProfileRoute
   '/library-admin/reports': typeof LibraryAdminReportsRoute
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
   '/pb-admin-lib/clone': typeof PbAdminLibCloneRoute
   '/pb-admin-lib/libraries': typeof PbAdminLibLibrariesRoute
@@ -708,6 +739,7 @@ export interface FileRoutesByTo {
   '/pb-admin/merge-authors': typeof PbAdminMergeAuthorsRoute
   '/pb-admin/notifications': typeof PbAdminNotificationsRoute
   '/pb-admin/privacy-policy': typeof PbAdminPrivacyPolicyRoute
+  '/pb-admin/profile': typeof PbAdminProfileRoute
   '/pb-admin/promo-codes': typeof PbAdminPromoCodesRoute
   '/pb-admin/publishers-authors': typeof PbAdminPublishersAuthorsRouteWithChildren
   '/pb-admin/quizz-rewards': typeof PbAdminQuizzRewardsRoute
@@ -768,8 +800,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/library-user': typeof LibraryUserRoute
+  '/library-user': typeof LibraryUserRouteWithChildren
   '/notifications': typeof NotificationsRoute
+  '/author/profile': typeof AuthorProfileRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -777,10 +810,12 @@ export interface FileRoutesById {
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
   '/library-admin/orders': typeof LibraryAdminOrdersRoute
+  '/library-admin/profile': typeof LibraryAdminProfileRoute
   '/library-admin/reports': typeof LibraryAdminReportsRoute
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
   '/pb-admin-lib/clone': typeof PbAdminLibCloneRoute
   '/pb-admin-lib/libraries': typeof PbAdminLibLibrariesRoute
@@ -802,6 +837,7 @@ export interface FileRoutesById {
   '/pb-admin/merge-authors': typeof PbAdminMergeAuthorsRoute
   '/pb-admin/notifications': typeof PbAdminNotificationsRoute
   '/pb-admin/privacy-policy': typeof PbAdminPrivacyPolicyRoute
+  '/pb-admin/profile': typeof PbAdminProfileRoute
   '/pb-admin/promo-codes': typeof PbAdminPromoCodesRoute
   '/pb-admin/publishers-authors': typeof PbAdminPublishersAuthorsRouteWithChildren
   '/pb-admin/quizz-rewards': typeof PbAdminQuizzRewardsRoute
@@ -865,6 +901,7 @@ export interface FileRouteTypes {
     | '/'
     | '/library-user'
     | '/notifications'
+    | '/author/profile'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -872,10 +909,12 @@ export interface FileRouteTypes {
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
     | '/library-admin/orders'
+    | '/library-admin/profile'
     | '/library-admin/reports'
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
     | '/pb-admin-lib/clone'
     | '/pb-admin-lib/libraries'
@@ -897,6 +936,7 @@ export interface FileRouteTypes {
     | '/pb-admin/merge-authors'
     | '/pb-admin/notifications'
     | '/pb-admin/privacy-policy'
+    | '/pb-admin/profile'
     | '/pb-admin/promo-codes'
     | '/pb-admin/publishers-authors'
     | '/pb-admin/quizz-rewards'
@@ -958,6 +998,7 @@ export interface FileRouteTypes {
     | '/'
     | '/library-user'
     | '/notifications'
+    | '/author/profile'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -965,10 +1006,12 @@ export interface FileRouteTypes {
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
     | '/library-admin/orders'
+    | '/library-admin/profile'
     | '/library-admin/reports'
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
     | '/pb-admin-lib/clone'
     | '/pb-admin-lib/libraries'
@@ -990,6 +1033,7 @@ export interface FileRouteTypes {
     | '/pb-admin/merge-authors'
     | '/pb-admin/notifications'
     | '/pb-admin/privacy-policy'
+    | '/pb-admin/profile'
     | '/pb-admin/promo-codes'
     | '/pb-admin/publishers-authors'
     | '/pb-admin/quizz-rewards'
@@ -1051,6 +1095,7 @@ export interface FileRouteTypes {
     | '/'
     | '/library-user'
     | '/notifications'
+    | '/author/profile'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -1058,10 +1103,12 @@ export interface FileRouteTypes {
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
     | '/library-admin/orders'
+    | '/library-admin/profile'
     | '/library-admin/reports'
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
     | '/pb-admin-lib/clone'
     | '/pb-admin-lib/libraries'
@@ -1083,6 +1130,7 @@ export interface FileRouteTypes {
     | '/pb-admin/merge-authors'
     | '/pb-admin/notifications'
     | '/pb-admin/privacy-policy'
+    | '/pb-admin/profile'
     | '/pb-admin/promo-codes'
     | '/pb-admin/publishers-authors'
     | '/pb-admin/quizz-rewards'
@@ -1143,8 +1191,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LibraryUserRoute: typeof LibraryUserRoute
+  LibraryUserRoute: typeof LibraryUserRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
+  AuthorProfileRoute: typeof AuthorProfileRoute
   LibraryAdminBannersRoute: typeof LibraryAdminBannersRoute
   LibraryAdminCartRoute: typeof LibraryAdminCartRoute
   LibraryAdminCatalogueRoute: typeof LibraryAdminCatalogueRoute
@@ -1152,6 +1201,7 @@ export interface RootRouteChildren {
   LibraryAdminDepartmentsRoute: typeof LibraryAdminDepartmentsRoute
   LibraryAdminManageEbooksRoute: typeof LibraryAdminManageEbooksRoute
   LibraryAdminOrdersRoute: typeof LibraryAdminOrdersRoute
+  LibraryAdminProfileRoute: typeof LibraryAdminProfileRoute
   LibraryAdminReportsRoute: typeof LibraryAdminReportsRoute
   LibraryAdminRequestsRoute: typeof LibraryAdminRequestsRoute
   LibraryAdminSupportRoute: typeof LibraryAdminSupportRoute
@@ -1177,6 +1227,7 @@ export interface RootRouteChildren {
   PbAdminMergeAuthorsRoute: typeof PbAdminMergeAuthorsRoute
   PbAdminNotificationsRoute: typeof PbAdminNotificationsRoute
   PbAdminPrivacyPolicyRoute: typeof PbAdminPrivacyPolicyRoute
+  PbAdminProfileRoute: typeof PbAdminProfileRoute
   PbAdminPromoCodesRoute: typeof PbAdminPromoCodesRoute
   PbAdminPublishersAuthorsRoute: typeof PbAdminPublishersAuthorsRouteWithChildren
   PbAdminQuizzRewardsRoute: typeof PbAdminQuizzRewardsRoute
@@ -1388,6 +1439,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbAdminPromoCodesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pb-admin/profile': {
+      id: '/pb-admin/profile'
+      path: '/pb-admin/profile'
+      fullPath: '/pb-admin/profile'
+      preLoaderRoute: typeof PbAdminProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-admin/privacy-policy': {
       id: '/pb-admin/privacy-policy'
       path: '/pb-admin/privacy-policy'
@@ -1535,6 +1593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbAdminLibCatalogueRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/library-user/profile': {
+      id: '/library-user/profile'
+      path: '/profile'
+      fullPath: '/library-user/profile'
+      preLoaderRoute: typeof LibraryUserProfileRouteImport
+      parentRoute: typeof LibraryUserRoute
+    }
     '/library-admin/users': {
       id: '/library-admin/users'
       path: '/library-admin/users'
@@ -1561,6 +1626,13 @@ declare module '@tanstack/react-router' {
       path: '/library-admin/reports'
       fullPath: '/library-admin/reports'
       preLoaderRoute: typeof LibraryAdminReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library-admin/profile': {
+      id: '/library-admin/profile'
+      path: '/library-admin/profile'
+      fullPath: '/library-admin/profile'
+      preLoaderRoute: typeof LibraryAdminProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library-admin/orders': {
@@ -1610,6 +1682,13 @@ declare module '@tanstack/react-router' {
       path: '/library-admin/banners'
       fullPath: '/library-admin/banners'
       preLoaderRoute: typeof LibraryAdminBannersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/author/profile': {
+      id: '/author/profile'
+      path: '/author/profile'
+      fullPath: '/author/profile'
+      preLoaderRoute: typeof AuthorProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/publisher/promo-codes/': {
@@ -1874,6 +1953,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface LibraryUserRouteChildren {
+  LibraryUserProfileRoute: typeof LibraryUserProfileRoute
+}
+
+const LibraryUserRouteChildren: LibraryUserRouteChildren = {
+  LibraryUserProfileRoute: LibraryUserProfileRoute,
+}
+
+const LibraryUserRouteWithChildren = LibraryUserRoute._addFileChildren(
+  LibraryUserRouteChildren,
+)
+
 interface PbAdminAuthorManagementRouteChildren {
   PbAdminAuthorManagementAuthorIdRoute: typeof PbAdminAuthorManagementAuthorIdRoute
 }
@@ -1920,8 +2011,9 @@ const PbAdminPublishersAuthorsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LibraryUserRoute: LibraryUserRoute,
+  LibraryUserRoute: LibraryUserRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
+  AuthorProfileRoute: AuthorProfileRoute,
   LibraryAdminBannersRoute: LibraryAdminBannersRoute,
   LibraryAdminCartRoute: LibraryAdminCartRoute,
   LibraryAdminCatalogueRoute: LibraryAdminCatalogueRoute,
@@ -1929,6 +2021,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryAdminDepartmentsRoute: LibraryAdminDepartmentsRoute,
   LibraryAdminManageEbooksRoute: LibraryAdminManageEbooksRoute,
   LibraryAdminOrdersRoute: LibraryAdminOrdersRoute,
+  LibraryAdminProfileRoute: LibraryAdminProfileRoute,
   LibraryAdminReportsRoute: LibraryAdminReportsRoute,
   LibraryAdminRequestsRoute: LibraryAdminRequestsRoute,
   LibraryAdminSupportRoute: LibraryAdminSupportRoute,
@@ -1954,6 +2047,7 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminMergeAuthorsRoute: PbAdminMergeAuthorsRoute,
   PbAdminNotificationsRoute: PbAdminNotificationsRoute,
   PbAdminPrivacyPolicyRoute: PbAdminPrivacyPolicyRoute,
+  PbAdminProfileRoute: PbAdminProfileRoute,
   PbAdminPromoCodesRoute: PbAdminPromoCodesRoute,
   PbAdminPublishersAuthorsRoute: PbAdminPublishersAuthorsRouteWithChildren,
   PbAdminQuizzRewardsRoute: PbAdminQuizzRewardsRoute,

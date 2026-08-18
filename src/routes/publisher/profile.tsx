@@ -19,6 +19,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 
 export const Route = createFileRoute("/publisher/profile")({
   head: () => ({
@@ -109,6 +110,8 @@ function SectionCard({ title, children }: { title: string; children: React.React
 }
 
 function ProfilePage() {
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const profileBaseUrl = "azdevlibcustomer.pixelbooksapp.com/";
   const [publisherName, setPublisherName] = useState("PixelBooks");
   const [gst, setGst] = useState("32AAGCE9532N1ZB");
@@ -177,58 +180,60 @@ function ProfilePage() {
             </div>
 
             {/* Profile URL Input Bar */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
-                <Globe size={15} className="text-muted-foreground" />
-                Storefront Profile URL
-                <span className="text-destructive">*</span>
-              </label>
+            {!isLibraryOnly && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                  <Globe size={15} className="text-muted-foreground" />
+                  Storefront Profile URL
+                  <span className="text-destructive">*</span>
+                </label>
 
-              <div className="flex flex-col sm:flex-row items-stretch gap-3">
-                <div className="flex h-12 flex-1 items-center overflow-hidden rounded-xl border border-input bg-card shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
-                  <div className="h-full border-r border-input bg-secondary/50 px-3.5 text-xs font-medium text-muted-foreground flex items-center shrink-0">
-                    https://{profileBaseUrl}
+                <div className="flex flex-col sm:flex-row items-stretch gap-3">
+                  <div className="flex h-12 flex-1 items-center overflow-hidden rounded-xl border border-input bg-card shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
+                    <div className="h-full border-r border-input bg-secondary/50 px-3.5 text-xs font-medium text-muted-foreground flex items-center shrink-0">
+                      https://{profileBaseUrl}
+                    </div>
+                    <input
+                      value={profileSlug}
+                      onChange={(e) => setProfileSlug(e.target.value)}
+                      className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
+                      placeholder="your-publisher-name"
+                    />
                   </div>
-                  <input
-                    value={profileSlug}
-                    onChange={(e) => setProfileSlug(e.target.value)}
-                    className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
-                    placeholder="your-publisher-name"
-                  />
-                </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={handleCopyProfileUrl}
-                    className="inline-flex h-12 items-center gap-2 px-4 rounded-xl border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
-                    title={copied ? "Copied to clipboard" : "Copy URL"}
-                  >
-                    {copied ? (
-                      <>
-                        <Check size={15} className="text-emerald-500" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={15} className="text-muted-foreground" />
-                        <span>Copy Link</span>
-                      </>
-                    )}
-                  </button>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleCopyProfileUrl}
+                      className="inline-flex h-12 items-center gap-2 px-4 rounded-xl border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
+                      title={copied ? "Copied to clipboard" : "Copy URL"}
+                    >
+                      {copied ? (
+                        <>
+                          <Check size={15} className="text-emerald-500" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={15} className="text-muted-foreground" />
+                          <span>Copy Link</span>
+                        </>
+                      )}
+                    </button>
 
-                  <a
-                    href={`https://${profileBaseUrl}${profileSlug}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
-                    title="Preview Storefront"
-                  >
-                    <ExternalLink size={16} />
-                  </a>
+                    <a
+                      href={`https://${profileBaseUrl}${profileSlug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
+                      title="Preview Storefront"
+                    >
+                      <ExternalLink size={16} />
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </SectionCard>
 
@@ -280,8 +285,8 @@ function ProfilePage() {
           </div>
         </SectionCard>
 
-        {/* Billing Address */}
-        <SectionCard title="Billing Address">
+        {/* Address */}
+        <SectionCard title={isLibraryOnly ? "Address" : "Billing Address"}>
           <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
             <Field
               label="Publisher Name"
@@ -289,8 +294,12 @@ function ProfilePage() {
               value={publisherName}
               onChange={setPublisherName}
             />
-            <Field label="GST Number" required value={gst} onChange={setGst} />
-            <Field label="PAN" required value={pan} onChange={setPan} />
+            {!isLibraryOnly && (
+              <>
+                <Field label="GST Number" required value={gst} onChange={setGst} />
+                <Field label="PAN" required value={pan} onChange={setPan} />
+              </>
+            )}
             <Field label="Address Line 1" required value={address1} onChange={setAddress1} />
             <Field label="Address Line 2" value={address2} onChange={setAddress2} />
             <Field label="City" required value={city} onChange={setCity} />
@@ -301,82 +310,81 @@ function ProfilePage() {
         </SectionCard>
 
         {/* Account & Commission */}
-        <SectionCard title="Account & Commission Details">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* Account Details Card */}
-            <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-2xs space-y-5">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                      <Landmark size={20} />
+        {!isLibraryOnly && (
+          <SectionCard title="Account & Commission Details">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {/* Account Details Card */}
+              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-2xs space-y-5">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
+                        <Landmark size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-foreground">Account Details</h3>
+                        <p className="text-xs text-muted-foreground">Primary payout account</p>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <CheckCircle2 size={13} /> Active
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 rounded-lg bg-secondary/30 p-4 text-xs">
+                    <div>
+                      <span className="text-muted-foreground font-medium block mb-0.5">Account Holder</span>
+                      <span className="font-semibold text-foreground">PixelBooks</span>
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground">Account Details</h3>
-                      <p className="text-xs text-muted-foreground">Primary payout account</p>
+                      <span className="text-muted-foreground font-medium block mb-0.5">Account Number</span>
+                      <span className="font-semibold text-foreground font-mono">•••• 00430</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground font-medium block mb-0.5">IFSC Code</span>
+                      <span className="font-semibold text-foreground font-mono">ICIC0006267</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground font-medium block mb-0.5">Bank Name</span>
+                      <span className="font-semibold text-foreground">ICICI Bank Ltd</span>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    <CheckCircle2 size={13} /> Active
-                  </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 rounded-lg bg-secondary/30 p-4 text-xs">
-                  <div>
-                    <span className="text-muted-foreground font-medium block mb-0.5">Account Holder</span>
-                    <span className="font-semibold text-foreground">PixelBooks</span>
+                <button className="inline-flex h-9 w-fit items-center gap-1.5 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer">
+                  Manage Bank Account <ArrowUpRight size={13} />
+                </button>
+              </div>
+
+              {/* Commission Details Card */}
+              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-2xs space-y-5">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
+                        <Percent size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-foreground">Commission Details</h3>
+                        <p className="text-xs text-muted-foreground">Revenue share percentage</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-muted-foreground font-medium block mb-0.5">Account Number</span>
-                    <span className="font-semibold text-foreground font-mono">•••• 00430</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground font-medium block mb-0.5">IFSC Code</span>
-                    <span className="font-semibold text-foreground font-mono">ICIC0006267</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground font-medium block mb-0.5">Bank Name</span>
-                    <span className="font-semibold text-foreground">ICICI Bank Ltd</span>
+
+                  <div className="rounded-lg border border-border/70 bg-secondary/30 p-4 space-y-2">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-xs font-medium text-muted-foreground">Publisher Revenue Share</span>
+                      <span className="text-2xl font-extrabold text-foreground tracking-tight">{commission}%</span>
+                    </div>
+                    <div className="w-full bg-border/60 rounded-full h-2 overflow-hidden">
+                      <div className="bg-[var(--brand)] h-full rounded-full" style={{ width: `${commission}%` }} />
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <button className="inline-flex h-9 w-fit items-center gap-1.5 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer">
-                Manage Bank Account <ArrowUpRight size={13} />
-              </button>
             </div>
-
-            {/* Commission Details Card */}
-            <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-2xs space-y-5">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                      <Percent size={20} />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-foreground">Commission Details</h3>
-                      <p className="text-xs text-muted-foreground">Revenue share percentage</p>
-                    </div>
-                  </div>
-                 
-                </div>
-
-                <div className="rounded-lg border border-border/70 bg-secondary/30 p-4 space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-xs font-medium text-muted-foreground">Publisher Revenue Share</span>
-                    <span className="text-2xl font-extrabold text-foreground tracking-tight">{commission}%</span>
-                  </div>
-                  <div className="w-full bg-border/60 rounded-full h-2 overflow-hidden">
-                    <div className="bg-[var(--brand)] h-full rounded-full" style={{ width: `${commission}%` }} />
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
-          </div>
-        </SectionCard>
+          </SectionCard>
+        )}
 
         {/* Footer actions */}
         <div className="flex items-center justify-end gap-3 border-t border-border pt-6">

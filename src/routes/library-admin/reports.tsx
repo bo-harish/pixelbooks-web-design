@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -274,6 +275,18 @@ export function LibraryAdminReportsPage() {
     const set = new Set(REPORT_DATA.map((r) => r.title));
     return ["All", ...Array.from(set)];
   }, []);
+
+  const publisherOptions = useMemo(() => {
+    return publishers.map((p) => (p === "All" ? "All Publishers" : p));
+  }, [publishers]);
+
+  const categoryOptions = useMemo(() => {
+    return categories.map((c) => (c === "All" ? "All Categories" : c));
+  }, [categories]);
+
+  const titleOptions = useMemo(() => {
+    return titles.map((t) => (t === "All" ? "All Titles" : t));
+  }, [titles]);
 
   // Preset Date range selection logic matching banners.tsx
   const handlePresetSelect = (p: Preset) => {
@@ -678,202 +691,152 @@ export function LibraryAdminReportsPage() {
   return (
     <AppShell title="User Engagement Summary Report">
       <div className="p-4 md:p-8 space-y-6">
-        {/* Redesigned Unified Toolbar */}
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-4 lg:p-5">
-          {/* Search Input Box */}
-          <div className="relative w-full sm:w-48 md:w-52 shrink-0">
-            <Search
-              size={16}
-              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-            />
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setPage(1);
-              }}
-              className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card pl-10 pr-3 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] text-foreground"
-            />
-          </div>
+        {/* Toolbar matching 2-row layout with searchable dropdowns */}
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+          {/* Top Row: Search Bar (Left) + Date Range & Actions (Right) */}
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            {/* Main Search Bar */}
+            <div className="relative flex-1 w-full max-w-md">
+              <Search
+                size={17}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(1);
+                }}
+                className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+              />
+            </div>
 
-          {/* Publisher dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex h-11 min-w-[140px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground cursor-pointer shrink-0">
-                <span className="truncate">
-                  {selectedPublisher === "All" ? "All Publishers" : selectedPublisher}
-                </span>
-                <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="start"
-              className="max-h-60 overflow-y-auto w-44 z-50 bg-card border border-border rounded-lg shadow-md"
-            >
-              {publishers.map((p) => (
-                <DropdownMenuItem
-                  key={p}
-                  onClick={() => {
-                    setSelectedPublisher(p);
-                    setPage(1);
-                  }}
-                  className={`cursor-pointer text-sm font-medium px-4 py-2 hover:bg-secondary outline-none transition-colors ${
-                    selectedPublisher === p
-                      ? "text-[var(--brand)] bg-secondary/40 font-medium"
-                      : "text-muted-foreground"
-                  }`}
+            {/* Date Filters & Export Actions */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0">
+              {/* Preset Dropdown */}
+              <div className="relative shrink-0 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => setPresetOpen((v) => !v)}
+                  className="flex h-11 w-full sm:w-auto items-center justify-between gap-3 rounded-lg border border-border bg-card px-3.5 text-sm font-medium text-foreground cursor-pointer min-w-[100px]"
                 >
-                  {p === "All" ? "All Publishers" : p}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Category dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex h-11 min-w-[140px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground cursor-pointer shrink-0">
-                <span className="truncate">
-                  {selectedCategory === "All" ? "All Categories" : selectedCategory}
-                </span>
-                <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="start"
-              className="max-h-60 overflow-y-auto w-48 z-50 bg-card border border-border rounded-lg shadow-md"
-            >
-              {categories.map((c) => (
-                <DropdownMenuItem
-                  key={c}
-                  onClick={() => {
-                    setSelectedCategory(c);
-                    setPage(1);
-                  }}
-                  className={`cursor-pointer text-sm font-medium px-4 py-2 hover:bg-secondary outline-none transition-colors ${
-                    selectedCategory === c
-                      ? "text-[var(--brand)] bg-secondary/40 font-medium"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {c === "All" ? "All Categories" : c}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Title dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex h-11 min-w-[140px] items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 text-sm font-medium hover:bg-secondary transition-colors text-foreground cursor-pointer shrink-0">
-                <span className="truncate">
-                  {selectedTitle === "All" ? "All Titles" : selectedTitle}
-                </span>
-                <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="start"
-              className="max-h-60 overflow-y-auto w-52 z-50 bg-card border border-border rounded-lg shadow-md"
-            >
-              {titles.map((t) => (
-                <DropdownMenuItem
-                  key={t}
-                  onClick={() => {
-                    setSelectedTitle(t);
-                    setPage(1);
-                  }}
-                  className={`cursor-pointer text-sm font-medium px-4 py-2 hover:bg-secondary outline-none transition-colors ${
-                    selectedTitle === t
-                      ? "text-[var(--brand)] bg-secondary/40 font-medium"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {t === "All" ? "All Titles" : t}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Preset Dropdown */}
-          <div className="relative w-full sm:w-36 shrink-0">
-            <button
-              onClick={() => setPresetOpen((v) => !v)}
-              className="flex h-11 w-full items-center justify-between gap-4 rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground cursor-pointer"
-            >
-              <span>{preset === "All Time" ? "All Time" : preset}</span>
-              <ChevronDown size={15} className="text-muted-foreground shrink-0" />
-            </button>
-            {presetOpen && (
-              <div className="absolute left-0 z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-36">
-                {PRESETS.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => handlePresetSelect(p)}
-                    className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary ${
-                      p === preset ? "font-medium text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))}
+                  <span>{preset === "All Time" ? "All Time" : preset}</span>
+                  <ChevronDown size={15} className="text-muted-foreground shrink-0" />
+                </button>
+                {presetOpen && (
+                  <div className="absolute right-0 z-20 mt-1.5 w-36 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+                    {PRESETS.map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => handlePresetSelect(p)}
+                        className={`flex w-full items-center px-3.5 py-2 text-left text-sm transition-colors hover:bg-secondary ${
+                          p === preset ? "font-semibold text-foreground" : "text-muted-foreground"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Custom Date Pickers */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
+                  <input
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) => {
+                      setFromDate(e.target.value);
+                      setPreset("Custom");
+                      setPage(1);
+                    }}
+                    className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
+                  />
+                </label>
+                <span className="text-xs font-medium text-muted-foreground">to</span>
+                <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
+                  <input
+                    type="date"
+                    value={toDate}
+                    onChange={(e) => {
+                      setToDate(e.target.value);
+                      setPreset("Custom");
+                      setPage(1);
+                    }}
+                    className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
+                  />
+                </label>
+              </div>
+
+              {/* Clear Filters button */}
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="flex h-11 items-center gap-1.5 rounded-lg border border-dashed border-border bg-card px-3 text-xs font-semibold text-muted-foreground hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-200 dark:hover:border-red-900/50 hover:text-rose-600 dark:hover:text-rose-400 transition-all cursor-pointer justify-center shrink-0"
+                >
+                  <X size={14} className="shrink-0" />
+                  <span>Clear</span>
+                </button>
+              )}
+
+              {/* Compact Export Data Icon-Only Button */}
+              <button
+                type="button"
+                onClick={handleExport}
+                title="Export Data"
+                className="h-11 w-11 flex items-center justify-center rounded-lg border border-border bg-card hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground cursor-pointer shrink-0"
+              >
+                <Upload size={16} />
+              </button>
+            </div>
           </div>
 
-          {/* Start Date */}
-          <label className="relative flex h-11 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36 shrink-0">
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => {
-                setFromDate(e.target.value);
-                setPreset("Custom");
+          {/* Bottom Row: Publisher, Category & Title Searchable Dropdown Filters in One Line */}
+          <div className="flex items-center gap-2.5 pt-3 border-t border-border/60 overflow-x-auto">
+            {/* Publisher Dropdown */}
+            <DropdownSelect
+              value={selectedPublisher === "All" ? "All Publishers" : selectedPublisher}
+              options={publisherOptions}
+              onChange={(label) => {
+                setSelectedPublisher(label === "All Publishers" ? "All" : label);
                 setPage(1);
               }}
-              className="w-full bg-transparent text-sm outline-none text-foreground cursor-pointer"
+              searchable
+              searchPlaceholder="Search publisher..."
+              className="min-w-[150px] shrink-0"
             />
-          </label>
 
-          <span className="text-muted-foreground text-xs font-semibold self-center shrink-0">
-            to
-          </span>
-
-          {/* End Date */}
-          <label className="relative flex h-11 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36 shrink-0">
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => {
-                setToDate(e.target.value);
-                setPreset("Custom");
+            {/* Category Dropdown */}
+            <DropdownSelect
+              value={selectedCategory === "All" ? "All Categories" : selectedCategory}
+              options={categoryOptions}
+              onChange={(label) => {
+                setSelectedCategory(label === "All Categories" ? "All" : label);
                 setPage(1);
               }}
-              className="w-full bg-transparent text-sm outline-none text-foreground cursor-pointer"
+              searchable
+              searchPlaceholder="Search category..."
+              className="min-w-[160px] shrink-0"
             />
-          </label>
 
-          {/* Clear Filters button */}
-          {hasActiveFilters && (
-            <button
-              onClick={handleClearAll}
-              className="flex h-11 items-center gap-1.5 rounded-lg border border-dashed border-border bg-slate-50/50 dark:bg-card/50 px-4 text-xs font-semibold text-muted-foreground hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-200 dark:hover:border-red-900/50 hover:text-rose-600 dark:hover:text-rose-400 transition-all cursor-pointer justify-center shrink-0"
-            >
-              <X size={14} className="shrink-0" />
-              <span>Clear Filters</span>
-            </button>
-          )}
-
-          {/* Compact Export Data Icon-Only Button */}
-          <button
-            onClick={handleExport}
-            title="Export Data"
-            className="h-11 w-11 flex items-center justify-center rounded-lg border border-border bg-white dark:bg-card hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground cursor-pointer shrink-0 sm:ml-auto"
-          >
-            <Upload size={16} />
-          </button>
+            {/* Title Dropdown */}
+            <DropdownSelect
+              value={selectedTitle === "All" ? "All Titles" : selectedTitle}
+              options={titleOptions}
+              onChange={(label) => {
+                setSelectedTitle(label === "All Titles" ? "All" : label);
+                setPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search title..."
+              className="min-w-[160px] shrink-0"
+            />
+          </div>
         </div>
 
         {/* Table Data container */}

@@ -9,6 +9,9 @@ import {
   Save,
   Check,
   ChevronDown,
+  Store,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
@@ -39,6 +42,7 @@ type LibraryDetail = {
   borrowLimit: string;
   returnLimitDays: string;
   status: "Onboarded" | "Pending" | "Rejected";
+  hideRetailBookStore?: boolean;
 };
 
 const mockLibraryDetails: Record<string, LibraryDetail> = {
@@ -60,6 +64,7 @@ const mockLibraryDetails: Record<string, LibraryDetail> = {
     borrowLimit: "15",
     returnLimitDays: "20",
     status: "Onboarded",
+    hideRetailBookStore: false,
   },
   "LIB-102": {
     id: "LIB-102",
@@ -79,6 +84,7 @@ const mockLibraryDetails: Record<string, LibraryDetail> = {
     borrowLimit: "25",
     returnLimitDays: "30",
     status: "Onboarded",
+    hideRetailBookStore: false,
   },
 };
 
@@ -100,6 +106,7 @@ const defaultLibrary: LibraryDetail = {
   borrowLimit: "15",
   returnLimitDays: "20",
   status: "Onboarded",
+  hideRetailBookStore: false,
 };
 
 /* -------------------------------------------------------------------------- */
@@ -110,7 +117,16 @@ function LibraryPreviewDetailPage() {
   const { id } = Route.useParams();
   const library = mockLibraryDetails[id] || defaultLibrary;
 
-  const [formData, setFormData] = useState<LibraryDetail>(library);
+  const [formData, setFormData] = useState<LibraryDetail>(() => {
+    const initial = mockLibraryDetails[id] || defaultLibrary;
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(`pb_hide_retail_bookstore_${id}`) ?? localStorage.getItem("pb_hide_retail_bookstore");
+      if (stored !== null) {
+        return { ...initial, hideRetailBookStore: stored === "true" };
+      }
+    }
+    return initial;
+  });
   const [status, setStatus] = useState<"Onboarded" | "Pending" | "Rejected">(
     library.status
   );
@@ -120,9 +136,26 @@ function LibraryPreviewDetailPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleCheckboxChange = (field: keyof LibraryDetail, checked: boolean) => {
+    setFormData((prev) => {
+      const updated = { ...prev, [field]: checked };
+      if (typeof window !== "undefined") {
+        localStorage.setItem(`pb_hide_retail_bookstore_${prev.id}`, checked ? "true" : "false");
+        localStorage.setItem("pb_hide_retail_bookstore", checked ? "true" : "false");
+        window.dispatchEvent(new CustomEvent("pb-hide-bookstore-change", { detail: checked }));
+      }
+      return updated;
+    });
+  };
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaved(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`pb_hide_retail_bookstore_${formData.id}`, formData.hideRetailBookStore ? "true" : "false");
+      localStorage.setItem("pb_hide_retail_bookstore", formData.hideRetailBookStore ? "true" : "false");
+      window.dispatchEvent(new CustomEvent("pb-hide-bookstore-change", { detail: Boolean(formData.hideRetailBookStore) }));
+    }
     toast.success("Library details updated successfully.");
     setTimeout(() => setIsSaved(false), 3000);
   };
@@ -363,6 +396,56 @@ function LibraryPreviewDetailPage() {
             </div>
           </section>
 
+          {/* Section: Retail Book Store Settings */}
+          <section className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-2xs">
+                  <Store size={22} />
+                </span>
+                <div>
+                  <h2 className="text-base font-extrabold text-foreground leading-tight">
+                    Retail Book Store Settings
+                  </h2>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                    Configure visibility rules for the Retail Book Store menu in the Library Admin portal.
+                  </p>
+                </div>
+              </div>
+              {formData.hideRetailBookStore ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 px-3 py-1 text-xs font-semibold text-rose-600 dark:text-rose-400 border border-rose-500/20 self-start sm:self-auto">
+                  <EyeOff size={13} />
+                  Book Store Hidden
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
+                  <Eye size={13} />
+                  Book Store Visible
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group">
+                <input
+                  id="hideRetailBookStore"
+                  type="checkbox"
+                  checked={formData.hideRetailBookStore || false}
+                  onChange={(e) => handleCheckboxChange("hideRetailBookStore", e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-sm font-extrabold text-foreground group-hover:text-[var(--brand)] transition-colors">
+                    Hide Retail Book Store
+                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    When enabled, the Book Store menu option will be hidden from the Library Admin portal sidebar navigation for users belonging to this library.
+                  </p>
+                </div>
+              </label>
+            </div>
+          </section>
+
           {/* Section 2: Contact Details */}
           <section className="rounded-2xl border border-border bg-card p-5 md:p-6 shadow-2xs space-y-4">
             <h2 className="text-base font-bold tracking-tight text-foreground border-b border-border/50 pb-3">
@@ -458,7 +541,7 @@ function LibraryPreviewDetailPage() {
                 <button
                   type="button"
                   onClick={handleReject}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-rose-200 bg-card px-5 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/30 cursor-pointer shadow-2xs"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-rose-200 bg-card px-5 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/30 cursor-pointer shadow-2xs"
                 >
                   <XCircle size={16} /> Reject
                 </button>
@@ -467,7 +550,7 @@ function LibraryPreviewDetailPage() {
                 <button
                   type="button"
                   onClick={handleApprove}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer shadow-2xs"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer shadow-2xs"
                 >
                   <CheckCircle2 size={16} /> Approve & Onboard
                 </button>
@@ -477,14 +560,14 @@ function LibraryPreviewDetailPage() {
             <div className="flex items-center gap-3">
               <Link
                 to="/pb-admin-lib/libraries"
-                className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-card px-5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
+                className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
               >
                 Cancel
               </Link>
 
               <button
                 type="submit"
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer shadow-2xs"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer shadow-2xs"
               >
                 {isSaved ? (
                   <>

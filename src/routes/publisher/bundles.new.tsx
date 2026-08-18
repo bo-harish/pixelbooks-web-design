@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import {
   ArrowLeft,
   Check,
@@ -209,7 +210,18 @@ function RichTextEditor({
 }
 
 export function NewPublisherBundlePage() {
+  const [publisherType] = usePublisherType();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (publisherType === "Library-Only Publisher") {
+      navigate({ to: "/publisher/catalogue", replace: true });
+    }
+  }, [publisherType, navigate]);
+
+  if (publisherType === "Library-Only Publisher") {
+    return null;
+  }
 
   // Form State
   const [title, setTitle] = useState("");

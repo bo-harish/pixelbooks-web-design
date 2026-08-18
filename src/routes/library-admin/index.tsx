@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+import { useLibraryAdminType } from "@/hooks/use-library-admin-type";
+
 export const Route = createFileRoute("/library-admin/")({
   component: LibraryAdminDashboard,
 });
@@ -257,6 +259,8 @@ function StatSkeleton() {
 }
 
 function DashboardContent() {
+  const [libraryAdminType] = useLibraryAdminType();
+  const isStandardAdmin = libraryAdminType === "Standard Library Admin";
   const [loading, setLoading] = useState(true);
   const [fyRange, setFyRange] = useState("FY (2026 - 2027)");
   const [range, setRange] = useState<Range>("30d");
@@ -300,20 +304,21 @@ function DashboardContent() {
         sub: "Active Borrowers",
         icon: BookMarked,
       },
-      {
+      !isStandardAdmin && {
         label: "Books Requested",
         value: requestsCount,
         sub: "Pending Requests",
         icon: Inbox,
       },
-      {
+      !isStandardAdmin && {
         label: "Total eBooks Purchased",
         value: purchasedCount,
         sub: "eBooks Purchased",
         icon: BookMarked,
       },
-    ];
-  }, [range]);
+    ].filter(Boolean) as Stat[];
+  }, [range, isStandardAdmin]);
+
 
   const dynamicChartConfig = useMemo(() => {
     switch (range) {
@@ -458,9 +463,9 @@ function DashboardContent() {
       </div>
 
       {/* Stats Cards Grid */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <section className={`grid grid-cols-1 gap-4 ${isStandardAdmin ? "sm:grid-cols-1 max-w-md" : "sm:grid-cols-3"}`}>
         {loading
-          ? Array.from({ length: 3 }).map((_, i) => <StatSkeleton key={i} />)
+          ? Array.from({ length: stats.length }).map((_, i) => <StatSkeleton key={i} />)
           : stats.map((s) => <StatCard key={s.label} stat={s} />)}
       </section>
 

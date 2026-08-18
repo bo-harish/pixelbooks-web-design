@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -11,14 +11,32 @@ import {
   Copy,
   Check,
   FileX2,
+  FileText,
   Building2,
   Eye,
   BookOpen,
   HardDrive,
   Users,
+  Pencil,
+  Library,
+  ChevronDown,
+  Clock,
+  Search,
+  X,
+  Save,
 } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import { seedBooks, type Status } from "@/lib/catalogue-data";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/publisher/catalogue/$bookId")({
   component: EBookDetailPage,
@@ -81,40 +99,519 @@ function getExtra(id: string): BookExtra {
 /*  Shared UI pieces                                                    */
 /* ------------------------------------------------------------------ */
 
-function StatusPill({ status }: { status: Status }) {
-  const map = {
-    Published: { color: "var(--success)", Icon: CheckCircle2 },
-    Rejected: { color: "var(--danger)", Icon: FileX2 },
-    Unpublished: { color: "#6b7280", Icon: CircleOff },
-  } as const;
-  const { color, Icon } = map[status];
+type StatusConfig = {
+  label: string;
+  bgClass: string;
+  textColor: string;
+  borderColor: string;
+  Icon: React.ElementType;
+};
+
+const STATUS_CONFIGS: Record<Status, StatusConfig> = {
+  Published: {
+    label: "Published",
+    bgClass: "bg-emerald-500/12 dark:bg-emerald-500/20",
+    textColor: "text-emerald-600 dark:text-emerald-400 font-semibold",
+    borderColor: "border-emerald-500/30 dark:border-emerald-500/40",
+    Icon: CheckCircle2,
+  },
+  Draft: {
+    label: "Draft",
+    bgClass: "bg-amber-500/12 dark:bg-amber-500/20",
+    textColor: "text-amber-600 dark:text-amber-400 font-semibold",
+    borderColor: "border-amber-500/30 dark:border-amber-500/40",
+    Icon: Clock,
+  },
+  Unpublished: {
+    label: "Unpublished",
+    bgClass: "bg-slate-500/12 dark:bg-slate-500/20",
+    textColor: "text-slate-600 dark:text-slate-400 font-semibold",
+    borderColor: "border-slate-500/30 dark:border-slate-500/40",
+    Icon: CircleOff,
+  },
+  Rejected: {
+    label: "Rejected",
+    bgClass: "bg-rose-500/12 dark:bg-rose-500/20",
+    textColor: "text-rose-600 dark:text-rose-400 font-semibold",
+    borderColor: "border-rose-500/30 dark:border-rose-500/40",
+    Icon: FileX2,
+  },
+};
+
+function StatusSelectPill({
+  status,
+  onChange,
+  allowedStatuses,
+  readOnly = false,
+}: {
+  status: Status;
+  onChange?: (newStatus: Status) => void;
+  allowedStatuses?: Status[];
+  readOnly?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<Status | null>(null);
+  const cfg = STATUS_CONFIGS[status] ?? STATUS_CONFIGS.Published;
+  const CurrentIcon = cfg.Icon;
+  const options = allowedStatuses ?? ["Published", "Draft", "Unpublished", "Rejected"];
+
+  const handleItemClick = (st: Status, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen(false);
+    if (st === status) return;
+
+    if (st === "Published" || st === "Unpublished") {
+      setPendingStatus(st);
+    } else {
+      onChange?.(st);
+    }
+  };
+
   return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
-      style={{
-        backgroundColor: `color-mix(in oklch, ${color} 12%, transparent)`,
-        color,
-      }}
-    >
-      <Icon size={14} />
-      {status}
-    </span>
+    <div className="relative inline-block text-left">
+      <button
+        type="button"
+        disabled={readOnly}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!readOnly) setOpen((o) => !o);
+        }}
+        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${
+          readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
+        }`}
+      >
+        <CurrentIcon size={15} className="shrink-0" />
+        <span>{cfg.label}</span>
+        {!readOnly && (
+          <ChevronDown
+            size={14}
+            className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          />
+        )}
+      </button>
+
+      {open && !readOnly && (
+        <>
+          <div
+            className="fixed inset-0 z-30"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+            }}
+          />
+          <div className="absolute left-0 top-full z-40 mt-1.5 min-w-[155px] overflow-hidden rounded-2xl border border-border bg-card p-1.5 shadow-xl animate-in fade-in zoom-in-95 duration-150">
+            {options.map((st) => {
+              const itemCfg = STATUS_CONFIGS[st];
+              const ItemIcon = itemCfg.Icon;
+              const isSelected = st === status;
+              return (
+                <button
+                  key={st}
+                  type="button"
+                  onClick={(e) => handleItemClick(st, e)}
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
+                    isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
+                  } ${itemCfg.textColor}`}
+                >
+                  <ItemIcon size={16} className="shrink-0" />
+                  <span>{itemCfg.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Confirmation Modal for Publish / Unpublish */}
+      {pendingStatus && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs animate-in fade-in"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPendingStatus(null);
+          }}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl bg-card border border-border p-6 shadow-2xl space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                  pendingStatus === "Published"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                    : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
+                }`}
+              >
+                {pendingStatus === "Published" ? (
+                  <CheckCircle2 size={22} />
+                ) : (
+                  <CircleOff size={22} />
+                )}
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-foreground">
+                  {pendingStatus === "Published" ? "Confirm Publish eBook" : "Confirm Unpublish eBook"}
+                </h3>
+                <p className="text-xs text-muted-foreground">Confirmation required</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {pendingStatus === "Published"
+                ? "Are you sure you want to publish this eBook? Once published, it will become active and accessible to readers and libraries."
+                : "Are you sure you want to unpublish this eBook? Unpublishing will hide it from active catalogue views and new borrowings."}
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setPendingStatus(null)}
+                className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = pendingStatus;
+                  setPendingStatus(null);
+                  onChange?.(target);
+                }}
+                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${
+                  pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
+                }`}
+              >
+                {pendingStatus === "Published" ? "Confirm & Publish" : "Confirm & Unpublish"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
+}
+
+function StatusPill({ status }: { status: Status }) {
+  return <StatusSelectPill status={status} readOnly />;
 }
 
 function StatusStamp({ status }: { status: Status }) {
   const map = {
     Published: { label: "PUBLISHED", color: "#059669" },
+    Draft: { label: "DRAFT", color: "#d97706" },
+    Unpublished: { label: "UNPUBLISHED", color: "#6b7280" },
     Rejected: { label: "REJECTED", color: "#e11d48" },
-    Unpublished: { label: "DRAFT", color: "#6b7280" },
   };
-  const s = map[status];
+  const s = map[status] ?? map.Draft;
   return (
     <div
       className="flex h-16 w-16 shrink-0 rotate-12 items-center justify-center rounded-full border-[3px] text-[8px] font-black uppercase tracking-widest opacity-80"
       style={{ borderColor: s.color, color: s.color }}
     >
       {s.label}
+    </div>
+  );
+}
+
+const ALL_LIBRARIES = [
+  { id: "lib-1", name: "Central University Digital Library", city: "New Delhi" },
+  { id: "lib-2", name: "National Science & Tech Consortium", city: "Bangalore" },
+  { id: "lib-3", name: "City Academic Library System", city: "Mumbai" },
+  { id: "lib-4", name: "Delhi Public Library", city: "New Delhi" },
+  { id: "lib-5", name: "State Institute of Technology Library", city: "Pune" },
+  { id: "lib-6", name: "IIT Delhi Central Library", city: "New Delhi" },
+  { id: "lib-7", name: "Indian Institute of Science Library", city: "Bangalore" },
+];
+
+function LibraryMultiSelectDropdown({
+  selected,
+  onChange,
+}: {
+  selected: string[];
+  onChange: (libs: string[]) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredLibraries = ALL_LIBRARIES.filter(
+    (lib) =>
+      lib.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      lib.city.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const toggleLibrary = (libName: string) => {
+    if (selected.includes(libName)) {
+      onChange(selected.filter((item) => item !== libName));
+    } else {
+      onChange([...selected, libName]);
+    }
+  };
+
+  const isAllSelected =
+    filteredLibraries.length > 0 &&
+    filteredLibraries.every((lib) => selected.includes(lib.name));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      const filteredNames = filteredLibraries.map((l) => l.name);
+      onChange(selected.filter((name) => !filteredNames.includes(name)));
+    } else {
+      const newSelected = new Set([...selected, ...filteredLibraries.map((l) => l.name)]);
+      onChange(Array.from(newSelected));
+    }
+  };
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <div
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
+          isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
+        }`}
+      >
+        <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
+          {selected.length === 0 ? (
+            <span className="text-muted-foreground text-xs font-normal px-2">
+              Select one or more libraries...
+            </span>
+          ) : (
+            selected.map((libName) => (
+              <span
+                key={libName}
+                className="inline-flex items-center gap-1 rounded-lg border border-[var(--brand)]/30 bg-[var(--brand)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--brand)]"
+              >
+                <span>{libName}</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleLibrary(libName);
+                  }}
+                  className="rounded-md hover:bg-[var(--brand)]/20 p-0.5 transition-colors cursor-pointer"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            ))
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0 px-1">
+          {selected.length > 0 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange([]);
+              }}
+              className="text-xs text-muted-foreground hover:text-foreground underline pr-1 cursor-pointer"
+            >
+              Clear
+            </button>
+          )}
+          <ChevronDown
+            size={16}
+            className={`text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          />
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-72 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
+          <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
+            <div className="relative flex items-center">
+              <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search libraries by name..."
+                autoFocus
+                className="w-full h-9 pl-9 pr-8 text-xs rounded-lg border border-border bg-secondary/40 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-2.5 text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between px-1 text-xs">
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="text-[11px] font-semibold text-[var(--brand)] hover:underline cursor-pointer"
+              >
+                {isAllSelected ? "Deselect All" : "Select All Libraries"}
+              </button>
+              <span className="text-[11px] text-muted-foreground font-medium">
+                {selected.length} of {ALL_LIBRARIES.length} selected
+              </span>
+            </div>
+          </div>
+
+          <div className="overflow-y-auto max-h-52 py-1 divide-y divide-border/30">
+            {filteredLibraries.length === 0 ? (
+              <div className="px-4 py-6 text-center text-xs text-muted-foreground">
+                No matching libraries found.
+              </div>
+            ) : (
+              filteredLibraries.map((lib) => {
+                const checked = selected.includes(lib.name);
+                return (
+                  <label
+                    key={lib.id}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${
+                      checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleLibrary(lib.name)}
+                        className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                      />
+                      <span className="truncate">{lib.name}</span>
+                    </div>
+                  </label>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LibraryStoreAllocationCard() {
+  const [restrictToSpecific, setRestrictToSpecific] = useState(true);
+  const [selectedLibraries, setSelectedLibraries] = useState<string[]>([
+    "Central University Digital Library",
+    "National Science & Tech Consortium",
+  ]);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleSaveAllocations = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmSave = () => {
+    setIsConfirmOpen(false);
+    toast.success("Library store allocations updated successfully");
+  };
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-2xs">
+            <Library size={22} />
+          </span>
+          <div>
+            <h2 className="text-base font-extrabold text-foreground leading-tight">
+              Library Allocation
+            </h2>
+            <p className="text-xs text-muted-foreground font-medium mt-0.5">
+              Configure authorized libraries where this eBook title will be available in digital catalogues.
+            </p>
+          </div>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
+          <CheckCircle2 size={13} />
+          {selectedLibraries.length} Libraries Allocated
+        </span>
+      </div>
+
+      <div className="space-y-4">
+        <div className="space-y-2 pt-1">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-extrabold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+              <span>Select Authorized Libraries</span>
+              <span className="text-red-500">*</span>
+            </label>
+            <span className="text-xs text-muted-foreground font-medium">
+              {selectedLibraries.length} libraries selected
+            </span>
+          </div>
+
+          <LibraryMultiSelectDropdown
+            selected={selectedLibraries}
+            onChange={setSelectedLibraries}
+          />
+
+          {selectedLibraries.length === 0 && (
+            <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
+              <span>⚠️ Please select at least one library for allocation to take effect.</span>
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-border/50">
+          <span className="text-xs text-muted-foreground font-medium">
+            {`${selectedLibraries.length} libraries selected for title allocation`}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleSaveAllocations}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-bold text-white shadow-2xs transition-all hover:opacity-90 active:scale-98 cursor-pointer shrink-0 self-end sm:self-auto"
+          >
+            <Save size={15} />
+            <span>Save Allocations</span>
+          </button>
+        </div>
+      </div>
+
+      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <DialogContent className="max-w-md bg-card border border-border rounded-xl p-6 shadow-xl">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+              <Library size={20} className="text-[var(--brand)]" />
+              <span>Confirm Library Allocations</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground pt-1 leading-relaxed">
+              Are you sure you want to update the library store allocations for this title?
+              {restrictToSpecific
+                ? ` This eBook will be restricted exclusively to ${selectedLibraries.length} authorized library catalogues.`
+                : " This eBook will be available to all institutional libraries globally."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="mt-4 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setIsConfirmOpen(false)}
+              className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirmSave}
+              className="inline-flex h-9 items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-xs font-bold text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
+            >
+              Confirm & Save
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -195,7 +692,15 @@ function CopyBookUrlButton({ bookId }: { bookId: string }) {
 
 function EBookDetailPage() {
   const { bookId } = Route.useParams();
+  const [publisherType] = usePublisherType();
+  const isLibraryOnly = publisherType === "Library-Only Publisher";
   const book = seedBooks.find((b) => b.id === bookId);
+
+  const [licenseCount, setLicenseCount] = useState<number>(book?.licenseCount ?? 50);
+  const [isEditingLicenses, setIsEditingLicenses] = useState(false);
+  const [licenseInput, setLicenseInput] = useState(licenseCount.toString());
+  const initialStatus: Status = (isLibraryOnly && book?.status === "Rejected") ? "Draft" : (book?.status ?? "Published");
+  const [currentStatus, setCurrentStatus] = useState<Status>(initialStatus);
 
   if (!book) {
     return (
@@ -203,7 +708,7 @@ function EBookDetailPage() {
         <div className="flex flex-col items-center justify-center gap-3 p-16 text-center">
           <p className="text-sm text-muted-foreground">eBook not found.</p>
           <Link
-            to="/publisher/catalogue/"
+            to="/publisher/catalogue"
             className="text-sm font-normal"
             style={{ color: "var(--brand)" }}
           >
@@ -224,14 +729,14 @@ function EBookDetailPage() {
         {/* Back button */}
         <div className="mb-6 flex items-center gap-3">
           <Link
-            to="/publisher/catalogue/"
+            to="/publisher/catalogue"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             aria-label="Back to Catalogue"
           >
             <ArrowLeft size={16} />
           </Link>
           <Link
-            to="/publisher/catalogue/"
+            to="/publisher/catalogue"
             className="text-sm font-normal text-foreground hover:text-[var(--brand)] transition-colors"
           >
             Back to Catalogue
@@ -289,23 +794,45 @@ function EBookDetailPage() {
                 </div>
               </div>
 
-              {/* Stats & Key Metrics Strip (Compatible 4-Box Grid) */}
+              {/* Stats & Key Metrics Strip (Compatible Grid) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-                {/* 1. Price */}
-                <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                  <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Price</span>
-                    <Tag size={14} className="text-muted-foreground/80" />
+                {/* 1. Price or License Copies */}
+                {!isLibraryOnly ? (
+                  <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
+                    <div className="flex items-center justify-between text-muted-foreground">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Price</span>
+                      <Tag size={14} className="text-muted-foreground/80" />
+                    </div>
+                    <p className="text-lg font-bold text-foreground">
+                      {book.price === null ? "Free" : `₹${book.price.toFixed(2)}`}
+                    </p>
                   </div>
-                  <p className="text-lg font-bold text-foreground">
-                    {book.price === null ? "Free" : `₹${book.price.toFixed(2)}`}
-                  </p>
-                </div>
+                ) : (
+                  <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
+                    <div className="flex items-center justify-between text-muted-foreground">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Copies</span>
+                      <Library size={14} className="text-muted-foreground/80" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-lg font-bold text-foreground">{licenseCount} copies</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLicenseInput(licenseCount.toString());
+                          setIsEditingLicenses(true);
+                        }}
+                        className="text-xs font-semibold text-[var(--brand)] hover:underline inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        <Pencil size={11} /> Edit
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* 2. File Size */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">File Size</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">eBook Size (in MB)</span>
                     <HardDrive size={14} className="text-muted-foreground/80" />
                   </div>
                   <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>
@@ -323,8 +850,19 @@ function EBookDetailPage() {
                 {/* 4. Status */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
-                  <div className="flex items-center">
-                    <StatusPill status={book.status} />
+                  <div className="flex items-center pt-1">
+                    <StatusSelectPill
+                      status={currentStatus}
+                      onChange={(next) => {
+                        setCurrentStatus(next);
+                        toast.success(`Book status updated to ${next}`);
+                      }}
+                      allowedStatuses={
+                        isLibraryOnly
+                          ? ["Draft", "Published", "Unpublished"]
+                          : ["Published", "Unpublished", "Draft", "Rejected"]
+                      }
+                    />
                   </div>
                 </div>
               </div>
@@ -373,10 +911,47 @@ function EBookDetailPage() {
         <SectionCard title="eBook Details">
           <div className="space-y-0.5">
             <MetaRow label="eBook Name:" value={book.title} />
+            <MetaRow
+              label="Status:"
+              value={
+                <StatusSelectPill
+                  status={currentStatus}
+                  onChange={(next) => {
+                    setCurrentStatus(next);
+                    toast.success(`Book status updated to ${next}`);
+                  }}
+                  allowedStatuses={
+                    isLibraryOnly
+                      ? ["Draft", "Published", "Unpublished"]
+                      : ["Published", "Unpublished", "Draft", "Rejected"]
+                  }
+                />
+              }
+            />
             <MetaRow label="Language:" value={extra.language} valueClass="text-[var(--brand)]" />
             <MetaRow label="Regional Name:" value={extra.regionalName} />
             <MetaRow label="Date of Publications:" value={extra.dateOfPublication} />
-            <MetaRow label="eBook Size:" value={`${extra.sizeMB} MB`} />
+            <MetaRow label="eBook Size (in MB):" value={`${extra.sizeMB} MB`} />
+            {isLibraryOnly && (
+              <MetaRow
+                label="No. of copies:"
+                value={
+                  <div className="inline-flex items-center gap-2">
+                    <span className="font-bold text-foreground">{licenseCount} copies</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLicenseInput(licenseCount.toString());
+                        setIsEditingLicenses(true);
+                      }}
+                      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-0.5 text-xs font-semibold text-[var(--brand)] hover:bg-secondary cursor-pointer shadow-2xs"
+                    >
+                      <Pencil size={11} /> Edit Copies
+                    </button>
+                  </div>
+                }
+              />
+            )}
           </div>
 
           {/* Summary */}
@@ -405,13 +980,15 @@ function EBookDetailPage() {
         </SectionCard>
 
         {/* ── SEO ───────────────────────────────────────────────────── */}
-        <SectionCard title="For SEO Purpose">
-          <div className="space-y-0.5">
-            <MetaRow label="Meta Titles:" value="—" />
-            <MetaRow label="Meta Keywords:" value="—" />
-            <MetaRow label="Meta Description:" value="—" />
-          </div>
-        </SectionCard>
+        {!isLibraryOnly && (
+          <SectionCard title="For SEO Purpose">
+            <div className="space-y-0.5">
+              <MetaRow label="Meta Titles:" value="—" />
+              <MetaRow label="Meta Keywords:" value="—" />
+              <MetaRow label="Meta Description:" value="—" />
+            </div>
+          </SectionCard>
+        )}
 
         {/* ── Author + Sub Category ─────────────────────────────────── */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -438,28 +1015,68 @@ function EBookDetailPage() {
           </SectionCard>
         </div>
 
-        {/* ── Price Details ─────────────────────────────────────────── */}
-        <SectionCard title="Price Details">
-          <div className="space-y-0.5">
-            <MetaRow label="Renewal Percentage (Excl. GST):" value="—" />
-            <MetaRow label="GST Rate:" value={`${extra.gstRate}%`} />
-            {priceExGST && (
-              <>
-                <MetaRow label="Unit Price (excl. GST):" value={`₹${priceExGST}`} />
-                <MetaRow label="Unit Price (incl. GST):" value={`₹${book.price!.toFixed(2)}`} />
-              </>
-            )}
-            <MetaRow label="Offer Price (excl. GST):" value="—" />
-          </div>
-
-          <div className="mt-5 border-t border-border pt-4">
-            <p className="text-sm text-muted-foreground">Selling Price including GST:</p>
-            <p className="mt-1 text-2xl font-bold" style={{ color: "var(--brand)" }}>
-              {book.price === null ? "Free" : `₹${book.price.toFixed(2)}`}
-            </p>
-          </div>
-        </SectionCard>
+        {/* ── Library Allocation (For Library-Only Publisher) ─────────── */}
+        {isLibraryOnly && <LibraryStoreAllocationCard />}
       </div>
+
+      {/* Edit License Count Modal */}
+      {isEditingLicenses && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <Library size={18} className="text-[var(--brand)]" />
+                Edit No. of Copies
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsEditingLicenses(false)}
+                className="rounded-lg p-1 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
+              >
+                <XCircle size={18} />
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Update the total number of library license copies available for <span className="font-semibold text-foreground">"{book.title}"</span>.
+            </p>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-foreground">No. of copies</label>
+              <input
+                type="number"
+                min="1"
+                value={licenseInput}
+                onChange={(e) => setLicenseInput(e.target.value)}
+                className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-sm font-semibold outline-none focus:border-[var(--brand)] transition-colors"
+                placeholder="e.g. 50"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsEditingLicenses(false)}
+                className="h-9 px-4 rounded-lg border border-border text-xs font-semibold hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const count = parseInt(licenseInput, 10);
+                  if (!isNaN(count) && count > 0) {
+                    setLicenseCount(count);
+                    setIsEditingLicenses(false);
+                    toast.success(`Copies updated to ${count} copies`);
+                  }
+                }}
+                className="h-9 px-4 rounded-lg text-xs font-semibold text-white shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
+                style={{ backgroundColor: "var(--brand)" }}
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }
