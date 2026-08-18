@@ -324,7 +324,7 @@ function getSections(
           { label: "eBook Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
           { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
           { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
-          { label: "Rewards", icon: TicketPercent, to: "/publisher/promo-codes" },
+          { label: "Promo Codes", icon: TicketPercent, to: "/publisher/promo-codes" },
         ],
       },
       {
@@ -355,7 +355,7 @@ function getSections(
           { label: "eBook Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
           { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
           !isLibraryOnlyPublisher && { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
-          !isLibraryOnlyPublisher && { label: "Rewards", icon: TicketPercent, to: "/publisher/promo-codes" },
+          !isLibraryOnlyPublisher && { label: "Promo Codes", icon: TicketPercent, to: "/publisher/promo-codes" },
         ] as (NavItem | false)[]
       ).filter(Boolean) as NavItem[],
     },

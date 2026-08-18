@@ -2003,7 +2003,7 @@ function CategoryDialog({
                             : undefined
                         }
                       >
-                        {checked && <CheckCircle2 size={12} strokeWidth={3} />}
+                        {checked && <CheckIcon size={12} strokeWidth={3} />}
                       </span>
                       <span className={`flex-1 truncate ${checked ? "font-semibold" : ""}`}>
                         {name}
@@ -2049,7 +2049,7 @@ function CategoryDialog({
                             : undefined
                         }
                       >
-                        {checked && <CheckCircle2 size={12} strokeWidth={3} />}
+                        {checked && <CheckIcon size={12} strokeWidth={3} />}
                       </span>
                       <span className={`flex-1 ${checked ? "font-semibold" : ""}`}>{sub}</span>
                     </button>
@@ -2384,7 +2384,7 @@ function RentalDialog({
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 placeholder="Unit Price (excl. GST)"
-                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-right text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
 
@@ -2397,16 +2397,17 @@ function RentalDialog({
                 value={offer}
                 onChange={(e) => setOffer(e.target.value)}
                 placeholder="Offer Price (excl. GST)"
-                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-right text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
 
             <button
               type="button"
               onClick={handleAdd}
-              className="h-14 rounded-xl px-6 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
+              className="inline-flex h-14 items-center justify-center gap-1.5 rounded-xl px-6 text-sm font-semibold shadow-2xs transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer"
               style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
             >
+              <Plus size={16} />
               Add
             </button>
           </div>
@@ -2592,7 +2593,8 @@ function RentalSection() {
           <button
             type="button"
             onClick={() => setDialogOpen(true)}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold hover:bg-secondary"
+            className="mt-4 inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-semibold shadow-2xs transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer"
+            style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
           >
             <Plus size={14} /> Add / Edit Rental
           </button>

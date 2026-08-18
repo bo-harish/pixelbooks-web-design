@@ -254,21 +254,34 @@ export function LibraryAdminCartPage() {
 
                             {/* Copies Quantity Selector counter */}
                             <td className="py-4 px-4 text-center">
-                              <div className="inline-flex items-center border border-border rounded-full px-2.5 py-1 bg-white dark:bg-card justify-between w-24 shadow-sm select-none">
+                              <div className="inline-flex items-center border border-border rounded-full px-2.5 py-1 bg-white dark:bg-card justify-between w-28 shadow-2xs mx-auto">
                                 <button
                                   type="button"
                                   onClick={() => handleDecrement(b.id)}
-                                  className="text-muted-foreground hover:text-foreground w-6 h-6 flex items-center justify-center font-bold text-sm cursor-pointer"
+                                  disabled={(quantities[b.id] || 1) <= 1}
+                                  className="text-muted-foreground hover:text-foreground disabled:opacity-40 disabled:hover:text-muted-foreground w-6 h-6 flex items-center justify-center font-bold text-sm cursor-pointer shrink-0 transition-colors"
+                                  title="Decrease copies"
                                 >
                                   -
                                 </button>
-                                <span className="font-semibold text-xs text-foreground">
-                                  {quantities[b.id] || 1}
-                                </span>
+                                <input
+                                  type="number"
+                                  min={1}
+                                  value={quantities[b.id] || 1}
+                                  onChange={(e) => {
+                                    const val = parseInt(e.target.value, 10);
+                                    const newQty = isNaN(val) || val < 1 ? 1 : val;
+                                    const newQuants = { ...quantities, [b.id]: newQty };
+                                    syncCart(cartKeys, newQuants);
+                                  }}
+                                  className="w-10 text-center font-semibold text-xs text-foreground bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  title="Type copy count"
+                                />
                                 <button
                                   type="button"
                                   onClick={() => handleIncrement(b.id)}
-                                  className="text-muted-foreground hover:text-foreground w-6 h-6 flex items-center justify-center font-bold text-sm cursor-pointer"
+                                  className="text-muted-foreground hover:text-foreground w-6 h-6 flex items-center justify-center font-bold text-sm cursor-pointer shrink-0 transition-colors"
+                                  title="Increase copies"
                                 >
                                   +
                                 </button>

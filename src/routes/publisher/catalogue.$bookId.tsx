@@ -24,6 +24,8 @@ import {
   Search,
   X,
   Save,
+  ShieldCheck,
+  Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
@@ -616,11 +618,244 @@ function LibraryStoreAllocationCard() {
   );
 }
 
+function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number }) {
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>("5-year");
+
+  const rentalPlans = [
+    {
+      id: "5-year",
+      isSpecial: true,
+      price: "₹943.95",
+      subtext: "For 5 Years Access*",
+    },
+    {
+      id: "3y-60d",
+      duration: "3 Years 60 Days",
+      price: "₹839.00",
+      originalPrice: "₹944.00",
+    },
+    {
+      id: "1y-30d",
+      duration: "1 Year 30 Days",
+      price: "₹512.00",
+    },
+    {
+      id: "1y-60d",
+      duration: "1 Year 60 Days",
+      price: "₹149.00",
+    },
+    {
+      id: "1y-90d",
+      duration: "1 Year 90 Days",
+      price: "₹396.00",
+      originalPrice: "₹501.00",
+    },
+    {
+      id: "1y-180d",
+      duration: "1 Year 180 Days",
+      price: "₹699.00",
+      originalPrice: "₹827.00",
+    },
+    {
+      id: "2y-30d",
+      duration: "2 Years 30 Days",
+      price: "₹5013.00",
+    },
+    {
+      id: "2y-60d",
+      duration: "2 Years 60 Days",
+      price: "₹466.00",
+    },
+    {
+      id: "2y-90d",
+      duration: "2 Years 90 Days",
+      price: "₹5013.00",
+    },
+    {
+      id: "2y-180d",
+      duration: "2 Years 180 Days",
+      price: "₹498.00",
+      originalPrice: "₹781.00",
+    },
+    {
+      id: "3y-30d",
+      duration: "3 Years 30 Days",
+      price: "₹6179.00",
+    },
+    {
+      id: "3y-90d",
+      duration: "3 Years 90 Days",
+      price: "₹4709.00",
+    },
+    {
+      id: "3y-180d",
+      duration: "3 Years 180 Days",
+      price: "₹501.00",
+    },
+    {
+      id: "4y-30d",
+      duration: "4 Years 30 Days",
+      price: "₹151.00",
+    },
+    {
+      id: "4y-90d",
+      duration: "4 Years 90 Days",
+      price: "₹827.00",
+    },
+    {
+      id: "4y-180d",
+      duration: "4 Years 180 Days",
+      price: "₹8.00",
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+        {/* Left Column: Price Details */}
+        <div className="lg:col-span-5 flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card">
+          <div className="border-b border-border px-6 py-3.5">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+              Price Details
+            </p>
+          </div>
+          <div className="px-6 py-5 flex flex-col justify-between flex-1">
+            <div className="space-y-2.5 text-xs sm:text-sm">
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-muted-foreground font-medium">Renewal Percentage (Excl.GST):</span>
+                <span className="font-bold text-foreground">3%</span>
+              </div>
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-muted-foreground font-medium">GST Rate:</span>
+                <span className="font-bold text-foreground">{gstRate}%</span>
+              </div>
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-muted-foreground font-medium">Unit Price (excl. GST):</span>
+                <span className="font-bold text-foreground">₹899.00</span>
+              </div>
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-muted-foreground font-medium">Unit Price (includ. GST):</span>
+                <span className="font-bold text-foreground">₹943.95</span>
+              </div>
+              <div className="flex justify-between items-center py-0.5">
+                <span className="text-muted-foreground font-medium">Offer Price (excl. GST):</span>
+                <span className="font-medium text-muted-foreground">-</span>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-border mt-4">
+              <p className="text-xs font-semibold text-muted-foreground">Selling Price including GST:</p>
+              <p className="mt-1 text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+                ₹943.95
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Rental Plan */}
+        <div className="lg:col-span-7 overflow-hidden rounded-xl border border-border bg-card">
+          <div className="border-b border-border px-6 py-3.5">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+              Rental Plan
+            </p>
+          </div>
+          <div className="px-6 py-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
+            {rentalPlans.map((plan) => {
+              const isSelected = selectedPlanId === plan.id;
+              if (plan.isSpecial) {
+                return (
+                  <button
+                    key={plan.id}
+                    type="button"
+                    onClick={() => setSelectedPlanId(plan.id)}
+                    className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all cursor-pointer ${
+                      isSelected
+                        ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
+                        : "border-border bg-card hover:bg-secondary/40"
+                    }`}
+                  >
+                    <span className="text-sm font-extrabold text-foreground">{plan.price}</span>
+                    <span className="text-[10px] font-medium italic text-muted-foreground mt-0.5">
+                      {plan.subtext}
+                    </span>
+                  </button>
+                );
+              }
+
+              return (
+                <button
+                  key={plan.id}
+                  type="button"
+                  onClick={() => setSelectedPlanId(plan.id)}
+                  className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all cursor-pointer ${
+                    isSelected
+                      ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
+                      : "border-border bg-card hover:bg-secondary/40"
+                  }`}
+                >
+                  <span className="text-[11px] font-bold text-foreground whitespace-nowrap">
+                    {plan.duration}
+                  </span>
+                  <div className="flex items-center justify-center gap-1 mt-1">
+                    <span className="text-xs font-bold text-foreground">{plan.price}</span>
+                    {plan.originalPrice && (
+                      <span className="text-[10px] font-medium text-muted-foreground line-through">
+                        {plan.originalPrice}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+
+      {/* Confirmed Agreement Status Card (Non-editable / Locked) */}
+      <div className="pt-2">
+        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/8 dark:bg-emerald-500/10 p-4 shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 mt-0.5 sm:mt-0">
+                <CheckCircle2 size={18} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+                    GST Declaration Confirmed
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                    <Lock size={10} /> Read-only
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm font-medium text-foreground leading-relaxed mt-1">
+                  I hereby confirm that the eBook includes a print version and therefore is subject to the GST rate of 5%
+                </p>
+              </div>
+            </div>
+
+            <div className="shrink-0 self-end sm:self-center">
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/15 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                <ShieldCheck size={14} />
+                Agreement Recorded
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="border-b border-border px-6 py-3.5">
-        <p className="text-sm font-semibold text-foreground">{title}</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          {title}
+        </p>
       </div>
       <div className="px-6 py-5">{children}</div>
     </div>
@@ -888,7 +1123,7 @@ function EBookDetailPage() {
               {/* Actions */}
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
-                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs"
+                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs cursor-pointer"
                   style={{
                     backgroundColor: "var(--brand)",
                     color: "var(--brand-contrast)",
@@ -897,7 +1132,7 @@ function EBookDetailPage() {
                   <Eye size={16} />
                   Preview eBook
                 </button>
-                <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary">
+                <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer">
                   <BookOpen size={16} />
                   Preview Sample eBook
                 </button>
@@ -1017,6 +1252,9 @@ function EBookDetailPage() {
 
         {/* ── Library Allocation (For Library-Only Publisher) ─────────── */}
         {isLibraryOnly && <LibraryStoreAllocationCard />}
+
+        {/* ── Price Details & Rental Plan ─────────────────────────────── */}
+        <PriceDetailsAndRentalPlanSection gstRate={extra.gstRate} />
       </div>
 
       {/* Edit License Count Modal */}

@@ -169,51 +169,49 @@ export function LibraryAdminDepartmentsPage() {
   };
 
   return (
-    <AppShell title="Departments">
+    <AppShell title="Departments" subtitle="Manage university departments and academic faculties.">
       <div className="p-4 md:p-8 space-y-6">
-        {/* Controls: Search + Add Department + Import Department */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
-          {/* Search Box */}
-          <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-64">
-            <Search size={16} className="text-muted-foreground shrink-0" />
+        {/* Single Line Filter Toolbar */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-border bg-card p-4 relative z-10">
+          {/* Main Search Bar */}
+          <div className="relative flex-1 min-w-[200px] w-full">
+            <Search
+              size={17}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search departments..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent pl-2 text-xs outline-none text-foreground"
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="text-muted-foreground hover:text-foreground p-1 cursor-pointer"
-              >
-                <X size={12} />
-              </button>
-            )}
-          </label>
+          </div>
 
-          {/* + Add Department Button */}
-          <button
-            onClick={handleOpenAddDept}
-            className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
-          >
-            <Plus size={14} />
-            <span>Add Department</span>
-          </button>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2.5 shrink-0 sm:ml-auto">
+            {/* + Add Department Button */}
+            <button
+              onClick={handleOpenAddDept}
+              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-2xs cursor-pointer"
+            >
+              <Plus size={15} />
+              <span>Add Department</span>
+            </button>
 
-          {/* Import Department Button */}
-          <button
-            onClick={() => {
-              setUploadFile(null);
-              setUploadProgress(null);
-              setIsImportOpen(true);
-            }}
-            className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-border bg-white dark:bg-card text-foreground px-4 text-xs font-semibold hover:bg-secondary/40 active:scale-[0.98] transition-all cursor-pointer"
-          >
-            <Download size={14} className="text-muted-foreground" />
-            <span>Import</span>
-          </button>
+            {/* Import Department Button */}
+            <button
+              onClick={() => {
+                setUploadFile(null);
+                setUploadProgress(null);
+                setIsImportOpen(true);
+              }}
+              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-card text-foreground px-4 text-xs font-semibold hover:bg-secondary/40 active:scale-[0.98] transition-all cursor-pointer shadow-2xs"
+            >
+              <Download size={15} className="text-muted-foreground" />
+              <span>Import</span>
+            </button>
+          </div>
         </div>
 
         {/* Main Departments Table Container */}

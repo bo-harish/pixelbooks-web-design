@@ -17,6 +17,9 @@ import {
   ListOrdered,
   Store,
   BookOpen,
+  Globe,
+  Copy,
+  ExternalLink,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -209,6 +212,15 @@ function RichTextEditor({
   );
 }
 
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 export function NewPublisherBundlePage() {
   const [publisherType] = usePublisherType();
   const navigate = useNavigate();
@@ -224,13 +236,40 @@ export function NewPublisherBundlePage() {
   }
 
   // Form State
+  const bundleBaseUrl = "azdevlibcustomer.pixelbooksapp.com/bundles/";
   const [title, setTitle] = useState("");
+  const [bundleSlug, setBundleSlug] = useState("");
+  const [isSlugEdited, setIsSlugEdited] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
   const [bundleSummary, setBundleSummary] = useState(
     "A comprehensive curated bundle featuring key reference titles for higher education and policy studies."
   );
   const [pricing, setPricing] = useState("");
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    if (!isSlugEdited) {
+      setBundleSlug(slugify(val));
+    }
+  };
+
+  const handleSlugChange = (val: string) => {
+    setBundleSlug(slugify(val));
+    setIsSlugEdited(true);
+  };
+
+  const handleCopyUrl = async () => {
+    const fullUrl = `https://${bundleBaseUrl}${bundleSlug || "new-bundle"}`;
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+      setCopiedUrl(true);
+      setTimeout(() => setCopiedUrl(false), 1500);
+    } catch {
+      setCopiedUrl(false);
+    }
+  };
 
   // Tags
   const [tags, setTags] = useState<string[]>(["Education", "Research"]);
@@ -357,10 +396,64 @@ export function NewPublisherBundlePage() {
               <input
                 type="text"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="e.g. Higher Education & Research Collection 2026"
                 className="h-11 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none focus:border-[var(--brand)] transition-colors"
               />
+            </div>
+
+            {/* Bundle URL */}
+            <div className="md:col-span-2 space-y-1.5">
+              <label className="block text-xs font-medium text-foreground flex items-center gap-1.5">
+                <Globe size={14} className="text-muted-foreground" />
+                Bundle URL *
+              </label>
+              <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
+                <div className="flex h-11 flex-1 items-center overflow-hidden rounded-xl border border-border bg-card shadow-2xs focus-within:border-[var(--brand)] transition-colors">
+                  <div className="h-full border-r border-border bg-secondary/50 px-3 text-xs font-medium text-muted-foreground flex items-center shrink-0">
+                    https://{bundleBaseUrl}
+                  </div>
+                  <input
+                    type="text"
+                    value={bundleSlug}
+                    onChange={(e) => handleSlugChange(e.target.value)}
+                    placeholder="higher-education-research-collection-2026"
+                    className="h-full min-w-0 flex-1 bg-transparent px-3 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-[12.5px]"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleCopyUrl}
+                    className="inline-flex h-11 items-center gap-2 px-3.5 rounded-xl border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
+                    title={copiedUrl ? "Copied to clipboard" : "Copy URL"}
+                  >
+                    {copiedUrl ? (
+                      <>
+                        <Check size={14} className="text-emerald-500" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14} className="text-muted-foreground" />
+                        <span>Copy Link</span>
+                      </>
+                    )}
+                  </button>
+
+                  <a
+                    href={`https://${bundleBaseUrl}${bundleSlug || "new-bundle"}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
+                    title="Preview Bundle Page"
+                  >
+                    <ExternalLink size={15} />
+                  </a>
+                </div>
+              </div>
+
             </div>
 
             {/* Bundle Summary (RTB Box) */}
@@ -562,11 +655,10 @@ export function NewPublisherBundlePage() {
                 <div
                   key={b.id}
                   onClick={() => toggleSelect(b.id)}
-                  className={`group relative flex items-center gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer ${
-                    isSelected
+                  className={`group relative flex items-center gap-3.5 p-3.5 rounded-xl border transition-all cursor-pointer ${isSelected
                       ? "border-[var(--brand)] bg-[var(--sidebar-highlight)]/70 shadow-2xs ring-1 ring-[var(--brand)]/20"
                       : "border-border bg-card hover:border-border/80 hover:bg-secondary/30"
-                  }`}
+                    }`}
                 >
                   <div
                     className="relative flex h-16 w-11 shrink-0 flex-col items-center justify-center rounded-lg text-[10px] font-bold text-white shadow-2xs overflow-hidden"
@@ -590,11 +682,10 @@ export function NewPublisherBundlePage() {
                   </div>
 
                   <div
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                      isSelected
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${isSelected
                         ? "border-[var(--brand)] bg-[var(--brand)] text-white"
                         : "border-border group-hover:border-muted-foreground"
-                    }`}
+                      }`}
                   >
                     {isSelected && <Check size={12} />}
                   </div>
@@ -747,6 +838,13 @@ export function NewPublisherBundlePage() {
                     <span>Bundle Title:</span>
                     <span className="font-semibold text-foreground truncate max-w-[180px]">
                       {title || "Not set"}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Bundle URL:</span>
+                    <span className="font-mono text-[11px] text-foreground truncate max-w-[180px]">
+                      /{bundleSlug || "..."}
                     </span>
                   </div>
 

@@ -1624,7 +1624,7 @@ function RentalDialog({
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
                 placeholder="Unit Price (excl. GST)"
-                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-right text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
 
@@ -1637,16 +1637,17 @@ function RentalDialog({
                 value={offer}
                 onChange={(e) => setOffer(e.target.value)}
                 placeholder="Offer Price (excl. GST)"
-                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+                className="h-14 w-full rounded-xl border border-border bg-card px-4 text-right text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
             </div>
 
             <button
               type="button"
               onClick={handleAdd}
-              className="h-14 rounded-xl px-6 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90"
+              className="inline-flex h-14 items-center justify-center gap-1.5 rounded-xl px-6 text-sm font-semibold shadow-2xs transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer"
               style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
             >
+              <Plus size={16} />
               Add
             </button>
           </div>

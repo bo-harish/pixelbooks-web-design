@@ -200,7 +200,34 @@
   background: transparent;
 }
 
+/* Ensure all interactive buttons, clickable controls, and action elements show hand pointer on hover */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+label[for],
+a {
+  cursor: pointer;
+}
 
+button:disabled,
+[role="button"][aria-disabled="true"],
+input:disabled {
+  cursor: not-allowed;
+}
 
+/* Remove incremental spin arrows from number inputs */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

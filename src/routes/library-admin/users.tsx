@@ -917,7 +917,7 @@ function LibraryAdminUsersPage() {
     >
       <div className="space-y-6 p-4 md:p-8">
         {/* Single Line Filter Toolbar */}
-        <div className="flex flex-col xl:flex-row xl:items-center gap-2.5 rounded-xl border border-border bg-card p-4 overflow-x-auto">
+        <div className="flex flex-col xl:flex-row xl:items-center gap-2.5 rounded-xl border border-border bg-card p-4 relative z-10">
           {/* Main Search Bar */}
           <div className="relative flex-1 min-w-[200px] w-full">
             <Search

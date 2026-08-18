@@ -479,9 +479,9 @@ function LibraryCataloguePage() {
     >
       <div className="space-y-6 p-4 md:p-8">
         {/* Single Line Filter Toolbar */}
-        <div className="flex flex-col xl:flex-row xl:items-center gap-2.5 rounded-xl border border-border bg-card p-4 overflow-x-auto">
+        <div className="flex flex-col xl:flex-row xl:items-center gap-2.5 rounded-xl border border-border bg-card p-4 relative z-10">
           {/* Main Search Bar */}
-          <div className="relative flex-1 min-w-[200px] w-full max-w-md">
+          <div className="relative flex-1 min-w-[240px] w-full max-w-2xl lg:max-w-3xl">
             <Search
               size={17}
               className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -509,6 +509,7 @@ function LibraryCataloguePage() {
             }}
             searchable
             searchPlaceholder="Search status..."
+            align="left"
             className="w-full sm:w-auto min-w-[130px] shrink-0"
           />
 

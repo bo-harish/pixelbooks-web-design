@@ -559,73 +559,7 @@ const initialOrders: Order[] = [
   },
 ];
 
-// Available books in the Publisher Catalogue to buy/request
-const purchaseableBooks = [
-  {
-    id: "pub-1",
-    title: "The Innocents Abroad",
-    author: "Mark Twain",
-    price: 15.99,
-    initials: "TIA",
-    cover: "linear-gradient(135deg, oklch(0.55 0.14 240), oklch(0.35 0.09 240))",
-  },
-  {
-    id: "pub-2",
-    title: "Life on the Mississippi",
-    author: "Mark Twain",
-    price: 18.32,
-    initials: "LOM",
-    cover: "linear-gradient(135deg, oklch(0.5 0.13 30), oklch(0.32 0.08 30))",
-  },
-  {
-    id: "pub-3",
-    title: "On Growth and Form",
-    author: "D'Arcy Wentworth Thompson",
-    price: 35.98,
-    initials: "OGF",
-    cover: "linear-gradient(135deg, oklch(0.5 0.1 60), oklch(0.32 0.06 60))",
-  },
-  {
-    id: "pub-4",
-    title: "Of the Just Shaping of Letters",
-    author: "Albrecht Dürer",
-    price: 39.5,
-    initials: "OJS",
-    cover: "linear-gradient(135deg, oklch(0.55 0.12 300), oklch(0.32 0.08 300))",
-  },
-  {
-    id: "pub-5",
-    title: "Knowledge for the Time",
-    author: "John Timbs",
-    price: 22.0,
-    initials: "KFT",
-    cover: "linear-gradient(135deg, oklch(0.5 0.12 200), oklch(0.32 0.07 200))",
-  },
-  {
-    id: "pub-6",
-    title: "Gulliver's Travels",
-    author: "Jonathan Swift",
-    price: 14.5,
-    initials: "GTR",
-    cover: "linear-gradient(135deg, oklch(0.45 0.09 145), oklch(0.28 0.06 145))",
-  },
-  {
-    id: "pub-7",
-    title: "Common Sense",
-    author: "Thomas Paine",
-    price: 9.9,
-    initials: "CMS",
-    cover: "linear-gradient(135deg, oklch(0.55 0.14 240), oklch(0.32 0.09 240))",
-  },
-  {
-    id: "pub-8",
-    title: "A Tangled Tale",
-    author: "Lewis Carroll",
-    price: 9.99,
-    initials: "ATT",
-    cover: "linear-gradient(135deg, oklch(0.5 0.13 10), oklch(0.32 0.08 10))",
-  },
-];
+
 
 const departments = [
   "Literature & Languages",
@@ -656,17 +590,7 @@ function LibraryAdminOrdersPage() {
   // Modal Dialog states
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [isBuyOpen, setIsBuyOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
-
-  // Buy eBook Form states
-  const [buySearch, setBuySearch] = useState("");
-  const [selectedBuyBook, setSelectedBuyBook] = useState<(typeof purchaseableBooks)[0] | null>(
-    null,
-  );
-  const [buyCopies, setBuyCopies] = useState(5);
-  const [buyDepartment, setBuyDepartment] = useState(departments[0]);
-  const [buyComments, setBuyComments] = useState("");
 
   // Upload Offline Order Form states
   const [uploadFile, setUploadFile] = useState<File | null>(null);
@@ -759,58 +683,6 @@ function LibraryAdminOrdersPage() {
     setIsViewOpen(true);
   };
 
-  const handleBuySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedBuyBook) {
-      toast.error("Please select a book to buy.");
-      return;
-    }
-
-    const newOrderId = `off_order_15_${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-    const newOrder: Order = {
-      id: newOrderId,
-      status: "Pending",
-      date: new Date().toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
-      orderedBy: "Dr. Anya Ramanathan",
-      department: buyDepartment,
-      totalAmount: parseFloat((selectedBuyBook.price * buyCopies).toFixed(2)),
-      items: [
-        {
-          title: selectedBuyBook.title,
-          author: selectedBuyBook.author,
-          copies: buyCopies,
-          price: selectedBuyBook.price,
-          initials: selectedBuyBook.initials,
-          cover: selectedBuyBook.cover,
-        },
-      ],
-      statusHistory: [
-        {
-          status: "Pending",
-          date: new Date().toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }),
-          user: "Dr. Anya Ramanathan",
-          note: buyComments || "Direct digital license order placed.",
-        },
-      ],
-    };
-
-    setOrders([newOrder, ...orders]);
-    setIsBuyOpen(false);
-    // Reset form
-    setSelectedBuyBook(null);
-    setBuyCopies(5);
-    setBuyComments("");
-    setPage(1);
-    toast.success(`eBook Order ${newOrderId} requested successfully!`);
-  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -915,15 +787,7 @@ function LibraryAdminOrdersPage() {
         toast.success(`Spreadsheet upload completed! Order ${newOrderId} processed.`);
       }
     }, 200);
-  };
 
-  const filteredPurchaseBooks = purchaseableBooks.filter(
-    (b) =>
-      b.title.toLowerCase().includes(buySearch.toLowerCase()) ||
-      b.author.toLowerCase().includes(buySearch.toLowerCase()),
-  );
-
-  if (isViewOpen && selectedOrder) {
     const isFreeOrder =
       selectedOrder.totalAmount === 0 || selectedOrder.items.every((item) => item.price === 0);
     const isRupee = selectedOrder.id.toLowerCase().startsWith("off_order_15");
@@ -1104,44 +968,12 @@ function LibraryAdminOrdersPage() {
   return (
     <AppShell title="Orders" subtitle="Track and manage library eBook acquisition orders.">
       <div className="space-y-6 p-4 md:p-8">
-        {/* Actions Bar */}
-        <div className="flex items-center justify-end gap-3">
-          <button
-            onClick={() => setIsBuyOpen(true)}
-            className="flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] text-white px-4 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
-          >
-            <Plus size={16} />
-            <span>Buy eBook</span>
-          </button>
-          <button
-            onClick={() => setIsUploadOpen(true)}
-            className="flex h-10 items-center justify-center gap-2 rounded-lg border border-border bg-white dark:bg-card px-4 text-sm font-semibold hover:bg-secondary/60 active:scale-[0.98] transition-all text-muted-foreground hover:text-foreground cursor-pointer"
-          >
-            <Upload size={16} />
-            <span>Upload Order</span>
-          </button>
-        </div>
-
-        {/* Redesigned Unified Toolbar */}
-        <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between lg:p-5">
-          {/* Left Side: Status Dropdown + Search Input */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-1 w-full lg:max-w-xl">
-            {/* Dropdown Filter */}
-            <DropdownSelect
-              value={activeTab === "Pending" ? "Pending Approval" : activeTab}
-              options={["All", "Approved", "Pending Approval", "Rejected"]}
-              onChange={(label) => {
-                const tab = label === "Pending Approval" ? "Pending" : (label as "All" | "Approved" | "Pending" | "Rejected");
-                setActiveTab(tab);
-                setPage(1);
-              }}
-              searchable
-              searchPlaceholder="Search status..."
-              className="w-full sm:w-auto min-w-[160px]"
-            />
-
+        {/* Unified Filter & Action Toolbar */}
+        <div className="flex flex-col xl:flex-row xl:items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-sm relative z-10">
+          {/* Left Side: Search Input + Status Dropdown */}
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center flex-1 w-full max-w-xl">
             {/* Search Input */}
-            <div className="relative flex-1">
+            <div className="relative flex-1 min-w-[200px] w-full">
               <Search
                 size={16}
                 className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -1154,30 +986,45 @@ function LibraryAdminOrdersPage() {
                   setSearchQuery(e.target.value);
                   setPage(1);
                 }}
-                className="h-10 w-full rounded-lg border border-border bg-white dark:bg-card pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] text-foreground"
+                className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
               />
             </div>
+
+            {/* Dropdown Filter */}
+            <DropdownSelect
+              value={activeTab === "Pending" ? "Pending Approval" : activeTab}
+              options={["All", "Approved", "Pending Approval", "Rejected"]}
+              onChange={(label) => {
+                const tab = label === "Pending Approval" ? "Pending" : (label as "All" | "Approved" | "Pending" | "Rejected");
+                setActiveTab(tab);
+                setPage(1);
+              }}
+              searchable
+              searchPlaceholder="Search status..."
+              align="left"
+              className="w-full sm:w-auto min-w-[160px] shrink-0"
+            />
           </div>
 
-          {/* Right Side: Date Presets & Date Pickers */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center md:gap-3 w-full lg:w-auto">
+          {/* Right Side: Date Presets & Date Pickers + Action Buttons */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0 xl:ml-auto">
             {/* Preset Dropdown */}
             <div className="relative w-full sm:w-auto">
               <button
                 onClick={() => setPresetOpen((v) => !v)}
-                className="flex h-11 w-full items-center justify-between gap-6 rounded-lg border border-border bg-card px-3 text-sm font-medium sm:w-40 text-foreground cursor-pointer"
+                className="flex h-11 w-full items-center justify-between gap-4 rounded-lg border border-border bg-card px-3 text-sm font-medium sm:w-36 text-foreground cursor-pointer"
               >
                 <span>{preset}</span>
                 <ChevronDown size={15} className="text-muted-foreground" />
               </button>
               {presetOpen && (
-                <div className="absolute right-0 z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-40">
+                <div className="absolute right-0 z-20 mt-2 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:w-36">
                   {PRESETS.map((p) => (
                     <button
                       key={p}
                       onClick={() => handlePresetSelect(p)}
-                      className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary ${
-                        p === preset ? "font-semibold text-foreground" : "text-muted-foreground"
+                      className={`flex w-full items-center px-3 py-2 text-left text-xs transition-colors hover:bg-secondary cursor-pointer ${
+                        p === preset ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
                       }`}
                     >
                       {p}
@@ -1187,33 +1034,52 @@ function LibraryAdminOrdersPage() {
               )}
             </div>
 
-            {/* Start Date */}
-            <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36">
-              <input
-                type="date"
-                value={from}
-                onChange={(e) => {
-                  setFrom(e.target.value);
-                  setPreset("Custom");
-                  setPage(1);
-                }}
-                className="w-full bg-transparent text-sm outline-none text-foreground"
-              />
-            </label>
+            {/* Date Range Pickers */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
+                <input
+                  type="date"
+                  value={from}
+                  onChange={(e) => {
+                    setFrom(e.target.value);
+                    setPreset("Custom");
+                    setPage(1);
+                  }}
+                  className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
+                />
+              </label>
+              <span className="text-xs font-medium text-muted-foreground">to</span>
+              <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-2.5">
+                <input
+                  type="date"
+                  value={to}
+                  onChange={(e) => {
+                    setTo(e.target.value);
+                    setPreset("Custom");
+                    setPage(1);
+                  }}
+                  className="bg-transparent text-xs outline-none text-foreground cursor-pointer"
+                />
+              </label>
+            </div>
 
-            {/* End Date */}
-            <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:w-36">
-              <input
-                type="date"
-                value={to}
-                onChange={(e) => {
-                  setTo(e.target.value);
-                  setPreset("Custom");
-                  setPage(1);
-                }}
-                className="w-full bg-transparent text-sm outline-none text-foreground"
-              />
-            </label>
+            {/* Action Buttons: Buy eBook & Upload Order */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-2xs cursor-pointer shrink-0"
+              >
+                <Plus size={15} />
+                <span>Buy eBook</span>
+              </button>
+              <button
+                onClick={() => setIsUploadOpen(true)}
+                className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 text-xs font-semibold hover:bg-secondary/60 active:scale-[0.98] transition-all text-muted-foreground hover:text-foreground cursor-pointer shrink-0 shadow-2xs"
+              >
+                <Upload size={15} />
+                <span>Upload Order</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1359,171 +1225,7 @@ function LibraryAdminOrdersPage() {
 
         {/* View Details Modal Dialog */}
 
-        {/* Buy eBook Modal Dialog */}
-        <Dialog open={isBuyOpen} onOpenChange={setIsBuyOpen}>
-          <DialogContent className="max-w-md bg-card border border-border rounded-xl shadow-xl p-6">
-            <div className="border-b border-border pb-4 mb-4">
-              <DialogTitle className="text-lg font-bold tracking-tight text-foreground">
-                Order / Buy digital eBook
-              </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                Request new digital library licenses from publishers.
-              </DialogDescription>
-            </div>
 
-            <form onSubmit={handleBuySubmit} className="space-y-4 text-xs sm:text-sm">
-              {/* Publisher Catalogue selection search */}
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground">Select eBook</label>
-                <div className="relative">
-                  <Search
-                    size={14}
-                    className="pointer-events-none absolute left-3 top-3.5 text-muted-foreground"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Search publisher books..."
-                    value={buySearch}
-                    onChange={(e) => {
-                      setBuySearch(e.target.value);
-                      setSelectedBuyBook(null);
-                    }}
-                    className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card pl-8 pr-4 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                  />
-                </div>
-
-                {/* Dropdown list matches */}
-                {!selectedBuyBook && buySearch.trim() !== "" && (
-                  <div className="border border-border rounded-lg max-h-40 overflow-y-auto bg-card divide-y divide-border shadow-sm mt-1">
-                    {filteredPurchaseBooks.length === 0 ? (
-                      <p className="p-3 text-center text-xs text-muted-foreground">
-                        No matches found
-                      </p>
-                    ) : (
-                      filteredPurchaseBooks.map((b) => (
-                        <button
-                          type="button"
-                          key={b.id}
-                          onClick={() => {
-                            setSelectedBuyBook(b);
-                            setBuySearch(b.title);
-                          }}
-                          className="w-full text-left p-2.5 hover:bg-secondary/40 transition-colors flex items-center gap-2 text-xs"
-                        >
-                          <div
-                            className="flex h-8 w-5 shrink-0 items-center justify-center rounded text-[7px] font-bold text-white"
-                            style={{ background: b.cover }}
-                          >
-                            {b.initials}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-semibold text-foreground truncate">{b.title}</p>
-                            <p className="text-muted-foreground text-[10px]">
-                              {b.author} · ${b.price}
-                            </p>
-                          </div>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {selectedBuyBook && (
-                <div className="rounded-lg border border-[var(--brand)] bg-[var(--sidebar-highlight)]/40 p-3 flex items-center gap-3">
-                  <div
-                    className="flex h-11 w-8 shrink-0 items-center justify-center rounded-md text-[8px] font-bold text-white shadow-sm"
-                    style={{ background: selectedBuyBook.cover }}
-                  >
-                    {selectedBuyBook.initials}
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-[var(--brand)]">
-                      {selectedBuyBook.title}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">{selectedBuyBook.author}</p>
-                    <p className="text-[10px] font-bold text-foreground mt-0.5">
-                      Price: ${selectedBuyBook.price.toFixed(2)} / license
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Quantity copies requested */}
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground">
-                  eBook Copies / Licenses
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  max={500}
-                  value={buyCopies}
-                  onChange={(e) => setBuyCopies(parseInt(e.target.value) || 1)}
-                  className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card px-3 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                  required
-                />
-              </div>
-
-              {/* Department selection */}
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground">
-                  Department Beneficiary
-                </label>
-                <select
-                  value={buyDepartment}
-                  onChange={(e) => setBuyDepartment(e.target.value)}
-                  className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                >
-                  {departments.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Request rationale/comments */}
-              <div className="space-y-1.5">
-                <label className="font-semibold text-muted-foreground">Acquisition Rationale</label>
-                <textarea
-                  value={buyComments}
-                  onChange={(e) => setBuyComments(e.target.value)}
-                  placeholder="Explain why this acquisition is required..."
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-white dark:bg-card p-3 text-xs focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
-                />
-              </div>
-
-              {/* Price summary block */}
-              {selectedBuyBook && (
-                <div className="flex items-center justify-between border-t border-border pt-3 mt-1.5">
-                  <span className="text-xs text-muted-foreground">Total Budget Estimate:</span>
-                  <span className="text-sm font-bold text-foreground">
-                    ${(selectedBuyBook.price * buyCopies).toFixed(2)}
-                  </span>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsBuyOpen(false)}
-                  className="h-9 rounded-lg border border-border bg-white dark:bg-card px-4 text-xs font-semibold text-muted-foreground hover:bg-secondary/40 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="h-9 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
-                >
-                  Submit Order Request
-                </button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
 
         {/* Upload Order Modal Dialog */}
         <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>

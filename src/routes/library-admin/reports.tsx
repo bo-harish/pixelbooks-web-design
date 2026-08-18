@@ -495,35 +495,7 @@ export function LibraryAdminReportsPage() {
             Back to User Engagement Summary Report
           </button>
 
-          {/* Top Actions Row */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-end gap-4">
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              {/* Details Search input */}
-              <label className="relative flex h-10 items-center rounded-lg border border-border bg-white dark:bg-card px-3 w-full sm:max-w-xs flex-1 md:flex-none">
-                <Search size={16} className="text-muted-foreground shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  value={detailsSearchQuery}
-                  onChange={(e) => {
-                    setDetailsSearchQuery(e.target.value);
-                    setDetailsPage(1);
-                  }}
-                  className="w-full bg-transparent pl-2 text-xs outline-none text-foreground"
-                />
-              </label>
-
-              {/* Export details button */}
-              <button
-                onClick={handleDetailsExport}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer shrink-0"
-              >
-                <span>Export Data</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Metadata Card */}
+          {/* Metadata Card (Title, ISBN, Publisher, Category) */}
           <div className="bg-card border border-border rounded-xl p-5 text-sm select-none">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-12">
               <div className="space-y-2 text-xs md:text-sm">
@@ -558,6 +530,39 @@ export function LibraryAdminReportsPage() {
                   </span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Search & Export Toolbar Box */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 rounded-xl border border-border bg-card p-4 relative z-10">
+            {/* Main Search Bar */}
+            <div className="relative flex-1 min-w-[200px] w-full">
+              <Search
+                size={17}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={detailsSearchQuery}
+                onChange={(e) => {
+                  setDetailsSearchQuery(e.target.value);
+                  setDetailsPage(1);
+                }}
+                className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2.5 shrink-0 sm:ml-auto">
+              <button
+                type="button"
+                onClick={handleDetailsExport}
+                className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] text-white px-4 text-xs font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-2xs cursor-pointer shrink-0"
+              >
+                <Upload size={15} />
+                <span>Export Data</span>
+              </button>
             </div>
           </div>
 
@@ -692,7 +697,8 @@ export function LibraryAdminReportsPage() {
     <AppShell title="User Engagement Summary Report">
       <div className="p-4 md:p-8 space-y-6">
         {/* Toolbar matching 2-row layout with searchable dropdowns */}
-        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+        {/* Filter Toolbar Card */}
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 relative z-10">
           {/* Top Row: Search Bar (Left) + Date Range & Actions (Right) */}
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             {/* Main Search Bar */}
@@ -797,7 +803,7 @@ export function LibraryAdminReportsPage() {
           </div>
 
           {/* Bottom Row: Publisher, Category & Title Searchable Dropdown Filters in One Line */}
-          <div className="flex items-center gap-2.5 pt-3 border-t border-border/60 overflow-x-auto">
+          <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-border/60 relative z-10">
             {/* Publisher Dropdown */}
             <DropdownSelect
               value={selectedPublisher === "All" ? "All Publishers" : selectedPublisher}
@@ -808,6 +814,7 @@ export function LibraryAdminReportsPage() {
               }}
               searchable
               searchPlaceholder="Search publisher..."
+              align="left"
               className="min-w-[150px] shrink-0"
             />
 
@@ -821,6 +828,7 @@ export function LibraryAdminReportsPage() {
               }}
               searchable
               searchPlaceholder="Search category..."
+              align="left"
               className="min-w-[160px] shrink-0"
             />
 
@@ -834,6 +842,7 @@ export function LibraryAdminReportsPage() {
               }}
               searchable
               searchPlaceholder="Search title..."
+              align="left"
               className="min-w-[160px] shrink-0"
             />
           </div>

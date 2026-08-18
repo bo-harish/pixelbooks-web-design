@@ -282,7 +282,9 @@ function SectionCard({ title, children }: { title: string; children: React.React
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
       <div className="border-b border-border px-6 py-3.5">
-        <p className="text-sm font-semibold text-foreground">{title}</p>
+        <h2 className="text-xs font-extrabold uppercase tracking-wider text-[#3b495e] dark:text-slate-300">
+          {title}
+        </h2>
       </div>
       <div className="px-6 py-5">{children}</div>
     </div>
