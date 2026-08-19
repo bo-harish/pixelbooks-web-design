@@ -21,6 +21,7 @@ import {
   HelpCircle,
   BookOpen,
 } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 
 export const Route = createFileRoute("/publisher/catalogue-import/new")({
@@ -406,47 +407,48 @@ export function NewCatalogueImportPage() {
           <div className="space-y-6 lg:col-span-8">
             {/* BOX 1: Step 1 - Import Guidelines & Instructions */}
             <div className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
-              <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
                 <div
                   onClick={() => setInstructionsOpen(!instructionsOpen)}
-                  className="flex cursor-pointer items-center gap-3 select-none"
+                  className="group flex cursor-pointer items-center gap-3 select-none"
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold text-sm">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold text-sm shrink-0">
                     1
                   </span>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-base font-semibold text-foreground">
-                        Step-by-Step Import Instructions
-                      </h2>
-                      <span className="text-muted-foreground">
-                        {instructionsOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
+                    <h2 className="text-base font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
+                      Step-by-Step Import Instructions
+                    </h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {instructionsOpen
-                        ? "Click to collapse instructions"
-                        : "Click to expand step-by-step metadata & file guidelines"}
+                        ? "Guidelines for metadata structure, format conventions & naming rules."
+                        : "Click to view metadata structure, format conventions & naming rules."}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-start sm:self-auto">
                   <button
                     type="button"
                     onClick={() => setInstructionsOpen(!instructionsOpen)}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-semibold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+                    className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card px-3.5 text-xs font-semibold text-foreground transition-all hover:bg-secondary hover:border-border/80 shadow-2xs whitespace-nowrap shrink-0 cursor-pointer"
                   >
-                    {instructionsOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-                    {instructionsOpen ? "Hide Instructions" : "Show Instructions"}
+                    <span>{instructionsOpen ? "Hide Instructions" : "Show Instructions"}</span>
+                    <ChevronDown
+                      size={14}
+                      className={`text-muted-foreground transition-transform duration-200 ${
+                        instructionsOpen ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
                   <button
                     type="button"
-                    className="inline-flex h-9 items-center gap-2 rounded-lg px-3.5 text-xs font-semibold shadow-xs transition-opacity hover:opacity-90 cursor-pointer"
+                    onClick={() => toast.success("Sample metadata Excel template (.xlsx) downloaded.")}
+                    className="inline-flex h-9 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-xs transition-all hover:opacity-90 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
                     style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                   >
-                    <Download size={15} strokeWidth={2.4} />
-                    Download Excel Template
+                    <Download size={14} strokeWidth={2.4} className="shrink-0" />
+                    <span>Download Excel Template</span>
                   </button>
                 </div>
               </div>

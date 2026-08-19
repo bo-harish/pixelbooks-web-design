@@ -426,9 +426,6 @@ function DashboardContent() {
               <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Total Library Users
               </h2>
-              <span className="inline-flex items-center rounded-md bg-sidebar-highlight px-2 py-0.5 text-[10px] font-bold text-brand">
-                Active Enrolled Members
-              </span>
             </div>
             <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mt-0.5">
               14

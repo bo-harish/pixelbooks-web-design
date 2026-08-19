@@ -56,23 +56,50 @@ const PAGE_SIZE = 8;
 
 function StatusPill({ status }: { status: PromoStatus }) {
   const map = {
-    "Pending for Admin Approval": { color: "var(--warning)", Icon: Clock },
-    Approved: { color: "var(--success)", Icon: CheckCircle2 },
-    Rejected: { color: "var(--danger)", Icon: XCircle },
-    Disabled: { color: "var(--muted-foreground)", Icon: Ban },
-    Expired: { color: "var(--danger)", Icon: AlertCircle },
+    "Pending for Admin Approval": {
+      bgClass: "bg-amber-500/12 dark:bg-amber-500/20",
+      textColor: "text-amber-600 dark:text-amber-400 font-semibold",
+      borderColor: "border-amber-500/30 dark:border-amber-500/40",
+      Icon: Clock,
+    },
+    Approved: {
+      bgClass: "bg-emerald-500/12 dark:bg-emerald-500/20",
+      textColor: "text-emerald-600 dark:text-emerald-400 font-semibold",
+      borderColor: "border-emerald-500/30 dark:border-emerald-500/40",
+      Icon: CheckCircle2,
+    },
+    Rejected: {
+      bgClass: "bg-rose-500/12 dark:bg-rose-500/20",
+      textColor: "text-rose-600 dark:text-rose-400 font-semibold",
+      borderColor: "border-rose-500/30 dark:border-rose-500/40",
+      Icon: XCircle,
+    },
+    Disabled: {
+      bgClass: "bg-slate-500/12 dark:bg-slate-500/20",
+      textColor: "text-slate-600 dark:text-slate-400 font-semibold",
+      borderColor: "border-slate-500/30 dark:border-slate-500/40",
+      Icon: Ban,
+    },
+    Expired: {
+      bgClass: "bg-rose-500/12 dark:bg-rose-500/20",
+      textColor: "text-rose-600 dark:text-rose-400 font-semibold",
+      borderColor: "border-rose-500/30 dark:border-rose-500/40",
+      Icon: AlertCircle,
+    },
   } as const;
-  const { color, Icon } = map[status] ?? { color: "var(--muted-foreground)", Icon: Clock };
+  const cfg = map[status] ?? {
+    bgClass: "bg-slate-500/12 dark:bg-slate-500/20",
+    textColor: "text-slate-600 dark:text-slate-400 font-semibold",
+    borderColor: "border-slate-500/30 dark:border-slate-500/40",
+    Icon: Clock,
+  };
+  const Icon = cfg.Icon;
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold"
-      style={{
-        backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
-        color,
-      }}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold tracking-tight shadow-2xs whitespace-nowrap ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor}`}
     >
-      <Icon size={13} />
-      {status}
+      <Icon size={13} className="shrink-0" />
+      <span>{status}</span>
     </span>
   );
 }
