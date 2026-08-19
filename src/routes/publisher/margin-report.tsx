@@ -27,20 +27,23 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/publisher/margin-report")({
-  head: () => ({
-    meta: [
-      { title: "Margin Report — PixelBooks" },
-      {
-        name: "description",
-        content: "Track sales, royalty, receivables and ledger transactions.",
-      },
-      { property: "og:title", content: "Margin Report — PixelBooks" },
-      {
-        property: "og:description",
-        content: "Track sales, royalty, receivables and ledger transactions.",
-      },
-    ],
-  }),
+  head: () => {
+    const isAuthor = typeof window !== "undefined" && (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
+    return {
+      meta: [
+        { title: `${isAuthor ? "Royalty" : "Margin"} Report — PixelBooks` },
+        {
+          name: "description",
+          content: "Track sales, royalty, receivables and ledger transactions.",
+        },
+        { property: "og:title", content: `${isAuthor ? "Royalty" : "Margin"} Report — PixelBooks` },
+        {
+          property: "og:description",
+          content: "Track sales, royalty, receivables and ledger transactions.",
+        },
+      ],
+    };
+  },
   component: MarginReportPage,
 });
 
@@ -407,6 +410,7 @@ function BookCover({ color, size = 40 }: { color: string; size?: number }) {
 }
 
 function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () => void }) {
+  const isAuthor = typeof window !== "undefined" && (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(detail.items.length / DETAIL_PAGE_SIZE));
   const paged = detail.items.slice((page - 1) * DETAIL_PAGE_SIZE, page * DETAIL_PAGE_SIZE);
@@ -442,7 +446,7 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
                 <th className="py-4 pr-4">Unit Price</th>
                 <th className="py-4 pr-4">Qty</th>
                 <th className="py-4 pr-4">Net Amount</th>
-                <th className="py-4 pr-5">Margin Payable</th>
+                <th className="py-4 pr-5">{isAuthor ? "Royalty Payable" : "Margin Payable"}</th>
               </tr>
             </thead>
             <tbody>
@@ -525,9 +529,9 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
           </div>
         </div>
 
-        {/* Total margin footer */}
+        {/* Total margin / royalty footer */}
         <div className="flex items-center justify-between border-t border-border px-5 py-4">
-          <span className="text-sm font-semibold">Total Margin</span>
+          <span className="text-sm font-semibold">{isAuthor ? "Total Royalty" : "Total Margin"}</span>
           <span className="text-base font-bold">₹{totalMargin.toFixed(2)}</span>
         </div>
       </div>
@@ -538,6 +542,7 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
 function MarginReportPage() {
   const [publisherType] = usePublisherType();
   const navigate = useNavigate();
+  const isAuthor = typeof window !== "undefined" && (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
 
   useEffect(() => {
     if (publisherType === "Library-Only Publisher") {
@@ -555,7 +560,7 @@ function MarginReportPage() {
   const [to, setTo] = useState("2026-07-04");
   const [selectedTxn, setSelectedTxn] = useState<TxnDetail | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<PaymentDetail | null>(null);
-  const [ledgerType, setLedgerType] = useState<LedgerType>("Margin & Payments Received");
+  const [ledgerType, setLedgerType] = useState<string>(isAuthor ? "Royalty & Payments Received" : "Margin & Payments Received");
   const [ledgerOpen, setLedgerOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -608,7 +613,7 @@ function MarginReportPage() {
   const rangeLabel = `${new Date(from).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })} – ${new Date(to).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`;
 
   return (
-    <AppShell title="Margin Report" subtitle="Track your sales, royalty and payments in one place.">
+    <AppShell title={isAuthor ? "Royalty Report" : "Margin Report"} subtitle="Track your sales, royalty and payments in one place.">
       {selectedTxn ? (
         <TransactionDetail detail={selectedTxn} onBack={() => setSelectedTxn(null)} />
       ) : selectedPayment ? (
@@ -638,11 +643,18 @@ function MarginReportPage() {
                   </span>
                   <div>
                     <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                      Total Receivable Till Date
+                      {isAuthor ? "Total Royalty Receivable Till Date" : "Total Receivable Till Date"}
                     </p>
-                    <p className="mt-0.5 text-3xl font-extrabold tracking-tight text-foreground">
-                      ₹8,425
-                    </p>
+                    <div className="flex flex-wrap items-baseline gap-2.5 mt-0.5">
+                      <p className="text-3xl font-extrabold tracking-tight text-foreground">
+                        {isAuthor ? "₹75,366.55" : "₹8,425"}
+                      </p>
+                      {isAuthor && (
+                        <span className="text-xs font-semibold text-muted-foreground font-mono">
+                          (67829.89 + 7536.66 TDS)
+                        </span>
+                      )}
+                    </div>
                     <p className="mt-1 text-xs text-muted-foreground">
                       All-time cumulative balance.
                     </p>
@@ -740,10 +752,19 @@ function MarginReportPage() {
           </div>
 
           {/* Compact Period Stat cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <StatCard icon={Tag} label="Total Sales" value="₹0.00" />
-            <StatCard icon={Clock} label="Total Royalty Amount" value="₹0.00" />
-          </div>
+          {isAuthor ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <StatCard icon={Tag} label="Total Sales" value="₹1,50,733.10" subtitle="Gross eBook Sales" />
+              <StatCard icon={Clock} label="Total Royalty Amount" value="₹75,366.55" subtitle="50% Royalty Rate" />
+              <StatCard icon={ScrollText} label="TDS Deducted" value="₹7,536.66" subtitle="10% TDS" />
+              <StatCard icon={TrendingUp} label="Net Earnings" value="₹67,829.89" subtitle="Net Payable Payout" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <StatCard icon={Tag} label="Total Sales" value="₹1,50,733.10" />
+              <StatCard icon={Clock} label="Total Margin Amount" value="₹75,366.55" />
+            </div>
+          )}
 
           {/* Ledger */}
           <div className="overflow-hidden rounded-xl border border-border bg-card">
@@ -798,7 +819,7 @@ function MarginReportPage() {
                         type="button"
                         onClick={() => {
                           setExportOpen(false);
-                          toast.success("Downloading Publisher Margin Report (PDF)...");
+                          toast.success(isAuthor ? "Downloading Author Royalty Report (PDF)..." : "Downloading Publisher Margin Report (PDF)...");
                         }}
                         className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer"
                       >
@@ -809,7 +830,7 @@ function MarginReportPage() {
                         type="button"
                         onClick={() => {
                           setExportOpen(false);
-                          toast.success("Downloading Publisher Margin Report (Excel)...");
+                          toast.success(isAuthor ? "Downloading Author Royalty Report (Excel)..." : "Downloading Publisher Margin Report (Excel)...");
                         }}
                         className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer"
                       >
@@ -830,7 +851,7 @@ function MarginReportPage() {
                     <th className="py-4 pl-6 pr-4 font-semibold">Trans. Date</th>
                     <th className="py-4 pr-4 font-semibold">Trans. Type</th>
                     <th className="py-4 pr-4 font-semibold">Trans. Ref</th>
-                    <th className="py-4 pr-4 font-semibold">Margin</th>
+                    <th className="py-4 pr-4 font-semibold">{isAuthor ? "Royalty" : "Margin"}</th>
                     <th className="py-4 pr-4 font-semibold">Payments Received</th>
                     <th className="py-4 pr-4 font-semibold">Balance</th>
                     <th className="py-4 pr-4 font-semibold">Trans. Mode</th>
@@ -938,7 +959,7 @@ function MarginReportPage() {
                     <span>{r.mode}</span>
                   </div>
                   <div className="flex items-center justify-between pt-1 text-xs">
-                    <span>Margin: {formatINR(r.margin)}</span>
+                    <span>{isAuthor ? "Royalty" : "Margin"}: {formatINR(r.margin)}</span>
                     <span>Received: {formatINR(r.received)}</span>
                     <span className="font-semibold">{formatINR(r.balance)}</span>
                   </div>

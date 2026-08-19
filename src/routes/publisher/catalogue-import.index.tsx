@@ -120,11 +120,19 @@ function CatalogueImportPage() {
       <div className="space-y-6 p-4 md:p-8">
         {/* Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-secondary/40 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-bold text-foreground">Import your catalogue</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Upload an .xlsx file. We accept the PixelBooks bulk-import template.
-            </p>
+          <div className="flex items-center gap-3.5">
+            <span
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-2xs"
+              style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+            >
+              <FileSpreadsheet size={20} />
+            </span>
+            <div>
+              <p className="text-sm font-bold text-foreground">Import your catalogue</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Upload an .xlsx file. We accept the PixelBooks bulk-import template.
+              </p>
+            </div>
           </div>
           <Link
             to="/publisher/catalogue-import/new"

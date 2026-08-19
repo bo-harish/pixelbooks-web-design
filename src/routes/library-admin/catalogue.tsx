@@ -898,8 +898,9 @@ function LibraryCataloguePage() {
                   Next Page »
                 </button>
               </div>
-              <div className="flex items-center gap-1">
-                <span>★ {readerBook.rating.toFixed(1)}</span>
+              <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
+                <Star size={13} className="fill-amber-400 text-amber-400 shrink-0" />
+                <span>{readerBook.rating.toFixed(1)}</span>
               </div>
             </div>
           </DialogContent>

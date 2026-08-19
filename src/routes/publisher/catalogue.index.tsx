@@ -123,9 +123,8 @@ function DropdownSelect<T extends string>({
         <span className="truncate">{value}</span>
         <ChevronDown
           size={16}
-          className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+          className={`shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""
+            }`}
         />
       </button>
       {open && (
@@ -163,11 +162,10 @@ function DropdownSelect<T extends string>({
                     setOpen(false);
                     setSearchTerm("");
                   }}
-                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${
-                    opt === value
+                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${opt === value
                       ? "font-medium text-foreground bg-secondary/50"
                       : "text-muted-foreground"
-                  }`}
+                    }`}
                 >
                   <span className="truncate">{opt}</span>
                 </button>
@@ -257,9 +255,8 @@ function StatusSelectPill({
           e.stopPropagation();
           if (!readOnly) setOpen((o) => !o);
         }}
-        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${
-          readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
-        }`}
+        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
+          }`}
       >
         <CurrentIcon size={15} className="shrink-0" />
         <span>{cfg.label}</span>
@@ -290,9 +287,8 @@ function StatusSelectPill({
                   key={st}
                   type="button"
                   onClick={(e) => handleItemClick(st, e)}
-                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
-                    isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
-                  } ${itemCfg.textColor}`}
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
+                    } ${itemCfg.textColor}`}
                 >
                   <ItemIcon size={16} className="shrink-0" />
                   <span>{itemCfg.label}</span>
@@ -318,11 +314,10 @@ function StatusSelectPill({
           >
             <div className="flex items-center gap-3">
               <div
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-                  pendingStatus === "Published"
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${pendingStatus === "Published"
                     ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                     : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
-                }`}
+                  }`}
               >
                 {pendingStatus === "Published" ? (
                   <CheckCircle2 size={22} />
@@ -359,9 +354,8 @@ function StatusSelectPill({
                   setPendingStatus(null);
                   onChange?.(target);
                 }}
-                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${
-                  pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
-                }`}
+                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
+                  }`}
               >
                 {pendingStatus === "Published" ? "Confirm & Publish" : "Confirm & Unpublish"}
               </button>
@@ -563,9 +557,14 @@ function CataloguePage() {
                           {b.initials}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold leading-snug text-foreground transition-colors group-hover:text-[var(--brand)]">
-                            {b.title}
-                          </p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-semibold leading-snug text-foreground transition-colors group-hover:text-[var(--brand)]">
+                              {b.title}
+                            </p>
+                            <span className="shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                              {b.format}
+                            </span>
+                          </div>
                           <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs">
                             <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-1 shadow-2xs">
                               <AuthorAvatar author={b.author} size="sm" />
@@ -573,9 +572,6 @@ function CataloguePage() {
                                 {b.author}
                               </span>
                             </div>
-                            <span className="rounded-md border border-border px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                              {b.format}
-                            </span>
                             <span className="text-[11px] text-muted-foreground">{b.category}</span>
                           </div>
                         </div>
@@ -636,15 +632,17 @@ function CataloguePage() {
                     {b.initials}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-foreground">{b.title}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="truncate text-sm font-semibold text-foreground">{b.title}</p>
+                      <span className="shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                        {b.format}
+                      </span>
+                    </div>
                     <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px]">
                       <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-1 shadow-2xs">
                         <AuthorAvatar author={b.author} size="sm" />
                         <span className="text-[11.5px] font-semibold text-foreground">{b.author}</span>
                       </div>
-                      <span className="rounded-md border border-border px-1.5 py-0.5 font-semibold text-muted-foreground">
-                        {b.format}
-                      </span>
                       <span className="text-muted-foreground">{b.category}</span>
                     </div>
                     <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
@@ -653,8 +651,8 @@ function CataloguePage() {
                         {isLibraryOnly
                           ? `${b.licenseCount ?? 50} copies`
                           : b.price === null
-                          ? "Free"
-                          : `₹${b.price.toFixed(2)}`}
+                            ? "Free"
+                            : `₹${b.price.toFixed(2)}`}
                       </span>
                     </div>
                     {b.isbn && (
@@ -704,10 +702,10 @@ function CataloguePage() {
                         style={
                           n === currentPage
                             ? {
-                                backgroundColor: "var(--brand)",
-                                color: "var(--brand-contrast)",
-                                borderColor: "transparent",
-                              }
+                              backgroundColor: "var(--brand)",
+                              color: "var(--brand-contrast)",
+                              borderColor: "transparent",
+                            }
                             : undefined
                         }
                       >

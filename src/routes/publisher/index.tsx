@@ -284,10 +284,11 @@ function StatSkeleton() {
   );
 }
 
-function DashboardContent() {
+export function DashboardContent() {
   const [range, setRange] = useState<Range>("30d");
   const [salesFy, setSalesFy] = useState("FY (2025 - 2026)");
   const [loading, setLoading] = useState(true);
+  const isAuthor = typeof window !== "undefined" && window.location.pathname.startsWith("/author");
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 300);
@@ -410,11 +411,18 @@ function DashboardContent() {
               </span>
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Total Receivable Till Date
+                  {isAuthor ? "Total Royalty Receivable Till Date" : "Total Receivable Till Date"}
                 </p>
-                <p className="mt-0.5 text-3xl font-extrabold tracking-tight text-foreground">
-                  ₹8,425
-                </p>
+                <div className="flex flex-wrap items-baseline gap-2.5 mt-0.5">
+                  <p className="text-3xl font-extrabold tracking-tight text-foreground">
+                    {isAuthor ? "₹75,366.55" : "₹8,425"}
+                  </p>
+                  {isAuthor && (
+                    <span className="text-xs font-semibold text-muted-foreground font-mono">
+                      (67829.89 + 7536.66 TDS)
+                    </span>
+                  )}
+                </div>
                 <p className="mt-1 text-xs text-muted-foreground">
                   All-time cumulative balance.
                 </p>
@@ -561,9 +569,9 @@ function DashboardContent() {
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex justify-center">
-                        <div className="inline-flex items-center gap-1 rounded bg-[#FBBF24] px-2 py-0.5 text-xs font-bold text-white shadow-sm">
-                          <span>{book.rating}</span>
-                          <Star size={12} className="fill-white" />
+                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
+                          <Star size={13} className="fill-amber-400 text-amber-400 shrink-0" />
+                          <span>{book.rating.toFixed(1)}</span>
                         </div>
                       </div>
                     </td>

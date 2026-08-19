@@ -1081,7 +1081,7 @@ function PublisherAuthorDetailPage() {
                   style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                 >
                   <CreditCard size={15} />
-                  <span>View Margin Report</span>
+                  <span>{account.type === "Publisher" ? "View Margin Report" : "View Royalty Report"}</span>
                 </Link>
               </div>
             </div>

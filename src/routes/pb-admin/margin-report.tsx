@@ -1419,7 +1419,7 @@ function AdminMarginReportPage() {
                 type="button"
                 onClick={() => setActiveLedgerEntity(null)}
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs"
-                title="Back to Margin Report"
+                title={`Back to ${isPublisherLedger ? "Margin Report" : "Royalty Report"}`}
               >
                 <ArrowLeft size={18} />
               </button>
@@ -1450,7 +1450,7 @@ function AdminMarginReportPage() {
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Ledger Report
+                    {isPublisherLedger ? "Margin Report - Ledger" : "Royalty Report - Ledger"}
                   </p>
                 </div>
               </div>

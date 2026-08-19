@@ -101,6 +101,40 @@ function getExtra(id: string): BookExtra {
 /*  Shared UI pieces                                                    */
 /* ------------------------------------------------------------------ */
 
+function AuthorAvatar({
+  author,
+  size = "md",
+}: {
+  author: string;
+  size?: "sm" | "md" | "lg";
+}) {
+  const initials = author
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  const sizeClasses = {
+    sm: "h-5 w-5 text-[8.5px]",
+    md: "h-6 w-6 text-[10px]",
+    lg: "h-8 w-8 text-xs",
+  }[size];
+
+  return (
+    <div
+      className={`relative flex shrink-0 items-center justify-center rounded-full border border-[var(--brand)]/30 font-extrabold shadow-2xs ${sizeClasses}`}
+      style={{
+        backgroundColor: "color-mix(in oklch, var(--brand) 15%, transparent)",
+        color: "var(--brand)",
+      }}
+    >
+      <span>{initials}</span>
+    </div>
+  );
+}
+
 type StatusConfig = {
   label: string;
   bgClass: string;
@@ -1002,17 +1036,7 @@ function EBookDetailPage() {
                 <div className="flex flex-wrap items-center gap-2.5">
                   {/* Author Chip */}
                   <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-3 py-1 text-xs font-medium text-foreground shadow-2xs">
-                    <span
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
-                      style={{ background: book.cover }}
-                    >
-                      {book.author
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase()}
-                    </span>
+                    <AuthorAvatar author={book.author} size="sm" />
                     <span>{book.author}</span>
                   </div>
 
@@ -1229,18 +1253,7 @@ function EBookDetailPage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <SectionCard title="Author Details">
             <div className="inline-flex items-center gap-2.5 rounded-full border border-border/80 bg-card px-3.5 py-1.5 shadow-2xs">
-              <span
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-2xs"
-                style={{ background: book.cover }}
-              >
-                {book.author
-                  .split(" ")
-                  .filter(Boolean)
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </span>
+              <AuthorAvatar author={book.author} size="md" />
               <span className="text-sm font-semibold text-foreground">{book.author}</span>
             </div>
           </SectionCard>

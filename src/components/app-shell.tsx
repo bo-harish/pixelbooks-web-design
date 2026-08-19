@@ -94,7 +94,7 @@ export function getRoleTheme(pathname: string) {
       name: "Library Admin",
     };
   }
-  if (pathname.startsWith("/author")) {
+  if (pathname.startsWith("/author") || (typeof window !== "undefined" && window.location.search.includes("role=author"))) {
     return {
       color: "oklch(0.62 0.15 155)", // emerald green
       bgLight: "color-mix(in oklab, oklch(0.62 0.15 155) 14%, transparent)",
@@ -315,7 +315,7 @@ function getSections(
   }
 
 
-  if (pathname.startsWith("/author")) {
+  if (pathname.startsWith("/author") || (typeof window !== "undefined" && window.location.search.includes("role=author"))) {
     return [
       {
         heading: "Main",
@@ -330,7 +330,7 @@ function getSections(
       {
         heading: "Reports",
         items: [
-          { label: "Margin Report", icon: TrendingUp, to: "/publisher/margin-report" },
+          { label: "Royalty Report", icon: TrendingUp, to: "/publisher/margin-report?role=author" },
           { label: "Sales Report", icon: BarChart3, to: "/publisher/sales-report" },
         ],
       },
@@ -697,7 +697,7 @@ function ProfileDropdown() {
   const headerProfile = getHeaderProfile(pathname);
   const isLibraryAdmin = pathname.startsWith("/library-admin");
   const isPBAdmin = pathname.startsWith("/pb-admin");
-  const isAuthor = pathname.startsWith("/author");
+  const isAuthor = pathname.startsWith("/author") || (typeof window !== "undefined" && window.location.search.includes("role=author"));
   const [publisherType] = usePublisherType();
   const [libraryAdminType] = useLibraryAdminType();
 

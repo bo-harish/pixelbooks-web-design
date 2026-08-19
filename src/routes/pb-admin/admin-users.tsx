@@ -597,27 +597,27 @@ function ManageAdminUsersPage() {
         </div>
 
         {/* Search & Filter Toolbar */}
-        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Search Box */}
-          <div className="relative flex-1">
+          <div className="relative flex-1 min-w-[200px]">
             <Search
               size={17}
               className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-xs outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)]"
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
             />
           </div>
 
           {/* Controls Right Side */}
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
             {/* Status Filter Dropdown */}
             <DropdownSelect
               value={statusLabel}
@@ -637,7 +637,7 @@ function ManageAdminUsersPage() {
             <button
               type="button"
               onClick={handleOpenAddUser}
-              className="inline-flex h-11 items-center gap-2 rounded-lg px-5 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer shrink-0"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer shrink-0"
               style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
             >
               <Plus size={16} strokeWidth={2.5} />

@@ -131,9 +131,8 @@ function DropdownSelect<T extends string>({
         <span className="truncate">{value}</span>
         <ChevronDown
           size={16}
-          className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+          className={`shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""
+            }`}
         />
       </button>
       {open && (
@@ -171,11 +170,10 @@ function DropdownSelect<T extends string>({
                     setOpen(false);
                     setSearchTerm("");
                   }}
-                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${
-                    opt === value
+                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${opt === value
                       ? "font-medium text-foreground bg-secondary/50"
                       : "text-muted-foreground"
-                  }`}
+                    }`}
                 >
                   <span className="truncate">{opt}</span>
                 </button>
@@ -435,9 +433,14 @@ function TitlesCataloguePage() {
 
                         {/* Title & Metadata */}
                         <div className="min-w-0 flex-1 space-y-1.5">
-                          <p className="font-semibold text-sm leading-snug text-foreground transition-colors group-hover:text-[var(--brand)]">
-                            {b.title}
-                          </p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-semibold text-sm leading-snug text-foreground transition-colors group-hover:text-[var(--brand)]">
+                              {b.title}
+                            </p>
+                            <span className="shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                              {b.format}
+                            </span>
+                          </div>
 
                           {/* Author & Publisher Chips */}
                           <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -458,13 +461,6 @@ function TitlesCataloguePage() {
                                 {b.publisher ?? "PixelBooks Press"}
                               </span>
                             </div>
-                          </div>
-
-                          {/* Format & Category */}
-                          <div className="flex items-center gap-2 text-xs">
-                            <span className="rounded-md border border-border px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                              {b.format}
-                            </span>
                             <span className="text-[11px] text-muted-foreground">{b.category}</span>
                           </div>
                         </div>
@@ -530,7 +526,12 @@ function TitlesCataloguePage() {
                     <span className="relative z-10 text-[11px] font-extrabold tracking-wider">{b.initials}</span>
                   </div>
                   <div className="min-w-0 flex-1 space-y-1">
-                    <p className="truncate text-sm font-semibold text-foreground">{b.title}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="truncate text-sm font-semibold text-foreground">{b.title}</p>
+                      <span className="shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                        {b.format}
+                      </span>
+                    </div>
                     <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
                       <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5 shadow-2xs">
                         <span
@@ -552,9 +553,6 @@ function TitlesCataloguePage() {
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 text-[11px] pt-0.5">
-                      <span className="rounded-md border border-border px-1.5 py-0.5 font-semibold text-muted-foreground">
-                        {b.format}
-                      </span>
                       <span className="text-muted-foreground">{b.category}</span>
                       <span className="text-muted-foreground">• {b.language ?? "English"}</span>
                     </div>

@@ -17,8 +17,13 @@ import {
   Upload,
   FileText,
   HelpCircle,
+  User,
+  Building2,
+  History,
+  MessageSquare,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { BookCover } from "@/components/ui/book-cover";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -787,7 +792,9 @@ function LibraryAdminOrdersPage() {
         toast.success(`Spreadsheet upload completed! Order ${newOrderId} processed.`);
       }
     }, 200);
+  };
 
+  if (isViewOpen && selectedOrder) {
     const isFreeOrder =
       selectedOrder.totalAmount === 0 || selectedOrder.items.every((item) => item.price === 0);
     const isRupee = selectedOrder.id.toLowerCase().startsWith("off_order_15");
@@ -800,9 +807,9 @@ function LibraryAdminOrdersPage() {
       : `${currency}${selectedOrder.totalAmount.toFixed(2)}`;
 
     return (
-      <AppShell title="Order Details">
+      <AppShell title="Order Details" subtitle={`Order #${selectedOrder.id}`}>
         <div className="p-4 md:p-8 space-y-6">
-          {/* Back button */}
+          {/* Back button & Actions */}
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
               <button
@@ -812,7 +819,7 @@ function LibraryAdminOrdersPage() {
               >
                 <ArrowLeft size={16} />
               </button>
-              <span className="text-sm font-normal text-foreground">Back to Orders</span>
+              <span className="text-sm font-semibold text-foreground">Back to Orders</span>
             </div>
             <button
               onClick={() => {
@@ -825,50 +832,93 @@ function LibraryAdminOrdersPage() {
             </button>
           </div>
 
-          {/* Main Card Container */}
-          <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-6">
-            {/* Split Content columns */}
-            <div className="grid grid-cols-12 gap-6 lg:gap-8">
-              {/* Left Column: eBook Order Details */}
-              <div className="col-span-12 lg:col-span-8 space-y-4">
+          {/* Header Summary Card */}
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                  Order {selectedOrder.id}
+                </h2>
+                {selectedOrder.status === "Approved" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 dark:bg-emerald-500/10 dark:border-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 size={13} />
+                    Approved
+                  </span>
+                )}
+                {selectedOrder.status === "Pending" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 dark:bg-amber-500/10 dark:border-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                    <Clock size={13} />
+                    Pending Approval
+                  </span>
+                )}
+                {selectedOrder.status === "Rejected" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 dark:bg-rose-500/10 dark:border-rose-500/20 px-3 py-1 text-xs font-semibold text-rose-600 dark:text-rose-400">
+                    <XCircle size={13} />
+                    Rejected
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-muted-foreground flex items-center gap-4 flex-wrap pt-1">
+                <span className="inline-flex items-center gap-1.5">
+                  <User size={13} className="text-muted-foreground/70" />
+                  <span>Ordered By: <strong className="text-foreground font-medium">{selectedOrder.orderedBy}</strong></span>
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Building2 size={13} className="text-muted-foreground/70" />
+                  <span>Department: <strong className="text-foreground font-medium">{selectedOrder.department}</strong></span>
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock size={13} className="text-muted-foreground/70" />
+                  <span>Order Date: <strong className="text-foreground font-medium">{selectedOrder.date}</strong></span>
+                </span>
+              </div>
+            </div>
+
+            <div className="text-left md:text-right border-t md:border-t-0 pt-3 md:pt-0 border-border/60">
+              <span className="text-xs text-muted-foreground block">Total Amount</span>
+              <span className="text-2xl font-bold tracking-tight text-foreground">{totalPriceText}</span>
+            </div>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-12 gap-6 lg:gap-8">
+            {/* Left Column: eBook Order Items & History */}
+            <div className="col-span-12 lg:col-span-8 space-y-6">
+              {/* Items Table Card */}
+              <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h3 className="text-base font-semibold text-foreground">eBook Order Details</h3>
-                  <p className="text-sm font-semibold text-foreground">
-                    Order ID : <span className="text-foreground">{selectedOrder.id}</span>
-                  </p>
+                  <h3 className="text-base font-semibold text-foreground">Requested Titles ({selectedOrder.items.length})</h3>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs sm:text-sm">
                     <thead>
-                      <tr className="bg-slate-50 dark:bg-secondary/40 border border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        <th className="py-2.5 px-4 font-semibold rounded-l-lg">Title</th>
-                        <th className="py-2.5 px-4 font-semibold text-center">Qty</th>
-                        <th className="py-2.5 px-4 font-semibold text-right rounded-r-lg">
-                          Unit Price
-                        </th>
+                      <tr className="bg-secondary/40 border-y border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        <th className="py-3 px-4 font-semibold rounded-l-lg">Title & Author</th>
+                        <th className="py-3 px-4 font-semibold text-center">Qty</th>
+                        <th className="py-3 px-4 font-semibold text-right rounded-r-lg">Unit Price</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/60">
                       {selectedOrder.items.map((item, idx) => (
                         <tr
                           key={idx}
-                          className="hover:bg-secondary/15 transition-colors border-b border-border/40"
+                          className="hover:bg-secondary/15 transition-colors"
                         >
                           <td className="py-4 px-4 font-medium text-foreground">
-                            <div className="flex items-center gap-3">
-                              <div
-                                className="flex h-11 w-8 shrink-0 items-center justify-center rounded text-[8px] font-bold text-white shadow-sm"
-                                style={{ background: item.cover || "var(--brand)" }}
-                              >
-                                {item.initials}
-                              </div>
+                            <div className="flex items-center gap-3.5">
+                              <BookCover
+                                initials={item.initials}
+                                coverGradient={item.cover}
+                                title={item.title}
+                                size="sm"
+                              />
                               <div className="min-w-0">
-                                <p className="text-sm font-medium text-foreground truncate max-w-[200px] sm:max-w-sm">
+                                <p className="text-sm font-semibold text-foreground truncate max-w-[200px] sm:max-w-sm">
                                   {item.title}
                                 </p>
                                 <p className="text-xs text-muted-foreground truncate">
-                                  {item.author}
+                                  by {item.author}
                                 </p>
                               </div>
                             </div>
@@ -884,77 +934,94 @@ function LibraryAdminOrdersPage() {
                     </tbody>
                   </table>
                 </div>
-
-                <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
-                  <span>
-                    Showing {selectedOrder.items.length} from {selectedOrder.items.length} results
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      disabled
-                      className="h-7 px-2 border border-border bg-slate-50 dark:bg-card text-muted-foreground rounded text-[11px] disabled:opacity-50"
-                    >
-                      Previous
-                    </button>
-                    <button className="h-7 w-7 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 rounded font-semibold text-[11px]">
-                      1
-                    </button>
-                    <button
-                      disabled
-                      className="h-7 px-2 border border-border bg-slate-50 dark:bg-card text-muted-foreground rounded text-[11px] disabled:opacity-50"
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
               </div>
 
-              {/* Right Column: Payment Details */}
-              <div className="col-span-12 lg:col-span-4 border-t lg:border-t-0 lg:border-l border-border/80 pt-6 lg:pt-0 pl-0 lg:pl-8 space-y-4">
-                <div className="flex items-center justify-between">
+              {/* Status History Audit Log */}
+              {selectedOrder.statusHistory && selectedOrder.statusHistory.length > 0 && (
+                <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
+                  <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+                    <History size={18} className="text-[var(--brand)]" />
+                    <span>Status History & Audit Trail</span>
+                  </h3>
+                  <div className="relative pl-6 space-y-5 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
+                    {selectedOrder.statusHistory.map((history, idx) => (
+                      <div key={idx} className="relative flex items-start gap-3">
+                        <div
+                          className={`absolute -left-6 top-1 h-5 w-5 rounded-full border-2 border-card flex items-center justify-center text-white ${
+                            history.status === "Approved"
+                              ? "bg-emerald-500"
+                              : history.status === "Rejected"
+                              ? "bg-rose-500"
+                              : "bg-amber-500"
+                          }`}
+                        >
+                          <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                        </div>
+                        <div className="space-y-1 w-full">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs font-semibold text-foreground">
+                              {history.status}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground">• {history.date}</span>
+                            <span className="text-[11px] text-muted-foreground">by {history.user}</span>
+                          </div>
+                          {history.note && (
+                            <p className="text-xs text-muted-foreground bg-secondary/30 rounded-lg p-2.5 border border-border/50">
+                              {history.note}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Order Comments / Notes */}
+              {selectedOrder.comments && (
+                <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-2">
+                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                    <MessageSquare size={14} />
+                    <span>Admin Comments & Notes</span>
+                  </h3>
+                  <p className="text-sm text-foreground bg-secondary/20 rounded-lg p-3 border border-border/50">
+                    {selectedOrder.comments}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column: Payment Details */}
+            <div className="col-span-12 lg:col-span-4 space-y-6">
+              <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-border">
                   <h3 className="text-base font-semibold text-foreground">Payment Details</h3>
-                  <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-600 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20 gap-1 tracking-wider leading-none mr-2">
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-500/20 gap-1">
                     <CheckCircle2 size={12} />
                     {isFreeOrder ? "Free" : "Paid"}
                   </span>
                 </div>
 
-                <div className="space-y-3.5 text-xs text-slate-600 dark:text-slate-300">
-                  <div className="flex justify-between items-center py-1.5 border-b border-border/50">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Payment details
-                    </span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                      {subtotalText}
-                    </span>
+                <div className="space-y-3 text-xs text-muted-foreground">
+                  <div className="flex justify-between items-center py-1 border-b border-border/40">
+                    <span>Subtotal</span>
+                    <span className="font-semibold text-foreground">{subtotalText}</span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-border/50">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Item Discount
-                    </span>
-                    <span className="font-semibold text-slate-850 dark:text-slate-200">
-                      - {currency}0.00
-                    </span>
+                  <div className="flex justify-between items-center py-1 border-b border-border/40">
+                    <span>Item Discount</span>
+                    <span className="font-semibold text-foreground">- {currency}0.00</span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-border/50">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Date:
-                    </span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                      {selectedOrder.date}
-                    </span>
+                  <div className="flex justify-between items-center py-1 border-b border-border/40">
+                    <span>Order Date</span>
+                    <span className="font-semibold text-foreground">{selectedOrder.date}</span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-border/50">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
-                      Total Tax Amount
-                    </span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                      {currency}0.00
-                    </span>
+                  <div className="flex justify-between items-center py-1 border-b border-border/40">
+                    <span>Total Tax Amount</span>
+                    <span className="font-semibold text-foreground">{currency}0.00</span>
                   </div>
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="text-sm font-semibold text-foreground">Total Price</span>
-                    <span className="text-base font-bold text-foreground">{totalPriceText}</span>
+                  <div className="flex justify-between items-center pt-2 text-sm">
+                    <span className="font-bold text-foreground">Total Price</span>
+                    <span className="text-base font-extrabold text-foreground">{totalPriceText}</span>
                   </div>
                 </div>
               </div>

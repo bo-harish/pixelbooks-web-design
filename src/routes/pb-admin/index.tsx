@@ -827,9 +827,9 @@ function RetailDashboardView() {
                   </td>
                   <td className="py-4 px-4">
                     <div className="flex justify-center">
-                      <div className="inline-flex items-center gap-1 rounded bg-[#FBBF24] px-2 py-0.5 text-xs font-bold text-white shadow-sm">
-                        <span>{book.rating}</span>
-                        <Star size={12} className="fill-white" />
+                      <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
+                        <Star size={13} className="fill-amber-400 text-amber-400 shrink-0" />
+                        <span>{book.rating.toFixed(1)}</span>
                       </div>
                     </div>
                   </td>
