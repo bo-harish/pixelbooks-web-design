@@ -93,7 +93,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Reference",
     isbn: "9781023481717",
-    status: "Unpublished",
+    status: "Draft",
     price: 1.05,
     author: "Glenn Curtiss",
     cover: gradients[4],
@@ -107,7 +107,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Academic & Education",
     isbn: "1646502779",
-    status: "Unpublished",
+    status: "Draft",
     price: null,
     author: "Lewis Carroll",
     cover: gradients[5],
@@ -342,3 +342,58 @@ export const seedBooks: Book[] = [
     initials: "LEV",
   },
 ];
+
+export const DEFAULT_BOOK_LIBRARY_ALLOCATIONS: Record<string, Record<string, number>> = {
+  "nep-2020": {
+    "Central University Digital Library": 50,
+    "National Science & Tech Consortium": 30,
+  },
+  "complete-history-music": {
+    "City Academic Library System": 40,
+    "Delhi Public Library": 60,
+  },
+  "knowledge-time": {
+    "IIT Delhi Central Library": 25,
+    "Indian Institute of Science Library": 25,
+    "Central University Digital Library": 50,
+  },
+  "just-shaping-letters": {
+    "State Institute of Technology Library": 35,
+    "City Academic Library System": 40,
+  },
+  "curtiss-aviation": {
+    "Central University Digital Library": 50,
+    "Delhi Public Library": 50,
+  },
+  "tangled-tale": {
+    "National Science & Tech Consortium": 45,
+  },
+  "essays-art": {
+    "Indian Institute of Science Library": 50,
+    "IIT Delhi Central Library": 50,
+  },
+  "elements-style": {
+    "Central University Digital Library": 60,
+    "City Academic Library System": 40,
+  },
+  "meditations": {
+    "Delhi Public Library": 50,
+    "National Science & Tech Consortium": 50,
+  },
+  "origin-species": {
+    "Central University Digital Library": 75,
+    "Indian Institute of Science Library": 75,
+  },
+  "art-of-war": {
+    "IIT Delhi Central Library": 50,
+    "State Institute of Technology Library": 50,
+  },
+};
+
+export function getBookTotalLibraryCopies(book: Book): number {
+  const alloc = DEFAULT_BOOK_LIBRARY_ALLOCATIONS[book.id];
+  if (alloc) {
+    return Object.values(alloc).reduce((sum, c) => sum + (c || 0), 0);
+  }
+  return book.licenseCount ?? 50;
+}

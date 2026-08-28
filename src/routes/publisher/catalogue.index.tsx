@@ -24,7 +24,7 @@ import {
   PaginationLink,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
-import { seedBooks, type Book, type Status } from "@/lib/catalogue-data";
+import { seedBooks, getBookTotalLibraryCopies, type Book, type Status } from "@/lib/catalogue-data";
 
 export const Route = createFileRoute("/publisher/catalogue/")({
   component: CataloguePage,
@@ -543,9 +543,13 @@ function CataloguePage() {
                 {pageItems.map((b) => (
                   <tr
                     key={b.id}
-                    onClick={() =>
-                      navigate({ to: "/publisher/catalogue/$bookId", params: { bookId: b.id } })
-                    }
+                    onClick={() => {
+                      if (b.status === "Draft") {
+                        navigate({ to: "/publisher/catalogue/new", search: { edit: b.id } });
+                      } else {
+                        navigate({ to: "/publisher/catalogue/$bookId", params: { bookId: b.id } });
+                      }
+                    }}
                     className="group border-b border-border/60 transition-colors last:border-0 cursor-pointer hover:bg-secondary/50"
                   >
                     <td className="py-4 pl-6 pr-4">
@@ -591,7 +595,7 @@ function CataloguePage() {
                     </td>
                     <td className="py-4 pr-4">
                       {isLibraryOnly ? (
-                        <span className="font-semibold text-foreground">{b.licenseCount ?? 50} copies</span>
+                        <span className="font-semibold text-foreground">{getBookTotalLibraryCopies(b)} copies</span>
                       ) : b.price === null ? (
                         <span className="font-medium text-foreground">Free</span>
                       ) : (
@@ -620,9 +624,13 @@ function CataloguePage() {
               <li
                 key={b.id}
                 className="cursor-pointer p-4 transition-colors hover:bg-secondary/50"
-                onClick={() =>
-                  navigate({ to: "/publisher/catalogue/$bookId", params: { bookId: b.id } })
-                }
+                onClick={() => {
+                  if (b.status === "Draft") {
+                    navigate({ to: "/publisher/catalogue/new", search: { edit: b.id } });
+                  } else {
+                    navigate({ to: "/publisher/catalogue/$bookId", params: { bookId: b.id } });
+                  }
+                }}
               >
                 <div className="flex items-start gap-3">
                   <div
@@ -649,7 +657,7 @@ function CataloguePage() {
                       <StatusPill status={b.status} />
                       <span className="font-semibold">
                         {isLibraryOnly
-                          ? `${b.licenseCount ?? 50} copies`
+                          ? `${getBookTotalLibraryCopies(b)} copies`
                           : b.price === null
                             ? "Free"
                             : `₹${b.price.toFixed(2)}`}

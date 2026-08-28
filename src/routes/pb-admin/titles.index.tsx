@@ -17,6 +17,7 @@ import {
   Upload,
   ScrollText,
   Table,
+  Clock,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { BookCover } from "@/components/ui/book-cover";
@@ -187,12 +188,14 @@ function DropdownSelect<T extends string>({
 }
 
 function StatusPill({ status }: { status: Status }) {
-  const map = {
+  const map: Record<string, { color: string; Icon: typeof CheckCircle2 }> = {
     Published: { color: "var(--success)", Icon: CheckCircle2 },
     Rejected: { color: "var(--danger)", Icon: FileX2 },
     Unpublished: { color: "#6b7280", Icon: CircleOff },
-  } as const;
-  const { color, Icon } = map[status];
+    Draft: { color: "#f59e0b", Icon: Clock },
+  };
+  const item = map[status] ?? { color: "#6b7280", Icon: CircleOff };
+  const { color, Icon } = item;
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
@@ -416,9 +419,13 @@ function TitlesCataloguePage() {
                 {pageItems.map((b) => (
                   <tr
                     key={b.id}
-                    onClick={() =>
-                      navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: b.id } })
-                    }
+                    onClick={() => {
+                      if (b.status === "Draft") {
+                        navigate({ to: "/pb-admin/titles/new", search: { edit: b.id } });
+                      } else {
+                        navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: b.id } });
+                      }
+                    }}
                     className="group border-b border-border/60 transition-colors last:border-0 cursor-pointer hover:bg-secondary/50"
                   >
                     <td className="py-4 pl-6 pr-4">
@@ -513,9 +520,13 @@ function TitlesCataloguePage() {
               <li
                 key={b.id}
                 className="cursor-pointer p-4 transition-colors hover:bg-secondary/50"
-                onClick={() =>
-                  navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: b.id } })
-                }
+                onClick={() => {
+                  if (b.status === "Draft") {
+                    navigate({ to: "/pb-admin/titles/new", search: { edit: b.id } });
+                  } else {
+                    navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: b.id } });
+                  }
+                }}
               >
                 <div className="flex items-start gap-3">
                   <div

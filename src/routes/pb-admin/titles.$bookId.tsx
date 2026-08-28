@@ -25,6 +25,7 @@ import {
   Clock,
   Save,
   ShieldCheck,
+  Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
@@ -408,9 +409,8 @@ function LibraryMultiSelectDropdown({
                 return (
                   <label
                     key={lib.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${
-                      checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
-                    }`}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
+                      }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <input
@@ -646,8 +646,8 @@ function EBookDetailPage() {
                 </div>
               </div>
 
-              {/* Stats & Key Metrics Strip (Compatible 4-Box Grid) */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+              {/* Stats & Key Metrics Strip (3-Box Grid) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                 {/* 1. Price */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
@@ -659,16 +659,7 @@ function EBookDetailPage() {
                   </p>
                 </div>
 
-                {/* 2. File Size */}
-                <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                  <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">eBook Size (in MB)</span>
-                    <HardDrive size={14} className="text-muted-foreground/80" />
-                  </div>
-                  <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>
-                </div>
-
-                {/* 3. Readers */}
+                {/* 2. Readers */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Readers</span>
@@ -677,12 +668,15 @@ function EBookDetailPage() {
                   <p className="text-lg font-bold text-foreground">{extra.viewers}</p>
                 </div>
 
-                {/* 4. Status */}
+                {/* 3. Published On */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
-                  <div className="flex items-center">
-                    <StatusPill status={book.status} />
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Published On</span>
+                    <Calendar size={14} className="text-muted-foreground/80" />
                   </div>
+                  <p className="text-lg font-bold text-foreground">
+                    {extra.dateOfPublication && extra.dateOfPublication !== "—" ? extra.dateOfPublication : (book.dop ?? "06 Jan 2026")}
+                  </p>
                 </div>
               </div>
 
@@ -701,6 +695,11 @@ function EBookDetailPage() {
                 <span className="h-3 w-px bg-border" />
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <span>File Type: <strong className="text-foreground uppercase">{book.format}</strong></span>
+                </span>
+                <span className="h-3 w-px bg-border" />
+                <span className="inline-flex items-center gap-1.5 font-medium">
+                  <HardDrive size={13} className="text-muted-foreground" />
+                  <span>eBook Size: <strong className="text-foreground">{extra.sizeMB} MB</strong></span>
                 </span>
               </div>
 
@@ -732,11 +731,7 @@ function EBookDetailPage() {
         {/* ── eBook Details ──────────────────────────────────────────── */}
         <SectionCard title="eBook Details">
           <div className="space-y-0.5">
-            <MetaRow label="eBook Name:" value={book.title} />
-            <MetaRow label="Language:" value={extra.language} valueClass="text-[var(--brand)]" />
             <MetaRow label="Regional Name:" value={extra.regionalName} />
-            <MetaRow label="Date of Publications:" value={extra.dateOfPublication} />
-            <MetaRow label="eBook Size (in MB):" value={`${extra.sizeMB} MB`} />
           </div>
 
           {/* Summary */}

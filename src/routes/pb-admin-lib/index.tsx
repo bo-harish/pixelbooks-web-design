@@ -676,8 +676,8 @@ function PBAdminLibraryDashboard() {
                       {item.name === "APJ Abdul Kalam Technological University"
                         ? "APJ Abdul K..."
                         : item.name === "The District Central Library, Salem"
-                        ? "The District ..."
-                        : "National Uni..."}
+                          ? "The District ..."
+                          : "National Uni..."}
                     </span>
                   </div>
                   <span className="text-xs font-bold text-foreground">{item.value}%</span>
@@ -691,7 +691,7 @@ function PBAdminLibraryDashboard() {
         <section className="rounded-2xl border border-border bg-card p-5 md:p-6 shadow-2xs">
           <div className="flex items-center justify-between gap-4 mb-6">
             <h2 className="text-lg font-bold tracking-tight text-foreground">
-              Recently Added Library
+              10 Recently Added Libraries
             </h2>
             <Link
               to="/pb-admin-lib/libraries"

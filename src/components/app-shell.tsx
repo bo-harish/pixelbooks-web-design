@@ -298,13 +298,11 @@ function getSections(
         },
         {
           heading: "Users & Structure",
-          items: (
-            [
-              { label: "Courses", icon: GraduationCap, to: "/library-admin/courses" },
-              { label: "Library Users", icon: Users, to: "/library-admin/users" },
-              !isStandardAdmin && { label: "Departments", icon: Building2, to: "/library-admin/departments" },
-            ] as (NavItem | false)[]
-          ).filter(Boolean) as NavItem[],
+          items: [
+            { label: "Courses", icon: GraduationCap, to: "/library-admin/courses" },
+            { label: "Library Users", icon: Users, to: "/library-admin/users" },
+            { label: "Departments", icon: Building2, to: "/library-admin/departments" },
+          ],
         },
         {
           heading: "Support",

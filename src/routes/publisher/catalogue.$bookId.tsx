@@ -25,12 +25,16 @@ import {
   X,
   Save,
   ShieldCheck,
+  Calendar,
   Lock,
+  Plus,
+  Minus,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { usePublisherType } from "@/hooks/use-publisher-type";
-import { seedBooks, type Status } from "@/lib/catalogue-data";
+import { seedBooks, DEFAULT_BOOK_LIBRARY_ALLOCATIONS, type Status } from "@/lib/catalogue-data";
 import {
   Dialog,
   DialogContent,
@@ -212,9 +216,8 @@ function StatusSelectPill({
           e.stopPropagation();
           if (!readOnly) setOpen((o) => !o);
         }}
-        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${
-          readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
-        }`}
+        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
+          }`}
       >
         <CurrentIcon size={15} className="shrink-0" />
         <span>{cfg.label}</span>
@@ -245,9 +248,8 @@ function StatusSelectPill({
                   key={st}
                   type="button"
                   onClick={(e) => handleItemClick(st, e)}
-                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
-                    isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
-                  } ${itemCfg.textColor}`}
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
+                    } ${itemCfg.textColor}`}
                 >
                   <ItemIcon size={16} className="shrink-0" />
                   <span>{itemCfg.label}</span>
@@ -273,11 +275,10 @@ function StatusSelectPill({
           >
             <div className="flex items-center gap-3">
               <div
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-                  pendingStatus === "Published"
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${pendingStatus === "Published"
                     ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                     : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
-                }`}
+                  }`}
               >
                 {pendingStatus === "Published" ? (
                   <CheckCircle2 size={22} />
@@ -314,9 +315,8 @@ function StatusSelectPill({
                   setPendingStatus(null);
                   onChange?.(target);
                 }}
-                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${
-                  pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
-                }`}
+                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
+                  }`}
               >
                 {pendingStatus === "Published" ? "Confirm & Publish" : "Confirm & Unpublish"}
               </button>
@@ -361,11 +361,11 @@ const ALL_LIBRARIES = [
 ];
 
 function LibraryMultiSelectDropdown({
-  selected,
+  allocations,
   onChange,
 }: {
-  selected: string[];
-  onChange: (libs: string[]) => void;
+  allocations: Record<string, number>;
+  onChange: (allocations: Record<string, number>) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -381,54 +381,75 @@ function LibraryMultiSelectDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const selectedNames = Object.keys(allocations);
+
   const filteredLibraries = ALL_LIBRARIES.filter(
     (lib) =>
       lib.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lib.city.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const toggleLibrary = (libName: string) => {
-    if (selected.includes(libName)) {
-      onChange(selected.filter((item) => item !== libName));
+  const toggleLibrary = (libName: string, defaultCopies = 50) => {
+    const next = { ...allocations };
+    if (next[libName] !== undefined) {
+      delete next[libName];
     } else {
-      onChange([...selected, libName]);
+      next[libName] = defaultCopies;
     }
+    onChange(next);
+  };
+
+  const updateCopies = (libName: string, count: number) => {
+    const next = { ...allocations };
+    const validCount = Math.max(1, isNaN(count) ? 1 : count);
+    next[libName] = validCount;
+    onChange(next);
   };
 
   const isAllSelected =
     filteredLibraries.length > 0 &&
-    filteredLibraries.every((lib) => selected.includes(lib.name));
+    filteredLibraries.every((lib) => allocations[lib.name] !== undefined);
 
   const handleSelectAll = () => {
+    const next = { ...allocations };
     if (isAllSelected) {
-      const filteredNames = filteredLibraries.map((l) => l.name);
-      onChange(selected.filter((name) => !filteredNames.includes(name)));
+      filteredLibraries.forEach((l) => {
+        delete next[l.name];
+      });
     } else {
-      const newSelected = new Set([...selected, ...filteredLibraries.map((l) => l.name)]);
-      onChange(Array.from(newSelected));
+      filteredLibraries.forEach((l) => {
+        if (next[l.name] === undefined) {
+          next[l.name] = 50;
+        }
+      });
     }
+    onChange(next);
   };
+
+  const totalCopies = Object.values(allocations).reduce((acc, curr) => acc + (curr || 0), 0);
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
-          isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
-        }`}
+        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
+          }`}
       >
         <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
-          {selected.length === 0 ? (
+          {selectedNames.length === 0 ? (
             <span className="text-muted-foreground text-xs font-normal px-2">
-              Select one or more libraries...
+              Select one or more libraries & configure copies...
             </span>
           ) : (
-            selected.map((libName) => (
+            selectedNames.map((libName) => (
               <span
                 key={libName}
-                className="inline-flex items-center gap-1 rounded-lg border border-[var(--brand)]/30 bg-[var(--brand)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--brand)]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--brand)]/30 bg-[var(--brand)]/10 px-2.5 py-1 text-xs font-semibold text-[var(--brand)]"
               >
                 <span>{libName}</span>
+                <span className="inline-flex items-center rounded-md bg-[var(--brand)] px-2 py-0.5 text-[11px] font-bold text-white shadow-2xs">
+                  {allocations[libName]} copies
+                </span>
                 <button
                   type="button"
                   onClick={(e) => {
@@ -444,12 +465,12 @@ function LibraryMultiSelectDropdown({
           )}
         </div>
         <div className="flex items-center gap-1.5 shrink-0 px-1">
-          {selected.length > 0 && (
+          {selectedNames.length > 0 && (
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                onChange([]);
+                onChange({});
               }}
               className="text-xs text-muted-foreground hover:text-foreground underline pr-1 cursor-pointer"
             >
@@ -464,7 +485,7 @@ function LibraryMultiSelectDropdown({
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-72 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
+        <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-80 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
           <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
             <div className="relative flex items-center">
               <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
@@ -472,7 +493,7 @@ function LibraryMultiSelectDropdown({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search libraries by name..."
+                placeholder="Search libraries by name or city..."
                 autoFocus
                 className="w-full h-9 pl-9 pr-8 text-xs rounded-lg border border-border bg-secondary/40 outline-none focus:border-[var(--brand)] text-foreground placeholder:text-muted-foreground"
               />
@@ -496,36 +517,75 @@ function LibraryMultiSelectDropdown({
                 {isAllSelected ? "Deselect All" : "Select All Libraries"}
               </button>
               <span className="text-[11px] text-muted-foreground font-medium">
-                {selected.length} of {ALL_LIBRARIES.length} selected
+                {selectedNames.length} selected ({totalCopies} copies total)
               </span>
             </div>
           </div>
 
-          <div className="overflow-y-auto max-h-52 py-1 divide-y divide-border/30">
+          <div className="overflow-y-auto max-h-60 py-1 divide-y divide-border/30">
             {filteredLibraries.length === 0 ? (
               <div className="px-4 py-6 text-center text-xs text-muted-foreground">
                 No matching libraries found.
               </div>
             ) : (
               filteredLibraries.map((lib) => {
-                const checked = selected.includes(lib.name);
+                const isSelected = allocations[lib.name] !== undefined;
+                const copies = allocations[lib.name] ?? 50;
+
                 return (
-                  <label
+                  <div
                     key={lib.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${
-                      checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
-                    }`}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
+                      }`}
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
+                    <div
+                      className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer pr-2"
+                      onClick={() => toggleLibrary(lib.name)}
+                    >
                       <input
                         type="checkbox"
-                        checked={checked}
-                        onChange={() => toggleLibrary(lib.name)}
+                        checked={isSelected}
+                        onChange={() => { }}
                         className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
                       />
-                      <span className="truncate">{lib.name}</span>
+                      <div className="min-w-0">
+                        <p className="truncate text-foreground font-medium">{lib.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{lib.city}</p>
+                      </div>
                     </div>
-                  </label>
+
+                    {isSelected && (
+                      <div
+                        className="flex items-center gap-1 shrink-0 bg-background border border-border/80 rounded-lg p-1 shadow-2xs"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => updateCopies(lib.name, copies - 5)}
+                          className="h-6 w-6 rounded flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
+                          title="Decrease copies"
+                        >
+                          <Minus size={12} />
+                        </button>
+                        <input
+                          type="number"
+                          min="1"
+                          value={copies}
+                          onChange={(e) => updateCopies(lib.name, parseInt(e.target.value, 10) || 1)}
+                          className="w-12 h-6 text-center text-xs font-bold text-foreground bg-transparent outline-none"
+                        />
+                        <span className="text-[10px] text-muted-foreground pr-1">copies</span>
+                        <button
+                          type="button"
+                          onClick={() => updateCopies(lib.name, copies + 5)}
+                          className="h-6 w-6 rounded flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
+                          title="Increase copies"
+                        >
+                          <Plus size={12} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 );
               })
             )}
@@ -536,13 +596,20 @@ function LibraryMultiSelectDropdown({
   );
 }
 
-function LibraryStoreAllocationCard() {
-  const [restrictToSpecific, setRestrictToSpecific] = useState(true);
-  const [selectedLibraries, setSelectedLibraries] = useState<string[]>([
-    "Central University Digital Library",
-    "National Science & Tech Consortium",
-  ]);
+function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
+  const [allocations, setAllocations] = useState<Record<string, number>>(() => {
+    if (bookId && DEFAULT_BOOK_LIBRARY_ALLOCATIONS[bookId]) {
+      return { ...DEFAULT_BOOK_LIBRARY_ALLOCATIONS[bookId] };
+    }
+    return {
+      "Central University Digital Library": 50,
+      "National Science & Tech Consortium": 30,
+    };
+  });
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const selectedLibraries = Object.keys(allocations);
+  const totalCopies = Object.values(allocations).reduce((sum, count) => sum + (count || 0), 0);
 
   const handleSaveAllocations = () => {
     setIsConfirmOpen(true);
@@ -550,7 +617,19 @@ function LibraryStoreAllocationCard() {
 
   const handleConfirmSave = () => {
     setIsConfirmOpen(false);
-    toast.success("Library store allocations updated successfully");
+    toast.success(`Library store allocations updated (${totalCopies} copies across ${selectedLibraries.length} libraries)`);
+  };
+
+  const updateCopies = (libName: string, copies: number) => {
+    const next = { ...allocations };
+    next[libName] = Math.max(1, isNaN(copies) ? 1 : copies);
+    setAllocations(next);
+  };
+
+  const removeLibrary = (libName: string) => {
+    const next = { ...allocations };
+    delete next[libName];
+    setAllocations(next);
   };
 
   return (
@@ -562,52 +641,146 @@ function LibraryStoreAllocationCard() {
           </span>
           <div>
             <h2 className="text-base font-extrabold text-foreground leading-tight">
-              Library Allocation
+              Library Allocation & License Copies
             </h2>
             <p className="text-xs text-muted-foreground font-medium mt-0.5">
-              Configure authorized libraries where this eBook title will be available in digital catalogues.
+              Select authorized institutional libraries and allocate the number of license copies for each library.
             </p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
-          <CheckCircle2 size={13} />
-          {selectedLibraries.length} Libraries Allocated
-        </span>
+        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <CheckCircle2 size={13} />
+            {selectedLibraries.length} Libraries Allocated
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+            {totalCopies} Total Copies
+          </span>
+        </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div className="space-y-2 pt-1">
           <div className="flex items-center justify-between">
             <label className="text-xs font-extrabold uppercase tracking-wider text-foreground flex items-center gap-1.5">
-              <span>Select Authorized Libraries</span>
+              <span>Select Authorized Libraries & Set Copies</span>
               <span className="text-red-500">*</span>
             </label>
             <span className="text-xs text-muted-foreground font-medium">
-              {selectedLibraries.length} libraries selected
+              {selectedLibraries.length} libraries • {totalCopies} copies
             </span>
           </div>
 
           <LibraryMultiSelectDropdown
-            selected={selectedLibraries}
-            onChange={setSelectedLibraries}
+            allocations={allocations}
+            onChange={setAllocations}
           />
-
-          {selectedLibraries.length === 0 && (
-            <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
-              <span>⚠️ Please select at least one library for allocation to take effect.</span>
-            </p>
-          )}
         </div>
+
+        {/* Selected Libraries Copies Breakdown Table */}
+        {selectedLibraries.length > 0 ? (
+          <div className="rounded-xl border border-border/80 bg-secondary/20 p-4 space-y-3">
+            <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+                <span>Allocated Libraries License Breakdown</span>
+              </h3>
+              <span className="text-xs font-semibold text-muted-foreground">
+                Total: <strong className="text-foreground font-extrabold">{totalCopies} copies</strong>
+              </span>
+            </div>
+
+            <div className="divide-y divide-border/40">
+              {selectedLibraries.map((libName) => {
+                const libInfo = ALL_LIBRARIES.find((l) => l.name === libName);
+                const copies = allocations[libName];
+
+                return (
+                  <div key={libName} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground">
+                        <Building2 size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-foreground truncate">{libName}</p>
+                        <p className="text-[11px] text-muted-foreground">{libInfo?.city ?? "Institutional Library"}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                      {/* Presets */}
+                      <div className="hidden md:flex items-center gap-1 mr-2">
+                        {[10, 25, 50, 100].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => updateCopies(libName, preset)}
+                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${copies === preset
+                                ? "bg-[var(--brand)] text-white border-[var(--brand)]"
+                                : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+                              }`}
+                          >
+                            {preset}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Stepper Input */}
+                      <div className="flex items-center gap-1 bg-card border border-border rounded-xl px-2 py-1 shadow-2xs">
+                        <button
+                          type="button"
+                          onClick={() => updateCopies(libName, copies - 5)}
+                          className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
+                        >
+                          <Minus size={13} />
+                        </button>
+                        <input
+                          type="number"
+                          min="1"
+                          value={copies}
+                          onChange={(e) => updateCopies(libName, parseInt(e.target.value, 10) || 1)}
+                          className="w-14 h-7 text-center text-xs font-extrabold text-foreground outline-none bg-transparent"
+                        />
+                        <span className="text-xs text-muted-foreground font-medium pr-1">copies</span>
+                        <button
+                          type="button"
+                          onClick={() => updateCopies(libName, copies + 5)}
+                          className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
+                        >
+                          <Plus size={13} />
+                        </button>
+                      </div>
+
+                      {/* Delete */}
+                      <button
+                        type="button"
+                        onClick={() => removeLibrary(libName)}
+                        className="h-9 w-9 rounded-xl border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                        title="Remove library allocation"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
+            <span>⚠️ Please select at least one library and allocate license copies to proceed.</span>
+          </p>
+        )}
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-border/50">
           <span className="text-xs text-muted-foreground font-medium">
-            {`${selectedLibraries.length} libraries selected for title allocation`}
+            {`${selectedLibraries.length} libraries allocated (${totalCopies} copies total)`}
           </span>
 
           <button
             type="button"
+            disabled={selectedLibraries.length === 0}
             onClick={handleSaveAllocations}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-bold text-white shadow-2xs transition-all hover:opacity-90 active:scale-98 cursor-pointer shrink-0 self-end sm:self-auto"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-bold text-white shadow-2xs transition-all hover:opacity-90 active:scale-98 cursor-pointer shrink-0 self-end sm:self-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={15} />
             <span>Save Allocations</span>
@@ -616,21 +789,37 @@ function LibraryStoreAllocationCard() {
       </div>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent className="max-w-md bg-card border border-border rounded-xl p-6 shadow-xl">
+        <DialogContent className="max-w-md bg-card border border-border rounded-xl p-6 shadow-xl space-y-4">
           <DialogHeader>
             <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
               <Library size={20} className="text-[var(--brand)]" />
               <span>Confirm Library Allocations</span>
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground pt-1 leading-relaxed">
-              Are you sure you want to update the library store allocations for this title?
-              {restrictToSpecific
-                ? ` This eBook will be restricted exclusively to ${selectedLibraries.length} authorized library catalogues.`
-                : " This eBook will be available to all institutional libraries globally."}
+              Are you sure you want to update the library store allocations and license copy distribution for this title?
             </DialogDescription>
           </DialogHeader>
 
-          <DialogFooter className="mt-4 flex items-center justify-end gap-2">
+          <div className="rounded-xl border border-border bg-secondary/30 p-3 space-y-2 text-xs">
+            <div className="flex justify-between font-semibold text-foreground border-b border-border pb-1.5">
+              <span>Selected Libraries ({selectedLibraries.length})</span>
+              <span>Allocated Copies</span>
+            </div>
+            <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
+              {selectedLibraries.map((libName) => (
+                <div key={libName} className="flex justify-between text-muted-foreground">
+                  <span className="truncate pr-2">{libName}</span>
+                  <span className="font-bold text-foreground shrink-0">{allocations[libName]} copies</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between font-extrabold text-foreground border-t border-border pt-2 text-xs">
+              <span>Total License Copies</span>
+              <span className="text-[var(--brand)]">{totalCopies} copies</span>
+            </div>
+          </div>
+
+          <DialogFooter className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => setIsConfirmOpen(false)}
@@ -641,7 +830,7 @@ function LibraryStoreAllocationCard() {
             <button
               type="button"
               onClick={handleConfirmSave}
-              className="inline-flex h-9 items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-xs font-bold text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
+              className="inline-flex h-9 items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-xs font-bold text-white hover:opacity-90 transition-opacity cursor-pointer"
             >
               Confirm & Save
             </button>
@@ -795,57 +984,55 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
           </div>
           <div className="px-6 py-5">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
-            {rentalPlans.map((plan) => {
-              const isSelected = selectedPlanId === plan.id;
-              if (plan.isSpecial) {
+              {rentalPlans.map((plan) => {
+                const isSelected = selectedPlanId === plan.id;
+                if (plan.isSpecial) {
+                  return (
+                    <button
+                      key={plan.id}
+                      type="button"
+                      onClick={() => setSelectedPlanId(plan.id)}
+                      className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all cursor-pointer ${isSelected
+                          ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
+                          : "border-border bg-card hover:bg-secondary/40"
+                        }`}
+                    >
+                      <span className="text-sm font-extrabold text-foreground">{plan.price}</span>
+                      <span className="text-[10px] font-medium italic text-muted-foreground mt-0.5">
+                        {plan.subtext}
+                      </span>
+                    </button>
+                  );
+                }
+
                 return (
                   <button
                     key={plan.id}
                     type="button"
                     onClick={() => setSelectedPlanId(plan.id)}
-                    className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all cursor-pointer ${
-                      isSelected
+                    className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all cursor-pointer ${isSelected
                         ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
                         : "border-border bg-card hover:bg-secondary/40"
-                    }`}
+                      }`}
                   >
-                    <span className="text-sm font-extrabold text-foreground">{plan.price}</span>
-                    <span className="text-[10px] font-medium italic text-muted-foreground mt-0.5">
-                      {plan.subtext}
+                    <span className="text-[11px] font-bold text-foreground whitespace-nowrap">
+                      {plan.duration}
                     </span>
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      <span className="text-xs font-bold text-foreground">{plan.price}</span>
+                      {plan.originalPrice && (
+                        <span className="text-[10px] font-medium text-muted-foreground line-through">
+                          {plan.originalPrice}
+                        </span>
+                      )}
+                    </div>
                   </button>
                 );
-              }
-
-              return (
-                <button
-                  key={plan.id}
-                  type="button"
-                  onClick={() => setSelectedPlanId(plan.id)}
-                  className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all cursor-pointer ${
-                    isSelected
-                      ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
-                      : "border-border bg-card hover:bg-secondary/40"
-                  }`}
-                >
-                  <span className="text-[11px] font-bold text-foreground whitespace-nowrap">
-                    {plan.duration}
-                  </span>
-                  <div className="flex items-center justify-center gap-1 mt-1">
-                    <span className="text-xs font-bold text-foreground">{plan.price}</span>
-                    {plan.originalPrice && (
-                      <span className="text-[10px] font-medium text-muted-foreground line-through">
-                        {plan.originalPrice}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
+              })}
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
       {/* Confirmed Agreement Status Card (Non-editable / Locked) */}
       <div className="pt-2">
@@ -1054,9 +1241,9 @@ function EBookDetailPage() {
               </div>
 
               {/* Stats & Key Metrics Strip (Compatible Grid) */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-                {/* 1. Price or License Copies */}
-                {!isLibraryOnly ? (
+              <div className={`grid grid-cols-2 ${!isLibraryOnly ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3 pt-1`}>
+                {/* 1. Price */}
+                {!isLibraryOnly && (
                   <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                     <div className="flex items-center justify-between text-muted-foreground">
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Price</span>
@@ -1066,38 +1253,9 @@ function EBookDetailPage() {
                       {book.price === null ? "Free" : `₹${book.price.toFixed(2)}`}
                     </p>
                   </div>
-                ) : (
-                  <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                    <div className="flex items-center justify-between text-muted-foreground">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Copies</span>
-                      <Library size={14} className="text-muted-foreground/80" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-bold text-foreground">{licenseCount} copies</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setLicenseInput(licenseCount.toString());
-                          setIsEditingLicenses(true);
-                        }}
-                        className="text-xs font-semibold text-[var(--brand)] hover:underline inline-flex items-center gap-1 cursor-pointer"
-                      >
-                        <Pencil size={11} /> Edit
-                      </button>
-                    </div>
-                  </div>
                 )}
 
-                {/* 2. File Size */}
-                <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                  <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">eBook Size (in MB)</span>
-                    <HardDrive size={14} className="text-muted-foreground/80" />
-                  </div>
-                  <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>
-                </div>
-
-                {/* 3. Readers */}
+                {/* 2. Readers */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Readers</span>
@@ -1106,23 +1264,15 @@ function EBookDetailPage() {
                   <p className="text-lg font-bold text-foreground">{extra.viewers}</p>
                 </div>
 
-                {/* 4. Status */}
+                {/* 3. Published Date */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
-                  <div className="flex items-center pt-1">
-                    <StatusSelectPill
-                      status={currentStatus}
-                      onChange={(next) => {
-                        setCurrentStatus(next);
-                        toast.success(`Book status updated to ${next}`);
-                      }}
-                      allowedStatuses={
-                        isLibraryOnly
-                          ? ["Draft", "Published", "Unpublished"]
-                          : ["Published", "Unpublished", "Draft", "Rejected"]
-                      }
-                    />
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Published On</span>
+                    <Calendar size={14} className="text-muted-foreground/80" />
                   </div>
+                  <p className="text-lg font-bold text-foreground">
+                    {extra.dateOfPublication && extra.dateOfPublication !== "—" ? extra.dateOfPublication : (book.dop ?? "06 Jan 2026")}
+                  </p>
                 </div>
               </div>
 
@@ -1142,6 +1292,11 @@ function EBookDetailPage() {
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <span>File Type: <strong className="text-foreground uppercase">{book.format}</strong></span>
                 </span>
+                <span className="h-3 w-px bg-border" />
+                <span className="inline-flex items-center gap-1.5 font-medium">
+                  <HardDrive size={13} className="text-muted-foreground" />
+                  <span>eBook Size: <strong className="text-foreground">{extra.sizeMB} MB</strong></span>
+                </span>
               </div>
 
               {/* Actions */}
@@ -1160,7 +1315,7 @@ function EBookDetailPage() {
                   <BookOpen size={16} />
                   Preview Sample eBook
                 </button>
-                <CopyBookUrlButton bookId={book.id} />
+                {!isLibraryOnly && <CopyBookUrlButton bookId={book.id} />}
               </div>
             </div>
           </div>
@@ -1169,7 +1324,6 @@ function EBookDetailPage() {
         {/* ── eBook Details ──────────────────────────────────────────── */}
         <SectionCard title="eBook Details">
           <div className="space-y-0.5">
-            <MetaRow label="eBook Name:" value={book.title} />
             <MetaRow
               label="Status:"
               value={
@@ -1187,30 +1341,7 @@ function EBookDetailPage() {
                 />
               }
             />
-            <MetaRow label="Language:" value={extra.language} valueClass="text-[var(--brand)]" />
             <MetaRow label="Regional Name:" value={extra.regionalName} />
-            <MetaRow label="Date of Publications:" value={extra.dateOfPublication} />
-            <MetaRow label="eBook Size (in MB):" value={`${extra.sizeMB} MB`} />
-            {isLibraryOnly && (
-              <MetaRow
-                label="No. of copies:"
-                value={
-                  <div className="inline-flex items-center gap-2">
-                    <span className="font-bold text-foreground">{licenseCount} copies</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setLicenseInput(licenseCount.toString());
-                        setIsEditingLicenses(true);
-                      }}
-                      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-0.5 text-xs font-semibold text-[var(--brand)] hover:bg-secondary cursor-pointer shadow-2xs"
-                    >
-                      <Pencil size={11} /> Edit Copies
-                    </button>
-                  </div>
-                }
-              />
-            )}
           </div>
 
           {/* Summary */}
@@ -1264,10 +1395,10 @@ function EBookDetailPage() {
         </div>
 
         {/* ── Library Allocation (For Library-Only Publisher) ─────────── */}
-        {isLibraryOnly && <LibraryStoreAllocationCard />}
+        {isLibraryOnly && <LibraryStoreAllocationCard bookId={book.id} />}
 
         {/* ── Price Details & Rental Plan ─────────────────────────────── */}
-        <PriceDetailsAndRentalPlanSection gstRate={extra.gstRate} />
+        {!isLibraryOnly && <PriceDetailsAndRentalPlanSection gstRate={extra.gstRate} />}
       </div>
 
       {/* Edit License Count Modal */}

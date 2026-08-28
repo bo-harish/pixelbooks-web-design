@@ -26,8 +26,12 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { seedBooks } from "@/lib/catalogue-data";
 
 export const Route = createFileRoute("/pb-admin/titles/new")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    edit: (search.edit as string) || undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Add New eBook — PixelBooks" },
@@ -1857,10 +1861,25 @@ function RentalSection() {
 
 function AddEBookPage() {
   const [submitted, setSubmitted] = useState(false);
+  const search = Route.useSearch();
+  const isEditMode = Boolean(search.edit);
+  const targetBook = search.edit ? seedBooks.find((b) => b.id === search.edit) : null;
 
   return (
-    <AppShell title="Add eBook">
+    <AppShell title={isEditMode ? "Edit eBook" : "Add eBook"}>
       <div className="p-4 md:p-8">
+        {isEditMode && (
+          <div className="mb-4 flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-xs font-semibold text-amber-700 dark:text-amber-400 shadow-2xs">
+            <span className="flex items-center gap-2">
+              <Sparkles size={16} />
+              <span>Editing Draft eBook: <strong>{targetBook?.title ?? "Draft Title"}</strong></span>
+            </span>
+            <span className="rounded-md bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+              Draft Mode
+            </span>
+          </div>
+        )}
+
         <Link
           to="/pb-admin/titles"
           className="mb-5 inline-flex items-center gap-1.5 text-sm font-normal text-muted-foreground transition-colors hover:text-foreground"
