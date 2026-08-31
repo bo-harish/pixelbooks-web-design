@@ -1230,11 +1230,6 @@ function EBookDetailsSection() {
         <Field label="eBook Size (in MB)">
           <TextInput defaultValue="25.4" placeholder="e.g. 25.4" />
         </Field>
-        {isLibraryOnly && (
-          <Field label="No. of copies" required>
-            <TextInput type="number" defaultValue="50" placeholder="e.g. 50" min="1" />
-          </Field>
-        )}
       </div>
 
       <div className="mt-4">
