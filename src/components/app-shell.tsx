@@ -414,6 +414,46 @@ function useCollapsed() {
 }
 
 function SidebarBrand({ collapsed }: { collapsed: boolean }) {
+  const { pathname } = useLocation();
+  const isCustomBranded = pathname.startsWith("/library-admin") || pathname.startsWith("/publisher");
+
+  if (isCustomBranded) {
+    return (
+      <div
+        className={[
+          "flex items-center gap-3 pt-4 pb-4",
+          collapsed ? "justify-center px-2" : "px-3.5",
+        ].join(" ")}
+      >
+        {collapsed ? (
+          <Link
+            to="/"
+            id="sidebar-logo-link-collapsed"
+            className="flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
+            title="Return to Main Index"
+          >
+            <img src="/vimala-logo.png" alt="Vimala College Crest" className="h-10 w-10 object-contain" />
+          </Link>
+        ) : (
+          <Link
+            to="/"
+            id="sidebar-logo-link-expanded"
+            className="flex items-center group w-full overflow-hidden hover:opacity-95 transition-opacity"
+            title="Return to Main Index"
+          >
+            <div className="bg-white dark:bg-white/95 rounded-xl px-3 py-2 shadow-2xs border border-border/40 w-full flex items-center justify-center">
+              <img
+                src="/vimala-banner-logo.png"
+                alt="Vimala College Autonomous Thrissur"
+                className="h-11 sm:h-12 w-auto max-w-full object-contain"
+              />
+            </div>
+          </Link>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       className={[

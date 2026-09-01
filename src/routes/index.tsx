@@ -82,7 +82,7 @@ function WorkspaceSelector() {
       path: "/library-admin",
       color: "oklch(0.55 0.13 260)", // royal blue/purple
       shadow: "rgba(79, 70, 229, 0.15)",
-      badge: "IIT Delhi Portal",
+      badge: "Vimala College Portal",
     },
     {
       id: "library-user",

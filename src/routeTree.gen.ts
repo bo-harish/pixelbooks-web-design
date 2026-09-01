@@ -22,6 +22,7 @@ import { Route as PublisherSettingsRouteImport } from './routes/publisher/settin
 import { Route as PublisherSalesReportRouteImport } from './routes/publisher/sales-report'
 import { Route as PublisherProfileRouteImport } from './routes/publisher/profile'
 import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
+import { Route as PublisherLoginRouteImport } from './routes/publisher/login'
 import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
 import { Route as PbAdminViewsReportRouteImport } from './routes/pb-admin/views-report'
 import { Route as PbAdminTermsConditionsRouteImport } from './routes/pb-admin/terms-conditions'
@@ -169,6 +170,11 @@ const PublisherProfileRoute = PublisherProfileRouteImport.update({
 const PublisherMarginReportRoute = PublisherMarginReportRouteImport.update({
   id: '/publisher/margin-report',
   path: '/publisher/margin-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherLoginRoute = PublisherLoginRouteImport.update({
+  id: '/publisher/login',
+  path: '/publisher/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
@@ -658,6 +664,7 @@ export interface FileRoutesByFullPath {
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
+  '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
   '/publisher/sales-report': typeof PublisherSalesReportRoute
@@ -756,6 +763,7 @@ export interface FileRoutesByTo {
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
+  '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
   '/publisher/sales-report': typeof PublisherSalesReportRoute
@@ -855,6 +863,7 @@ export interface FileRoutesById {
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
+  '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
   '/publisher/sales-report': typeof PublisherSalesReportRoute
@@ -955,6 +964,7 @@ export interface FileRouteTypes {
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
     | '/publisher/bank-accounts'
+    | '/publisher/login'
     | '/publisher/margin-report'
     | '/publisher/profile'
     | '/publisher/sales-report'
@@ -1053,6 +1063,7 @@ export interface FileRouteTypes {
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
     | '/publisher/bank-accounts'
+    | '/publisher/login'
     | '/publisher/margin-report'
     | '/publisher/profile'
     | '/publisher/sales-report'
@@ -1151,6 +1162,7 @@ export interface FileRouteTypes {
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
     | '/publisher/bank-accounts'
+    | '/publisher/login'
     | '/publisher/margin-report'
     | '/publisher/profile'
     | '/publisher/sales-report'
@@ -1250,6 +1262,7 @@ export interface RootRouteChildren {
   PbAdminTermsConditionsRoute: typeof PbAdminTermsConditionsRoute
   PbAdminViewsReportRoute: typeof PbAdminViewsReportRoute
   PublisherBankAccountsRoute: typeof PublisherBankAccountsRoute
+  PublisherLoginRoute: typeof PublisherLoginRoute
   PublisherMarginReportRoute: typeof PublisherMarginReportRoute
   PublisherProfileRoute: typeof PublisherProfileRoute
   PublisherSalesReportRoute: typeof PublisherSalesReportRoute
@@ -1388,6 +1401,13 @@ declare module '@tanstack/react-router' {
       path: '/publisher/margin-report'
       fullPath: '/publisher/margin-report'
       preLoaderRoute: typeof PublisherMarginReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/login': {
+      id: '/publisher/login'
+      path: '/publisher/login'
+      fullPath: '/publisher/login'
+      preLoaderRoute: typeof PublisherLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/publisher/bank-accounts': {
@@ -2067,6 +2087,7 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminTermsConditionsRoute: PbAdminTermsConditionsRoute,
   PbAdminViewsReportRoute: PbAdminViewsReportRoute,
   PublisherBankAccountsRoute: PublisherBankAccountsRoute,
+  PublisherLoginRoute: PublisherLoginRoute,
   PublisherMarginReportRoute: PublisherMarginReportRoute,
   PublisherProfileRoute: PublisherProfileRoute,
   PublisherSalesReportRoute: PublisherSalesReportRoute,
