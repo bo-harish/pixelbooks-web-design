@@ -10,11 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as LibraryUserRouteImport } from './routes/library-user'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PublisherIndexRouteImport } from './routes/publisher/index'
 import { Route as PbAdminIndexRouteImport } from './routes/pb-admin/index'
 import { Route as PbAdminLibIndexRouteImport } from './routes/pb-admin-lib/index'
+import { Route as LibraryUserIndexRouteImport } from './routes/library-user/index'
 import { Route as LibraryAdminIndexRouteImport } from './routes/library-admin/index'
 import { Route as AuthorIndexRouteImport } from './routes/author/index'
 import { Route as PublisherSupportRouteImport } from './routes/publisher/support'
@@ -53,7 +53,8 @@ import { Route as PbAdminLibOrdersRouteImport } from './routes/pb-admin-lib/orde
 import { Route as PbAdminLibLibrariesRouteImport } from './routes/pb-admin-lib/libraries'
 import { Route as PbAdminLibCloneRouteImport } from './routes/pb-admin-lib/clone'
 import { Route as PbAdminLibCatalogueRouteImport } from './routes/pb-admin-lib/catalogue'
-import { Route as LibraryUserProfileRouteImport } from './routes/library-user.profile'
+import { Route as LibraryUserProfileRouteImport } from './routes/library-user/profile'
+import { Route as LibraryUserLoginRouteImport } from './routes/library-user/login'
 import { Route as LibraryAdminUsersRouteImport } from './routes/library-admin/users'
 import { Route as LibraryAdminSupportRouteImport } from './routes/library-admin/support'
 import { Route as LibraryAdminRequestsRouteImport } from './routes/library-admin/requests'
@@ -110,11 +111,6 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryUserRoute = LibraryUserRouteImport.update({
-  id: '/library-user',
-  path: '/library-user',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -133,6 +129,11 @@ const PbAdminIndexRoute = PbAdminIndexRouteImport.update({
 const PbAdminLibIndexRoute = PbAdminLibIndexRouteImport.update({
   id: '/pb-admin-lib/',
   path: '/pb-admin-lib/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryUserIndexRoute = LibraryUserIndexRouteImport.update({
+  id: '/library-user/',
+  path: '/library-user/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryAdminIndexRoute = LibraryAdminIndexRouteImport.update({
@@ -329,9 +330,14 @@ const PbAdminLibCatalogueRoute = PbAdminLibCatalogueRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryUserProfileRoute = LibraryUserProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => LibraryUserRoute,
+  id: '/library-user/profile',
+  path: '/library-user/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryUserLoginRoute = LibraryUserLoginRouteImport.update({
+  id: '/library-user/login',
+  path: '/library-user/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryAdminUsersRoute = LibraryAdminUsersRouteImport.update({
   id: '/library-admin/users',
@@ -605,7 +611,6 @@ const PbAdminPublishersAuthorsIdTitlesRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/library-user': typeof LibraryUserRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
@@ -620,6 +625,7 @@ export interface FileRoutesByFullPath {
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-user/login': typeof LibraryUserLoginRoute
   '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
   '/pb-admin-lib/clone': typeof PbAdminLibCloneRoute
@@ -659,6 +665,7 @@ export interface FileRoutesByFullPath {
   '/publisher/support': typeof PublisherSupportRoute
   '/author/': typeof AuthorIndexRoute
   '/library-admin/': typeof LibraryAdminIndexRoute
+  '/library-user/': typeof LibraryUserIndexRoute
   '/pb-admin-lib/': typeof PbAdminLibIndexRoute
   '/pb-admin/': typeof PbAdminIndexRoute
   '/publisher/': typeof PublisherIndexRoute
@@ -702,7 +709,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/library-user': typeof LibraryUserRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
@@ -717,6 +723,7 @@ export interface FileRoutesByTo {
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-user/login': typeof LibraryUserLoginRoute
   '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
   '/pb-admin-lib/clone': typeof PbAdminLibCloneRoute
@@ -756,6 +763,7 @@ export interface FileRoutesByTo {
   '/publisher/support': typeof PublisherSupportRoute
   '/author': typeof AuthorIndexRoute
   '/library-admin': typeof LibraryAdminIndexRoute
+  '/library-user': typeof LibraryUserIndexRoute
   '/pb-admin-lib': typeof PbAdminLibIndexRoute
   '/pb-admin': typeof PbAdminIndexRoute
   '/publisher': typeof PublisherIndexRoute
@@ -800,7 +808,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/library-user': typeof LibraryUserRouteWithChildren
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
@@ -815,6 +822,7 @@ export interface FileRoutesById {
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-user/login': typeof LibraryUserLoginRoute
   '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
   '/pb-admin-lib/clone': typeof PbAdminLibCloneRoute
@@ -854,6 +862,7 @@ export interface FileRoutesById {
   '/publisher/support': typeof PublisherSupportRoute
   '/author/': typeof AuthorIndexRoute
   '/library-admin/': typeof LibraryAdminIndexRoute
+  '/library-user/': typeof LibraryUserIndexRoute
   '/pb-admin-lib/': typeof PbAdminLibIndexRoute
   '/pb-admin/': typeof PbAdminIndexRoute
   '/publisher/': typeof PublisherIndexRoute
@@ -899,7 +908,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/library-user'
     | '/notifications'
     | '/author/profile'
     | '/library-admin/banners'
@@ -914,6 +922,7 @@ export interface FileRouteTypes {
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-user/login'
     | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
     | '/pb-admin-lib/clone'
@@ -953,6 +962,7 @@ export interface FileRouteTypes {
     | '/publisher/support'
     | '/author/'
     | '/library-admin/'
+    | '/library-user/'
     | '/pb-admin-lib/'
     | '/pb-admin/'
     | '/publisher/'
@@ -996,7 +1006,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/library-user'
     | '/notifications'
     | '/author/profile'
     | '/library-admin/banners'
@@ -1011,6 +1020,7 @@ export interface FileRouteTypes {
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-user/login'
     | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
     | '/pb-admin-lib/clone'
@@ -1050,6 +1060,7 @@ export interface FileRouteTypes {
     | '/publisher/support'
     | '/author'
     | '/library-admin'
+    | '/library-user'
     | '/pb-admin-lib'
     | '/pb-admin'
     | '/publisher'
@@ -1093,7 +1104,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/library-user'
     | '/notifications'
     | '/author/profile'
     | '/library-admin/banners'
@@ -1108,6 +1118,7 @@ export interface FileRouteTypes {
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-user/login'
     | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
     | '/pb-admin-lib/clone'
@@ -1147,6 +1158,7 @@ export interface FileRouteTypes {
     | '/publisher/support'
     | '/author/'
     | '/library-admin/'
+    | '/library-user/'
     | '/pb-admin-lib/'
     | '/pb-admin/'
     | '/publisher/'
@@ -1191,7 +1203,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LibraryUserRoute: typeof LibraryUserRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
   AuthorProfileRoute: typeof AuthorProfileRoute
   LibraryAdminBannersRoute: typeof LibraryAdminBannersRoute
@@ -1206,6 +1217,8 @@ export interface RootRouteChildren {
   LibraryAdminRequestsRoute: typeof LibraryAdminRequestsRoute
   LibraryAdminSupportRoute: typeof LibraryAdminSupportRoute
   LibraryAdminUsersRoute: typeof LibraryAdminUsersRoute
+  LibraryUserLoginRoute: typeof LibraryUserLoginRoute
+  LibraryUserProfileRoute: typeof LibraryUserProfileRoute
   PbAdminLibCatalogueRoute: typeof PbAdminLibCatalogueRoute
   PbAdminLibCloneRoute: typeof PbAdminLibCloneRoute
   PbAdminLibLibrariesRoute: typeof PbAdminLibLibrariesRoute
@@ -1244,6 +1257,7 @@ export interface RootRouteChildren {
   PublisherSupportRoute: typeof PublisherSupportRoute
   AuthorIndexRoute: typeof AuthorIndexRoute
   LibraryAdminIndexRoute: typeof LibraryAdminIndexRoute
+  LibraryUserIndexRoute: typeof LibraryUserIndexRoute
   PbAdminLibIndexRoute: typeof PbAdminLibIndexRoute
   PbAdminIndexRoute: typeof PbAdminIndexRoute
   PublisherIndexRoute: typeof PublisherIndexRoute
@@ -1292,13 +1306,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/library-user': {
-      id: '/library-user'
-      path: '/library-user'
-      fullPath: '/library-user'
-      preLoaderRoute: typeof LibraryUserRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -1325,6 +1332,13 @@ declare module '@tanstack/react-router' {
       path: '/pb-admin-lib'
       fullPath: '/pb-admin-lib/'
       preLoaderRoute: typeof PbAdminLibIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library-user/': {
+      id: '/library-user/'
+      path: '/library-user'
+      fullPath: '/library-user/'
+      preLoaderRoute: typeof LibraryUserIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library-admin/': {
@@ -1595,10 +1609,17 @@ declare module '@tanstack/react-router' {
     }
     '/library-user/profile': {
       id: '/library-user/profile'
-      path: '/profile'
+      path: '/library-user/profile'
       fullPath: '/library-user/profile'
       preLoaderRoute: typeof LibraryUserProfileRouteImport
-      parentRoute: typeof LibraryUserRoute
+      parentRoute: typeof rootRouteImport
+    }
+    '/library-user/login': {
+      id: '/library-user/login'
+      path: '/library-user/login'
+      fullPath: '/library-user/login'
+      preLoaderRoute: typeof LibraryUserLoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/library-admin/users': {
       id: '/library-admin/users'
@@ -1953,18 +1974,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface LibraryUserRouteChildren {
-  LibraryUserProfileRoute: typeof LibraryUserProfileRoute
-}
-
-const LibraryUserRouteChildren: LibraryUserRouteChildren = {
-  LibraryUserProfileRoute: LibraryUserProfileRoute,
-}
-
-const LibraryUserRouteWithChildren = LibraryUserRoute._addFileChildren(
-  LibraryUserRouteChildren,
-)
-
 interface PbAdminAuthorManagementRouteChildren {
   PbAdminAuthorManagementAuthorIdRoute: typeof PbAdminAuthorManagementAuthorIdRoute
 }
@@ -2011,7 +2020,6 @@ const PbAdminPublishersAuthorsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LibraryUserRoute: LibraryUserRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
   AuthorProfileRoute: AuthorProfileRoute,
   LibraryAdminBannersRoute: LibraryAdminBannersRoute,
@@ -2026,6 +2034,8 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryAdminRequestsRoute: LibraryAdminRequestsRoute,
   LibraryAdminSupportRoute: LibraryAdminSupportRoute,
   LibraryAdminUsersRoute: LibraryAdminUsersRoute,
+  LibraryUserLoginRoute: LibraryUserLoginRoute,
+  LibraryUserProfileRoute: LibraryUserProfileRoute,
   PbAdminLibCatalogueRoute: PbAdminLibCatalogueRoute,
   PbAdminLibCloneRoute: PbAdminLibCloneRoute,
   PbAdminLibLibrariesRoute: PbAdminLibLibrariesRoute,
@@ -2064,6 +2074,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublisherSupportRoute: PublisherSupportRoute,
   AuthorIndexRoute: AuthorIndexRoute,
   LibraryAdminIndexRoute: LibraryAdminIndexRoute,
+  LibraryUserIndexRoute: LibraryUserIndexRoute,
   PbAdminLibIndexRoute: PbAdminLibIndexRoute,
   PbAdminIndexRoute: PbAdminIndexRoute,
   PublisherIndexRoute: PublisherIndexRoute,

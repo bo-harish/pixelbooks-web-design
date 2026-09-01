@@ -8,6 +8,7 @@ import {
   BookMarked,
   Settings,
   ChevronDown,
+  GraduationCap,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
@@ -83,6 +84,18 @@ function WorkspaceSelector() {
       shadow: "rgba(79, 70, 229, 0.15)",
       badge: "IIT Delhi Portal",
     },
+    {
+      id: "library-user",
+      title: "Library User Login",
+      subtitle: "Student & Reader Portal",
+      description:
+        "Access institutional digital library, read assigned e-books in the interactive reader, track progress, and manage student profile.",
+      icon: GraduationCap,
+      path: "/library-user/login",
+      color: "oklch(0.58 0.17 330)", // magenta pink
+      shadow: "rgba(219, 39, 119, 0.15)",
+      badge: "Ananya Roy · Student",
+    },
   ];
 
   return (
@@ -106,7 +119,7 @@ function WorkspaceSelector() {
       )}
 
       {/* Header */}
-      <header className="mx-auto w-full max-w-7xl flex flex-wrap items-center justify-between gap-4">
+      <header className="mx-auto w-full max-w-7xl 2xl:max-w-[1500px] flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link to="/" id="landing-logo-link" className="flex items-center gap-3 shrink-0">
             <img src="/logo-app-icon.png" alt="PixelBooks App Icon" className="h-9 w-9 object-contain" />
@@ -120,7 +133,7 @@ function WorkspaceSelector() {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto my-auto w-full max-w-7xl py-12 md:py-16">
+      <main className="mx-auto my-auto w-full max-w-7xl 2xl:max-w-[1500px] py-12 md:py-16">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/75">
             New UI Design: Select Your Workspace
@@ -128,7 +141,7 @@ function WorkspaceSelector() {
         </div>
 
         {/* Roles Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {roles.map((role) => {
             const Icon = role.icon;
             const isHovered = hoveredCard === role.id;
@@ -295,7 +308,7 @@ function WorkspaceSelector() {
       </main>
 
       {/* Footer */}
-      <footer className="mx-auto w-full max-w-7xl border-t border-border/60 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground/80">
+      <footer className="mx-auto w-full max-w-7xl 2xl:max-w-[1500px] border-t border-border/60 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground/80">
         <div>© 2026 PixelBooks. All rights reserved.</div>
         <div className="flex items-center gap-4">
           <a href="#" className="hover:text-foreground transition-colors">

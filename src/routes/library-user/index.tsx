@@ -12,10 +12,11 @@ import {
   FileText,
   Star,
   BookMarked,
+  UserCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/library-user")({
+export const Route = createFileRoute("/library-user/")({
   component: LibraryUserDashboard,
 });
 
@@ -157,21 +158,30 @@ function LibraryUserDashboard() {
       {/* Top Header */}
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 px-4 py-4 backdrop-blur md:px-8">
         <div className="mx-auto max-w-7xl flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link to="/" id="library-user-logo-link" className="flex items-center gap-2.5 shrink-0 group">
+              <img src="/logo-app-icon.png" alt="PixelBooks App Icon" className="h-8 w-8 object-contain transition-transform group-hover:scale-105" />
+              <span className="font-extrabold text-xl tracking-tight text-foreground">PixelBooks</span>
+            </Link>
+
+            <div className="h-5 w-px bg-border hidden sm:block" />
+
             <Link
               to="/"
               id="library-user-btn-back"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              title="Return to Workspaces"
             >
-              <ArrowLeft size={16} />
+              <ArrowLeft size={15} />
             </Link>
+
             <div>
-              <h1 className="text-lg font-bold flex items-center gap-2">
-                <BookOpen size={18} className="text-[oklch(0.62_0.15_155)]" />
-                Student E-Library Portal
+              <h1 className="text-sm sm:text-base font-bold flex items-center gap-1.5 leading-tight">
+                <BookOpen size={16} className="text-[oklch(0.62_0.15_155)]" />
+                Student E-Library
               </h1>
-              <p className="text-xs text-muted-foreground hidden sm:block">
-                IIT Delhi Digital Resource Access
+              <p className="text-[11px] text-muted-foreground hidden md:block">
+                Vimala Knowledge Hub · Digital Resources
               </p>
             </div>
           </div>
@@ -190,6 +200,16 @@ function LibraryUserDashboard() {
                 className="w-full bg-secondary border border-border rounded-lg pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
             </div>
+
+            <Link
+              to="/library-user/login"
+              id="library-user-btn-login-screen"
+              className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-all hover:bg-secondary"
+              title="Student Login Screen"
+            >
+              <UserCheck size={14} className="text-emerald-500" />
+              <span className="hidden sm:inline">Login Screen</span>
+            </Link>
 
             <Link
               to="/library-user/profile"
