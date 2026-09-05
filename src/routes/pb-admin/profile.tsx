@@ -77,9 +77,8 @@ function Field({
           placeholder={placeholder}
           disabled={disabled}
           onChange={(e) => onChange?.(e.target.value)}
-          className={`flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
-            disabled ? "opacity-75 bg-secondary/30 cursor-not-allowed" : ""
-          } ${rightSlot ? "pr-24" : ""}`}
+          className={`flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${disabled ? "opacity-75 bg-secondary/30 cursor-not-allowed" : ""
+            } ${rightSlot ? "pr-24" : ""}`}
         />
         {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
       </div>
@@ -88,14 +87,13 @@ function Field({
 }
 
 function PbAdminProfilePage() {
-  const [adminName, setAdminName] = useState("Harish Kumar");
+  const [adminName, setAdminName] = useState("Sudheer Menon");
   const [email, setEmail] = useState("admin@pixelbooksapp.com");
   const [phone, setPhone] = useState("+91 98765 43210");
   const [verifiedEmail, setVerifiedEmail] = useState("admin@pixelbooksapp.com");
   const [verifiedPhone, setVerifiedPhone] = useState("+91 98765 43210");
   const [officeLocation, setOfficeLocation] = useState("HQ - Bangalore, India");
   const [sessionTimeout, setSessionTimeout] = useState("30");
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
   const [auditLoggingEnabled, setAuditLoggingEnabled] = useState(true);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
@@ -213,40 +211,7 @@ function PbAdminProfilePage() {
 
         {/* Security & Access Controls */}
         <SectionCard title="Security Controls & Privileges">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* 2FA Card */}
-            <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                    <ShieldCheck size={20} />
-                  </span>
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground">Two-Factor Authentication (2FA)</h3>
-                    <p className="text-xs text-muted-foreground">Mandatory for all Super Admin logins</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTwoFactorEnabled(!twoFactorEnabled);
-                    toast.success(`2FA ${!twoFactorEnabled ? "enabled" : "disabled"}`);
-                  }}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                    twoFactorEnabled ? "bg-emerald-500" : "bg-muted"
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      twoFactorEnabled ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Uses hardware security key or TOTP Authenticator app (Google Authenticator / 1Password) for access verification.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 gap-6">
 
             {/* Audit Logging */}
             <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 space-y-4">
@@ -266,14 +231,12 @@ function PbAdminProfilePage() {
                     setAuditLoggingEnabled(!auditLoggingEnabled);
                     toast.success(`Audit logging ${!auditLoggingEnabled ? "activated" : "paused"}`);
                   }}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                    auditLoggingEnabled ? "bg-indigo-600" : "bg-muted"
-                  }`}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${auditLoggingEnabled ? "bg-indigo-600" : "bg-muted"
+                    }`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      auditLoggingEnabled ? "translate-x-5" : "translate-x-0"
-                    }`}
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${auditLoggingEnabled ? "translate-x-5" : "translate-x-0"
+                      }`}
                   />
                 </button>
               </div>

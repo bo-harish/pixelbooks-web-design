@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PublisherIndexRouteImport } from './routes/publisher/index'
+import { Route as PbWebIndexRouteImport } from './routes/pb-web/index'
 import { Route as PbAdminIndexRouteImport } from './routes/pb-admin/index'
 import { Route as PbAdminLibIndexRouteImport } from './routes/pb-admin-lib/index'
 import { Route as LibraryUserIndexRouteImport } from './routes/library-user/index'
@@ -24,6 +25,9 @@ import { Route as PublisherProfileRouteImport } from './routes/publisher/profile
 import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
 import { Route as PublisherLoginRouteImport } from './routes/publisher/login'
 import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
+import { Route as PbWebGenreRouteImport } from './routes/pb-web/genre'
+import { Route as PbWebCartRouteImport } from './routes/pb-web/cart'
+import { Route as PbWebAccountsRouteImport } from './routes/pb-web/accounts'
 import { Route as PbAdminViewsReportRouteImport } from './routes/pb-admin/views-report'
 import { Route as PbAdminTermsConditionsRouteImport } from './routes/pb-admin/terms-conditions'
 import { Route as PbAdminSettingsRouteImport } from './routes/pb-admin/settings'
@@ -122,6 +126,11 @@ const PublisherIndexRoute = PublisherIndexRouteImport.update({
   path: '/publisher/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PbWebIndexRoute = PbWebIndexRouteImport.update({
+  id: '/pb-web/',
+  path: '/pb-web/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PbAdminIndexRoute = PbAdminIndexRouteImport.update({
   id: '/pb-admin/',
   path: '/pb-admin/',
@@ -180,6 +189,21 @@ const PublisherLoginRoute = PublisherLoginRouteImport.update({
 const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
   id: '/publisher/bank-accounts',
   path: '/publisher/bank-accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbWebGenreRoute = PbWebGenreRouteImport.update({
+  id: '/pb-web/genre',
+  path: '/pb-web/genre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbWebCartRoute = PbWebCartRouteImport.update({
+  id: '/pb-web/cart',
+  path: '/pb-web/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbWebAccountsRoute = PbWebAccountsRouteImport.update({
+  id: '/pb-web/accounts',
+  path: '/pb-web/accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PbAdminViewsReportRoute = PbAdminViewsReportRouteImport.update({
@@ -663,6 +687,9 @@ export interface FileRoutesByFullPath {
   '/pb-admin/settings': typeof PbAdminSettingsRoute
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
+  '/pb-web/accounts': typeof PbWebAccountsRoute
+  '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/genre': typeof PbWebGenreRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -675,6 +702,7 @@ export interface FileRoutesByFullPath {
   '/library-user/': typeof LibraryUserIndexRoute
   '/pb-admin-lib/': typeof PbAdminLibIndexRoute
   '/pb-admin/': typeof PbAdminIndexRoute
+  '/pb-web/': typeof PbWebIndexRoute
   '/publisher/': typeof PublisherIndexRoute
   '/pb-admin-lib/libraries/$id': typeof PbAdminLibLibrariesIdRoute
   '/pb-admin-lib/libraries/new': typeof PbAdminLibLibrariesNewRoute
@@ -762,6 +790,9 @@ export interface FileRoutesByTo {
   '/pb-admin/settings': typeof PbAdminSettingsRoute
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
+  '/pb-web/accounts': typeof PbWebAccountsRoute
+  '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/genre': typeof PbWebGenreRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -774,6 +805,7 @@ export interface FileRoutesByTo {
   '/library-user': typeof LibraryUserIndexRoute
   '/pb-admin-lib': typeof PbAdminLibIndexRoute
   '/pb-admin': typeof PbAdminIndexRoute
+  '/pb-web': typeof PbWebIndexRoute
   '/publisher': typeof PublisherIndexRoute
   '/pb-admin-lib/libraries/$id': typeof PbAdminLibLibrariesIdRoute
   '/pb-admin-lib/libraries/new': typeof PbAdminLibLibrariesNewRoute
@@ -862,6 +894,9 @@ export interface FileRoutesById {
   '/pb-admin/settings': typeof PbAdminSettingsRoute
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
+  '/pb-web/accounts': typeof PbWebAccountsRoute
+  '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/genre': typeof PbWebGenreRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -874,6 +909,7 @@ export interface FileRoutesById {
   '/library-user/': typeof LibraryUserIndexRoute
   '/pb-admin-lib/': typeof PbAdminLibIndexRoute
   '/pb-admin/': typeof PbAdminIndexRoute
+  '/pb-web/': typeof PbWebIndexRoute
   '/publisher/': typeof PublisherIndexRoute
   '/pb-admin-lib/libraries_/$id': typeof PbAdminLibLibrariesIdRoute
   '/pb-admin-lib/libraries_/new': typeof PbAdminLibLibrariesNewRoute
@@ -963,6 +999,9 @@ export interface FileRouteTypes {
     | '/pb-admin/settings'
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
+    | '/pb-web/accounts'
+    | '/pb-web/cart'
+    | '/pb-web/genre'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -975,6 +1014,7 @@ export interface FileRouteTypes {
     | '/library-user/'
     | '/pb-admin-lib/'
     | '/pb-admin/'
+    | '/pb-web/'
     | '/publisher/'
     | '/pb-admin-lib/libraries/$id'
     | '/pb-admin-lib/libraries/new'
@@ -1062,6 +1102,9 @@ export interface FileRouteTypes {
     | '/pb-admin/settings'
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
+    | '/pb-web/accounts'
+    | '/pb-web/cart'
+    | '/pb-web/genre'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1074,6 +1117,7 @@ export interface FileRouteTypes {
     | '/library-user'
     | '/pb-admin-lib'
     | '/pb-admin'
+    | '/pb-web'
     | '/publisher'
     | '/pb-admin-lib/libraries/$id'
     | '/pb-admin-lib/libraries/new'
@@ -1161,6 +1205,9 @@ export interface FileRouteTypes {
     | '/pb-admin/settings'
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
+    | '/pb-web/accounts'
+    | '/pb-web/cart'
+    | '/pb-web/genre'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1173,6 +1220,7 @@ export interface FileRouteTypes {
     | '/library-user/'
     | '/pb-admin-lib/'
     | '/pb-admin/'
+    | '/pb-web/'
     | '/publisher/'
     | '/pb-admin-lib/libraries_/$id'
     | '/pb-admin-lib/libraries_/new'
@@ -1261,6 +1309,9 @@ export interface RootRouteChildren {
   PbAdminSettingsRoute: typeof PbAdminSettingsRoute
   PbAdminTermsConditionsRoute: typeof PbAdminTermsConditionsRoute
   PbAdminViewsReportRoute: typeof PbAdminViewsReportRoute
+  PbWebAccountsRoute: typeof PbWebAccountsRoute
+  PbWebCartRoute: typeof PbWebCartRoute
+  PbWebGenreRoute: typeof PbWebGenreRoute
   PublisherBankAccountsRoute: typeof PublisherBankAccountsRoute
   PublisherLoginRoute: typeof PublisherLoginRoute
   PublisherMarginReportRoute: typeof PublisherMarginReportRoute
@@ -1273,6 +1324,7 @@ export interface RootRouteChildren {
   LibraryUserIndexRoute: typeof LibraryUserIndexRoute
   PbAdminLibIndexRoute: typeof PbAdminLibIndexRoute
   PbAdminIndexRoute: typeof PbAdminIndexRoute
+  PbWebIndexRoute: typeof PbWebIndexRoute
   PublisherIndexRoute: typeof PublisherIndexRoute
   PbAdminLibLibrariesIdRoute: typeof PbAdminLibLibrariesIdRoute
   PbAdminLibLibrariesNewRoute: typeof PbAdminLibLibrariesNewRoute
@@ -1331,6 +1383,13 @@ declare module '@tanstack/react-router' {
       path: '/publisher'
       fullPath: '/publisher/'
       preLoaderRoute: typeof PublisherIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/': {
+      id: '/pb-web/'
+      path: '/pb-web'
+      fullPath: '/pb-web/'
+      preLoaderRoute: typeof PbWebIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-admin/': {
@@ -1415,6 +1474,27 @@ declare module '@tanstack/react-router' {
       path: '/publisher/bank-accounts'
       fullPath: '/publisher/bank-accounts'
       preLoaderRoute: typeof PublisherBankAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/genre': {
+      id: '/pb-web/genre'
+      path: '/pb-web/genre'
+      fullPath: '/pb-web/genre'
+      preLoaderRoute: typeof PbWebGenreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/cart': {
+      id: '/pb-web/cart'
+      path: '/pb-web/cart'
+      fullPath: '/pb-web/cart'
+      preLoaderRoute: typeof PbWebCartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/accounts': {
+      id: '/pb-web/accounts'
+      path: '/pb-web/accounts'
+      fullPath: '/pb-web/accounts'
+      preLoaderRoute: typeof PbWebAccountsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-admin/views-report': {
@@ -2086,6 +2166,9 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminSettingsRoute: PbAdminSettingsRoute,
   PbAdminTermsConditionsRoute: PbAdminTermsConditionsRoute,
   PbAdminViewsReportRoute: PbAdminViewsReportRoute,
+  PbWebAccountsRoute: PbWebAccountsRoute,
+  PbWebCartRoute: PbWebCartRoute,
+  PbWebGenreRoute: PbWebGenreRoute,
   PublisherBankAccountsRoute: PublisherBankAccountsRoute,
   PublisherLoginRoute: PublisherLoginRoute,
   PublisherMarginReportRoute: PublisherMarginReportRoute,
@@ -2098,6 +2181,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryUserIndexRoute: LibraryUserIndexRoute,
   PbAdminLibIndexRoute: PbAdminLibIndexRoute,
   PbAdminIndexRoute: PbAdminIndexRoute,
+  PbWebIndexRoute: PbWebIndexRoute,
   PublisherIndexRoute: PublisherIndexRoute,
   PbAdminLibLibrariesIdRoute: PbAdminLibLibrariesIdRoute,
   PbAdminLibLibrariesNewRoute: PbAdminLibLibrariesNewRoute,

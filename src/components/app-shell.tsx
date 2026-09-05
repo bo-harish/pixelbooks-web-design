@@ -77,6 +77,12 @@ type NavItem = {
   subItems?: { label: string; to: string; icon: LucideIcon }[];
 };
 
+import {
+  getActivePublisherTheme,
+  applyPublisherThemeStyles,
+  PUBLISHER_THEME_EVENT,
+} from "@/lib/publisher-theme";
+
 type NavSection = { heading: string; items: NavItem[] };
 
 export function getRoleTheme(pathname: string) {
@@ -101,9 +107,10 @@ export function getRoleTheme(pathname: string) {
       name: "Author",
     };
   }
+  const activePubTheme = getActivePublisherTheme();
   return {
-    color: "oklch(0.55 0.11 195)", // brand teal
-    bgLight: "color-mix(in oklab, oklch(0.55 0.11 195) 14%, transparent)",
+    color: activePubTheme.light.color,
+    bgLight: activePubTheme.light.bgLight,
     name: "Publisher",
   };
 }
@@ -998,6 +1005,26 @@ export function AppShell({
   const { pathname } = useLocation();
   const isPBAdmin = pathname.startsWith("/pb-admin");
   const roleTheme = getRoleTheme(pathname);
+
+  const [, setPublisherThemeVersion] = useState(0);
+
+  useEffect(() => {
+    const isPub = pathname.startsWith("/publisher");
+    applyPublisherThemeStyles(getActivePublisherTheme(), isPub);
+
+    const onThemeChange = () => {
+      setPublisherThemeVersion((v) => v + 1);
+      applyPublisherThemeStyles(getActivePublisherTheme(), pathname.startsWith("/publisher"));
+    };
+
+    window.addEventListener(PUBLISHER_THEME_EVENT, onThemeChange);
+    window.addEventListener("storage", onThemeChange);
+
+    return () => {
+      window.removeEventListener(PUBLISHER_THEME_EVENT, onThemeChange);
+      window.removeEventListener("storage", onThemeChange);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const updateCount = () => {

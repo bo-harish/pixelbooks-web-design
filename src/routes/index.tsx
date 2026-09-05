@@ -9,6 +9,8 @@ import {
   Settings,
   ChevronDown,
   GraduationCap,
+  Globe,
+  ExternalLink,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
@@ -305,12 +307,31 @@ function WorkspaceSelector() {
             );
           })}
         </div>
+
+        {/* PixelBooks Web Site Link */}
+        <div className="mt-12 flex flex-col items-center justify-center gap-2">
+          <Link
+            to="/pb-web/genre"
+            id="link-pixelbooks-website"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card/75 px-5 py-2.5 text-sm font-semibold text-foreground shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--brand)]/50 hover:bg-card hover:text-[var(--brand)] hover:shadow-md cursor-pointer"
+          >
+            <Globe size={16} className="text-[var(--brand)] transition-transform duration-200 group-hover:rotate-12" />
+            <span>PixelBooks Web Site</span>
+            <ExternalLink size={13} className="text-muted-foreground transition-all duration-200 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+        </div>
       </main>
 
       {/* Footer */}
       <footer className="mx-auto w-full max-w-7xl 2xl:max-w-[1500px] border-t border-border/60 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground/80">
         <div>© 2026 PixelBooks. All rights reserved.</div>
         <div className="flex items-center gap-4">
+          <Link
+            to="/pb-web/genre"
+            className="hover:text-foreground transition-colors"
+          >
+            PixelBooks Web Site
+          </Link>
           <a href="#" className="hover:text-foreground transition-colors">
             Privacy Policy
           </a>
