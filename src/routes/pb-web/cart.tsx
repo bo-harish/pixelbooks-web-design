@@ -327,7 +327,7 @@ function PixelBooksCartPage() {
 
             <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground bg-secondary/60 px-3.5 py-2 rounded-xl border border-border/80 w-fit">
               <ShieldCheck size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span>256-Bit SSL Encrypted Checkout · Instant Access</span>
+              <span>Encrypted Checkout. Instant Access.</span>
             </div>
           </div>
 
@@ -338,9 +338,9 @@ function PixelBooksCartPage() {
               <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
                 <ShoppingBag size={36} />
               </div>
-              <h2 className="text-xl font-bold text-foreground">Your digital cart is empty</h2>
+              <h2 className="text-xl font-bold text-foreground">Your  cart is empty</h2>
               <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
-                Explore thousands of Malayalam literature classics, academic courseware, poetry, and competitive exam books.
+                Explore thousands of literature classics, academic courseware, poetry, and competitive exam books.
               </p>
               <div className="pt-3">
                 <Link
@@ -650,9 +650,7 @@ function PixelBooksCartPage() {
                 <div className="rounded-2xl border border-border bg-white p-6 shadow-sm space-y-5">
                   <div className="pb-4 border-b border-border/70 flex items-center justify-between">
                     <h3 className="text-base font-bold text-foreground">Order Info</h3>
-                    <span className="text-xs font-mono text-muted-foreground">
-                      GST Registered
-                    </span>
+
                   </div>
 
                   {/* Price Breakdown */}
