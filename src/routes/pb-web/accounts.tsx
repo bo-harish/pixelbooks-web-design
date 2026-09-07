@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import {
   User,
   Mail,
@@ -38,7 +38,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -48,8 +48,16 @@ import {
 } from "@/components/ui/dialog";
 import { PbWebHeader } from "@/components/pb-web-header";
 import { toast } from "sonner";
+import {
+  notifications as notificationsData,
+  groupByDate,
+  type NotificationItem,
+} from "@/lib/notifications-data";
 
 export const Route = createFileRoute("/pb-web/accounts")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    tab: (search.tab as string) ?? "profile",
+  }),
   head: () => ({
     meta: [
       { title: "My Account — PixelBooks" },
@@ -275,7 +283,7 @@ const allRecommendationGenres = [
   "Travel & Tourism",
 ];
 
-type AccountTab = "profile" | "library" | "wishlist" | "orders" | "settings";
+type AccountTab = "profile" | "library" | "wishlist" | "orders" | "notifications" | "settings";
 
 type UserLibraryBook = (typeof userLibraryBooks)[number];
 
@@ -310,11 +318,10 @@ function CustomCheckbox({
         e.stopPropagation();
         if (!disabled) onChange(!checked);
       }}
-      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 select-none ${
-        checked
-          ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-2xs"
-          : "border-border/80 bg-white hover:border-[var(--brand)]/60"
-      } ${className}`}
+      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 select-none ${checked
+        ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-2xs"
+        : "border-border/80 bg-white hover:border-[var(--brand)]/60"
+        } ${className}`}
     >
       {checked && <Check className="h-3.5 w-3.5 stroke-[3] text-white" />}
     </button>
@@ -323,10 +330,144 @@ function CustomCheckbox({
 
 function PixelBooksAccountPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<AccountTab>("profile");
+  const { tab: tabParam } = useSearch({ from: "/pb-web/accounts" });
+  const [activeTab, setActiveTab] = useState<AccountTab>(
+    (tabParam as AccountTab) ?? "profile"
+  );
   const [cartCount, setCartCount] = useState(2);
   const [unreadNotifications, setUnreadNotifications] = useState(3);
   const [isSaving, setIsSaving] = useState(false);
+  const [notifItems, setNotifItems] = useState<NotificationItem[]>(() =>
+    [
+      {
+        id: "rn1",
+        type: "approved" as const,
+        message: "📦 Your order #CS-4821 has been confirmed! 'NEET Courseware Biology Class-XII' is ready in your library.",
+        category: "Order Confirmed",
+        date: "Today",
+        time: "10:14 AM",
+        unread: true,
+      },
+      {
+        id: "rn2",
+        type: "approved" as const,
+        message: "🎉 PixelBooks has added 12 new Malayalam titles you might love. Explore the collection!",
+        category: "New Arrivals",
+        date: "Today",
+        time: "08:30 AM",
+        unread: true,
+      },
+      {
+        id: "rn3",
+        type: "approved" as const,
+        message: "⬇️ Your offline download for 'Foundation Mathematics JEE' is complete and ready to read.",
+        category: "Download Ready",
+        date: "Yesterday",
+        time: "06:55 PM",
+        unread: true,
+      },
+      {
+        id: "rn4",
+        type: "rejected" as const,
+        message: "⚠️ Your session on Desktop Chrome has been signed in from a new device. If this wasn't you, please secure your account.",
+        category: "Security Alert",
+        date: "Yesterday",
+        time: "02:11 PM",
+      },
+      {
+        id: "rn5",
+        type: "approved" as const,
+        message: "💸 A ₹150 cashback has been credited to your PixelBooks wallet from your last purchase.",
+        category: "Wallet Credit",
+        date: "24 Aug 2026",
+        time: "11:47 AM",
+      },
+      {
+        id: "rn6",
+        type: "approved" as const,
+        message: "📚 'കേരളത്തിലെ നാടൻപാട്ടുകൾ' has a new updated edition available. Tap to upgrade your copy.",
+        category: "Edition Update",
+        date: "24 Aug 2026",
+        time: "09:00 AM",
+      },
+      {
+        id: "rn7",
+        type: "approved" as const,
+        message: "🎁 You've unlocked the 'Voracious Reader' badge for completing 10 books this year!",
+        category: "Achievement",
+        date: "20 Aug 2026",
+        time: "03:45 PM",
+      },
+      {
+        id: "rn8",
+        type: "approved" as const,
+        message: "💳 Your PixelBooks wallet balance is ₹1,200. Use it on your next purchase for instant savings.",
+        category: "Wallet Update",
+        date: "20 Aug 2026",
+        time: "11:20 AM",
+      },
+      {
+        id: "rn9",
+        type: "rejected" as const,
+        message: "⚠️ Your eBook download for 'Theyyangal' failed due to a network interruption. Please try again.",
+        category: "Download Failed",
+        date: "15 Aug 2026",
+        time: "08:05 PM",
+      },
+      {
+        id: "rn10",
+        type: "approved" as const,
+        message: "📖 Your reading streak is now 21 days! Keep it up — you're on a roll.",
+        category: "Reading Streak",
+        date: "15 Aug 2026",
+        time: "07:00 AM",
+      },
+      {
+        id: "rn11",
+        type: "approved" as const,
+        message: "🏷️ Flash Sale! 30% off on all NEET & JEE prep books — today only. Shop now.",
+        category: "Promotion",
+        date: "10 Aug 2026",
+        time: "09:30 AM",
+      },
+      {
+        id: "rn12",
+        type: "approved" as const,
+        message: "📦 Your order #CS-4699 for 'Pennaazhangal' has been delivered successfully.",
+        category: "Order Delivered",
+        date: "05 Aug 2026",
+        time: "02:18 PM",
+      },
+      {
+        id: "rn13",
+        type: "approved" as const,
+        message: "🔔 A book from your Want to Read list — 'The Alchemist (Malayalam Translation)' — is now available on PixelBooks.",
+        category: "Wishlist Available",
+        date: "01 Aug 2026",
+        time: "10:00 AM",
+      },
+    ]
+  );
+  const NOTIF_PAGE_SIZE = 4;
+  const [notifPage, setNotifPage] = useState(1);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  const loadMoreNotifs = useCallback(() => {
+    setNotifPage((p) => p + 1);
+  }, []);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMoreNotifs();
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadMoreNotifs, activeTab]);
 
   // Library Search & Pagination State
   const [librarySearchQuery, setLibrarySearchQuery] = useState("");
@@ -460,8 +601,8 @@ function PixelBooksAccountPage() {
   };
 
   // Profile Form States (Matching reference profile)
-  const [fullName, setFullName] = useState("Sudheer Menon");
-  const [email, setEmail] = useState("harishknair@gmail.com");
+  const [fullName, setFullName] = useState("Harish K");
+  const [email, setEmail] = useState("harish@brandoptics.com");
   const [phone, setPhone] = useState("9387737551");
   const [bio, setBio] = useState("Lifelong reader, STEM educator, and collector of regional folklore & literature.");
 
@@ -491,7 +632,7 @@ function PixelBooksAccountPage() {
 
   const handleDiscard = () => {
     setFullName("Sudheer Menon");
-    setEmail("harishknair@gmail.com");
+    setEmail("harish@brandoptics.com");
     setPhone("9387737551");
     setAddressLine1("No 4");
     setAddressLine2("Sophia Emerald");
@@ -579,11 +720,10 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("profile")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === "profile"
-                    ? "bg-[var(--brand)] text-white shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "profile"
+                  ? "bg-[var(--brand)] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <User size={16} />
@@ -595,20 +735,18 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("library")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === "library"
-                    ? "bg-[var(--brand)] text-white shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "library"
+                  ? "bg-[var(--brand)] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <BookOpen size={16} />
                   <span>My Digital Library</span>
                 </div>
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                    activeTab === "library" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
-                  }`}
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${activeTab === "library" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
+                    }`}
                 >
                   {userLibraryBooks.length}
                 </span>
@@ -617,20 +755,18 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("wishlist")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === "wishlist"
-                    ? "bg-[var(--brand)] text-white shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "wishlist"
+                  ? "bg-[var(--brand)] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <Bookmark size={16} />
                   <span>Want to Read</span>
                 </div>
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                    activeTab === "wishlist" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
-                  }`}
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${activeTab === "wishlist" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
+                    }`}
                 >
                   {userWishlistBooks.length}
                 </span>
@@ -639,11 +775,10 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("orders")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === "orders"
-                    ? "bg-[var(--brand)] text-white shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "orders"
+                  ? "bg-[var(--brand)] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <Receipt size={16} />
@@ -655,12 +790,35 @@ function PixelBooksAccountPage() {
 
               <button
                 type="button"
+                onClick={() => {
+                  setActiveTab("notifications");
+                  setUnreadNotifications(0);
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "notifications"
+                  ? "bg-[var(--brand)] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Bell size={16} />
+                  <span>Notifications</span>
+                </div>
+                {unreadNotifications > 0 && activeTab !== "notifications" ? (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-rose-500 text-white">
+                    {unreadNotifications}
+                  </span>
+                ) : (
+                  <ChevronRight size={14} className={activeTab === "notifications" ? "opacity-100" : "opacity-40"} />
+                )}
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setActiveTab("settings")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === "settings"
-                    ? "bg-[var(--brand)] text-white shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "settings"
+                  ? "bg-[var(--brand)] text-white shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <Settings size={16} />
@@ -679,7 +837,7 @@ function PixelBooksAccountPage() {
                   className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                 >
                   <LogOut size={16} />
-                  <span>Sign Out</span>
+                  <span>Logout</span>
                 </button>
               </div>
             </nav>
@@ -1115,11 +1273,10 @@ function PixelBooksAccountPage() {
                             key={pg}
                             type="button"
                             onClick={() => setLibraryCurrentPage(pg)}
-                            className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
-                              pg === libraryCurrentPage
-                                ? "bg-[var(--brand)] text-white shadow-2xs"
-                                : "border border-border bg-white text-foreground hover:bg-neutral-50"
-                            }`}
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${pg === libraryCurrentPage
+                              ? "bg-[var(--brand)] text-white shadow-2xs"
+                              : "border border-border bg-white text-foreground hover:bg-neutral-50"
+                              }`}
                           >
                             {pg}
                           </button>
@@ -1336,11 +1493,10 @@ function PixelBooksAccountPage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border bg-white gap-4">
                       <div className="flex items-center gap-3.5">
                         <div
-                          className={`p-2.5 rounded-xl transition-colors ${
-                            pushNotificationsEnabled
-                              ? "bg-[var(--brand)]/10 text-[var(--brand)]"
-                              : "bg-muted text-muted-foreground"
-                          }`}
+                          className={`p-2.5 rounded-xl transition-colors ${pushNotificationsEnabled
+                            ? "bg-[var(--brand)]/10 text-[var(--brand)]"
+                            : "bg-muted text-muted-foreground"
+                            }`}
                         >
                           {pushNotificationsEnabled ? <BellRing size={20} /> : <BellOff size={20} />}
                         </div>
@@ -1348,11 +1504,10 @@ function PixelBooksAccountPage() {
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-foreground">Push notifications</span>
                             <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                pushNotificationsEnabled
-                                  ? "text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border"
-                                  : "text-muted-foreground bg-secondary"
-                              }`}
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${pushNotificationsEnabled
+                                ? "text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border"
+                                : "text-muted-foreground bg-secondary"
+                                }`}
                             >
                               {pushNotificationsEnabled ? "On" : "Off"}
                             </span>
@@ -1381,14 +1536,12 @@ function PixelBooksAccountPage() {
                               toast.info("Push notifications turned off.");
                             }
                           }}
-                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-2 ${
-                            pushNotificationsEnabled ? "bg-[var(--brand)]" : "bg-muted-foreground/30"
-                          }`}
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-2 ${pushNotificationsEnabled ? "bg-[var(--brand)]" : "bg-muted-foreground/30"
+                            }`}
                         >
                           <span
-                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                              pushNotificationsEnabled ? "translate-x-5" : "translate-x-0"
-                            }`}
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${pushNotificationsEnabled ? "translate-x-5" : "translate-x-0"
+                              }`}
                           />
                         </button>
                       </div>
@@ -1404,11 +1557,10 @@ function PixelBooksAccountPage() {
                             toast.success(`Order alerts ${next ? "turned on" : "turned off"}`);
                           }
                         }}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${
-                          pushNotificationsEnabled
-                            ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
-                            : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
-                        }`}
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${pushNotificationsEnabled
+                          ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
+                          : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
+                          }`}
                       >
                         <div className="space-y-0.5 pr-2">
                           <div className="text-xs font-semibold text-foreground">Order & License Alerts</div>
@@ -1434,11 +1586,10 @@ function PixelBooksAccountPage() {
                             toast.success(`New release alerts ${next ? "turned on" : "turned off"}`);
                           }
                         }}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${
-                          pushNotificationsEnabled
-                            ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
-                            : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
-                        }`}
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${pushNotificationsEnabled
+                          ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
+                          : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
+                          }`}
                       >
                         <div className="space-y-0.5 pr-2">
                           <div className="text-xs font-semibold text-foreground">New Releases & Discounts</div>
@@ -1543,6 +1694,99 @@ function PixelBooksAccountPage() {
                       </button>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 6: NOTIFICATIONS */}
+            {activeTab === "notifications" && (
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
+                  <div className="pb-4 border-b border-border/70 mb-5 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                        <Bell size={18} className="text-[var(--brand)]" />
+                        Notifications
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Your latest activity, alerts, and updates from PixelBooks
+                      </p>
+                    </div>
+                    {notifItems.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => { setNotifItems([]); setNotifPage(1); }}
+                        className="text-xs font-semibold text-muted-foreground hover:text-rose-600 transition-colors cursor-pointer"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+
+                  {notifItems.length === 0 ? (
+                    <div className="py-16 text-center">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary mx-auto mb-3">
+                        <Bell size={22} className="text-muted-foreground" />
+                      </div>
+                      <p className="text-sm font-semibold text-foreground">You're all caught up!</p>
+                      <p className="text-xs text-muted-foreground mt-1">No new notifications at the moment.</p>
+                    </div>
+                  ) : (() => {
+                    const visibleItems = notifItems.slice(0, notifPage * NOTIF_PAGE_SIZE);
+                    const hasMore = visibleItems.length < notifItems.length;
+                    return (
+                      <div className="space-y-6">
+                        {groupByDate(visibleItems).map((group) => (
+                          <section key={group.date}>
+                            <div className="mb-2 flex items-center justify-between">
+                              <h4 className="text-[13px] font-semibold text-foreground">{group.date}</h4>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setNotifItems((prev) => prev.filter((n) => n.date !== group.date))
+                                }
+                                className="text-xs font-semibold hover:underline underline-offset-4 transition-colors cursor-pointer"
+                                style={{ color: "var(--brand)" }}
+                              >
+                                Clear
+                              </button>
+                            </div>
+                            <ul className="space-y-2">
+                              {group.items.map((n) => (
+                                <li key={n.id} className="rounded-xl border border-border/60 bg-secondary/40 px-4 py-3.5">
+                                  <div className="flex items-start gap-3">
+                                    <span
+                                      className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
+                                      style={{ backgroundColor: n.unread ? "var(--brand)" : "var(--border)" }}
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-start justify-between gap-4">
+                                        <p className="text-[13.5px] leading-snug text-foreground">{n.message}</p>
+                                        <span className="shrink-0 text-[11.5px] text-muted-foreground whitespace-nowrap">
+                                          {n.time}
+                                        </span>
+                                      </div>
+                                      <p className="mt-1 text-[11.5px] text-muted-foreground">{n.category}</p>
+                                    </div>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </section>
+                        ))}
+
+                        {/* Scroll sentinel */}
+                        {hasMore ? (
+                          <div ref={sentinelRef} className="flex items-center justify-center py-4 gap-2 text-xs text-muted-foreground">
+                            <span className="h-3.5 w-3.5 rounded-full border-2 border-[var(--brand)] border-t-transparent animate-spin" />
+                            Loading more…
+                          </div>
+                        ) : (
+                          <p className="text-center text-xs text-muted-foreground py-4">You've seen all notifications.</p>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             )}
@@ -1739,11 +1983,10 @@ function PixelBooksAccountPage() {
                       >
                         <Star
                           size={22}
-                          className={`transition-colors ${
-                            (reviewHoverRating || reviewRating) >= star
-                              ? "fill-amber-400 text-amber-400"
-                              : "text-muted-foreground/30 hover:text-amber-300"
-                          }`}
+                          className={`transition-colors ${(reviewHoverRating || reviewRating) >= star
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-muted-foreground/30 hover:text-amber-300"
+                            }`}
                         />
                       </button>
                     ))}
@@ -1844,11 +2087,10 @@ function PixelBooksAccountPage() {
                   key={genre}
                   type="button"
                   onClick={() => toggleGenre(genre)}
-                  className={`px-4 py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${
-                    isSelected
-                      ? "bg-[var(--brand)] text-white shadow-2xs hover:bg-[var(--brand)]/90"
-                      : "bg-white text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-50"
-                  }`}
+                  className={`px-4 py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${isSelected
+                    ? "bg-[var(--brand)] text-white shadow-2xs hover:bg-[var(--brand)]/90"
+                    : "bg-white text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-50"
+                    }`}
                 >
                   {genre}
                 </button>

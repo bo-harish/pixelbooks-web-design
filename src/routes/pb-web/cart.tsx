@@ -550,11 +550,10 @@ function PixelBooksCartPage() {
                       return (
                         <div
                           key={cpn.code}
-                          className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
-                            isApplied
+                          className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${isApplied
                               ? "border-[#137365] bg-pbgreen-light"
                               : "border-border/80 bg-white hover:border-[#137365]/40"
-                          }`}
+                            }`}
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
@@ -573,11 +572,10 @@ function PixelBooksCartPage() {
                           <button
                             type="button"
                             onClick={() => (isApplied ? handleRemoveCoupon() : handleApplyCoupon(cpn))}
-                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ml-3 ${
-                              isApplied
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ml-3 ${isApplied
                                 ? "text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
                                 : "text-[#137365] hover:bg-[#137365]/10 border border-[#137365]/30"
-                            }`}
+                              }`}
                           >
                             {isApplied ? "Remove" : "Apply"}
                           </button>
@@ -632,11 +630,10 @@ function PixelBooksCartPage() {
                             type="button"
                             disabled={isInCart}
                             onClick={() => handleAddRecommended(addon)}
-                            className={`inline-flex h-8 items-center justify-center rounded-lg px-3 text-xs font-semibold transition-colors shrink-0 ${
-                              isInCart
+                            className={`inline-flex h-8 items-center justify-center rounded-lg px-3 text-xs font-semibold transition-colors shrink-0 ${isInCart
                                 ? "border border-border bg-secondary text-muted-foreground cursor-not-allowed"
                                 : "text-white shadow-2xs hover:opacity-90 cursor-pointer"
-                            }`}
+                              }`}
                             style={!isInCart ? { backgroundColor: "#137365" } : undefined}
                           >
                             {isInCart ? "Added" : "+ Add"}
@@ -810,7 +807,7 @@ function PixelBooksCartPage() {
               <div>
                 <h4 className="text-base font-bold text-foreground">Purchase Successful!</h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Tax invoice has been sent to <span className="font-semibold text-foreground">harishknair@gmail.com</span>
+                  Tax invoice has been sent to <span className="font-semibold text-foreground">harish@brandoptics.com</span>
                 </p>
               </div>
 
@@ -850,11 +847,10 @@ function PixelBooksCartPage() {
                 {/* UPI Option */}
                 <div
                   onClick={() => setPaymentMethod("upi")}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === "upi"
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "upi"
                       ? "border-[#137365] bg-pbgreen-light/40"
                       : "border-border bg-white hover:bg-neutral-50"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-pbgreen-light text-[#137365]">
@@ -876,11 +872,10 @@ function PixelBooksCartPage() {
                 {/* Credit / Debit Card Option */}
                 <div
                   onClick={() => setPaymentMethod("card")}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === "card"
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "card"
                       ? "border-[#137365] bg-pbgreen-light/40"
                       : "border-border bg-white hover:bg-neutral-50"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600">
@@ -902,11 +897,10 @@ function PixelBooksCartPage() {
                 {/* NetBanking Option */}
                 <div
                   onClick={() => setPaymentMethod("netbanking")}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === "netbanking"
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "netbanking"
                       ? "border-[#137365] bg-pbgreen-light/40"
                       : "border-border bg-white hover:bg-neutral-50"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600">

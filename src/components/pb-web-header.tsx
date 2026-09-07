@@ -10,21 +10,18 @@ import {
   Flame,
   BookOpen,
   User,
-  GraduationCap,
-  Layers,
-  Library,
-  Shield,
   LogOut,
+  Trash2,
 } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { categoryColumns, sampleBooksByGenre, trendingSearches } from "@/routes/pb-web/data";
@@ -422,25 +419,101 @@ export function PbWebHeader({
           </div>
 
           {/* Notification Bell */}
-          <button
-            type="button"
-            onClick={() => {
-              setUnreadNotifications(0);
-              toast.info("Notifications", {
-                description:
-                  "New edition of 'Foundation Mathematics JEE' is now available in your digital library.",
-              });
-            }}
-            className="relative p-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
-            title="Notifications"
-          >
-            <Bell size={19} />
-            {unreadNotifications > 0 && (
-              <span className="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-xs">
-                {unreadNotifications}
-              </span>
-            )}
-          </button>
+          {/* Notification Bell Popover */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                onClick={() => setUnreadNotifications(0)}
+                className="relative p-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
+                title="Notifications"
+              >
+                <Bell size={19} />
+                {unreadNotifications > 0 && (
+                  <span className="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-xs">
+                    {unreadNotifications}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              sideOffset={10}
+              className="w-[360px] max-w-[calc(100vw-2rem)] p-0 rounded-xl shadow-xl border border-border bg-white"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <Bell size={15} className="text-[#137365]" />
+                  <span className="text-sm font-bold text-foreground">Notifications</span>
+                </div>
+              </div>
+
+              {/* Notification list */}
+              <div className="max-h-[360px] overflow-y-auto">
+                {[
+                  {
+                    id: "rn1",
+                    message: "📦 Your order #CS-4821 has been confirmed! 'NEET Courseware Biology Class-XII' is ready in your library.",
+                    category: "Order Confirmed",
+                    date: "Today",
+                    time: "10:14 AM",
+                    unread: true,
+                  },
+                  {
+                    id: "rn2",
+                    message: "🎉 PixelBooks has added 12 new Malayalam titles you might love. Explore the collection!",
+                    category: "New Arrivals",
+                    date: "Today",
+                    time: "08:30 AM",
+                    unread: true,
+                  },
+                  {
+                    id: "rn3",
+                    message: "⬇️ Your offline download for 'Foundation Mathematics JEE' is complete and ready to read.",
+                    category: "Download Ready",
+                    date: "Yesterday",
+                    time: "06:55 PM",
+                    unread: true,
+                  },
+                  {
+                    id: "rn4",
+                    message: "⚠️ Your session on Desktop Chrome was signed in from a new device. Secure your account if this wasn't you.",
+                    category: "Security Alert",
+                    date: "Yesterday",
+                    time: "02:11 PM",
+                    unread: false,
+                  },
+                ].map((n) => (
+                  <div key={n.id} className="flex items-start gap-3 px-4 py-3 border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors">
+                    <span
+                      className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: n.unread ? "var(--brand)" : "transparent", border: n.unread ? "none" : "1.5px solid var(--border)" }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-[12.5px] leading-snug text-foreground">{n.message}</p>
+                        <span className="shrink-0 text-[11px] text-muted-foreground whitespace-nowrap">{n.time}</span>
+                      </div>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">{n.category}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="px-4 py-3 border-t border-border flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/pb-web/accounts", search: { tab: "notifications" } })}
+                  className="text-xs font-semibold transition-colors cursor-pointer"
+                  style={{ color: "var(--brand)" }}
+                >
+                  View All Notifications →
+                </button>
+              </div>
+            </PopoverContent>
+          </Popover>
 
           {/* Vertical Divider */}
           <div className="h-5 w-[1px] bg-border/80 shrink-0" />
@@ -478,52 +551,13 @@ export function PbWebHeader({
                 <ChevronDown size={14} className="text-muted-foreground shrink-0" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 mt-2">
-              <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
-                Harish K (harishknair@gmail.com)
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
+            <DropdownMenuContent align="end" className="w-52 mt-2">
               <DropdownMenuItem
                 onClick={() => navigate({ to: "/pb-web/accounts" })}
-                className="text-xs flex items-center gap-2 cursor-pointer font-semibold"
+                className="text-xs flex items-center gap-2 cursor-pointer"
               >
                 <User size={15} className="text-[#137365]" />
-                My Account
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate({ to: "/library-user/login" })}
-                className="text-xs flex items-center gap-2 cursor-pointer"
-              >
-                <GraduationCap size={15} className="text-pink-500" />
-                Library User Reader
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate({ to: "/author" })}
-                className="text-xs flex items-center gap-2 cursor-pointer"
-              >
-                <BookOpen size={15} className="text-[#137365]" />
-                Author Workspace
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate({ to: "/publisher" })}
-                className="text-xs flex items-center gap-2 cursor-pointer"
-              >
-                <Layers size={15} className="text-teal-500" />
-                Publisher Portal
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate({ to: "/library-admin" })}
-                className="text-xs flex items-center gap-2 cursor-pointer"
-              >
-                <Library size={15} className="text-indigo-500" />
-                Library Admin
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate({ to: "/pb-admin" })}
-                className="text-xs flex items-center gap-2 cursor-pointer"
-              >
-                <Shield size={15} className="text-orange-500" />
-                PB Admin
+                My Profile
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -531,7 +565,7 @@ export function PbWebHeader({
                 className="text-xs flex items-center gap-2 cursor-pointer text-muted-foreground"
               >
                 <LogOut size={14} />
-                Workspace Selector
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
