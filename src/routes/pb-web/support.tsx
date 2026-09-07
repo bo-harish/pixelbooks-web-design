@@ -19,17 +19,9 @@ import {
   MapPin,
   ArrowUpRight,
   Copy,
+  Check,
 } from "lucide-react";
 import { PbWebHeader } from "@/components/pb-web-header";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-web/support")({
@@ -183,6 +175,15 @@ function PbWebSupportPage() {
     }, 600);
   };
 
+  const handleDiscard = () => {
+    setSubject("");
+    setMessage("");
+    setReferenceId("");
+    setBookTitle("");
+    setAttachment(null);
+    toast.info("Support request draft discarded");
+  };
+
   return (
     <div className="min-h-screen bg-white text-foreground flex flex-col justify-between pb-web-portal">
       {/* Universal Header */}
@@ -202,42 +203,44 @@ function PbWebSupportPage() {
         </div>
 
         {/* Top Contact Highlights (Address, Direct Phone, and Email) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 1. Office Headquarters Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-white p-5 sm:p-6 shadow-xs transition-all duration-200 hover:border-slate-300 hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-br from-pbgreen-light/90 via-pbgreen-light/35 to-emerald-50/20 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Badge */}
               <div className="flex items-center justify-between gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700 ring-1 ring-slate-200/80 shadow-2xs">
-                  <MapPin size={20} className="stroke-[2.2]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/95 text-slate-700 shadow-2xs border border-pbgreen-border/60 ring-1 ring-slate-900/5">
+                  <MapPin size={17} className="stroke-[2] text-slate-700" />
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100/90 px-3 py-1 text-[11px] font-semibold text-slate-700 border border-slate-200/90">
-                  <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-medium text-slate-700 border border-pbgreen-border/60 shadow-2xs">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#30C047]" />
                   Kochi, India
                 </span>
               </div>
 
               {/* Content */}
-              <div className="mt-4 space-y-1.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Headquarters
-                </p>
-                <h3 className="text-base sm:text-lg font-bold text-foreground">
-                  BrandOptics India Private Ltd.
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+              <div className="mt-5 space-y-2.5">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-pbgreen-dark mb-1">
+                    Headquarters
+                  </p>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
+                    BrandOptics India Private Ltd.
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-[12.5px] text-slate-600 leading-relaxed">
                   Unit 403, 4th Floor, Tower B, World Trade Center, Infopark Phase I, Kakkanad, Kochi, Kerala - 682042
                 </p>
               </div>
             </div>
 
             {/* Action / Link Footer */}
-            <div className="mt-5 pt-3.5 border-t border-border/60 flex items-center justify-between text-xs">
+            <div className="mt-6 pt-4 border-t border-pbgreen-border/60 flex items-center justify-between text-xs">
               <a
                 href="https://maps.google.com/?q=Infopark+Kochi"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 font-semibold text-foreground hover:text-[#137365] transition-colors"
+                className="inline-flex items-center gap-1.5 font-semibold text-pbgreen-dark hover:text-[#0e5b50] transition-colors"
               >
                 <span>View on Map</span>
                 <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -248,7 +251,7 @@ function PbWebSupportPage() {
                   navigator.clipboard.writeText("Unit 403, 4th Floor, Tower B, World Trade Center, Infopark Phase I, Kochi, Kerala - 682042");
                   toast.success("Office address copied to clipboard!");
                 }}
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground py-1 px-2 rounded-md hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 text-xs text-pbgreen-dark hover:text-[#0e5b50] py-1 px-2 rounded-md hover:bg-white/70 transition-colors cursor-pointer"
                 title="Copy address"
               >
                 <Copy size={12} />
@@ -258,41 +261,43 @@ function PbWebSupportPage() {
           </div>
 
           {/* 2. Direct Support Phone Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-white p-5 sm:p-6 shadow-xs transition-all duration-200 hover:border-pbgreen hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-br from-pbgreen-light/90 via-pbgreen-light/35 to-emerald-50/20 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Live Status Badge */}
               <div className="flex items-center justify-between gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border shadow-2xs">
-                  <PhoneCall size={20} className="stroke-[2.2] text-[#30C047]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/95 text-slate-700 shadow-2xs border border-pbgreen-border/60 ring-1 ring-slate-900/5">
+                  <PhoneCall size={17} className="stroke-[2] text-slate-700" />
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-pbgreen-light px-3 py-1 text-[11px] font-semibold text-pbgreen-dark border border-pbgreen-border">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-medium text-slate-700 border border-pbgreen-border/60 shadow-2xs">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#30C047] animate-pulse" />
                   All 7 Days
                 </span>
               </div>
 
               {/* Content */}
-              <div className="mt-4 space-y-1.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-pbgreen-dark">
-                  Direct Helpline
-                </p>
-                <a
-                  href="tel:+917994833122"
-                  className="text-lg sm:text-xl font-extrabold text-foreground hover:text-[#137365] transition-colors block tracking-tight"
-                >
-                  +91 79948 33122
-                </a>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+              <div className="mt-5 space-y-2.5">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-pbgreen-dark mb-1">
+                    Direct Helpline
+                  </p>
+                  <a
+                    href="tel:+917994833122"
+                    className="text-base sm:text-lg font-bold text-slate-900 hover:text-pbgreen-dark transition-colors block tracking-tight leading-snug"
+                  >
+                    +91 79948 33122
+                  </a>
+                </div>
+                <p className="text-xs sm:text-[12.5px] text-slate-600 leading-relaxed">
                   Available Monday – Sunday, 9:00 AM – 6:00 PM IST for immediate customer, author & publisher help.
                 </p>
               </div>
             </div>
 
             {/* Action / Link Footer */}
-            <div className="mt-5 pt-3.5 border-t border-border/60 flex items-center justify-between text-xs">
+            <div className="mt-6 pt-4 border-t border-pbgreen-border/60 flex items-center justify-between text-xs">
               <a
                 href="tel:+917994833122"
-                className="inline-flex items-center gap-1.5 font-semibold text-[#137365] hover:text-[#0e5b50] transition-colors"
+                className="inline-flex items-center gap-1.5 font-semibold text-pbgreen-dark hover:text-[#0e5b50] transition-colors"
               >
                 <span>Call Support Desk</span>
                 <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -303,7 +308,7 @@ function PbWebSupportPage() {
                   navigator.clipboard.writeText("+91 79948 33122");
                   toast.success("Phone number copied to clipboard!");
                 }}
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground py-1 px-2 rounded-md hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 text-xs text-pbgreen-dark hover:text-[#0e5b50] py-1 px-2 rounded-md hover:bg-white/70 transition-colors cursor-pointer"
                 title="Copy phone number"
               >
                 <Copy size={12} />
@@ -313,40 +318,42 @@ function PbWebSupportPage() {
           </div>
 
           {/* 3. Email Support Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-white p-5 sm:p-6 shadow-xs transition-all duration-200 hover:border-sky-500/50 hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-br from-pbgreen-light/90 via-pbgreen-light/35 to-emerald-50/20 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Response Time Badge */}
               <div className="flex items-center justify-between gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-600 ring-1 ring-sky-500/20 shadow-2xs">
-                  <Mail size={20} className="stroke-[2.2]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/95 text-slate-700 shadow-2xs border border-pbgreen-border/60 ring-1 ring-slate-900/5">
+                  <Mail size={17} className="stroke-[2] text-slate-700" />
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1 text-[11px] font-semibold text-sky-700 border border-sky-200/80">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-medium text-slate-700 border border-pbgreen-border/60 shadow-2xs">
                   <Clock size={12} /> &lt; 2h Response
                 </span>
               </div>
 
               {/* Content */}
-              <div className="mt-4 space-y-1.5">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400">
-                  Email Assistance
-                </p>
-                <a
-                  href="mailto:support@pixelbooksapp.com"
-                  className="text-base sm:text-lg font-bold text-foreground hover:text-sky-600 transition-colors block truncate"
-                >
-                  support@pixelbooksapp.com
-                </a>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+              <div className="mt-5 space-y-2.5">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-pbgreen-dark mb-1">
+                    Email Assistance
+                  </p>
+                  <a
+                    href="mailto:support@pixelbooksapp.com"
+                    className="text-base sm:text-lg font-bold text-slate-900 hover:text-pbgreen-dark transition-colors block truncate tracking-tight leading-snug"
+                  >
+                    support@pixelbooksapp.com
+                  </a>
+                </div>
+                <p className="text-xs sm:text-[12.5px] text-slate-600 leading-relaxed">
                   Priority desk for account issues, license queries, author royalties, and order receipts.
                 </p>
               </div>
             </div>
 
             {/* Action / Link Footer */}
-            <div className="mt-5 pt-3.5 border-t border-border/60 flex items-center justify-between text-xs">
+            <div className="mt-6 pt-4 border-t border-pbgreen-border/60 flex items-center justify-between text-xs">
               <a
                 href="mailto:support@pixelbooksapp.com"
-                className="inline-flex items-center gap-1.5 font-semibold text-sky-700 hover:text-sky-800 transition-colors"
+                className="inline-flex items-center gap-1.5 font-semibold text-pbgreen-dark hover:text-[#0e5b50] transition-colors"
               >
                 <span>Compose Email</span>
                 <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -357,7 +364,7 @@ function PbWebSupportPage() {
                   navigator.clipboard.writeText("support@pixelbooksapp.com");
                   toast.success("Email address copied to clipboard!");
                 }}
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground py-1 px-2 rounded-md hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 text-xs text-pbgreen-dark hover:text-[#0e5b50] py-1 px-2 rounded-md hover:bg-white/70 transition-colors cursor-pointer"
                 title="Copy email address"
               >
                 <Copy size={12} />
@@ -393,10 +400,9 @@ function PbWebSupportPage() {
 
           {/* Role Segment Selector: Publisher / Author / Reader / Institution */}
           <div className="mt-6 space-y-3">
-            <Label className="text-sm font-medium text-foreground">
-              I am reaching out as:
-              <span className="text-destructive ml-0.5">*</span>
-            </Label>
+            <label className="block text-sm font-bold text-foreground">
+              I am reaching out as: <span className="text-red-500 font-bold ml-0.5">*</span>
+            </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {(
                 [
@@ -405,40 +411,24 @@ function PbWebSupportPage() {
                     label: "Reader / Buyer",
                     description: "Orders, downloads & account help",
                     icon: User,
-                    iconBg: "bg-sky-50 border-sky-200/80",
-                    iconColor: "text-sky-600",
-                    activeBg: "bg-sky-50/60 border-sky-500/50",
-                    activeDot: "bg-sky-500",
                   },
                   {
                     id: "Publisher",
                     label: "Publisher",
                     description: "Royalties, catalogue & payouts",
                     icon: Building2,
-                    iconBg: "bg-indigo-50 border-indigo-200/80",
-                    iconColor: "text-indigo-600",
-                    activeBg: "bg-indigo-50/60 border-indigo-500/50",
-                    activeDot: "bg-indigo-500",
                   },
                   {
                     id: "Author",
                     label: "Author",
                     description: "Royalties, catalogue & payouts",
                     icon: Feather,
-                    iconBg: "bg-emerald-50 border-emerald-200/80",
-                    iconColor: "text-emerald-600",
-                    activeBg: "bg-emerald-50/60 border-[#137365]/50",
-                    activeDot: "bg-[#30C047]",
                   },
                   {
                     id: "Institutional Admin",
                     label: "Institution",
                     description: "Licensing, enrollment & LMS",
                     icon: GraduationCap,
-                    iconBg: "bg-amber-50 border-amber-200/80",
-                    iconColor: "text-amber-600",
-                    activeBg: "bg-amber-50/60 border-amber-500/50",
-                    activeDot: "bg-amber-500",
                   },
                 ] as const
               ).map((role) => {
@@ -449,33 +439,37 @@ function PbWebSupportPage() {
                     key={role.id}
                     type="button"
                     onClick={() => handleRoleChange(role.id)}
-                    className={`group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all duration-200 cursor-pointer shadow-xs ${isSelected
-                      ? `${role.activeBg} shadow-sm`
-                      : "border-border bg-white hover:border-border/80 hover:shadow-sm hover:bg-neutral-50/80"
+                    className={`group relative flex flex-col items-start gap-2.5 rounded-xl p-3 text-left transition-all duration-200 cursor-pointer bg-white ${isSelected
+                        ? "border-2 border-[#137365] ring-2 ring-[#137365]/10 shadow-sm -translate-y-0.5"
+                        : "border border-border/80 hover:border-slate-300 shadow-2xs hover:shadow-xs hover:-translate-y-0.5"
                       }`}
                   >
-                    {/* Selected indicator dot */}
-                    {isSelected && (
-                      <span
-                        className={`absolute top-2.5 right-2.5 h-1.5 w-1.5 rounded-full ${role.activeDot}`}
-                      />
-                    )}
+                    {/* Top Row: Icon on left, Radio Checkmark on right */}
+                    <div className="flex items-center justify-between w-full">
+                      <div
+                        className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors ${isSelected
+                            ? "bg-emerald-50 border-emerald-200 text-[#137365]"
+                            : "bg-slate-50 border-slate-200/70 text-slate-400 group-hover:text-slate-600"
+                          }`}
+                      >
+                        <Icon size={16} className="stroke-[2.2]" />
+                      </div>
 
-                    {/* Icon badge */}
-                    <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-lg border ${isSelected ? role.iconBg : "bg-neutral-50 border-border/60"
-                        } transition-colors`}
-                    >
-                      <Icon
-                        size={15}
-                        className={`${isSelected ? role.iconColor : "text-muted-foreground"} transition-colors`}
-                      />
+                      {/* Radio Checkmark Circle */}
+                      <div
+                        className={`flex h-4.5 w-4.5 items-center justify-center rounded-full transition-all duration-200 ${isSelected
+                            ? "bg-[#137365] text-white shadow-2xs scale-100"
+                            : "border border-slate-300 group-hover:border-slate-400 bg-white"
+                          }`}
+                      >
+                        {isSelected && <Check size={11} className="stroke-[3]" />}
+                      </div>
                     </div>
 
                     {/* Text */}
                     <div className="space-y-0.5">
                       <p
-                        className={`text-[12px] font-semibold leading-tight ${isSelected ? "text-foreground" : "text-foreground/80"
+                        className={`text-[12px] leading-tight transition-colors ${isSelected ? "font-bold text-[#137365]" : "font-semibold text-foreground/90 group-hover:text-foreground"
                           }`}
                       >
                         {role.label}
@@ -495,114 +489,97 @@ function PbWebSupportPage() {
             {/* 2-Column Standard Textbox Grid matching Add Bank Account Dialog */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Name */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground">
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">
                   {userRole === "Publisher"
                     ? "Publisher / Contact Name"
                     : userRole === "Author"
                       ? "Author Full Name"
                       : userRole === "Institutional Admin"
                         ? "Administrator Name"
-                        : "Your Full Name"}
-                  <span className="text-destructive ml-0.5">*</span>
-                </Label>
-                <Input
+                        : "Your Full Name"}{" "}
+                  <span className="text-red-500 font-bold ml-0.5">*</span>
+                </label>
+                <input
+                  type="text"
                   placeholder="Enter Full Name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="h-14 px-4 text-base border border-input rounded-lg focus-visible:border-[#137365] focus-visible:ring-1 focus-visible:ring-[#137365]/30"
+                  className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                   required
                 />
               </div>
 
               {/* Email */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground">
-                  Email Address / Phone Number
-                  <span className="text-destructive ml-0.5">*</span>
-                </Label>
-                <Input
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">
+                  Email Address / Phone Number <span className="text-red-500 font-bold ml-0.5">*</span>
+                </label>
+                <input
                   type="text"
                   placeholder="Enter Email Address or Phone Number"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-14 px-4 text-base border border-input rounded-lg focus-visible:border-[#137365] focus-visible:ring-1 focus-visible:ring-[#137365]/30"
+                  className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                   required
                 />
               </div>
 
               {/* Category Dropdown */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground">
-                  Issue Category
-                  <span className="text-destructive ml-0.5">*</span>
-                </Label>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex h-14 w-full items-center justify-between rounded-lg border border-input bg-white px-4 text-sm text-foreground transition-colors hover:bg-neutral-50 outline-none focus-visible:ring-1 focus-visible:ring-[#137365]/30 focus-visible:border-[#137365] cursor-pointer"
-                    >
-                      <span className="truncate text-sm">{category}</span>
-                      <ChevronDown size={18} className="text-muted-foreground shrink-0" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-72 overflow-y-auto"
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">
+                  Issue Category <span className="text-red-500 font-bold ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all appearance-none cursor-pointer pr-10"
                   >
                     {currentCategories.map((cat) => (
-                      <DropdownMenuItem
-                        key={cat}
-                        onClick={() => setCategory(cat)}
-                        className="text-sm py-2.5 cursor-pointer focus:bg-pbgreen-light focus:text-pbgreen-dark"
-                      >
+                      <option key={cat} value={cat}>
                         {cat}
-                      </DropdownMenuItem>
+                      </option>
                     ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                  />
+                </div>
               </div>
 
               {/* Urgency / Priority */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground">
-                  Priority Level
-                  <span className="text-destructive ml-0.5">*</span>
-                </Label>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex h-14 w-full items-center justify-between rounded-lg border border-input bg-white px-4 text-sm text-foreground transition-colors hover:bg-neutral-50 outline-none focus-visible:ring-1 focus-visible:ring-[#137365]/30 focus-visible:border-[#137365] cursor-pointer"
-                    >
-                      <span className="truncate text-sm">{priority}</span>
-                      <ChevronDown size={18} className="text-muted-foreground shrink-0" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-72 overflow-y-auto"
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">
+                  Priority Level <span className="text-red-500 font-bold ml-0.5">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all appearance-none cursor-pointer pr-10"
                   >
                     {priorityOptions.map((pri) => (
-                      <DropdownMenuItem
-                        key={pri}
-                        onClick={() => setPriority(pri)}
-                        className="text-sm py-2.5 cursor-pointer focus:bg-pbgreen-light focus:text-pbgreen-dark"
-                      >
+                      <option key={pri} value={pri}>
                         {pri}
-                      </DropdownMenuItem>
+                      </option>
                     ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                  />
+                </div>
               </div>
 
               {/* Reference ID (Optional) */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground">
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">
                   Reference ID <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
-                </Label>
-                <Input
+                </label>
+                <input
+                  type="text"
                   placeholder={
                     userRole === "Publisher" || userRole === "Author"
                       ? "e.g., Payout Batch #, Contract ID, or ISBN"
@@ -612,31 +589,32 @@ function PbWebSupportPage() {
                   }
                   value={referenceId}
                   onChange={(e) => setReferenceId(e.target.value)}
-                  className="h-14 px-4 text-base border border-input rounded-lg focus-visible:border-[#137365] focus-visible:ring-1 focus-visible:ring-[#137365]/30"
+                  className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                 />
               </div>
 
               {/* Book Title (Optional) */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-foreground">
+              <div>
+                <label className="block text-sm font-bold text-foreground mb-2">
                   Book Title or ISBN <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
-                </Label>
-                <Input
+                </label>
+                <input
+                  type="text"
                   placeholder="e.g., Title or 978-0-123456-47-2"
                   value={bookTitle}
                   onChange={(e) => setBookTitle(e.target.value)}
-                  className="h-14 px-4 text-base border border-input rounded-lg focus-visible:border-[#137365] focus-visible:ring-1 focus-visible:ring-[#137365]/30"
+                  className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                 />
               </div>
             </div>
 
             {/* Subject (Full Width) */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-foreground">
-                Subject
-                <span className="text-destructive ml-0.5">*</span>
-              </Label>
-              <Input
+            <div>
+              <label className="block text-sm font-bold text-foreground mb-2">
+                Subject <span className="text-red-500 font-bold ml-0.5">*</span>
+              </label>
+              <input
+                type="text"
                 placeholder={
                   userRole === "Publisher"
                     ? "e.g., Delay in Q3 royalty settlement disbursement"
@@ -648,43 +626,42 @@ function PbWebSupportPage() {
                 }
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="h-14 px-4 text-base border border-input rounded-lg focus-visible:border-[#137365] focus-visible:ring-1 focus-visible:ring-[#137365]/30"
+                className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                 required
               />
             </div>
 
             {/* Message / Description (Full Width) */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium text-foreground">
-                  Message / Detailed Description
-                  <span className="text-destructive ml-0.5">*</span>
-                </Label>
-                <span className="text-xs text-muted-foreground">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-bold text-foreground">
+                  Message / Detailed Description <span className="text-red-500 font-bold ml-0.5">*</span>
+                </label>
+                <span className="text-xs text-muted-foreground font-normal">
                   {message.length} characters
                 </span>
               </div>
-              <Textarea
-                rows={6}
+              <textarea
+                rows={5}
                 placeholder="Please describe your inquiry or issue with specific details..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="min-h-[160px] px-4 py-3 text-base border border-input rounded-lg resize-y focus-visible:ring-1 focus-visible:ring-[#137365]/30 focus-visible:border-[#137365]"
+                className="w-full min-h-[140px] p-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all resize-y"
                 required
               />
             </div>
 
             {/* File Attachment Dropzone */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-foreground">
+            <div>
+              <label className="block text-sm font-bold text-foreground mb-2">
                 Attachments <span className="text-xs text-muted-foreground font-normal">(Screenshots, spreadsheets, receipts, or logs)</span>
-              </Label>
-              <div className="rounded-xl border border-dashed border-border bg-white p-4 transition-colors hover:border-pbgreen hover:bg-pbgreen-light/30">
+              </label>
+              <div className="rounded-xl border border-dashed border-input bg-white p-4 transition-colors hover:border-[var(--brand)] hover:bg-emerald-50/20">
                 {attachment ? (
-                  <div className="flex items-center justify-between rounded-lg border border-pbgreen-border bg-pbgreen-light p-3">
+                  <div className="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50/50 p-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-pbgreen-subtle text-pbgreen-dark shrink-0">
-                        <FileText size={18} className="text-pbgreen" />
+                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800 shrink-0">
+                        <FileText size={18} />
                       </span>
                       <div className="truncate">
                         <p className="text-sm font-semibold text-foreground truncate">
@@ -719,7 +696,7 @@ function PbWebSupportPage() {
                         </p>
                       </div>
                     </div>
-                    <span className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-white px-4 text-xs font-semibold text-foreground shadow-2xs hover:bg-pbgreen-light hover:border-pbgreen-border hover:text-pbgreen-dark transition-colors">
+                    <span className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-white px-4 text-xs font-semibold text-foreground shadow-2xs hover:bg-neutral-50 transition-colors">
                       Browse File
                     </span>
                     <input
@@ -733,34 +710,37 @@ function PbWebSupportPage() {
               </div>
             </div>
 
-            {/* Form Action Buttons matching Add Bank Account Dialog */}
-            <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-border/70">
-              <Link
-                to="/pb-web/genre"
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-white px-6 text-sm font-medium text-foreground transition-colors hover:bg-neutral-50 cursor-pointer"
-              >
-                Cancel
-              </Link>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#137365] hover:bg-[#0e5b50] px-6 text-sm font-semibold transition-all hover:opacity-95 disabled:opacity-50 cursor-pointer shadow-xs text-white border border-[#137365]"
-                style={{
-                  backgroundColor: "#137365",
-                }}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Clock size={16} className="animate-spin" />
-                    <span>Submitting Request...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send size={16} />
-                    <span>Submit Support Request</span>
-                  </>
-                )}
-              </button>
+            {/* Form Action Controls (matching screenshot bottom bar) */}
+            <div className="flex items-center justify-between rounded-2xl border border-border bg-white p-4 shadow-xs mt-8">
+              <div className="text-xs text-muted-foreground">
+                Routing: <span className="font-semibold text-foreground">{userRole} Support Desk</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleDiscard}
+                  className="h-10 px-4 rounded-lg border border-border bg-white text-xs font-semibold text-foreground hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  Discard
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-semibold text-white shadow-2xs hover:bg-[var(--brand)]/90 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="h-3.5 w-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check size={14} />
+                      <span>Save Changes</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </form>
         </div>

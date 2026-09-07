@@ -720,32 +720,32 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("profile")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "profile"
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "profile"
                   ? "bg-[var(--brand)] text-white shadow-2xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <User size={16} />
+                  <User size={18} />
                   <span>Profile & Addresses</span>
                 </div>
-                <ChevronRight size={14} className={activeTab === "profile" ? "opacity-100" : "opacity-40"} />
+                <ChevronRight size={16} className={activeTab === "profile" ? "opacity-100" : "opacity-40"} />
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab("library")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "library"
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "library"
                   ? "bg-[var(--brand)] text-white shadow-2xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <BookOpen size={16} />
+                  <BookOpen size={18} />
                   <span>My Digital Library</span>
                 </div>
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${activeTab === "library" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
+                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${activeTab === "library" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
                     }`}
                 >
                   {userLibraryBooks.length}
@@ -755,17 +755,17 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("wishlist")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "wishlist"
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "wishlist"
                   ? "bg-[var(--brand)] text-white shadow-2xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Bookmark size={16} />
+                  <Bookmark size={18} />
                   <span>Want to Read</span>
                 </div>
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${activeTab === "wishlist" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
+                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${activeTab === "wishlist" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
                     }`}
                 >
                   {userWishlistBooks.length}
@@ -775,18 +775,17 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("orders")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "orders"
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "orders"
                   ? "bg-[var(--brand)] text-white shadow-2xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Receipt size={16} />
+                  <Receipt size={18} />
                   <span>Purchase History</span>
                 </div>
-                <ChevronRight size={14} className={activeTab === "orders" ? "opacity-100" : "opacity-40"} />
+                <ChevronRight size={16} className={activeTab === "orders" ? "opacity-100" : "opacity-40"} />
               </button>
-
 
               <button
                 type="button"
@@ -794,37 +793,37 @@ function PixelBooksAccountPage() {
                   setActiveTab("notifications");
                   setUnreadNotifications(0);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "notifications"
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "notifications"
                   ? "bg-[var(--brand)] text-white shadow-2xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Bell size={16} />
+                  <Bell size={18} />
                   <span>Notifications</span>
                 </div>
                 {unreadNotifications > 0 && activeTab !== "notifications" ? (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-rose-500 text-white">
+                  <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-rose-500 text-white">
                     {unreadNotifications}
                   </span>
                 ) : (
-                  <ChevronRight size={14} className={activeTab === "notifications" ? "opacity-100" : "opacity-40"} />
+                  <ChevronRight size={16} className={activeTab === "notifications" ? "opacity-100" : "opacity-40"} />
                 )}
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab("settings")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === "settings"
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "settings"
                   ? "bg-[var(--brand)] text-white shadow-2xs"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
               >
                 <div className="flex items-center gap-3">
-                  <Settings size={16} />
+                  <Settings size={18} />
                   <span>Security & Settings</span>
                 </div>
-                <ChevronRight size={14} className={activeTab === "settings" ? "opacity-100" : "opacity-40"} />
+                <ChevronRight size={16} className={activeTab === "settings" ? "opacity-100" : "opacity-40"} />
               </button>
 
               <div className="pt-2">
@@ -834,9 +833,9 @@ function PixelBooksAccountPage() {
                     toast.info("Logged out successfully.");
                     navigate({ to: "/" });
                   }}
-                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                 >
-                  <LogOut size={16} />
+                  <LogOut size={18} />
                   <span>Logout</span>
                 </button>
               </div>

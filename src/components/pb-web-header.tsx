@@ -545,27 +545,27 @@ export function PbWebHeader({
               <button
                 type="button"
                 id="website-user-dropdown"
-                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground hover:text-[#137365] transition-colors cursor-pointer select-none shrink-0 whitespace-nowrap"
+                className="flex items-center gap-2 text-sm sm:text-[15px] font-semibold text-foreground hover:text-[#137365] transition-colors cursor-pointer select-none shrink-0 whitespace-nowrap py-1 px-2 rounded-lg hover:bg-neutral-100/70"
               >
                 <span>Hi, Harish K</span>
-                <ChevronDown size={14} className="text-muted-foreground shrink-0" />
+                <ChevronDown size={16} className="text-muted-foreground shrink-0" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 mt-2">
+            <DropdownMenuContent align="end" className="w-60 sm:w-64 mt-2.5 p-2 rounded-xl shadow-lg border border-border/80">
               <DropdownMenuItem
-                onClick={() => navigate({ to: "/pb-web/accounts" })}
-                className="text-xs flex items-center gap-2 cursor-pointer"
+                onClick={() => navigate({ to: "/pb-web/accounts", search: { tab: "profile" } })}
+                className="text-sm font-medium flex items-center gap-3 py-2.5 px-3 rounded-lg cursor-pointer transition-colors focus:bg-emerald-50 focus:text-[#137365]"
               >
-                <User size={15} className="text-[#137365]" />
-                My Profile
+                <User size={18} className="text-[#137365]" />
+                <span>My Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="my-1.5" />
               <DropdownMenuItem
                 onClick={() => navigate({ to: "/" })}
-                className="text-xs flex items-center gap-2 cursor-pointer text-muted-foreground"
+                className="text-sm font-medium flex items-center gap-3 py-2.5 px-3 rounded-lg cursor-pointer text-muted-foreground hover:text-rose-600 focus:text-rose-600 focus:bg-rose-50/70 transition-colors"
               >
-                <LogOut size={14} />
-                Logout
+                <LogOut size={18} />
+                <span>Logout</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

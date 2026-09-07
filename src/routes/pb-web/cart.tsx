@@ -551,8 +551,8 @@ function PixelBooksCartPage() {
                         <div
                           key={cpn.code}
                           className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${isApplied
-                              ? "border-[#137365] bg-pbgreen-light"
-                              : "border-border/80 bg-white hover:border-[#137365]/40"
+                            ? "border-[#137365] bg-pbgreen-light"
+                            : "border-border/80 bg-white hover:border-[#137365]/40"
                             }`}
                         >
                           <div className="space-y-1">
@@ -573,8 +573,8 @@ function PixelBooksCartPage() {
                             type="button"
                             onClick={() => (isApplied ? handleRemoveCoupon() : handleApplyCoupon(cpn))}
                             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ml-3 ${isApplied
-                                ? "text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                                : "text-[#137365] hover:bg-[#137365]/10 border border-[#137365]/30"
+                              ? "text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                              : "text-[#137365] hover:bg-[#137365]/10 border border-[#137365]/30"
                               }`}
                           >
                             {isApplied ? "Remove" : "Apply"}
@@ -594,7 +594,7 @@ function PixelBooksCartPage() {
                         Recommended With Your Titles
                       </h3>
                     </div>
-                    <span className="text-xs text-muted-foreground">Bundle & Save</span>
+
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -631,8 +631,8 @@ function PixelBooksCartPage() {
                             disabled={isInCart}
                             onClick={() => handleAddRecommended(addon)}
                             className={`inline-flex h-8 items-center justify-center rounded-lg px-3 text-xs font-semibold transition-colors shrink-0 ${isInCart
-                                ? "border border-border bg-secondary text-muted-foreground cursor-not-allowed"
-                                : "text-white shadow-2xs hover:opacity-90 cursor-pointer"
+                              ? "border border-border bg-secondary text-muted-foreground cursor-not-allowed"
+                              : "text-white shadow-2xs hover:opacity-90 cursor-pointer"
                               }`}
                             style={!isInCart ? { backgroundColor: "#137365" } : undefined}
                           >
@@ -848,8 +848,8 @@ function PixelBooksCartPage() {
                 <div
                   onClick={() => setPaymentMethod("upi")}
                   className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "upi"
-                      ? "border-[#137365] bg-pbgreen-light/40"
-                      : "border-border bg-white hover:bg-neutral-50"
+                    ? "border-[#137365] bg-pbgreen-light/40"
+                    : "border-border bg-white hover:bg-neutral-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -873,8 +873,8 @@ function PixelBooksCartPage() {
                 <div
                   onClick={() => setPaymentMethod("card")}
                   className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "card"
-                      ? "border-[#137365] bg-pbgreen-light/40"
-                      : "border-border bg-white hover:bg-neutral-50"
+                    ? "border-[#137365] bg-pbgreen-light/40"
+                    : "border-border bg-white hover:bg-neutral-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -898,8 +898,8 @@ function PixelBooksCartPage() {
                 <div
                   onClick={() => setPaymentMethod("netbanking")}
                   className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "netbanking"
-                      ? "border-[#137365] bg-pbgreen-light/40"
-                      : "border-border bg-white hover:bg-neutral-50"
+                    ? "border-[#137365] bg-pbgreen-light/40"
+                    : "border-border bg-white hover:bg-neutral-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
