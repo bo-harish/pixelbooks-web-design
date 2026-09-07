@@ -59,6 +59,21 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-pb-dark: var(--pb-dark);
+  --color-pb-dark-hover: var(--pb-dark-hover);
+  --color-pb-dark-light: var(--pb-dark-light);
+  --color-pb-dark-border: var(--pb-dark-border);
+  --color-pb-light: var(--pb-light);
+  --color-pb-light-hover: var(--pb-light-hover);
+  --color-pb-light-bg: var(--pb-light-bg);
+  --color-pb-light-subtle: var(--pb-light-subtle);
+  --color-pb-light-border: var(--pb-light-border);
+  --color-pb-light-dark: var(--pb-light-dark);
+  --color-pbgreen: var(--pbgreen);
+  --color-pbgreen-light: var(--pbgreen-light);
+  --color-pbgreen-subtle: var(--pbgreen-subtle);
+  --color-pbgreen-border: var(--pbgreen-border);
+  --color-pbgreen-dark: var(--pbgreen-dark);
 }
 
 :root {
@@ -105,6 +120,25 @@
   --sidebar-accent-foreground: oklch(0.28 0.05 195);
   --sidebar-border: oklch(0.91 0.01 210);
   --sidebar-ring: oklch(0.55 0.11 195);
+  /* pb-web Base Colors: #137365 (Dark Green) & #30C047 (Light Green) */
+  --pb-dark: #137365;
+  --pb-dark-hover: #0e5b50;
+  --pb-dark-light: #E7F3F1;
+  --pb-dark-subtle: #D2E9E5;
+  --pb-dark-border: #B2D8D2;
+
+  --pb-light: #30C047;
+  --pb-light-hover: #28a73d;
+  --pb-light-bg: #EBF9ED;
+  --pb-light-subtle: #D8F5DC;
+  --pb-light-border: #B7EDBF;
+  --pb-light-dark: #19772B;
+
+  --pbgreen: #30C047;
+  --pbgreen-light: #EBF9ED;
+  --pbgreen-subtle: #D8F5DC;
+  --pbgreen-border: #B7EDBF;
+  --pbgreen-dark: #19772B;
 }
 
 .dark {
@@ -144,6 +178,25 @@
   --sidebar-accent-foreground: oklch(0.98 0.01 200);
   --sidebar-border: oklch(0.28 0.03 220);
   --sidebar-ring: oklch(0.62 0.11 195);
+
+  --pb-dark: #137365;
+  --pb-dark-hover: #198777;
+  --pb-dark-light: #0d3831;
+  --pb-dark-subtle: #124a41;
+  --pb-dark-border: #1a5e53;
+
+  --pb-light: #30C047;
+  --pb-light-hover: #3bd955;
+  --pb-light-bg: #16381C;
+  --pb-light-subtle: #1F4C27;
+  --pb-light-border: #2A6A36;
+  --pb-light-dark: #6BE882;
+
+  --pbgreen: #30C047;
+  --pbgreen-light: #16381C;
+  --pbgreen-subtle: #1F4C27;
+  --pbgreen-border: #2A6A36;
+  --pbgreen-dark: #6BE882;
 }
 
 @layer base {
@@ -155,6 +208,13 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+}
+
+/* pb-web Base Portal styling */
+.pb-web-portal {
+  --brand: #137365;
+  --brand-hover: #0e5b50;
+  --brand-contrast: #ffffff;
 }
 
 /* ------------------------------------------------------------------ */

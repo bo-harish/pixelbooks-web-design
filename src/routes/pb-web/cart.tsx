@@ -267,7 +267,7 @@ function PixelBooksCartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col antialiased">
+    <div className="min-h-screen bg-white text-foreground flex flex-col antialiased pb-web-portal">
       {/* Unified pb-web Header */}
       <PbWebHeader cartCount={cartItems.length} />
 
@@ -286,8 +286,8 @@ function PixelBooksCartPage() {
 
             {/* Stepper Progress Bar */}
             <div className="flex items-center gap-2 sm:gap-3 text-xs">
-              <div className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white text-[10px]">
+              <div className="flex items-center gap-1.5 font-bold text-[#137365]">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#137365] text-white text-[10px]">
                   1
                 </span>
                 <span>Review Cart</span>
@@ -316,7 +316,7 @@ function PixelBooksCartPage() {
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                   Shopping Cart
                 </h1>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border">
                   {cartItems.length} {cartItems.length === 1 ? "eBook" : "eBooks"}
                 </span>
               </div>
@@ -334,7 +334,7 @@ function PixelBooksCartPage() {
           {/* CART CONTENT: Two Columns or Empty State */}
           {cartItems.length === 0 ? (
             /* Empty Cart State */
-            <div className="rounded-3xl border border-border bg-card p-12 text-center max-w-xl mx-auto shadow-sm my-8 space-y-4">
+            <div className="rounded-3xl border border-border bg-white p-12 text-center max-w-xl mx-auto shadow-sm my-8 space-y-4">
               <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
                 <ShoppingBag size={36} />
               </div>
@@ -345,7 +345,8 @@ function PixelBooksCartPage() {
               <div className="pt-3">
                 <Link
                   to="/pb-web/genre"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 cursor-pointer"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold text-white shadow-2xs transition-colors hover:opacity-90 cursor-pointer"
+                  style={{ backgroundColor: "#137365" }}
                 >
                   <BookOpen size={16} /> Browse eBooks & Genres
                 </Link>
@@ -356,7 +357,7 @@ function PixelBooksCartPage() {
               {/* LEFT COLUMN: Added eBooks + Offers + Recommended (8 cols) */}
               <div className="lg:col-span-7 xl:col-span-8 space-y-6">
                 {/* 1. Added eBooks Card */}
-                <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-xs">
                   <div className="flex items-center justify-between pb-4 border-b border-border/70 mb-5">
                     <div className="flex items-center gap-2">
                       <span className="text-sm sm:text-base font-bold text-foreground">
@@ -472,7 +473,7 @@ function PixelBooksCartPage() {
                 </div>
 
                 {/* 2. Offers & Benefits Card (Upgraded matching user's ONAM26 coupon) */}
-                <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-xs">
                   <div className="flex items-center justify-between pb-3 border-b border-border/70 mb-4">
                     <div className="flex items-center gap-2">
                       <Tag size={18} className="text-emerald-600 dark:text-emerald-400" />
@@ -481,7 +482,7 @@ function PixelBooksCartPage() {
                       </h3>
                     </div>
                     {appliedCoupon && (
-                      <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200/60">
+                      <span className="text-[11px] font-bold text-pbgreen-dark bg-pbgreen-light px-2 py-0.5 rounded-full border border-pbgreen-border">
                         {appliedCoupon.code} Active
                       </span>
                     )}
@@ -505,13 +506,14 @@ function PixelBooksCartPage() {
                             handleApplyCoupon();
                           }
                         }}
-                        className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-xs font-mono uppercase tracking-wider text-foreground outline-none transition-colors placeholder:text-muted-foreground placeholder:normal-case placeholder:font-sans focus:border-[var(--brand)]"
+                        className="h-11 w-full rounded-lg border border-border bg-white pl-10 pr-4 text-xs font-mono uppercase tracking-wider text-foreground outline-none transition-colors placeholder:text-muted-foreground placeholder:normal-case placeholder:font-sans focus:border-[#137365]"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={() => handleApplyCoupon()}
-                      className="inline-flex h-11 items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 cursor-pointer shrink-0"
+                      className="inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:opacity-90 cursor-pointer shrink-0"
+                      style={{ backgroundColor: "#137365" }}
                     >
                       Apply
                     </button>
@@ -519,14 +521,14 @@ function PixelBooksCartPage() {
 
                   {/* Active Applied Voucher Banner */}
                   {appliedCoupon && (
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 mb-3">
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-pbgreen-light border border-pbgreen-border mb-3">
                       <div className="flex items-center gap-2.5">
-                        <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <CheckCircle2 size={18} className="text-pbgreen shrink-0" />
                         <div>
-                          <div className="text-xs font-bold text-emerald-900 dark:text-emerald-100">
+                          <div className="text-xs font-bold text-pbgreen-dark">
                             '{appliedCoupon.code}' Applied Successfully!
                           </div>
-                          <div className="text-[11px] text-emerald-700 dark:text-emerald-300">
+                          <div className="text-[11px] text-pbgreen-dark/85">
                             You save ₹{couponDiscount.toFixed(2)} on this order
                           </div>
                         </div>
@@ -550,13 +552,13 @@ function PixelBooksCartPage() {
                           key={cpn.code}
                           className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
                             isApplied
-                              ? "border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20"
-                              : "border-border/80 bg-background hover:border-emerald-500/40"
+                              ? "border-[#137365] bg-pbgreen-light"
+                              : "border-border/80 bg-white hover:border-[#137365]/40"
                           }`}
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-extrabold font-mono text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded">
+                              <span className="text-xs font-extrabold font-mono text-[#137365] bg-[#137365]/10 px-2 py-0.5 rounded">
                                 {cpn.code}
                               </span>
                               <span className="text-xs font-bold text-foreground">
@@ -574,7 +576,7 @@ function PixelBooksCartPage() {
                             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ml-3 ${
                               isApplied
                                 ? "text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                                : "text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-emerald-500/30"
+                                : "text-[#137365] hover:bg-[#137365]/10 border border-[#137365]/30"
                             }`}
                           >
                             {isApplied ? "Remove" : "Apply"}
@@ -586,7 +588,7 @@ function PixelBooksCartPage() {
                 </div>
 
                 {/* 3. Recommended Add-ons ("Frequently Read Together") */}
-                <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-xs">
                   <div className="flex items-center justify-between pb-3 border-b border-border/70 mb-4">
                     <div className="flex items-center gap-2">
                       <Sparkles size={18} className="text-amber-500" />
@@ -603,7 +605,7 @@ function PixelBooksCartPage() {
                       return (
                         <div
                           key={addon.id}
-                          className="flex items-center justify-between p-3 rounded-xl border border-border/80 bg-background hover:border-emerald-500/40 transition-all gap-3"
+                          className="flex items-center justify-between p-3 rounded-xl border border-border/80 bg-white hover:border-[#137365]/40 transition-all gap-3"
                         >
                           <img
                             src={addon.cover}
@@ -633,8 +635,9 @@ function PixelBooksCartPage() {
                             className={`inline-flex h-8 items-center justify-center rounded-lg px-3 text-xs font-semibold transition-colors shrink-0 ${
                               isInCart
                                 ? "border border-border bg-secondary text-muted-foreground cursor-not-allowed"
-                                : "bg-[var(--brand)] hover:bg-[var(--brand)]/90 text-white shadow-2xs cursor-pointer"
+                                : "text-white shadow-2xs hover:opacity-90 cursor-pointer"
                             }`}
+                            style={!isInCart ? { backgroundColor: "#137365" } : undefined}
                           >
                             {isInCart ? "Added" : "+ Add"}
                           </button>
@@ -647,7 +650,7 @@ function PixelBooksCartPage() {
 
               {/* RIGHT COLUMN: Sticky Order Info / Summary (4 cols) */}
               <div className="lg:col-span-5 xl:col-span-4 sticky top-24 space-y-4">
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-5">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-sm space-y-5">
                   <div className="pb-4 border-b border-border/70 flex items-center justify-between">
                     <h3 className="text-base font-bold text-foreground">Order Info</h3>
                     <span className="text-xs font-mono text-muted-foreground">
@@ -666,13 +669,13 @@ function PixelBooksCartPage() {
 
                     <div className="flex items-center justify-between text-muted-foreground">
                       <span>Catalog Discount</span>
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                      <span className="font-semibold text-[#137365]">
                         - ₹{catalogDiscount.toFixed(2)}
                       </span>
                     </div>
 
                     {couponDiscount > 0 && (
-                      <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-medium">
+                      <div className="flex items-center justify-between text-[#137365] font-medium">
                         <span>Coupon Savings ({appliedCoupon?.code})</span>
                         <span className="font-semibold">
                           - ₹{couponDiscount.toFixed(2)}
@@ -694,7 +697,7 @@ function PixelBooksCartPage() {
 
                     <div className="flex items-center justify-between text-muted-foreground">
                       <span>Cloud Delivery & Digital Setup</span>
-                      <span className="font-bold text-emerald-600 dark:text-emerald-400 uppercase text-[10px]">
+                      <span className="font-bold text-[#137365] uppercase text-[10px]">
                         FREE
                       </span>
                     </div>
@@ -714,9 +717,9 @@ function PixelBooksCartPage() {
 
                   {/* Total Savings Callout */}
                   {(catalogDiscount > 0 || couponDiscount > 0) && (
-                    <div className="p-3 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-center">
-                      <p className="text-xs font-bold text-emerald-800 dark:text-emerald-200 flex items-center justify-center gap-1.5">
-                        <Gift size={14} />
+                    <div className="p-3 rounded-xl bg-pbgreen-light border border-pbgreen-border text-center">
+                      <p className="text-xs font-bold text-pbgreen-dark flex items-center justify-center gap-1.5">
+                        <Gift size={14} className="text-pbgreen" />
                         Total Savings: ₹{(catalogDiscount + couponDiscount).toFixed(2)} on this order
                       </p>
                     </div>
@@ -726,7 +729,8 @@ function PixelBooksCartPage() {
                   <button
                     type="button"
                     onClick={handleProceedToBuy}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 cursor-pointer"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:opacity-90 cursor-pointer"
+                    style={{ backgroundColor: "#137365" }}
                   >
                     <Lock size={16} />
                     <span>Proceed to Buy · ₹{finalTotal.toFixed(2)}</span>
@@ -735,15 +739,15 @@ function PixelBooksCartPage() {
                   {/* Trust & Guarantee points */}
                   <div className="space-y-2 pt-2 border-t border-border/70 text-[11px] text-muted-foreground">
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
+                      <CheckCircle2 size={13} className="text-[#30C047] shrink-0" />
                       <span>Instant sync with PixelBooks Reader apps</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
+                      <CheckCircle2 size={13} className="text-[#30C047] shrink-0" />
                       <span>Compliant GST invoice generated automatically</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
+                      <CheckCircle2 size={13} className="text-[#30C047] shrink-0" />
                       <span>Supports UPI, Debit/Credit Cards & NetBanking</span>
                     </div>
                   </div>
@@ -765,7 +769,7 @@ function PixelBooksCartPage() {
       </main>
 
       {/* Unified Footer */}
-      <footer className="mt-auto border-t border-border/70 bg-card py-6 text-xs text-muted-foreground">
+      <footer className="mt-auto border-t border-border/70 bg-white py-6 text-xs text-muted-foreground">
         <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[1500px] flex-col sm:flex-row items-center justify-between px-4 sm:px-8 md:px-12 gap-4">
           <div>© 2026 PixelBooks Inc. All rights reserved.</div>
           <div className="flex items-center gap-6">
@@ -784,10 +788,10 @@ function PixelBooksCartPage() {
 
       {/* Checkout & Payment Simulation Modal */}
       <Dialog open={isCheckoutModalOpen} onOpenChange={setIsCheckoutModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg bg-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base font-bold text-foreground">
-              <Lock size={18} className="text-emerald-600 dark:text-emerald-400" />
+              <Lock size={18} className="text-[#137365]" />
               {isOrderComplete ? "Order Confirmed!" : "Secure Digital Checkout"}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
@@ -800,8 +804,8 @@ function PixelBooksCartPage() {
           {isOrderComplete ? (
             /* Order Success View */
             <div className="space-y-4 py-3 text-center">
-              <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
-                <CheckCircle2 size={36} />
+              <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-full bg-pbgreen-light text-[#137365]">
+                <CheckCircle2 size={36} className="text-[#30C047]" />
               </div>
               <div>
                 <h4 className="text-base font-bold text-foreground">Purchase Successful!</h4>
@@ -830,7 +834,8 @@ function PixelBooksCartPage() {
                     setIsCheckoutModalOpen(false);
                     navigate({ to: "/pb-web/accounts" });
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer shadow-xs hover:opacity-90"
+                  style={{ backgroundColor: "#137365" }}
                 >
                   Open in My Digital Library
                 </button>
@@ -847,12 +852,12 @@ function PixelBooksCartPage() {
                   onClick={() => setPaymentMethod("upi")}
                   className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                     paymentMethod === "upi"
-                      ? "border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20"
-                      : "border-border bg-background hover:bg-secondary/40"
+                      ? "border-[#137365] bg-pbgreen-light/40"
+                      : "border-border bg-white hover:bg-neutral-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600">
+                    <div className="p-2 rounded-lg bg-pbgreen-light text-[#137365]">
                       <Smartphone size={18} />
                     </div>
                     <div>
@@ -864,7 +869,7 @@ function PixelBooksCartPage() {
                     type="radio"
                     checked={paymentMethod === "upi"}
                     onChange={() => setPaymentMethod("upi")}
-                    className="text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                    className="text-[#137365] focus:ring-[#137365] cursor-pointer"
                   />
                 </div>
 
@@ -873,8 +878,8 @@ function PixelBooksCartPage() {
                   onClick={() => setPaymentMethod("card")}
                   className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                     paymentMethod === "card"
-                      ? "border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20"
-                      : "border-border bg-background hover:bg-secondary/40"
+                      ? "border-[#137365] bg-pbgreen-light/40"
+                      : "border-border bg-white hover:bg-neutral-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -890,7 +895,7 @@ function PixelBooksCartPage() {
                     type="radio"
                     checked={paymentMethod === "card"}
                     onChange={() => setPaymentMethod("card")}
-                    className="text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                    className="text-[#137365] focus:ring-[#137365] cursor-pointer"
                   />
                 </div>
 
@@ -899,8 +904,8 @@ function PixelBooksCartPage() {
                   onClick={() => setPaymentMethod("netbanking")}
                   className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                     paymentMethod === "netbanking"
-                      ? "border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20"
-                      : "border-border bg-background hover:bg-secondary/40"
+                      ? "border-[#137365] bg-pbgreen-light/40"
+                      : "border-border bg-white hover:bg-neutral-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -916,7 +921,7 @@ function PixelBooksCartPage() {
                     type="radio"
                     checked={paymentMethod === "netbanking"}
                     onChange={() => setPaymentMethod("netbanking")}
-                    className="text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                    className="text-[#137365] focus:ring-[#137365] cursor-pointer"
                   />
                 </div>
               </div>
@@ -932,7 +937,7 @@ function PixelBooksCartPage() {
                 <button
                   type="button"
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="h-10 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  className="h-10 px-4 rounded-lg border border-border bg-white text-xs font-semibold text-foreground hover:bg-neutral-50 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -940,7 +945,8 @@ function PixelBooksCartPage() {
                   type="button"
                   disabled={isProcessingPayment}
                   onClick={handleCompletePayment}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-semibold text-white shadow-2xs hover:bg-[var(--brand)]/90 transition-colors cursor-pointer"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg px-5 text-xs font-semibold text-white shadow-2xs hover:opacity-90 transition-colors cursor-pointer"
+                  style={{ backgroundColor: "#137365" }}
                 >
                   {isProcessingPayment ? (
                     <>

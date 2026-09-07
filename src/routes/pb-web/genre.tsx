@@ -78,7 +78,7 @@ function PixelBooksWebsitePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col justify-between selection:bg-emerald-500/20 selection:text-emerald-900 dark:selection:text-emerald-300">
+    <div className="min-h-screen bg-white text-foreground flex flex-col justify-between selection:bg-[#137365]/20 selection:text-[#137365] pb-web-portal">
       {/* Top Header Navbar */}
       <PbWebHeader
         searchQuery={searchQuery}
@@ -155,8 +155,8 @@ function PixelBooksWebsitePage() {
                       type="button"
                       onClick={() => handleCategoryClick(genre)}
                       className={`text-left text-[13.5px] font-normal leading-snug transition-all duration-150 cursor-pointer block w-full py-1 ${selectedGenre === genre
-                        ? "text-emerald-600 dark:text-emerald-400 font-semibold translate-x-1"
-                        : "text-foreground/85 hover:text-emerald-600 dark:hover:text-emerald-400 hover:translate-x-1"
+                        ? "text-[#137365] font-semibold translate-x-1"
+                        : "text-foreground/85 hover:text-[#137365] hover:translate-x-1"
                         }`}
                     >
                       {genre}
@@ -173,7 +173,7 @@ function PixelBooksWebsitePage() {
       <Sheet open={!!selectedGenre} onOpenChange={(open) => !open && setSelectedGenre(null)}>
         <SheetContent side="right" className="w-full sm:max-w-md md:max-w-lg p-6 overflow-y-auto">
           <SheetHeader className="text-left mb-6">
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#137365] uppercase tracking-wider">
               <BookOpen size={15} /> Genre Showcase
             </div>
             <SheetTitle className="text-2xl font-bold text-foreground">
@@ -208,7 +208,7 @@ function PixelBooksWebsitePage() {
             ]).map((book, idx) => (
               <div
                 key={idx}
-                className="rounded-xl border border-border bg-card p-4 shadow-xs transition-all hover:border-emerald-500/40 hover:shadow-sm flex gap-4"
+                className="rounded-xl border border-border bg-white p-4 shadow-xs transition-all hover:border-[#137365]/40 hover:shadow-sm flex gap-4"
               >
                 {/* Book Mini Cover */}
                 {book.cover ? (
@@ -235,7 +235,7 @@ function PixelBooksWebsitePage() {
                 {/* Details */}
                 <div className="flex-1 flex flex-col justify-between py-0.5">
                   <div>
-                    <span className="inline-block text-[10px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md mb-1.5">
+                    <span className="inline-block text-[10px] font-semibold text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border px-2 py-0.5 rounded-md mb-1.5">
                       {book.tag}
                     </span>
                     <h4 className="text-sm font-bold text-foreground line-clamp-2 leading-tight">
@@ -256,7 +256,8 @@ function PixelBooksWebsitePage() {
                     <button
                       type="button"
                       onClick={() => handleAddToCart(book.title)}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-lg text-white px-3 py-1.5 text-xs font-semibold shadow-2xs transition-opacity hover:opacity-90 cursor-pointer"
+                      style={{ backgroundColor: "#137365" }}
                     >
                       <ShoppingBag size={13} />
                       Add to Cart
@@ -289,14 +290,16 @@ function PixelBooksWebsitePage() {
       </Sheet>
 
       {/* Footer */}
-      <footer className="w-full border-t border-border/70 bg-card/40 py-8 px-4 sm:px-8 md:px-12 text-xs text-muted-foreground">
+      <footer className="w-full border-t border-border/70 bg-white py-8 px-4 sm:px-8 md:px-12 text-xs text-muted-foreground">
         <div className="mx-auto max-w-7xl 2xl:max-w-[1500px] flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              alt="PixelBooks"
-              className="h-6 w-auto object-contain opacity-80"
-            />
+            <Link to="/" className="flex items-center transition-opacity hover:opacity-85" title="PixelBooks - Workspace Selector">
+              <img
+                src="/logo.png"
+                alt="PixelBooks"
+                className="h-6 w-auto object-contain opacity-80"
+              />
+            </Link>
             <span>© 2026 PixelBooks. All rights reserved.</span>
           </div>
           <div className="flex flex-wrap items-center gap-6">

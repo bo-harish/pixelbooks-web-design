@@ -25,6 +25,7 @@ import { Route as PublisherProfileRouteImport } from './routes/publisher/profile
 import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
 import { Route as PublisherLoginRouteImport } from './routes/publisher/login'
 import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
+import { Route as PbWebSupportRouteImport } from './routes/pb-web/support'
 import { Route as PbWebGenreRouteImport } from './routes/pb-web/genre'
 import { Route as PbWebCartRouteImport } from './routes/pb-web/cart'
 import { Route as PbWebAccountsRouteImport } from './routes/pb-web/accounts'
@@ -189,6 +190,11 @@ const PublisherLoginRoute = PublisherLoginRouteImport.update({
 const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
   id: '/publisher/bank-accounts',
   path: '/publisher/bank-accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbWebSupportRoute = PbWebSupportRouteImport.update({
+  id: '/pb-web/support',
+  path: '/pb-web/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PbWebGenreRoute = PbWebGenreRouteImport.update({
@@ -690,6 +696,7 @@ export interface FileRoutesByFullPath {
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
   '/pb-web/genre': typeof PbWebGenreRoute
+  '/pb-web/support': typeof PbWebSupportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -793,6 +800,7 @@ export interface FileRoutesByTo {
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
   '/pb-web/genre': typeof PbWebGenreRoute
+  '/pb-web/support': typeof PbWebSupportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -897,6 +905,7 @@ export interface FileRoutesById {
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
   '/pb-web/genre': typeof PbWebGenreRoute
+  '/pb-web/support': typeof PbWebSupportRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -1002,6 +1011,7 @@ export interface FileRouteTypes {
     | '/pb-web/accounts'
     | '/pb-web/cart'
     | '/pb-web/genre'
+    | '/pb-web/support'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1105,6 +1115,7 @@ export interface FileRouteTypes {
     | '/pb-web/accounts'
     | '/pb-web/cart'
     | '/pb-web/genre'
+    | '/pb-web/support'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1208,6 +1219,7 @@ export interface FileRouteTypes {
     | '/pb-web/accounts'
     | '/pb-web/cart'
     | '/pb-web/genre'
+    | '/pb-web/support'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1312,6 +1324,7 @@ export interface RootRouteChildren {
   PbWebAccountsRoute: typeof PbWebAccountsRoute
   PbWebCartRoute: typeof PbWebCartRoute
   PbWebGenreRoute: typeof PbWebGenreRoute
+  PbWebSupportRoute: typeof PbWebSupportRoute
   PublisherBankAccountsRoute: typeof PublisherBankAccountsRoute
   PublisherLoginRoute: typeof PublisherLoginRoute
   PublisherMarginReportRoute: typeof PublisherMarginReportRoute
@@ -1474,6 +1487,13 @@ declare module '@tanstack/react-router' {
       path: '/publisher/bank-accounts'
       fullPath: '/publisher/bank-accounts'
       preLoaderRoute: typeof PublisherBankAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/support': {
+      id: '/pb-web/support'
+      path: '/pb-web/support'
+      fullPath: '/pb-web/support'
+      preLoaderRoute: typeof PbWebSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-web/genre': {
@@ -2169,6 +2189,7 @@ const rootRouteChildren: RootRouteChildren = {
   PbWebAccountsRoute: PbWebAccountsRoute,
   PbWebCartRoute: PbWebCartRoute,
   PbWebGenreRoute: PbWebGenreRoute,
+  PbWebSupportRoute: PbWebSupportRoute,
   PublisherBankAccountsRoute: PublisherBankAccountsRoute,
   PublisherLoginRoute: PublisherLoginRoute,
   PublisherMarginReportRoute: PublisherMarginReportRoute,

@@ -150,7 +150,7 @@ export function PbWebHeader({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-background/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex h-20 w-full max-w-[1600px] items-center justify-between gap-3 sm:gap-4 lg:gap-6 px-4 sm:px-6 lg:px-8 xl:px-10">
         {/* Brand & Left Navigation */}
         <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 xl:gap-10 min-w-0">
@@ -165,10 +165,10 @@ export function PbWebHeader({
           </button>
 
           <Link
-            to="/pb-web/genre"
+            to="/"
             id="header-website-logo"
             className="flex items-center shrink-0 transition-opacity hover:opacity-90"
-            title="PixelBooks"
+            title="PixelBooks - Workspace Selector"
           >
             <img
               src="/logo.png"
@@ -190,11 +190,10 @@ export function PbWebHeader({
               <button
                 type="button"
                 onClick={() => onTabChange("Browse Genres")}
-                className={`whitespace-nowrap transition-colors py-1.5 cursor-pointer ${
-                  activeTab === "Browse Genres"
-                    ? "font-bold text-foreground"
-                    : "text-muted-foreground/70 hover:text-foreground"
-                }`}
+                className={`whitespace-nowrap transition-colors py-1.5 cursor-pointer ${activeTab === "Browse Genres"
+                  ? "font-bold text-foreground"
+                  : "text-muted-foreground/70 hover:text-foreground"
+                  }`}
               >
                 Browse Genres
               </button>
@@ -208,35 +207,32 @@ export function PbWebHeader({
             )}
 
             <Link
-              to="/library-admin"
+              to="#"
               className="whitespace-nowrap text-muted-foreground/70 hover:text-foreground transition-colors py-1.5"
             >
               For Institutes
             </Link>
             <Link
-              to="/publisher"
+              to="#"
               className="whitespace-nowrap text-muted-foreground/70 hover:text-foreground transition-colors py-1.5"
             >
               For Publishers
             </Link>
             <Link
-              to="/author"
+              to="#"
               className="whitespace-nowrap text-muted-foreground/70 hover:text-foreground transition-colors py-1.5"
             >
               For Authors
             </Link>
-            <button
-              type="button"
-              onClick={() =>
-                toast.info("Customer Support", {
-                  description:
-                    "Reach our academic reading & publishing support team 24/7 at support@pixelbooks.com",
-                })
-              }
-              className="whitespace-nowrap text-muted-foreground/70 hover:text-foreground transition-colors py-1.5 cursor-pointer"
+            <Link
+              to="/pb-web/support"
+              className={`whitespace-nowrap transition-colors py-1.5 ${activeTab === "Support"
+                ? "font-bold text-foreground"
+                : "text-muted-foreground/70 hover:text-foreground"
+                }`}
             >
               Support
-            </button>
+            </Link>
           </nav>
         </div>
 
@@ -252,12 +248,12 @@ export function PbWebHeader({
                 e.preventDefault();
                 handleSearch();
               }}
-              className="group relative flex h-11 w-full items-center rounded-full border-[1.6px] border-border/80 bg-card/90 shadow-2xs hover:border-emerald-500/50 hover:bg-card focus-within:border-emerald-600 focus-within:bg-background focus-within:ring-4 focus-within:ring-emerald-500/15 focus-within:shadow-md transition-all pl-3.5 pr-1.5"
+              className="group relative flex h-11 w-full items-center rounded-full border-[1.6px] border-border/80 bg-white shadow-2xs hover:border-[#137365]/40 hover:bg-white focus-within:border-[#137365] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#137365]/15 focus-within:shadow-md transition-all pl-3.5 pr-1.5"
             >
               {/* Search Icon */}
               <Search
                 size={17}
-                className="text-muted-foreground group-focus-within:text-emerald-600 transition-colors shrink-0"
+                className="text-muted-foreground group-focus-within:text-[#137365] transition-colors shrink-0"
               />
 
               {/* Input */}
@@ -274,7 +270,7 @@ export function PbWebHeader({
                 className="h-full w-full bg-transparent px-2.5 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/75 placeholder:truncate focus:outline-none font-normal"
               />
 
-              {/* Right controls: Clear (X) + ⌘K badge + Emerald Action Button */}
+              {/* Right controls: Clear (X) + ⌘K badge + Light Green Action Button */}
               <div className="flex items-center gap-1.5 shrink-0">
                 {currentSearchQuery && (
                   <button
@@ -296,7 +292,8 @@ export function PbWebHeader({
 
                 <button
                   type="submit"
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white shadow-xs transition-all cursor-pointer"
+                  className="flex h-8 w-8 items-center justify-center rounded-full active:scale-95 text-white shadow-xs transition-all cursor-pointer hover:opacity-90"
+                  style={{ backgroundColor: "#30C047" }}
                   title="Search"
                 >
                   <Search size={14} strokeWidth={2.5} />
@@ -306,12 +303,12 @@ export function PbWebHeader({
 
             {/* Live Interactive Search Results Dropdown */}
             {isSearchOpen && (
-              <div className="absolute top-full mt-2.5 right-0 sm:right-auto sm:left-0 w-[calc(100vw-2rem)] sm:w-[380px] md:w-[420px] max-w-[92vw] z-50 rounded-2xl border border-border/90 bg-popover text-popover-foreground shadow-2xl p-4 backdrop-blur-xl animate-in fade-in-50 zoom-in-95 duration-150">
+              <div className="absolute top-full mt-2.5 right-0 sm:right-auto sm:left-0 w-[calc(100vw-2rem)] sm:w-[380px] md:w-[420px] max-w-[92vw] z-50 rounded-2xl border border-border/90 bg-white text-popover-foreground shadow-2xl p-4 backdrop-blur-xl animate-in fade-in-50 zoom-in-95 duration-150">
                 {/* Empty state: Trending Searches */}
                 {!currentSearchQuery.trim() ? (
                   <div className="space-y-4">
                     <div>
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 mb-2.5 uppercase tracking-wider">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-[#137365] mb-2.5 uppercase tracking-wider">
                         <TrendingUp size={14} /> Popular Searches
                       </div>
                       <div className="flex flex-wrap gap-1.5">
@@ -323,7 +320,7 @@ export function PbWebHeader({
                               handleQueryChange(tag);
                               handleSearch(tag);
                             }}
-                            className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/50 px-3 py-1 text-xs font-medium text-foreground hover:border-emerald-500/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-600 transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/50 px-3 py-1 text-xs font-medium text-foreground hover:border-pbgreen-border hover:bg-pbgreen-light hover:text-pbgreen-dark transition-colors cursor-pointer"
                           >
                             <Flame size={12} className="text-amber-500" />
                             {tag}
@@ -337,7 +334,7 @@ export function PbWebHeader({
                   <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
                     <div className="flex items-center justify-between text-xs text-muted-foreground pb-2 border-b border-border/60">
                       <span>Results for "{currentSearchQuery}"</span>
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                      <span className="font-semibold text-[#137365]">
                         {matchingGenres.length} genres · {matchingBooks.length} titles
                       </span>
                     </div>
@@ -354,9 +351,9 @@ export function PbWebHeader({
                               key={genre}
                               type="button"
                               onClick={() => handleGenreClick(genre)}
-                              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground hover:border-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-2.5 py-1 text-xs font-medium text-foreground hover:border-[#137365] hover:text-[#137365] transition-colors cursor-pointer"
                             >
-                              <BookOpen size={12} className="text-emerald-500" />
+                              <BookOpen size={12} className="text-[#137365]" />
                               {genre}
                             </button>
                           ))}
@@ -392,7 +389,7 @@ export function PbWebHeader({
                                   </div>
                                 </div>
                               </div>
-                              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 shrink-0">
+                              <span className="text-xs font-bold text-[#137365] shrink-0">
                                 {book.price}
                               </span>
                             </div>
@@ -415,7 +412,7 @@ export function PbWebHeader({
                   <button
                     type="button"
                     onClick={() => handleSearch()}
-                    className="text-emerald-600 hover:text-emerald-700 font-semibold cursor-pointer"
+                    className="text-[#137365] hover:text-[#0e5b50] font-semibold cursor-pointer"
                   >
                     Search all categories →
                   </button>
@@ -457,7 +454,10 @@ export function PbWebHeader({
           >
             <ShoppingCart size={19} />
             {cartCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white shadow-xs">
+              <span
+                className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-xs"
+                style={{ backgroundColor: "#30C047" }}
+              >
                 {cartCount}
               </span>
             )}
@@ -472,7 +472,7 @@ export function PbWebHeader({
               <button
                 type="button"
                 id="website-user-dropdown"
-                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground hover:text-emerald-600 transition-colors cursor-pointer select-none shrink-0 whitespace-nowrap"
+                className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-foreground hover:text-[#137365] transition-colors cursor-pointer select-none shrink-0 whitespace-nowrap"
               >
                 <span>Hi, Harish K</span>
                 <ChevronDown size={14} className="text-muted-foreground shrink-0" />
@@ -487,7 +487,7 @@ export function PbWebHeader({
                 onClick={() => navigate({ to: "/pb-web/accounts" })}
                 className="text-xs flex items-center gap-2 cursor-pointer font-semibold"
               >
-                <User size={15} className="text-[var(--brand)]" />
+                <User size={15} className="text-[#137365]" />
                 My Account
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -501,7 +501,7 @@ export function PbWebHeader({
                 onClick={() => navigate({ to: "/author" })}
                 className="text-xs flex items-center gap-2 cursor-pointer"
               >
-                <BookOpen size={15} className="text-emerald-500" />
+                <BookOpen size={15} className="text-[#137365]" />
                 Author Workspace
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -540,9 +540,16 @@ export function PbWebHeader({
 
       {/* Mobile Navigation Drawer */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-        <SheetContent side="left" className="w-72 p-6">
+        <SheetContent side="left" className="w-72 p-6 bg-white">
           <div className="flex items-center gap-2 mb-8">
-            <img src="/logo.png" alt="PixelBooks Logo" className="h-8 w-auto object-contain" />
+            <Link
+              to="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center transition-opacity hover:opacity-90"
+              title="PixelBooks - Workspace Selector"
+            >
+              <img src="/logo.png" alt="PixelBooks Logo" className="h-8 w-auto object-contain" />
+            </Link>
           </div>
           <nav className="flex flex-col gap-2 text-sm font-medium">
             <Link
@@ -560,11 +567,10 @@ export function PbWebHeader({
                   onTabChange("Browse Genres");
                   setIsMobileMenuOpen(false);
                 }}
-                className={`text-left py-2.5 px-3 rounded-lg transition-colors cursor-pointer ${
-                  activeTab === "Browse Genres"
-                    ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-bold"
-                    : "hover:bg-secondary"
-                }`}
+                className={`text-left py-2.5 px-3 rounded-lg transition-colors cursor-pointer ${activeTab === "Browse Genres"
+                  ? "bg-pbgreen-light text-pbgreen-dark font-bold"
+                  : "hover:bg-secondary"
+                  }`}
               >
                 Browse Genres
               </button>
@@ -599,16 +605,14 @@ export function PbWebHeader({
             >
               For Authors
             </Link>
-            <button
-              type="button"
-              onClick={() => {
-                toast.info("Customer Support: support@pixelbooks.com");
-                setIsMobileMenuOpen(false);
-              }}
-              className="text-left py-2.5 px-3 rounded-lg hover:bg-secondary transition-colors cursor-pointer"
+            <Link
+              to="/pb-web/support"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`py-2.5 px-3 rounded-lg hover:bg-secondary transition-colors ${activeTab === "Support" ? "font-bold text-foreground bg-secondary/50" : ""
+                }`}
             >
               Support
-            </button>
+            </Link>
           </nav>
         </SheetContent>
       </Sheet>

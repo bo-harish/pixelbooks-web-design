@@ -130,16 +130,25 @@ function WorkspaceSelector() {
         </div>
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground bg-secondary/80 backdrop-blur-sm border border-border px-3 py-1.5 rounded-full shadow-sm">
           <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-          Workspace Selector
+          New UI Design: Select Your Workspace
         </div>
       </header>
 
       {/* Main Content */}
       <main className="mx-auto my-auto w-full max-w-7xl 2xl:max-w-[1500px] py-12 md:py-16">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/75">
-            New UI Design: Select Your Workspace
-          </h1>
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-5">
+          {/* PixelBooks Website Link */}
+          <div className="flex items-center justify-center pt-1">
+            <Link
+              to="/pb-web/genre"
+              id="link-pixelbooks-website"
+              className="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card/75 px-5 py-2.5 text-sm font-semibold text-foreground shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--brand)]/50 hover:bg-card hover:text-[var(--brand)] hover:shadow-md cursor-pointer"
+            >
+              <Globe size={16} className="text-[var(--brand)] transition-transform duration-200 group-hover:rotate-12" />
+              <span>PixelBooks Website</span>
+              <ExternalLink size={13} className="text-muted-foreground transition-all duration-200 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+          </div>
         </div>
 
         {/* Roles Grid */}
@@ -308,18 +317,6 @@ function WorkspaceSelector() {
           })}
         </div>
 
-        {/* PixelBooks Web Site Link */}
-        <div className="mt-12 flex flex-col items-center justify-center gap-2">
-          <Link
-            to="/pb-web/genre"
-            id="link-pixelbooks-website"
-            className="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card/75 px-5 py-2.5 text-sm font-semibold text-foreground shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--brand)]/50 hover:bg-card hover:text-[var(--brand)] hover:shadow-md cursor-pointer"
-          >
-            <Globe size={16} className="text-[var(--brand)] transition-transform duration-200 group-hover:rotate-12" />
-            <span>PixelBooks Web Site</span>
-            <ExternalLink size={13} className="text-muted-foreground transition-all duration-200 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-        </div>
       </main>
 
       {/* Footer */}
@@ -330,7 +327,7 @@ function WorkspaceSelector() {
             to="/pb-web/genre"
             className="hover:text-foreground transition-colors"
           >
-            PixelBooks Web Site
+            PixelBooks Website
           </Link>
           <a href="#" className="hover:text-foreground transition-colors">
             Privacy Policy

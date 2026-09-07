@@ -313,7 +313,7 @@ function CustomCheckbox({
       className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 select-none ${
         checked
           ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-2xs"
-          : "border-border/80 bg-background hover:border-[var(--brand)]/60"
+          : "border-border/80 bg-white hover:border-[var(--brand)]/60"
       } ${className}`}
     >
       {checked && <Check className="h-3.5 w-3.5 stroke-[3] text-white" />}
@@ -502,7 +502,10 @@ function PixelBooksAccountPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col antialiased">
+    <div
+      className="min-h-screen bg-white text-foreground flex flex-col antialiased pb-web-portal"
+      style={{ ["--brand" as any]: "#137365" }}
+    >
       {/* Universal pb-web Top Header */}
       <PbWebHeader
         cartCount={cartCount}
@@ -529,7 +532,7 @@ function PixelBooksAccountPage() {
           {/* Left Column: Unified Account Navigation Sidebar */}
           <aside className="lg:col-span-4 xl:col-span-3 space-y-4">
             {/* User Profile Summary Card */}
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col items-center text-center relative overflow-hidden">
+            <div className="rounded-2xl border border-border bg-white p-5 shadow-xs flex flex-col items-center text-center relative overflow-hidden">
               {/* Subtle brand ambient header glow */}
               <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-[var(--brand)]/10 to-transparent pointer-events-none" />
 
@@ -572,7 +575,7 @@ function PixelBooksAccountPage() {
             </div>
 
             {/* Sidebar Navigation Menu */}
-            <nav className="rounded-2xl border border-border bg-card p-2 shadow-xs space-y-1">
+            <nav className="rounded-2xl border border-border bg-white p-2 shadow-xs space-y-1">
               <button
                 type="button"
                 onClick={() => setActiveTab("profile")}
@@ -688,7 +691,7 @@ function PixelBooksAccountPage() {
             {activeTab === "profile" && (
               <div className="space-y-6">
                 {/* Personal Information Card */}
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="pb-4 border-b border-border/70 mb-5">
                     <h3 className="text-base font-bold text-foreground">Personal Details</h3>
                     <p className="text-xs text-muted-foreground">
@@ -707,7 +710,7 @@ function PixelBooksAccountPage() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Enter full name"
-                        className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                       />
                     </div>
 
@@ -718,13 +721,13 @@ function PixelBooksAccountPage() {
                           Phone Number <span className="text-red-500 font-bold ml-0.5">*</span>
                         </label>
                         <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                            <Check size={12} strokeWidth={2.5} /> Verified
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
+                            <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
                           </span>
                           <button
                             type="button"
                             onClick={() => toast.info("SMS verification code sent to " + phone)}
-                            className="text-xs font-bold text-[var(--brand)] hover:underline cursor-pointer"
+                            className="text-xs font-bold text-[#137365] hover:underline cursor-pointer"
                           >
                             Change
                           </button>
@@ -735,7 +738,7 @@ function PixelBooksAccountPage() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="e.g. 9387737551"
-                        className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                       />
                     </div>
 
@@ -746,8 +749,8 @@ function PixelBooksAccountPage() {
                           Email ID <span className="text-red-500 font-bold ml-0.5">*</span>
                         </label>
                         <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                            <Check size={12} strokeWidth={2.5} /> Verified
+                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
+                            <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
                           </span>
                           <button
                             type="button"
@@ -763,7 +766,7 @@ function PixelBooksAccountPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="e.g. name@example.com"
-                        className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                       />
                     </div>
 
@@ -777,14 +780,14 @@ function PixelBooksAccountPage() {
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
                         placeholder="Share a short bio or genres you love to read..."
-                        className="w-full p-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all resize-none"
+                        className="w-full p-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all resize-none"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Delivery & Invoicing Address Card */}
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="pb-4 border-b border-border/70 mb-5">
                     <h3 className="text-base font-bold text-foreground">Address & Invoicing</h3>
                     <p className="text-xs text-muted-foreground">
@@ -803,7 +806,7 @@ function PixelBooksAccountPage() {
                         value={addressLine1}
                         onChange={(e) => setAddressLine1(e.target.value)}
                         placeholder="e.g. No 4"
-                        className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                       />
                     </div>
 
@@ -817,7 +820,7 @@ function PixelBooksAccountPage() {
                         value={addressLine2}
                         onChange={(e) => setAddressLine2(e.target.value)}
                         placeholder="e.g. Sophia Emerald"
-                        className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                       />
                     </div>
 
@@ -831,7 +834,7 @@ function PixelBooksAccountPage() {
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="e.g. Kochi"
-                        className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                       />
                     </div>
 
@@ -844,7 +847,7 @@ function PixelBooksAccountPage() {
                         <select
                           value={stateVal}
                           onChange={(e) => setStateVal(e.target.value)}
-                          className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all appearance-none cursor-pointer pr-10"
+                          className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all appearance-none cursor-pointer pr-10"
                         >
                           <option value="Kerala">Kerala</option>
                           <option value="Karnataka">Karnataka</option>
@@ -870,14 +873,14 @@ function PixelBooksAccountPage() {
                         value={pincode}
                         onChange={(e) => setPincode(e.target.value)}
                         placeholder="e.g. 682033"
-                        className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Form Action Controls (Clean bottom bar) */}
-                <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 shadow-xs">
+                <div className="flex items-center justify-between rounded-2xl border border-border bg-white p-4 shadow-xs">
                   <div className="text-xs text-muted-foreground">
                     Last modified: <span className="font-semibold text-foreground">Today at 12:45 PM</span>
                   </div>
@@ -885,7 +888,7 @@ function PixelBooksAccountPage() {
                     <button
                       type="button"
                       onClick={handleDiscard}
-                      className="h-10 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                      className="h-10 px-4 rounded-lg border border-border bg-white text-xs font-semibold text-foreground hover:bg-neutral-50 transition-colors cursor-pointer"
                     >
                       Discard
                     </button>
@@ -915,7 +918,7 @@ function PixelBooksAccountPage() {
             {/* TAB 2: MY DIGITAL LIBRARY */}
             {activeTab === "library" && (
               <div className="space-y-6">
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/70 mb-5">
                     <div>
                       <h3 className="text-base font-bold text-foreground">My Digital Library</h3>
@@ -946,7 +949,7 @@ function PixelBooksAccountPage() {
                           setLibrarySearchQuery(e.target.value);
                           setLibraryCurrentPage(1);
                         }}
-                        className="h-10 w-full rounded-lg border border-border bg-card pl-10 pr-9 text-xs outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
+                        className="h-10 w-full rounded-lg border border-border bg-white pl-10 pr-9 text-xs outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
                       />
                       {librarySearchQuery && (
                         <button
@@ -985,7 +988,7 @@ function PixelBooksAccountPage() {
                             setLibrarySearchQuery("");
                             setLibraryCurrentPage(1);
                           }}
-                          className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-secondary text-xs font-semibold text-foreground transition-colors cursor-pointer"
+                          className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-white hover:bg-neutral-50 text-xs font-semibold text-foreground transition-colors cursor-pointer"
                         >
                           <X size={13} />
                           <span>Clear search</span>
@@ -997,7 +1000,7 @@ function PixelBooksAccountPage() {
                       {paginatedLibraryBooks.map((b) => (
                         <div
                           key={b.id}
-                          className="rounded-xl border border-border bg-card p-4 shadow-2xs hover:border-[var(--brand)]/40 transition-all flex flex-col justify-between"
+                          className="rounded-xl border border-border bg-white p-4 shadow-2xs hover:border-[var(--brand)]/40 transition-all flex flex-col justify-between"
                         >
                           <div className="flex gap-4">
                             <img
@@ -1058,7 +1061,7 @@ function PixelBooksAccountPage() {
                             <button
                               type="button"
                               onClick={() => handleOpenShareModal(b)}
-                              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-border bg-background hover:bg-secondary text-xs font-semibold text-foreground transition-colors cursor-pointer"
+                              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-border bg-white hover:bg-neutral-50 text-xs font-semibold text-foreground transition-colors cursor-pointer"
                               title="Share this book"
                             >
                               <Share2 size={13} className="text-muted-foreground" />
@@ -1067,7 +1070,7 @@ function PixelBooksAccountPage() {
                             <button
                               type="button"
                               onClick={() => handleOpenReviewModal(b)}
-                              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-border bg-background hover:bg-secondary text-xs font-semibold text-foreground transition-colors cursor-pointer"
+                              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-border bg-white hover:bg-neutral-50 text-xs font-semibold text-foreground transition-colors cursor-pointer"
                               title="Write or edit review"
                             >
                               <PenLine size={13} className="text-amber-500" />
@@ -1092,7 +1095,7 @@ function PixelBooksAccountPage() {
                           type="button"
                           onClick={() => setLibraryCurrentPage(1)}
                           disabled={libraryCurrentPage === 1}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-white text-muted-foreground transition-colors hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                           title="First Page"
                         >
                           <ChevronsLeft size={16} />
@@ -1101,7 +1104,7 @@ function PixelBooksAccountPage() {
                           type="button"
                           onClick={() => setLibraryCurrentPage((p) => Math.max(1, p - 1))}
                           disabled={libraryCurrentPage === 1}
-                          className="flex h-8 px-2.5 items-center justify-center rounded-lg border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                          className="flex h-8 px-2.5 items-center justify-center rounded-lg border border-border bg-white text-xs font-semibold text-foreground transition-colors hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                         >
                           Prev
                         </button>
@@ -1115,7 +1118,7 @@ function PixelBooksAccountPage() {
                             className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
                               pg === libraryCurrentPage
                                 ? "bg-[var(--brand)] text-white shadow-2xs"
-                                : "border border-border bg-card text-foreground hover:bg-secondary"
+                                : "border border-border bg-white text-foreground hover:bg-neutral-50"
                             }`}
                           >
                             {pg}
@@ -1126,7 +1129,7 @@ function PixelBooksAccountPage() {
                           type="button"
                           onClick={() => setLibraryCurrentPage((p) => Math.min(totalLibraryPages, p + 1))}
                           disabled={libraryCurrentPage === totalLibraryPages}
-                          className="flex h-8 px-2.5 items-center justify-center rounded-lg border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                          className="flex h-8 px-2.5 items-center justify-center rounded-lg border border-border bg-white text-xs font-semibold text-foreground transition-colors hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                         >
                           Next
                         </button>
@@ -1134,7 +1137,7 @@ function PixelBooksAccountPage() {
                           type="button"
                           onClick={() => setLibraryCurrentPage(totalLibraryPages)}
                           disabled={libraryCurrentPage === totalLibraryPages}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-white text-muted-foreground transition-colors hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                           title="Last Page"
                         >
                           <ChevronsRight size={16} />
@@ -1149,7 +1152,7 @@ function PixelBooksAccountPage() {
             {/* TAB 3: WANT TO READ (WISHLIST) */}
             {activeTab === "wishlist" && (
               <div className="space-y-6">
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="flex items-center justify-between pb-4 border-b border-border/70 mb-6">
                     <div>
                       <h3 className="text-base font-bold text-foreground">Want to Read</h3>
@@ -1164,7 +1167,7 @@ function PixelBooksAccountPage() {
                     {userWishlistBooks.map((item) => (
                       <div
                         key={item.id}
-                        className="rounded-xl border border-border bg-background p-4 flex items-center justify-between gap-4"
+                        className="rounded-xl border border-border bg-white p-4 flex items-center justify-between gap-4"
                       >
                         <div className="flex items-center gap-4">
                           <img
@@ -1213,7 +1216,7 @@ function PixelBooksAccountPage() {
             {/* TAB 4: ORDERS & PURCHASE HISTORY */}
             {activeTab === "orders" && (
               <div className="space-y-6">
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="pb-4 border-b border-border/70 mb-6">
                     <h3 className="text-base font-bold text-foreground">Purchase History</h3>
                     <p className="text-xs text-muted-foreground">
@@ -1225,15 +1228,15 @@ function PixelBooksAccountPage() {
                     {userOrders.map((ord) => (
                       <div
                         key={ord.id}
-                        className="rounded-xl border border-border bg-background p-5 space-y-4 shadow-2xs"
+                        className="rounded-xl border border-border bg-white p-5 space-y-4 shadow-2xs"
                       >
                         {/* Order Header */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/70">
                           <div className="space-y-1">
                             <div className="flex items-center gap-3">
                               <span className="text-xs font-bold text-foreground font-mono">{ord.id}</span>
-                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
-                                <CheckCircle2 size={11} /> {ord.status}
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border px-2 py-0.5 rounded-full">
+                                <CheckCircle2 size={11} className="text-[#30C047]" /> {ord.status}
                               </span>
                             </div>
                             <div className="text-[11px] text-muted-foreground flex items-center gap-2">
@@ -1253,7 +1256,7 @@ function PixelBooksAccountPage() {
                             <button
                               type="button"
                               onClick={() => toast.success(`Downloading tax invoice for ${ord.id}...`)}
-                              className="text-xs font-semibold text-[var(--brand)] hover:underline flex items-center gap-1 py-1.5 px-3 rounded-lg border border-border bg-background hover:bg-secondary transition-colors cursor-pointer"
+                              className="text-xs font-semibold text-[var(--brand)] hover:underline flex items-center gap-1 py-1.5 px-3 rounded-lg border border-border bg-white hover:bg-neutral-50 transition-colors cursor-pointer"
                             >
                               <Receipt size={13} /> Download Invoice
                             </button>
@@ -1265,7 +1268,7 @@ function PixelBooksAccountPage() {
                           {ord.items.map((item) => (
                             <div
                               key={item.id}
-                              className="flex items-center justify-between gap-4 p-3 rounded-xl bg-card border border-border/70 hover:border-[var(--brand)]/30 transition-all"
+                              className="flex items-center justify-between gap-4 p-3 rounded-xl bg-white border border-border/70 hover:border-[var(--brand)]/30 transition-all"
                             >
                               <div className="flex items-center gap-3.5 min-w-0">
                                 <img
@@ -1317,7 +1320,7 @@ function PixelBooksAccountPage() {
             {activeTab === "settings" && (
               <div className="space-y-6">
                 {/* Settings & Reading Preferences Card */}
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="pb-4 border-b border-border/70 mb-6">
                     <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                       <Settings size={18} className="text-[var(--brand)]" />
@@ -1330,7 +1333,7 @@ function PixelBooksAccountPage() {
 
                   <div className="space-y-4">
                     {/* Option 1: Push Notifications */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border bg-card gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border bg-white gap-4">
                       <div className="flex items-center gap-3.5">
                         <div
                           className={`p-2.5 rounded-xl transition-colors ${
@@ -1347,7 +1350,7 @@ function PixelBooksAccountPage() {
                             <span
                               className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                                 pushNotificationsEnabled
-                                  ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
+                                  ? "text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border"
                                   : "text-muted-foreground bg-secondary"
                               }`}
                             >
@@ -1403,7 +1406,7 @@ function PixelBooksAccountPage() {
                         }}
                         className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${
                           pushNotificationsEnabled
-                            ? "border-border/80 bg-card hover:border-[var(--brand)]/50"
+                            ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
                             : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
                         }`}
                       >
@@ -1433,7 +1436,7 @@ function PixelBooksAccountPage() {
                         }}
                         className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${
                           pushNotificationsEnabled
-                            ? "border-border/80 bg-card hover:border-[var(--brand)]/50"
+                            ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
                             : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
                         }`}
                       >
@@ -1455,7 +1458,7 @@ function PixelBooksAccountPage() {
                     </div>
 
                     {/* Option 2: Change Recommendation Genres */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border bg-card gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border bg-white gap-4">
                       <div className="flex items-center gap-3.5 min-w-0">
                         <div className="p-2.5 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] shrink-0">
                           <SlidersHorizontal size={20} />
@@ -1505,7 +1508,7 @@ function PixelBooksAccountPage() {
                       <button
                         type="button"
                         onClick={() => setIsDeleteDataModalOpen(true)}
-                        className="inline-flex h-10 items-center justify-center rounded-lg border border-rose-300 dark:border-rose-800 bg-card text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 shadow-2xs transition-colors cursor-pointer shrink-0 self-end sm:self-center px-4"
+                        className="inline-flex h-10 items-center justify-center rounded-lg border border-rose-300 dark:border-rose-800 bg-white text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 shadow-2xs transition-colors cursor-pointer shrink-0 self-end sm:self-center px-4"
                       >
                         Delete Data
                       </button>
@@ -1514,7 +1517,7 @@ function PixelBooksAccountPage() {
                 </div>
 
                 {/* Security & Login Card */}
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="pb-4 border-b border-border/70 mb-6">
                     <h3 className="text-base font-bold text-foreground">Security & Login</h3>
                     <p className="text-xs text-muted-foreground">
@@ -1523,7 +1526,7 @@ function PixelBooksAccountPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-card">
+                    <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-white">
                       <div className="flex items-center gap-3">
                         <KeyRound size={18} className="text-[var(--brand)]" />
                         <div>
@@ -1534,7 +1537,7 @@ function PixelBooksAccountPage() {
                       <button
                         type="button"
                         onClick={() => toast.info("Password reset instructions sent to your email.")}
-                        className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer shrink-0"
+                        className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-white px-4 text-xs font-semibold text-foreground hover:bg-neutral-50 transition-colors cursor-pointer shrink-0"
                       >
                         Change Password
                       </button>
@@ -1548,7 +1551,7 @@ function PixelBooksAccountPage() {
       </main>
 
       {/* Unified Footer */}
-      <footer className="mt-auto border-t border-border/70 bg-card py-6 text-xs text-muted-foreground">
+      <footer className="mt-auto border-t border-border/70 bg-white py-6 text-xs text-muted-foreground">
         <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[1500px] flex-col sm:flex-row items-center justify-between px-4 sm:px-8 md:px-12 gap-4">
           <div>© 2026 PixelBooks Inc. All rights reserved.</div>
           <div className="flex items-center gap-6">
@@ -1566,7 +1569,7 @@ function PixelBooksAccountPage() {
       </footer>
       {/* Share Modal Dialog */}
       <Dialog open={isShareModalOpen} onOpenChange={setIsShareModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base font-bold text-foreground">
               <Share2 size={18} className="text-[var(--brand)]" /> Share eBook
@@ -1605,7 +1608,7 @@ function PixelBooksAccountPage() {
                     type="text"
                     readOnly
                     value={`https://pixelbooks.com/book/${selectedShareBook.id}`}
-                    className="h-10 w-full rounded-lg border border-input bg-card px-3 text-xs text-foreground font-mono select-all outline-none transition-colors focus:border-[var(--brand)]"
+                    className="h-10 w-full rounded-lg border border-input bg-white px-3 text-xs text-foreground font-mono select-all outline-none transition-colors focus:border-[var(--brand)]"
                   />
                   <button
                     type="button"
@@ -1639,7 +1642,7 @@ function PixelBooksAccountPage() {
                         "_blank"
                       );
                     }}
-                    className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-background hover:bg-secondary text-xs font-medium text-foreground transition-all cursor-pointer"
+                    className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-white hover:bg-neutral-50 text-xs font-medium text-foreground transition-all cursor-pointer"
                   >
                     <MessageSquare size={16} className="text-emerald-500" />
                     <span className="text-[11px]">WhatsApp</span>
@@ -1656,7 +1659,7 @@ function PixelBooksAccountPage() {
                         )}`
                       );
                     }}
-                    className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-background hover:bg-secondary text-xs font-medium text-foreground transition-all cursor-pointer"
+                    className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-white hover:bg-neutral-50 text-xs font-medium text-foreground transition-all cursor-pointer"
                   >
                     <Mail size={16} className="text-blue-500" />
                     <span className="text-[11px]">Email</span>
@@ -1672,7 +1675,7 @@ function PixelBooksAccountPage() {
                         "_blank"
                       );
                     }}
-                    className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-background hover:bg-secondary text-xs font-medium text-foreground transition-all cursor-pointer"
+                    className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-white hover:bg-neutral-50 text-xs font-medium text-foreground transition-all cursor-pointer"
                   >
                     <Globe size={16} className="text-sky-500" />
                     <span className="text-[11px]">Social</span>
@@ -1686,7 +1689,7 @@ function PixelBooksAccountPage() {
 
       {/* Write a Review Modal Dialog */}
       <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg bg-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base font-bold text-foreground">
               <Star size={18} className="text-amber-500 fill-amber-500" /> Write a Review
@@ -1765,7 +1768,7 @@ function PixelBooksAccountPage() {
                   value={reviewHeadline}
                   onChange={(e) => setReviewHeadline(e.target.value)}
                   placeholder="e.g. Essential reference book for NEET preparation"
-                  className="w-full h-12 px-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
+                  className="w-full h-12 px-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all"
                 />
               </div>
 
@@ -1779,7 +1782,7 @@ function PixelBooksAccountPage() {
                   value={reviewComment}
                   onChange={(e) => setReviewComment(e.target.value)}
                   placeholder="What made this book stand out? Were the diagrams, exercises, or language helpful?"
-                  className="w-full p-4 rounded-xl border border-input bg-card text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all resize-none"
+                  className="w-full p-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all resize-none"
                 />
               </div>
 
@@ -1803,7 +1806,7 @@ function PixelBooksAccountPage() {
                 <button
                   type="button"
                   onClick={() => setIsReviewModalOpen(false)}
-                  className="h-10 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  className="h-10 px-4 rounded-lg border border-border bg-white text-xs font-semibold text-foreground hover:bg-neutral-50 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1822,7 +1825,7 @@ function PixelBooksAccountPage() {
 
       {/* Choose The eBook Genre You Like Modal Dialog (Direct Match to User Screenshot) */}
       <Dialog open={isGenreModalOpen} onOpenChange={setIsGenreModalOpen}>
-        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto p-6 sm:p-8">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 bg-white">
           <DialogHeader className="text-center space-y-2 pb-2">
             <DialogTitle className="text-xl sm:text-2xl font-extrabold text-foreground text-center">
               Choose The eBook Genre You Like
@@ -1844,7 +1847,7 @@ function PixelBooksAccountPage() {
                   className={`px-4 py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${
                     isSelected
                       ? "bg-[var(--brand)] text-white shadow-2xs hover:bg-[var(--brand)]/90"
-                      : "bg-card text-foreground border border-border hover:border-foreground/30 hover:bg-secondary/50"
+                      : "bg-white text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-50"
                   }`}
                 >
                   {genre}
@@ -1868,7 +1871,7 @@ function PixelBooksAccountPage() {
 
       {/* Delete User Data Confirmation Dialog */}
       <Dialog open={isDeleteDataModalOpen} onOpenChange={setIsDeleteDataModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base font-bold text-rose-600 dark:text-rose-400">
               <Trash2 size={18} /> Delete User Data
@@ -1882,7 +1885,7 @@ function PixelBooksAccountPage() {
             <button
               type="button"
               onClick={() => setIsDeleteDataModalOpen(false)}
-              className="h-10 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              className="h-10 px-4 rounded-lg border border-border bg-white text-xs font-semibold text-foreground hover:bg-neutral-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
