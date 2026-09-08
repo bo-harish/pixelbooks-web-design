@@ -37,6 +37,9 @@ import {
   Search,
   ChevronsLeft,
   ChevronsRight,
+  Eye,
+  EyeOff,
+  Lock,
 } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
@@ -47,6 +50,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { PbWebHeader } from "@/components/pb-web-header";
+import { PbWebFooter } from "@/components/pb-web-footer";
 import { toast } from "sonner";
 import {
   notifications as notificationsData,
@@ -505,8 +509,6 @@ function PixelBooksAccountPage() {
 
   // Notification Preferences State
   const [pushNotificationsEnabled, setPushNotificationsEnabled] = useState(true);
-  const [orderAlertsEnabled, setOrderAlertsEnabled] = useState(true);
-  const [newReleaseAlertsEnabled, setNewReleaseAlertsEnabled] = useState(false);
 
   // Recommendation Genres & User Data State (Matches Settings screenshot)
   const [selectedGenres, setSelectedGenres] = useState<string[]>([
@@ -515,6 +517,7 @@ function PixelBooksAccountPage() {
     "Travel & Tourism",
   ]);
   const [isGenreModalOpen, setIsGenreModalOpen] = useState(false);
+  const [genreSearchQuery, setGenreSearchQuery] = useState("");
   const [isDeleteDataModalOpen, setIsDeleteDataModalOpen] = useState(false);
 
   const toggleGenre = (genre: string) => {
@@ -532,6 +535,57 @@ function PixelBooksAccountPage() {
     setSelectedGenres([]);
     setIsDeleteDataModalOpen(false);
     toast.error("User reading cache, search history, and recommendation profile wiped.");
+  };
+
+  // Password Change State & Handlers
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordSubmitting, setIsPasswordSubmitting] = useState(false);
+  const [passwordLastUpdated, setPasswordLastUpdated] = useState("Last updated 3 months ago");
+
+  const handleCancelPasswordChange = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
+    setIsChangingPassword(false);
+  };
+
+  const handleSavePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword.trim()) {
+      toast.error("Please enter your current password.");
+      return;
+    }
+    if (newPassword.length < 8) {
+      toast.error("New password must be at least 8 characters long.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match.");
+      return;
+    }
+    if (newPassword === currentPassword) {
+      toast.error("New password cannot be the same as your current password.");
+      return;
+    }
+
+    setIsPasswordSubmitting(true);
+    setTimeout(() => {
+      setIsPasswordSubmitting(false);
+      setPasswordLastUpdated("Last updated just now");
+      toast.success("Password changed successfully!", {
+        description: "Your account credentials have been updated.",
+      });
+      handleCancelPasswordChange();
+    }, 450);
   };
 
   const [reviews, setReviews] = useState<Record<string, BookReview>>({
@@ -623,6 +677,14 @@ function PixelBooksAccountPage() {
   };
 
   const handleSaveProfile = () => {
+    if (!fullName.trim()) {
+      toast.error("Please enter your full name.");
+      return;
+    }
+    if (!phone.trim() && !email.trim()) {
+      toast.error("Please provide at least either a Mobile Number or an Email ID.");
+      return;
+    }
     setIsSaving(true);
     setTimeout(() => {
       setIsSaving(false);
@@ -874,13 +936,22 @@ function PixelBooksAccountPage() {
                     {/* Phone Number */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <label className="text-sm font-bold text-foreground">
-                          Phone Number <span className="text-red-500 font-bold ml-0.5">*</span>
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
-                            <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
+                        <div className="flex items-center gap-1.5">
+                          <label className="text-sm font-bold text-foreground">
+                            Phone Number
+                          </label>
+                          <span className="text-[11px] font-normal text-muted-foreground">
+                            (Phone or Email required)
                           </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {phone.trim() ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
+                              <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-muted-foreground font-medium">Optional if Email provided</span>
+                          )}
                           <button
                             type="button"
                             onClick={() => toast.info("SMS verification code sent to " + phone)}
@@ -902,13 +973,22 @@ function PixelBooksAccountPage() {
                     {/* Email ID */}
                     <div className="md:col-span-2">
                       <div className="flex items-center justify-between mb-2">
-                        <label className="text-sm font-bold text-foreground">
-                          Email ID <span className="text-red-500 font-bold ml-0.5">*</span>
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
-                            <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
+                        <div className="flex items-center gap-1.5">
+                          <label className="text-sm font-bold text-foreground">
+                            Email ID
+                          </label>
+                          <span className="text-[11px] font-normal text-muted-foreground">
+                            (Phone or Email required)
                           </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {email.trim() ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
+                              <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-muted-foreground font-medium">Optional if Phone provided</span>
+                          )}
                           <button
                             type="button"
                             onClick={() => toast.info("Email verification link sent to " + email)}
@@ -940,15 +1020,88 @@ function PixelBooksAccountPage() {
                         className="w-full p-4 rounded-xl border border-input bg-white text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] transition-all resize-none"
                       />
                     </div>
+
+                    {/* Change Recommendation Genres */}
+                    <div className="md:col-span-2 pt-2">
+                      <div className="rounded-2xl border border-border bg-neutral-50/70 dark:bg-neutral-900/40 p-5 sm:p-6 transition-all hover:border-border/90 shadow-2xs">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/60">
+                          <div className="flex items-center gap-3.5">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#137365]/10 text-[#137365] shrink-0 shadow-2xs">
+                              <SlidersHorizontal size={22} />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2.5">
+                                <h4 className="text-sm sm:text-base font-bold text-foreground">
+                                  Change Recommendation Genres
+                                </h4>
+                                <span className="inline-flex items-center text-xs font-bold px-2.5 py-0.5 rounded-full bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border">
+                                  {selectedGenres.length} selected
+                                </span>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Tailor your book recommendations, homepage feed, and curated collections
+                              </p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => setIsGenreModalOpen(true)}
+                            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#137365] px-5 text-sm font-semibold text-white shadow-xs hover:bg-[#0e5b50] transition-all cursor-pointer shrink-0 self-start sm:self-center"
+                          >
+                            <SlidersHorizontal size={15} />
+                            Change Genres
+                          </button>
+                        </div>
+
+                        {/* Selected Genre Chips Display */}
+                        <div className="pt-4">
+                          <div className="text-xs font-semibold text-muted-foreground mb-2.5">
+                            Your Active Preferences:
+                          </div>
+                          {selectedGenres.length > 0 ? (
+                            <div className="flex flex-wrap items-center gap-2">
+                              {selectedGenres.map((genre) => (
+                                <span
+                                  key={genre}
+                                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-pbgreen-light border border-pbgreen-border text-pbgreen-dark shadow-2xs"
+                                >
+                                  <span className="h-1.5 w-1.5 rounded-full bg-pbgreen" />
+                                  {genre}
+                                </span>
+                              ))}
+                              <button
+                                type="button"
+                                onClick={() => setIsGenreModalOpen(true)}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold text-pbgreen-dark hover:bg-pbgreen-light border border-dashed border-pbgreen-border transition-colors cursor-pointer"
+                              >
+                                + Edit preferences
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-between py-2 text-xs text-muted-foreground italic">
+                              <span>No genres selected yet. Choose your preferred categories to customize recommendations.</span>
+                              <button
+                                type="button"
+                                onClick={() => setIsGenreModalOpen(true)}
+                                className="text-xs font-semibold text-[#137365] hover:underline ml-2 cursor-pointer not-italic"
+                              >
+                                Select Genres
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Delivery & Invoicing Address Card */}
                 <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="pb-4 border-b border-border/70 mb-5">
-                    <h3 className="text-base font-bold text-foreground">Address & Invoicing</h3>
+                    <h3 className="text-base font-bold text-foreground">Address</h3>
                     <p className="text-xs text-muted-foreground">
-                      Shipping address for print titles and institutional billing receipts
+                      Invoicing address
                     </p>
                   </div>
 
@@ -956,7 +1109,7 @@ function PixelBooksAccountPage() {
                     {/* Address 1 */}
                     <div>
                       <label className="block text-sm font-bold text-foreground mb-2">
-                        House / Flat / Door No. (Address 1) <span className="text-red-500 font-bold ml-0.5">*</span>
+                        House / Flat / Door No. (Address 1) <span className="text-red-500 font-bold ml-0.5"></span>
                       </label>
                       <input
                         type="text"
@@ -984,7 +1137,7 @@ function PixelBooksAccountPage() {
                     {/* City */}
                     <div>
                       <label className="block text-sm font-bold text-foreground mb-2">
-                        City <span className="text-red-500 font-bold ml-0.5">*</span>
+                        City <span className="text-red-500 font-bold ml-0.5"></span>
                       </label>
                       <input
                         type="text"
@@ -998,7 +1151,7 @@ function PixelBooksAccountPage() {
                     {/* State Dropdown */}
                     <div>
                       <label className="block text-sm font-bold text-foreground mb-2">
-                        State <span className="text-red-500 font-bold ml-0.5">*</span>
+                        State <span className="text-red-500 font-bold ml-0.5"></span>
                       </label>
                       <div className="relative">
                         <select
@@ -1023,7 +1176,7 @@ function PixelBooksAccountPage() {
                     {/* Postal Pincode */}
                     <div>
                       <label className="block text-sm font-bold text-foreground mb-2">
-                        Postal Pincode <span className="text-red-500 font-bold ml-0.5">*</span>
+                        Postal Pincode <span className="text-red-500 font-bold ml-0.5"></span>
                       </label>
                       <input
                         type="text"
@@ -1546,100 +1699,7 @@ function PixelBooksAccountPage() {
                       </div>
                     </div>
 
-                    {/* Sub-toggles for notification channels */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                      <div
-                        onClick={() => {
-                          if (pushNotificationsEnabled) {
-                            const next = !orderAlertsEnabled;
-                            setOrderAlertsEnabled(next);
-                            toast.success(`Order alerts ${next ? "turned on" : "turned off"}`);
-                          }
-                        }}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${pushNotificationsEnabled
-                          ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
-                          : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
-                          }`}
-                      >
-                        <div className="space-y-0.5 pr-2">
-                          <div className="text-xs font-semibold text-foreground">Order & License Alerts</div>
-                          <div className="text-[10.5px] text-muted-foreground">
-                            Instant popups when purchased licenses and GST receipts are ready
-                          </div>
-                        </div>
-                        <CustomCheckbox
-                          checked={orderAlertsEnabled && pushNotificationsEnabled}
-                          disabled={!pushNotificationsEnabled}
-                          onChange={(checked) => {
-                            setOrderAlertsEnabled(checked);
-                            toast.success(`Order alerts ${checked ? "turned on" : "turned off"}`);
-                          }}
-                        />
-                      </div>
-
-                      <div
-                        onClick={() => {
-                          if (pushNotificationsEnabled) {
-                            const next = !newReleaseAlertsEnabled;
-                            setNewReleaseAlertsEnabled(next);
-                            toast.success(`New release alerts ${next ? "turned on" : "turned off"}`);
-                          }
-                        }}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-colors cursor-pointer select-none ${pushNotificationsEnabled
-                          ? "border-border/80 bg-white hover:border-[var(--brand)]/50"
-                          : "border-border/40 bg-secondary/30 opacity-60 cursor-not-allowed"
-                          }`}
-                      >
-                        <div className="space-y-0.5 pr-2">
-                          <div className="text-xs font-semibold text-foreground">New Releases & Discounts</div>
-                          <div className="text-[10.5px] text-muted-foreground">
-                            Alerts for wishlist author drops and seasonal courseware offers
-                          </div>
-                        </div>
-                        <CustomCheckbox
-                          checked={newReleaseAlertsEnabled && pushNotificationsEnabled}
-                          disabled={!pushNotificationsEnabled}
-                          onChange={(checked) => {
-                            setNewReleaseAlertsEnabled(checked);
-                            toast.success(`New release alerts ${checked ? "turned on" : "turned off"}`);
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Option 2: Change Recommendation Genres */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border bg-white gap-4">
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="p-2.5 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] shrink-0">
-                          <SlidersHorizontal size={20} />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-foreground">
-                              Change Recommendation Genres
-                            </span>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--brand)]/10 text-[var(--brand)]">
-                              {selectedGenres.length} selected
-                            </span>
-                          </div>
-                          <div className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                            {selectedGenres.length > 0
-                              ? selectedGenres.join(", ")
-                              : "No genres selected yet"}
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => setIsGenreModalOpen(true)}
-                        className="inline-flex h-10 items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white shadow-2xs hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shrink-0 self-end sm:self-center"
-                      >
-                        Change Genres
-                      </button>
-                    </div>
-
-                    {/* Option 3: Delete User Data */}
+                    {/* Option 2: Delete User Data */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-rose-200 dark:border-rose-950/60 bg-rose-50/30 dark:bg-rose-950/10 gap-4">
                       <div className="flex items-center gap-3.5">
                         <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 shrink-0">
@@ -1676,21 +1736,201 @@ function PixelBooksAccountPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-white">
-                      <div className="flex items-center gap-3">
-                        <KeyRound size={18} className="text-[var(--brand)]" />
-                        <div>
-                          <div className="text-xs font-bold text-foreground">Password</div>
-                          <div className="text-[11px] text-muted-foreground">Last updated 3 months ago</div>
+                    {/* Password Segment - Expands Inline */}
+                    <div
+                      className={`rounded-xl border transition-all duration-200 bg-white ${isChangingPassword
+                        ? "border-[var(--brand)]/40 shadow-xs ring-2 ring-[var(--brand)]/5"
+                        : "border-border hover:border-border/80"
+                        }`}
+                    >
+                      {/* Segment Header */}
+                      <div className="flex items-center justify-between p-4">
+                        <div className="flex items-center gap-3.5">
+                          <div className="p-2.5 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] shrink-0">
+                            <KeyRound size={18} />
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-foreground">Password</div>
+                            <div className="text-[11px] text-muted-foreground mt-0.5">
+                              {passwordLastUpdated}
+                            </div>
+                          </div>
                         </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (isChangingPassword) {
+                              handleCancelPasswordChange();
+                            } else {
+                              setIsChangingPassword(true);
+                            }
+                          }}
+                          className={`inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border px-4 text-xs font-semibold transition-colors cursor-pointer shrink-0 ${isChangingPassword
+                            ? "border-border bg-secondary text-muted-foreground hover:text-foreground"
+                            : "border-border bg-white text-foreground hover:bg-neutral-50"
+                            }`}
+                        >
+                          {isChangingPassword ? (
+                            <>
+                              <X size={13} />
+                              Cancel
+                            </>
+                          ) : (
+                            <>
+                              Change Password
+                              <ChevronDown size={14} className="text-muted-foreground" />
+                            </>
+                          )}
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => toast.info("Password reset instructions sent to your email.")}
-                        className="inline-flex h-10 items-center justify-center rounded-lg border border-border bg-white px-4 text-xs font-semibold text-foreground hover:bg-neutral-50 transition-colors cursor-pointer shrink-0"
-                      >
-                        Change Password
-                      </button>
+
+                      {/* Expanded Section */}
+                      {isChangingPassword && (
+                        <div className="border-t border-border/70 bg-neutral-50/50 dark:bg-neutral-900/30 p-4 sm:p-5 rounded-b-xl">
+                          <form onSubmit={handleSavePassword} className="space-y-4 max-w-xl">
+                            <div>
+                              <label
+                                htmlFor="current-password-input"
+                                className="block text-xs font-semibold text-foreground mb-1.5"
+                              >
+                                Current Password <span className="text-rose-500">*</span>
+                              </label>
+                              <div className="relative flex items-center">
+                                <input
+                                  id="current-password-input"
+                                  type={showCurrentPassword ? "text" : "password"}
+                                  value={currentPassword}
+                                  onChange={(e) => setCurrentPassword(e.target.value)}
+                                  placeholder="Enter current password"
+                                  className="h-10 w-full rounded-lg border border-border bg-white pr-10 pl-3.5 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]/30 transition-colors"
+                                  autoFocus
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowCurrentPassword((v) => !v)}
+                                  className="absolute right-3 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                                  tabIndex={-1}
+                                  aria-label={showCurrentPassword ? "Hide password" : "Show password"}
+                                >
+                                  {showCurrentPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                              <div>
+                                <label
+                                  htmlFor="new-password-input"
+                                  className="block text-xs font-semibold text-foreground mb-1.5"
+                                >
+                                  New Password <span className="text-rose-500">*</span>
+                                </label>
+                                <div className="relative flex items-center">
+                                  <input
+                                    id="new-password-input"
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="At least 8 characters"
+                                    className="h-10 w-full rounded-lg border border-border bg-white pr-10 pl-3.5 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]/30 transition-colors"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowNewPassword((v) => !v)}
+                                    className="absolute right-3 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                                    tabIndex={-1}
+                                    aria-label={showNewPassword ? "Hide password" : "Show password"}
+                                  >
+                                    {showNewPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                                  </button>
+                                </div>
+                              </div>
+
+                              <div>
+                                <label
+                                  htmlFor="confirm-password-input"
+                                  className="block text-xs font-semibold text-foreground mb-1.5"
+                                >
+                                  Confirm New Password <span className="text-rose-500">*</span>
+                                </label>
+                                <div className="relative flex items-center">
+                                  <input
+                                    id="confirm-password-input"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Re-enter new password"
+                                    className={`h-10 w-full rounded-lg border bg-white pr-10 pl-3.5 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors ${confirmPassword && newPassword
+                                      ? confirmPassword === newPassword
+                                        ? "border-emerald-500 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500/30"
+                                        : "border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/30"
+                                      : "border-border focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]/30"
+                                      }`}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword((v) => !v)}
+                                    className="absolute right-3 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                                    tabIndex={-1}
+                                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                                  >
+                                    {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Password requirements helper */}
+                            <div className="text-[11px] text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5">
+                              <span
+                                className={`inline-flex items-center gap-1 transition-colors ${newPassword.length >= 8 ? "text-emerald-600 font-semibold" : ""
+                                  }`}
+                              >
+                                <Check
+                                  size={12}
+                                  className={newPassword.length >= 8 ? "text-emerald-600" : "text-muted-foreground/50"}
+                                />
+                                Minimum 8 characters
+                              </span>
+                              <span
+                                className={`inline-flex items-center gap-1 transition-colors ${confirmPassword && newPassword && newPassword === confirmPassword
+                                  ? "text-emerald-600 font-semibold"
+                                  : ""
+                                  }`}
+                              >
+                                <Check
+                                  size={12}
+                                  className={
+                                    confirmPassword && newPassword && newPassword === confirmPassword
+                                      ? "text-emerald-600"
+                                      : "text-muted-foreground/50"
+                                  }
+                                />
+                                Passwords match
+                              </span>
+                            </div>
+
+                            {/* Form buttons */}
+                            <div className="flex items-center justify-end gap-2.5 pt-2">
+                              <button
+                                type="button"
+                                onClick={handleCancelPasswordChange}
+                                className="h-9 rounded-lg border border-border bg-white px-4 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-neutral-50 transition-colors cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                disabled={isPasswordSubmitting}
+                                className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white shadow-2xs hover:bg-[var(--brand)]/90 transition-opacity cursor-pointer disabled:opacity-50"
+                              >
+                                {isPasswordSubmitting ? "Updating..." : "Update Password"}
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1794,22 +2034,7 @@ function PixelBooksAccountPage() {
       </main>
 
       {/* Unified Footer */}
-      <footer className="mt-auto border-t border-border/70 bg-white py-6 text-xs text-muted-foreground">
-        <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[1500px] flex-col sm:flex-row items-center justify-between px-4 sm:px-8 md:px-12 gap-4">
-          <div>© 2026 PixelBooks Inc. All rights reserved.</div>
-          <div className="flex items-center gap-6">
-            <Link to="/pb-web/genre" className="hover:text-foreground transition-colors">
-              Browse Books
-            </Link>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Terms of Service
-            </a>
-          </div>
-        </div>
-      </footer>
+      <PbWebFooter />
       {/* Share Modal Dialog */}
       <Dialog open={isShareModalOpen} onOpenChange={setIsShareModalOpen}>
         <DialogContent className="sm:max-w-md bg-white">
@@ -2065,47 +2290,175 @@ function PixelBooksAccountPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Choose The eBook Genre You Like Modal Dialog (Direct Match to User Screenshot) */}
-      <Dialog open={isGenreModalOpen} onOpenChange={setIsGenreModalOpen}>
-        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 bg-white">
-          <DialogHeader className="text-center space-y-2 pb-2">
-            <DialogTitle className="text-xl sm:text-2xl font-extrabold text-foreground text-center">
-              Choose The eBook Genre You Like
-            </DialogTitle>
-            <DialogDescription className="text-xs sm:text-sm text-muted-foreground text-center max-w-md mx-auto">
-              Select your preferred book genre for better recommendations or you can skip it.
-            </DialogDescription>
-          </DialogHeader>
+      {/* Choose The eBook Genre You Like Modal Dialog */}
+      <Dialog
+        open={isGenreModalOpen}
+        onOpenChange={(open) => {
+          setIsGenreModalOpen(open);
+          if (!open) setGenreSearchQuery("");
+        }}
+      >
+        <DialogContent className="sm:max-w-3xl lg:max-w-4xl max-h-[88vh] flex flex-col p-0 bg-white overflow-hidden rounded-3xl border border-border shadow-2xl">
+          {/* Header with spacious padding and search bar */}
+          <div className="px-6 pt-7 pb-5 sm:px-8 sm:pt-8 sm:pb-6 border-b border-border/70 bg-neutral-50/60 dark:bg-neutral-900/30 pr-14 sm:pr-16">
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#137365] uppercase tracking-wider">
+                  <Sparkles size={15} />
+                  Personalized Reading Profile
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border">
+                  <Check size={13} strokeWidth={2.5} />
+                  {selectedGenres.length} of {allRecommendationGenres.length} Selected
+                </span>
+              </div>
+              <DialogTitle className="text-xl sm:text-2xl md:text-[26px] font-extrabold text-foreground tracking-tight">
+                Choose The eBook Genre You Like
+              </DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm text-muted-foreground max-w-xl">
+                Select your preferred book genres for curated recommendations, personalized homepage feed, and notification drops.
+              </DialogDescription>
+            </div>
 
-          {/* Genre Chips Container */}
-          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-2.5 py-6">
-            {allRecommendationGenres.map((genre) => {
-              const isSelected = selectedGenres.includes(genre);
-              return (
+            {/* Search & Quick Controls Bar */}
+            <div className="mt-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="relative flex-1">
+                <Search
+                  size={15}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                />
+                <input
+                  type="text"
+                  value={genreSearchQuery}
+                  onChange={(e) => setGenreSearchQuery(e.target.value)}
+                  placeholder="Search 38+ genres (e.g. Fiction, NEET, Biography)..."
+                  className="w-full h-10 pl-9 pr-8 rounded-xl border border-border bg-white text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-[#137365] focus:ring-1 focus:ring-[#137365]/20 transition-all"
+                />
+                {genreSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setGenreSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 self-end sm:self-center">
                 <button
-                  key={genre}
                   type="button"
-                  onClick={() => toggleGenre(genre)}
-                  className={`px-4 py-2 rounded-full text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${isSelected
-                    ? "bg-[var(--brand)] text-white shadow-2xs hover:bg-[var(--brand)]/90"
-                    : "bg-white text-foreground border border-border hover:border-foreground/30 hover:bg-neutral-50"
-                    }`}
+                  onClick={() => {
+                    setSelectedGenres(allRecommendationGenres);
+                    toast.info("Selected all genres.");
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-[#137365] hover:bg-[#137365]/10 transition-colors cursor-pointer"
                 >
-                  {genre}
+                  Select All
                 </button>
-              );
-            })}
+                <span className="text-border">|</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedGenres([]);
+                    toast.info("Cleared all selected genres.");
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                >
+                  Clear All
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Bottom Update Button */}
-          <div className="pt-3">
-            <button
-              type="button"
-              onClick={handleSaveGenres}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 cursor-pointer"
-            >
-              Update
-            </button>
+          {/* Scrollable Genre Chips Container with Generous Room */}
+          <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8 max-h-[50vh]">
+            {allRecommendationGenres.filter((g) =>
+              g.toLowerCase().includes(genreSearchQuery.toLowerCase().trim())
+            ).length === 0 ? (
+              <div className="py-12 text-center text-muted-foreground">
+                <Search size={24} className="mx-auto mb-2 opacity-40" />
+                <p className="text-sm font-semibold text-foreground">No matching genres found</p>
+                <p className="text-xs mt-1">Try a different search term or clear your search query.</p>
+                <button
+                  type="button"
+                  onClick={() => setGenreSearchQuery("")}
+                  className="mt-3 text-xs font-semibold text-[#137365] hover:underline cursor-pointer"
+                >
+                  Reset search filter
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+                {allRecommendationGenres
+                  .filter((g) =>
+                    g.toLowerCase().includes(genreSearchQuery.toLowerCase().trim())
+                  )
+                  .map((genre) => {
+                    const isSelected = selectedGenres.includes(genre);
+                    return (
+                      <button
+                        key={genre}
+                        type="button"
+                        onClick={() => toggleGenre(genre)}
+                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none ${
+                          isSelected
+                            ? "bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border ring-2 ring-pbgreen/25 hover:bg-pbgreen-subtle shadow-xs translate-y-[-0.5px]"
+                            : "bg-white text-foreground/80 border border-border/90 hover:border-pbgreen-border hover:bg-pbgreen-light/40 hover:text-pbgreen-dark"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors ${
+                            isSelected
+                              ? "bg-pbgreen text-white shadow-2xs"
+                              : "border border-border/80 text-transparent"
+                          }`}
+                        >
+                          <Check size={10} strokeWidth={3} className={isSelected ? "opacity-100" : "opacity-0"} />
+                        </span>
+                        {genre}
+                      </button>
+                    );
+                  })}
+              </div>
+            )}
+          </div>
+
+          {/* Footer Actions */}
+          <div className="px-6 py-4 sm:px-8 sm:py-5 border-t border-border bg-neutral-50/70 dark:bg-neutral-900/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs text-muted-foreground">
+              {selectedGenres.length > 0 ? (
+                <span>
+                  <strong className="font-semibold text-foreground">{selectedGenres.length} genres</strong> currently chosen for your profile.
+                </span>
+              ) : (
+                <span className="italic">No genres selected yet (recommendations will show all categories).</span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setGenreSearchQuery("");
+                  setIsGenreModalOpen(false);
+                }}
+                className="h-11 px-5 rounded-xl border border-border bg-white text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-neutral-50 transition-colors cursor-pointer w-full sm:w-auto"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setGenreSearchQuery("");
+                  handleSaveGenres();
+                }}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#137365] px-6 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-[#0e5b50] transition-all cursor-pointer w-full sm:w-auto"
+              >
+                <Check size={15} strokeWidth={2.5} />
+                Save Preferences ({selectedGenres.length})
+              </button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

@@ -31,6 +31,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { PbWebHeader } from "@/components/pb-web-header";
+import { PbWebFooter } from "@/components/pb-web-footer";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-web/cart")({
@@ -79,7 +80,7 @@ const INITIAL_CART_ITEMS: CartItem[] = [
     mrp: 150.0,
     price: 100.0, // base price excl. GST = 100, GST = 5, total = 105 (exact match to screenshot)
     format: "Interactive eBook (EPUB)",
-    license: "Lifetime Digital License",
+    license: "",
     language: "Malayalam / English",
     fileSize: "18.4 MB",
     isbn: "978-81-264-9102-4",
@@ -764,22 +765,7 @@ function PixelBooksCartPage() {
       </main>
 
       {/* Unified Footer */}
-      <footer className="mt-auto border-t border-border/70 bg-white py-6 text-xs text-muted-foreground">
-        <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[1500px] flex-col sm:flex-row items-center justify-between px-4 sm:px-8 md:px-12 gap-4">
-          <div>© 2026 PixelBooks Inc. All rights reserved.</div>
-          <div className="flex items-center gap-6">
-            <Link to="/pb-web/genre" className="hover:text-foreground transition-colors">
-              Browse Books
-            </Link>
-            <Link to="/pb-web/accounts" className="hover:text-foreground transition-colors">
-              My Library & Account
-            </Link>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Terms of Purchase
-            </a>
-          </div>
-        </div>
-      </footer>
+      <PbWebFooter />
 
       {/* Checkout & Payment Simulation Modal */}
       <Dialog open={isCheckoutModalOpen} onOpenChange={setIsCheckoutModalOpen}>

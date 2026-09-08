@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { PbWebHeader } from "@/components/pb-web-header";
+import { PbWebFooter } from "@/components/pb-web-footer";
 import { categoryColumns, sampleBooksByGenre } from "./data";
 
 export const Route = createFileRoute("/pb-web/genre")({
@@ -94,7 +95,7 @@ function PixelBooksWebsitePage() {
       {/* Main Content Area */}
       <main className="mx-auto w-full max-w-7xl 2xl:max-w-[1500px] px-4 sm:px-8 md:px-12 py-8 flex-1">
         {/* Hero Banner: Full-span 5-book composition with subtle grey overlay */}
-        <div className="relative w-full h-52 sm:h-64 md:h-72 lg:h-80 rounded-2xl overflow-hidden bg-[#e5e7eb] dark:bg-[#1a1f26] flex items-center shadow-xs border border-stone-200/80 dark:border-stone-800 mb-10">
+        <div className="relative w-full h-36 sm:h-44 md:h-52 lg:h-56 rounded-2xl overflow-hidden bg-[#e5e7eb] dark:bg-[#1a1f26] flex items-center shadow-xs border border-stone-200/80 dark:border-stone-800 mb-8">
           {/* Background image spanning full width with all 5 books */}
           <div className="absolute inset-0 z-0">
             <img
@@ -107,8 +108,8 @@ function PixelBooksWebsitePage() {
           </div>
 
           {/* Right Typography Section - Single prominent Genre title */}
-          <div className="relative z-10 ml-auto w-full md:w-1/2 flex items-center justify-center py-6 px-4 pointer-events-none">
-            <h1 className="select-none text-6xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-black tracking-widest uppercase text-white/50 dark:text-white/45 drop-shadow-[0_2px_14px_rgba(0,0,0,0.4)] transition-all duration-300">
+          <div className="relative z-10 ml-auto w-full md:w-1/2 flex items-center justify-center py-4 px-4 pointer-events-none">
+            <h1 className="select-none text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] font-black tracking-widest uppercase text-white/50 dark:text-white/45 drop-shadow-[0_2px_14px_rgba(0,0,0,0.4)] transition-all duration-300 leading-none">
               Genre
             </h1>
           </div>
@@ -290,34 +291,7 @@ function PixelBooksWebsitePage() {
       </Sheet>
 
       {/* Footer */}
-      <footer className="w-full border-t border-border/70 bg-white py-8 px-4 sm:px-8 md:px-12 text-xs text-muted-foreground">
-        <div className="mx-auto max-w-7xl 2xl:max-w-[1500px] flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center transition-opacity hover:opacity-85" title="PixelBooks - Workspace Selector">
-              <img
-                src="/logo.png"
-                alt="PixelBooks"
-                className="h-6 w-auto object-contain opacity-80"
-              />
-            </Link>
-            <span>© 2026 PixelBooks. All rights reserved.</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-6">
-            <Link to="/library-admin" className="hover:text-foreground transition-colors">
-              Institutional Licensing
-            </Link>
-            <Link to="/publisher" className="hover:text-foreground transition-colors">
-              Publisher Portal
-            </Link>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Terms of Use
-            </a>
-          </div>
-        </div>
-      </footer>
+      <PbWebFooter />
     </div>
   );
 }

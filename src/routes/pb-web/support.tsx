@@ -22,6 +22,7 @@ import {
   Check,
 } from "lucide-react";
 import { PbWebHeader } from "@/components/pb-web-header";
+import { PbWebFooter } from "@/components/pb-web-footer";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-web/support")({
@@ -205,7 +206,7 @@ function PbWebSupportPage() {
         {/* Top Contact Highlights (Address, Direct Phone, and Email) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 1. Office Headquarters Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-br from-pbgreen-light/90 via-pbgreen-light/35 to-emerald-50/20 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-b from-pbgreen-light/80 via-pbgreen-light/40 to-pbgreen-subtle p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Badge */}
               <div className="flex items-center justify-between gap-3">
@@ -261,7 +262,7 @@ function PbWebSupportPage() {
           </div>
 
           {/* 2. Direct Support Phone Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-br from-pbgreen-light/90 via-pbgreen-light/35 to-emerald-50/20 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-b from-pbgreen-light/80 via-pbgreen-light/40 to-pbgreen-subtle p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Live Status Badge */}
               <div className="flex items-center justify-between gap-3">
@@ -318,7 +319,7 @@ function PbWebSupportPage() {
           </div>
 
           {/* 3. Email Support Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-br from-pbgreen-light/90 via-pbgreen-light/35 to-emerald-50/20 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-b from-pbgreen-light/80 via-pbgreen-light/40 to-pbgreen-subtle p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Response Time Badge */}
               <div className="flex items-center justify-between gap-3">
@@ -747,40 +748,7 @@ function PbWebSupportPage() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-border/70 bg-white py-8 px-4 sm:px-8 md:px-12 text-xs text-muted-foreground mt-16">
-        <div className="mx-auto max-w-[1600px] flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center transition-opacity hover:opacity-85" title="PixelBooks - Workspace Selector">
-              <img
-                src="/logo.png"
-                alt="PixelBooks"
-                className="h-6 w-auto object-contain opacity-80"
-              />
-            </Link>
-            <span>© 2026 PixelBooks. All rights reserved.</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-6">
-            <Link to="/library-admin" className="hover:text-foreground transition-colors">
-              Institutional Licensing
-            </Link>
-            <Link to="/publisher" className="hover:text-foreground transition-colors">
-              Publisher Portal
-            </Link>
-            <Link to="/author" className="hover:text-foreground transition-colors">
-              For Authors
-            </Link>
-            <Link to="/pb-web/support" className="hover:text-[#137365] transition-colors font-medium text-[#137365]">
-              Support
-            </Link>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-foreground transition-colors">
-              Terms of Use
-            </a>
-          </div>
-        </div>
-      </footer>
+      <PbWebFooter />
     </div>
   );
 }

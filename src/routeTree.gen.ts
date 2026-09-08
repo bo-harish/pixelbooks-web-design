@@ -25,10 +25,14 @@ import { Route as PublisherProfileRouteImport } from './routes/publisher/profile
 import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
 import { Route as PublisherLoginRouteImport } from './routes/publisher/login'
 import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
+import { Route as PbWebTermsConditionsRouteImport } from './routes/pb-web/terms-conditions'
 import { Route as PbWebSupportRouteImport } from './routes/pb-web/support'
+import { Route as PbWebPrivacyPolicyRouteImport } from './routes/pb-web/privacy-policy'
 import { Route as PbWebGenreRouteImport } from './routes/pb-web/genre'
+import { Route as PbWebFaqRouteImport } from './routes/pb-web/faq'
 import { Route as PbWebCartRouteImport } from './routes/pb-web/cart'
 import { Route as PbWebAccountsRouteImport } from './routes/pb-web/accounts'
+import { Route as PbWebAboutRouteImport } from './routes/pb-web/about'
 import { Route as PbAdminViewsReportRouteImport } from './routes/pb-admin/views-report'
 import { Route as PbAdminTermsConditionsRouteImport } from './routes/pb-admin/terms-conditions'
 import { Route as PbAdminSettingsRouteImport } from './routes/pb-admin/settings'
@@ -192,14 +196,29 @@ const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
   path: '/publisher/bank-accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PbWebTermsConditionsRoute = PbWebTermsConditionsRouteImport.update({
+  id: '/pb-web/terms-conditions',
+  path: '/pb-web/terms-conditions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PbWebSupportRoute = PbWebSupportRouteImport.update({
   id: '/pb-web/support',
   path: '/pb-web/support',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PbWebPrivacyPolicyRoute = PbWebPrivacyPolicyRouteImport.update({
+  id: '/pb-web/privacy-policy',
+  path: '/pb-web/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PbWebGenreRoute = PbWebGenreRouteImport.update({
   id: '/pb-web/genre',
   path: '/pb-web/genre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbWebFaqRoute = PbWebFaqRouteImport.update({
+  id: '/pb-web/faq',
+  path: '/pb-web/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PbWebCartRoute = PbWebCartRouteImport.update({
@@ -210,6 +229,11 @@ const PbWebCartRoute = PbWebCartRouteImport.update({
 const PbWebAccountsRoute = PbWebAccountsRouteImport.update({
   id: '/pb-web/accounts',
   path: '/pb-web/accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbWebAboutRoute = PbWebAboutRouteImport.update({
+  id: '/pb-web/about',
+  path: '/pb-web/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PbAdminViewsReportRoute = PbAdminViewsReportRouteImport.update({
@@ -693,10 +717,14 @@ export interface FileRoutesByFullPath {
   '/pb-admin/settings': typeof PbAdminSettingsRoute
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
+  '/pb-web/about': typeof PbWebAboutRoute
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/faq': typeof PbWebFaqRoute
   '/pb-web/genre': typeof PbWebGenreRoute
+  '/pb-web/privacy-policy': typeof PbWebPrivacyPolicyRoute
   '/pb-web/support': typeof PbWebSupportRoute
+  '/pb-web/terms-conditions': typeof PbWebTermsConditionsRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -797,10 +825,14 @@ export interface FileRoutesByTo {
   '/pb-admin/settings': typeof PbAdminSettingsRoute
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
+  '/pb-web/about': typeof PbWebAboutRoute
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/faq': typeof PbWebFaqRoute
   '/pb-web/genre': typeof PbWebGenreRoute
+  '/pb-web/privacy-policy': typeof PbWebPrivacyPolicyRoute
   '/pb-web/support': typeof PbWebSupportRoute
+  '/pb-web/terms-conditions': typeof PbWebTermsConditionsRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -902,10 +934,14 @@ export interface FileRoutesById {
   '/pb-admin/settings': typeof PbAdminSettingsRoute
   '/pb-admin/terms-conditions': typeof PbAdminTermsConditionsRoute
   '/pb-admin/views-report': typeof PbAdminViewsReportRoute
+  '/pb-web/about': typeof PbWebAboutRoute
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/faq': typeof PbWebFaqRoute
   '/pb-web/genre': typeof PbWebGenreRoute
+  '/pb-web/privacy-policy': typeof PbWebPrivacyPolicyRoute
   '/pb-web/support': typeof PbWebSupportRoute
+  '/pb-web/terms-conditions': typeof PbWebTermsConditionsRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
@@ -1008,10 +1044,14 @@ export interface FileRouteTypes {
     | '/pb-admin/settings'
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
+    | '/pb-web/about'
     | '/pb-web/accounts'
     | '/pb-web/cart'
+    | '/pb-web/faq'
     | '/pb-web/genre'
+    | '/pb-web/privacy-policy'
     | '/pb-web/support'
+    | '/pb-web/terms-conditions'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1112,10 +1152,14 @@ export interface FileRouteTypes {
     | '/pb-admin/settings'
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
+    | '/pb-web/about'
     | '/pb-web/accounts'
     | '/pb-web/cart'
+    | '/pb-web/faq'
     | '/pb-web/genre'
+    | '/pb-web/privacy-policy'
     | '/pb-web/support'
+    | '/pb-web/terms-conditions'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1216,10 +1260,14 @@ export interface FileRouteTypes {
     | '/pb-admin/settings'
     | '/pb-admin/terms-conditions'
     | '/pb-admin/views-report'
+    | '/pb-web/about'
     | '/pb-web/accounts'
     | '/pb-web/cart'
+    | '/pb-web/faq'
     | '/pb-web/genre'
+    | '/pb-web/privacy-policy'
     | '/pb-web/support'
+    | '/pb-web/terms-conditions'
     | '/publisher/bank-accounts'
     | '/publisher/login'
     | '/publisher/margin-report'
@@ -1321,10 +1369,14 @@ export interface RootRouteChildren {
   PbAdminSettingsRoute: typeof PbAdminSettingsRoute
   PbAdminTermsConditionsRoute: typeof PbAdminTermsConditionsRoute
   PbAdminViewsReportRoute: typeof PbAdminViewsReportRoute
+  PbWebAboutRoute: typeof PbWebAboutRoute
   PbWebAccountsRoute: typeof PbWebAccountsRoute
   PbWebCartRoute: typeof PbWebCartRoute
+  PbWebFaqRoute: typeof PbWebFaqRoute
   PbWebGenreRoute: typeof PbWebGenreRoute
+  PbWebPrivacyPolicyRoute: typeof PbWebPrivacyPolicyRoute
   PbWebSupportRoute: typeof PbWebSupportRoute
+  PbWebTermsConditionsRoute: typeof PbWebTermsConditionsRoute
   PublisherBankAccountsRoute: typeof PublisherBankAccountsRoute
   PublisherLoginRoute: typeof PublisherLoginRoute
   PublisherMarginReportRoute: typeof PublisherMarginReportRoute
@@ -1489,6 +1541,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublisherBankAccountsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pb-web/terms-conditions': {
+      id: '/pb-web/terms-conditions'
+      path: '/pb-web/terms-conditions'
+      fullPath: '/pb-web/terms-conditions'
+      preLoaderRoute: typeof PbWebTermsConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-web/support': {
       id: '/pb-web/support'
       path: '/pb-web/support'
@@ -1496,11 +1555,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbWebSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pb-web/privacy-policy': {
+      id: '/pb-web/privacy-policy'
+      path: '/pb-web/privacy-policy'
+      fullPath: '/pb-web/privacy-policy'
+      preLoaderRoute: typeof PbWebPrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-web/genre': {
       id: '/pb-web/genre'
       path: '/pb-web/genre'
       fullPath: '/pb-web/genre'
       preLoaderRoute: typeof PbWebGenreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/faq': {
+      id: '/pb-web/faq'
+      path: '/pb-web/faq'
+      fullPath: '/pb-web/faq'
+      preLoaderRoute: typeof PbWebFaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-web/cart': {
@@ -1515,6 +1588,13 @@ declare module '@tanstack/react-router' {
       path: '/pb-web/accounts'
       fullPath: '/pb-web/accounts'
       preLoaderRoute: typeof PbWebAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/about': {
+      id: '/pb-web/about'
+      path: '/pb-web/about'
+      fullPath: '/pb-web/about'
+      preLoaderRoute: typeof PbWebAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-admin/views-report': {
@@ -2186,10 +2266,14 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminSettingsRoute: PbAdminSettingsRoute,
   PbAdminTermsConditionsRoute: PbAdminTermsConditionsRoute,
   PbAdminViewsReportRoute: PbAdminViewsReportRoute,
+  PbWebAboutRoute: PbWebAboutRoute,
   PbWebAccountsRoute: PbWebAccountsRoute,
   PbWebCartRoute: PbWebCartRoute,
+  PbWebFaqRoute: PbWebFaqRoute,
   PbWebGenreRoute: PbWebGenreRoute,
+  PbWebPrivacyPolicyRoute: PbWebPrivacyPolicyRoute,
   PbWebSupportRoute: PbWebSupportRoute,
+  PbWebTermsConditionsRoute: PbWebTermsConditionsRoute,
   PublisherBankAccountsRoute: PublisherBankAccountsRoute,
   PublisherLoginRoute: PublisherLoginRoute,
   PublisherMarginReportRoute: PublisherMarginReportRoute,
