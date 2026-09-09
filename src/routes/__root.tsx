@@ -71,6 +71,19 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    // Auto-recover from stale dynamic chunk 404s after new deployments
+    const isChunkLoadFailed =
+      error?.message?.includes("Failed to fetch dynamically imported module") ||
+      error?.message?.includes("error loading dynamically imported module") ||
+      error?.name === "ChunkLoadError";
+
+    if (isChunkLoadFailed && typeof window !== "undefined") {
+      const key = "pb_chunk_reload_" + window.location.pathname;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        window.location.reload();
+      }
+    }
   }, [error]);
 
   return (
@@ -116,7 +129,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "PixelBooks UI workspace.",
       },
       { name: "author", content: "PixelBooks" },
-      { property: "og:title", content: "PixelBooks " },
+      { property: "og:title", content: "PixelBooks UI Design" },
       {
         property: "og:description",
         content:
@@ -124,11 +137,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "PixelBooks " },
+      { name: "twitter:title", content: "PixelBooks UI Design" },
       {
         name: "twitter:description",
         content:
-          "Operate your publisher dashboard for catalogue, imports, revenue trends, and royalty visibility.",
+          "PixelBooks UI Design",
       },
     ],
     links: [
@@ -147,11 +160,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   const themeScript = `(function(){try{var key='pixelbooks-theme';var stored=localStorage.getItem(key);var theme=(stored==='dark'||stored==='light')?stored:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var root=document.documentElement;root.classList.toggle('dark',theme==='dark');root.style.colorScheme=theme;}catch(e){}})();`;
+  const preloadErrorScript = `window.addEventListener('vite:preloadError',function(){window.location.reload();});`;
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} suppressHydrationWarning />
+        <script dangerouslySetInnerHTML={{ __html: preloadErrorScript }} suppressHydrationWarning />
         <HeadContent />
       </head>
       <body suppressHydrationWarning>

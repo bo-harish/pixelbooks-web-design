@@ -70,18 +70,17 @@ export const Route = createFileRoute("/pb-web/accounts")({
         content: "PixelBooks UI workspace.",
       },
       { name: "author", content: "PixelBooks" },
-      { property: "og:title", content: "PixelBooks " },
+      { property: "og:title", content: "PixelBooks UI Design" },
       {
         property: "og:description",
         content: "PixelBooks UI Design",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "PixelBooks " },
+      { name: "twitter:title", content: "PixelBooks UI Design" },
       {
         name: "twitter:description",
-        content:
-          "Operate your publisher dashboard for catalogue, imports, revenue trends, and royalty visibility.",
+        content: "PixelBooks UI Design",
       },
     ],
   }),

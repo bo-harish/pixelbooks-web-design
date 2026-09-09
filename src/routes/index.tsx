@@ -23,6 +23,27 @@ import { usePublisherType } from "@/hooks/use-publisher-type";
 import { useLibraryAdminType } from "@/hooks/use-library-admin-type";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "PixelBooks UI Design" },
+      {
+        name: "description",
+        content: "PixelBooks UI workspace.",
+      },
+      { property: "og:title", content: "PixelBooks UI Design" },
+      {
+        property: "og:description",
+        content: "PixelBooks UI Design",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "PixelBooks UI Design" },
+      {
+        name: "twitter:description",
+        content: "PixelBooks UI Design",
+      },
+    ],
+  }),
   component: WorkspaceSelector,
 });
 
