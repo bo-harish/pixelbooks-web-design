@@ -1,25 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import {
-  BookOpen,
-  Star,
-  ExternalLink,
-  Sparkles,
-  Check,
-  X,
-  ShoppingBag,
-} from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { X } from "lucide-react";
 import { useState, useMemo } from "react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { PbWebHeader } from "@/components/pb-web-header";
 import { PbWebFooter } from "@/components/pb-web-footer";
-import { categoryColumns, sampleBooksByGenre } from "./data";
+import { categoryColumns } from "./data";
 
 export const Route = createFileRoute("/pb-web/genre")({
   head: () => ({
@@ -35,13 +20,10 @@ export const Route = createFileRoute("/pb-web/genre")({
 });
 
 function PixelBooksWebsitePage() {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("Browse Genres");
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-  const [cartCount, setCartCount] = useState(2);
-  const [unreadNotifications, setUnreadNotifications] = useState(1);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [cartCount] = useState(2);
+  const [unreadNotifications] = useState(1);
 
   // Search filter across categories
   const filteredColumns = useMemo(() => {
@@ -64,20 +46,6 @@ function PixelBooksWebsitePage() {
     });
   };
 
-  const handleCategoryClick = (category: string) => {
-    setSelectedGenre(category);
-    toast.info(`Browsing "${category}" titles`, {
-      description: "Showing popular publications and digital editions in this genre.",
-    });
-  };
-
-  const handleAddToCart = (bookTitle: string) => {
-    setCartCount((prev) => prev + 1);
-    toast.success("Added to cart", {
-      description: `"${bookTitle}" was added to your reading cart.`,
-    });
-  };
-
   return (
     <div className="min-h-screen bg-white text-foreground flex flex-col justify-between selection:bg-[#137365]/20 selection:text-[#137365] pb-web-portal">
       {/* Top Header Navbar */}
@@ -85,7 +53,6 @@ function PixelBooksWebsitePage() {
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
         onSearchSubmit={handleSearchSubmit}
-        onCategoryClick={handleCategoryClick}
         cartCount={cartCount}
         unreadNotifications={unreadNotifications}
         activeTab={activeTab}
@@ -152,16 +119,12 @@ function PixelBooksWebsitePage() {
               ) : (
                 column.map((genre) => (
                   <div key={genre} className="group">
-                    <button
-                      type="button"
-                      onClick={() => handleCategoryClick(genre)}
-                      className={`text-left text-[13.5px] font-normal leading-snug transition-all duration-150 cursor-pointer block w-full py-1 ${selectedGenre === genre
-                        ? "text-[#137365] font-semibold translate-x-1"
-                        : "text-foreground/85 hover:text-[#137365] hover:translate-x-1"
-                        }`}
+                    <a
+                      href="#"
+                      className="text-left text-[13.5px] font-normal leading-snug transition-all duration-150 cursor-pointer block w-full py-1 text-foreground/85 hover:text-[#137365] hover:translate-x-1"
                     >
                       {genre}
-                    </button>
+                    </a>
                   </div>
                 ))
               )}
@@ -169,126 +132,6 @@ function PixelBooksWebsitePage() {
           ))}
         </div>
       </main>
-
-      {/* Selected Genre Preview Drawer */}
-      <Sheet open={!!selectedGenre} onOpenChange={(open) => !open && setSelectedGenre(null)}>
-        <SheetContent side="right" className="w-full sm:max-w-md md:max-w-lg p-6 overflow-y-auto">
-          <SheetHeader className="text-left mb-6">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#137365] uppercase tracking-wider">
-              <BookOpen size={15} /> Genre Showcase
-            </div>
-            <SheetTitle className="text-2xl font-bold text-foreground">
-              {selectedGenre}
-            </SheetTitle>
-            <SheetDescription className="text-xs text-muted-foreground">
-              Explore curated e-books, recommended syllabus guides, and verified institutional titles.
-            </SheetDescription>
-          </SheetHeader>
-
-          {/* Book items in the selected genre */}
-          <div className="space-y-4">
-            {(sampleBooksByGenre[selectedGenre || ""] || [
-              {
-                title: `${selectedGenre} — Volume 1 Comprehensive Reader`,
-                author: "PixelBooks Editorial Panel",
-                rating: 4.8,
-                price: "₹399",
-                tag: "Digital Edition",
-                gradient: "from-teal-600 to-emerald-900",
-                isbn: "978-0-13-468699-8",
-              },
-              {
-                title: `Selected Works and Research in ${selectedGenre}`,
-                author: "Academic Contributors & Fellows",
-                rating: 4.6,
-                price: "₹450",
-                tag: "Institutional License",
-                gradient: "from-blue-600 to-indigo-950",
-                isbn: "978-0-13-468700-1",
-              },
-            ]).map((book, idx) => (
-              <div
-                key={idx}
-                className="rounded-xl border border-border bg-white p-4 shadow-xs transition-all hover:border-[#137365]/40 hover:shadow-sm flex gap-4"
-              >
-                {/* Book Mini Cover */}
-                {book.cover ? (
-                  <div className="h-28 w-20 shrink-0 rounded-lg overflow-hidden border border-border/80 shadow-md bg-muted">
-                    <img
-                      src={book.cover}
-                      alt={book.title}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={`h-28 w-20 shrink-0 rounded-lg bg-gradient-to-br ${book.gradient} p-2 flex flex-col justify-between text-white shadow-sm`}
-                  >
-                    <div className="text-[9px] font-bold uppercase tracking-wider line-clamp-2">
-                      {book.tag}
-                    </div>
-                    <div className="text-[10px] font-extrabold line-clamp-3 leading-tight">
-                      {book.title}
-                    </div>
-                  </div>
-                )}
-
-                {/* Details */}
-                <div className="flex-1 flex flex-col justify-between py-0.5">
-                  <div>
-                    <span className="inline-block text-[10px] font-semibold text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border px-2 py-0.5 rounded-md mb-1.5">
-                      {book.tag}
-                    </span>
-                    <h4 className="text-sm font-bold text-foreground line-clamp-2 leading-tight">
-                      {book.title}
-                    </h4>
-                    <p className="text-xs text-muted-foreground mt-1">by {book.author}</p>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-extrabold text-foreground">
-                        {book.price}
-                      </span>
-                      <div className="flex items-center text-xs text-amber-500 font-semibold gap-0.5">
-                        <Star size={12} fill="currentColor" /> {book.rating}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleAddToCart(book.title)}
-                      className="inline-flex items-center gap-1.5 rounded-lg text-white px-3 py-1.5 text-xs font-semibold shadow-2xs transition-opacity hover:opacity-90 cursor-pointer"
-                      style={{ backgroundColor: "#137365" }}
-                    >
-                      <ShoppingBag size={13} />
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Action Row */}
-          <div className="mt-8 pt-4 border-t border-border flex items-center justify-between gap-3">
-            <button
-              onClick={() => setSelectedGenre(null)}
-              className="w-full rounded-lg border border-border py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary transition-colors"
-            >
-              Close Showcase
-            </button>
-            <button
-              onClick={() => {
-                toast.success(`Opening full ${selectedGenre} catalogue`);
-                setSelectedGenre(null);
-              }}
-              className="w-full rounded-lg bg-foreground text-background py-2 text-xs font-semibold hover:opacity-90 transition-opacity"
-            >
-              View All Titles
-            </button>
-          </div>
-        </SheetContent>
-      </Sheet>
 
       {/* Footer */}
       <PbWebFooter />

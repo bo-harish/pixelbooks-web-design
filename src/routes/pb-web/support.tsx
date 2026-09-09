@@ -206,7 +206,7 @@ function PbWebSupportPage() {
         {/* Top Contact Highlights (Address, Direct Phone, and Email) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 1. Office Headquarters Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-b from-pbgreen-light/80 via-pbgreen-light/40 to-pbgreen-subtle p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/60 bg-gradient-to-b n-light/25 via-pbgreen-light30 to-pbgreen-subtle/45 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Badge */}
               <div className="flex items-center justify-between gap-3">
@@ -262,7 +262,7 @@ function PbWebSupportPage() {
           </div>
 
           {/* 2. Direct Support Phone Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-b from-pbgreen-light/80 via-pbgreen-light/40 to-pbgreen-subtle p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/60 bg-gradient-to-b from-pbgreen-light/25 via-pbgreen-light30 to-pbgreen-subtle/45 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Live Status Badge */}
               <div className="flex items-center justify-between gap-3">
@@ -319,7 +319,7 @@ function PbWebSupportPage() {
           </div>
 
           {/* 3. Email Support Card */}
-          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/70 bg-gradient-to-b from-pbgreen-light/80 via-pbgreen-light/40 to-pbgreen-subtle p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
+          <div className="group relative flex flex-col justify-between rounded-2xl border border-pbgreen-border/60 bg-gradient-to-b from-pbgreen-light/25 via-pbgreen-light30 to-pbgreen-subtle/45 p-6 sm:p-7 shadow-xs transition-all duration-200 hover:border-pbgreen-border hover:shadow-md">
             <div>
               {/* Header: Icon & Response Time Badge */}
               <div className="flex items-center justify-between gap-3">
@@ -441,16 +441,16 @@ function PbWebSupportPage() {
                     type="button"
                     onClick={() => handleRoleChange(role.id)}
                     className={`group relative flex flex-col items-start gap-2.5 rounded-xl p-3 text-left transition-all duration-200 cursor-pointer bg-white ${isSelected
-                        ? "border-2 border-[#137365] ring-2 ring-[#137365]/10 shadow-sm -translate-y-0.5"
-                        : "border border-border/80 hover:border-slate-300 shadow-2xs hover:shadow-xs hover:-translate-y-0.5"
+                      ? "border-2 border-[#137365] ring-2 ring-[#137365]/10 shadow-sm -translate-y-0.5"
+                      : "border border-border/80 hover:border-slate-300 shadow-2xs hover:shadow-xs hover:-translate-y-0.5"
                       }`}
                   >
                     {/* Top Row: Icon on left, Radio Checkmark on right */}
                     <div className="flex items-center justify-between w-full">
                       <div
                         className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors ${isSelected
-                            ? "bg-emerald-50 border-emerald-200 text-[#137365]"
-                            : "bg-slate-50 border-slate-200/70 text-slate-400 group-hover:text-slate-600"
+                          ? "bg-emerald-50 border-emerald-200 text-[#137365]"
+                          : "bg-slate-50 border-slate-200/70 text-slate-400 group-hover:text-slate-600"
                           }`}
                       >
                         <Icon size={16} className="stroke-[2.2]" />
@@ -459,8 +459,8 @@ function PbWebSupportPage() {
                       {/* Radio Checkmark Circle */}
                       <div
                         className={`flex h-4.5 w-4.5 items-center justify-center rounded-full transition-all duration-200 ${isSelected
-                            ? "bg-[#137365] text-white shadow-2xs scale-100"
-                            : "border border-slate-300 group-hover:border-slate-400 bg-white"
+                          ? "bg-[#137365] text-white shadow-2xs scale-100"
+                          : "border border-slate-300 group-hover:border-slate-400 bg-white"
                           }`}
                       >
                         {isSelected && <Check size={11} className="stroke-[3]" />}
