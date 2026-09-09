@@ -64,10 +64,24 @@ export const Route = createFileRoute("/pb-web/accounts")({
   }),
   head: () => ({
     meta: [
-      { title: "My Account — PixelBooks" },
+      { title: "PixelBooks UI Design" },
       {
         name: "description",
-        content: "Manage your PixelBooks reader profile, addresses, digital library, and preferences.",
+        content: "PixelBooks UI workspace.",
+      },
+      { name: "author", content: "PixelBooks" },
+      { property: "og:title", content: "PixelBooks " },
+      {
+        property: "og:description",
+        content: "PixelBooks UI Design",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "PixelBooks " },
+      {
+        name: "twitter:description",
+        content:
+          "Operate your publisher dashboard for catalogue, imports, revenue trends, and royalty visibility.",
       },
     ],
   }),
@@ -2253,9 +2267,8 @@ function PixelBooksAccountPage() {
                 />
               </div>
 
-              {/* Recommendation toggle */}
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border mt-4">
+              <div className="flex items-center justify-end gap-2.5 mt-4">
                 <button
                   type="button"
                   onClick={() => setIsReviewModalOpen(false)}
