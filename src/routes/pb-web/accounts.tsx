@@ -2216,7 +2216,7 @@ function PixelBooksAccountPage() {
                     ))}
                   </div>
                   <span className="text-xs font-semibold text-foreground ml-2">
-                    {reviewRating === 5 && "★★★★★ Outstanding"}
+
                     {reviewRating === 4 && "★★★★☆ Very Good"}
                     {reviewRating === 3 && "★★★☆☆ Average"}
                     {reviewRating === 2 && "★★☆☆☆ Below Average"}
@@ -2253,23 +2253,8 @@ function PixelBooksAccountPage() {
                 />
               </div>
 
-              {/* Recommendation toggle */}
-              <div
-                className="flex items-center gap-2.5 pt-1 cursor-pointer select-none"
-                onClick={() => setReviewRecommend(!reviewRecommend)}
-              >
-                <CustomCheckbox
-                  id="recommend-toggle"
-                  checked={reviewRecommend}
-                  onChange={setReviewRecommend}
-                />
-                <label htmlFor="recommend-toggle" className="text-xs font-medium text-foreground cursor-pointer select-none">
-                  I recommend this eBook to other students and readers
-                </label>
-              </div>
-
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border mt-4">
+              <div className="flex items-center justify-end gap-2.5 mt-4">
                 <button
                   type="button"
                   onClick={() => setIsReviewModalOpen(false)}
@@ -2401,18 +2386,16 @@ function PixelBooksAccountPage() {
                         key={genre}
                         type="button"
                         onClick={() => toggleGenre(genre)}
-                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none ${
-                          isSelected
-                            ? "bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border ring-2 ring-pbgreen/25 hover:bg-pbgreen-subtle shadow-xs translate-y-[-0.5px]"
-                            : "bg-white text-foreground/80 border border-border/90 hover:border-pbgreen-border hover:bg-pbgreen-light/40 hover:text-pbgreen-dark"
-                        }`}
+                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none ${isSelected
+                          ? "bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border ring-2 ring-pbgreen/25 hover:bg-pbgreen-subtle shadow-xs translate-y-[-0.5px]"
+                          : "bg-white text-foreground/80 border border-border/90 hover:border-pbgreen-border hover:bg-pbgreen-light/40 hover:text-pbgreen-dark"
+                          }`}
                       >
                         <span
-                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors ${
-                            isSelected
-                              ? "bg-pbgreen text-white shadow-2xs"
-                              : "border border-border/80 text-transparent"
-                          }`}
+                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors ${isSelected
+                            ? "bg-pbgreen text-white shadow-2xs"
+                            : "border border-border/80 text-transparent"
+                            }`}
                         >
                           <Check size={10} strokeWidth={3} className={isSelected ? "opacity-100" : "opacity-0"} />
                         </span>

@@ -175,7 +175,7 @@ export function PbWebHeader({
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-8 text-[13.5px] xl:text-[14px] font-medium shrink-0">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-[26px] pl-4 xl:pl-6 pr-4 xl:pr-6 text-[13.5px] xl:text-[14px] font-medium shrink-0">
             <Link
               to="/pb-web/genre"
               className="whitespace-nowrap text-muted-foreground/70 hover:text-foreground transition-colors py-1.5"
