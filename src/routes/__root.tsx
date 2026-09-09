@@ -109,22 +109,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PixelBooks Publisher" },
+      { title: "PixelBooks UI Design" },
       {
         name: "description",
         content:
-          "PixelBooks Publisher helps you manage catalogue, sales insights, royalties, and promotions in one workspace.",
+          "PixelBooks UI workspace.",
       },
       { name: "author", content: "PixelBooks" },
-      { property: "og:title", content: "PixelBooks Publisher" },
+      { property: "og:title", content: "PixelBooks " },
       {
         property: "og:description",
         content:
-          "Manage eBook catalogue, imports, promo codes, bank accounts, and performance reports with PixelBooks Publisher.",
+          "PixelBooks UI Design",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "PixelBooks Publisher" },
+      { name: "twitter:title", content: "PixelBooks " },
       {
         name: "twitter:description",
         content:
