@@ -11,6 +11,8 @@ import {
   GraduationCap,
   Globe,
   ExternalLink,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
@@ -21,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePublisherType } from "@/hooks/use-publisher-type";
 import { useLibraryAdminType } from "@/hooks/use-library-admin-type";
+import { useTheme } from "@/hooks/theme-context";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,6 +51,7 @@ export const Route = createFileRoute("/")({
 });
 
 function WorkspaceSelector() {
+  const { theme, toggle } = useTheme();
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [publisherType, setPublisherType] = usePublisherType();
   const [libraryAdminType, setLibraryAdminType] = useLibraryAdminType();
@@ -149,9 +153,25 @@ function WorkspaceSelector() {
             <span className="font-extrabold text-2xl tracking-tight text-foreground">PixelBooks</span>
           </Link>
         </div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground bg-secondary/80 backdrop-blur-sm border border-border px-3 py-1.5 rounded-full shadow-sm">
-          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-          New UI Design: Select Your Workspace
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground bg-secondary/80 backdrop-blur-sm border border-border px-3 py-1.5 rounded-full shadow-sm">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            New UI Design: Select Your Workspace
+          </div>
+          <button
+            type="button"
+            onClick={toggle}
+            id="landing-theme-toggle"
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-card/80 backdrop-blur-sm text-muted-foreground transition-all hover:bg-card hover:text-foreground hover:shadow-xs cursor-pointer"
+          >
+            {theme === "dark" ? (
+              <Sun size={16} className="text-amber-400" />
+            ) : (
+              <Moon size={16} className="text-slate-600" />
+            )}
+          </button>
         </div>
       </header>
 

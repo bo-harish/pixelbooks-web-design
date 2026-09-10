@@ -157,9 +157,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
 function RootShell({ children }: { children: ReactNode }) {
-  const themeScript = `(function(){try{var key='pixelbooks-theme';var stored=localStorage.getItem(key);var theme=(stored==='dark'||stored==='light')?stored:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var root=document.documentElement;root.classList.toggle('dark',theme==='dark');root.style.colorScheme=theme;}catch(e){}})();`;
+  const themeScript = `(function(){try{var path=window.location.pathname;var root=document.documentElement;if(path.indexOf('/pb-web')===0){root.classList.remove('dark');root.style.colorScheme='light';return;}var key='pixelbooks-theme';var stored=localStorage.getItem(key);var theme=(stored==='dark'||stored==='light')?stored:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');root.classList.toggle('dark',theme==='dark');root.style.colorScheme=theme;}catch(e){}})();`;
   const preloadErrorScript = `window.addEventListener('vite:preloadError',function(){window.location.reload();});`;
 
   return (

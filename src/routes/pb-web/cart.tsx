@@ -327,7 +327,7 @@ function PixelBooksCartPage() {
             </div>
 
             <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground bg-secondary/60 px-3.5 py-2 rounded-xl border border-border/80 w-fit">
-              <ShieldCheck size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <ShieldCheck size={16} className="text-emerald-600 shrink-0" />
               <span>Encrypted Checkout. Instant Access.</span>
             </div>
           </div>
@@ -336,7 +336,7 @@ function PixelBooksCartPage() {
           {cartItems.length === 0 ? (
             /* Empty Cart State */
             <div className="rounded-3xl border border-border bg-white p-12 text-center max-w-xl mx-auto shadow-sm my-8 space-y-4">
-              <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+              <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                 <ShoppingBag size={36} />
               </div>
               <h2 className="text-xl font-bold text-foreground">Your  cart is empty</h2>
@@ -421,7 +421,7 @@ function PixelBooksCartPage() {
                               <span>•</span>
                               <span>{item.fileSize}</span>
                               <span>•</span>
-                              <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                              <span className="text-emerald-600 font-medium">
                                 {item.license}
                               </span>
                             </div>
@@ -477,7 +477,7 @@ function PixelBooksCartPage() {
                 <div className="rounded-2xl border border-border bg-white p-5 sm:p-6 shadow-xs">
                   <div className="flex items-center justify-between pb-3 border-b border-border/70 mb-4">
                     <div className="flex items-center gap-2">
-                      <Tag size={18} className="text-emerald-600 dark:text-emerald-400" />
+                      <Tag size={18} className="text-emerald-600" />
                       <h3 className="text-sm sm:text-base font-bold text-foreground">
                         Offers & Promotional Benefits
                       </h3>
@@ -574,7 +574,7 @@ function PixelBooksCartPage() {
                             type="button"
                             onClick={() => (isApplied ? handleRemoveCoupon() : handleApplyCoupon(cpn))}
                             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ml-3 ${isApplied
-                              ? "text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                              ? "text-rose-600 hover:bg-rose-50"
                               : "text-[#137365] hover:bg-[#137365]/10 border border-[#137365]/30"
                               }`}
                           >
