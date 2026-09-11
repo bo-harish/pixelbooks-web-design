@@ -1151,52 +1151,70 @@ function PublisherAuthorDetailPage() {
             </div>
 
             {/* Stat Cards Row (3 Redesigned Cards matching requested style) */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               {/* Total Sales */}
-              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
-                <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                     Total Sales
                   </span>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
-                    <DollarSign size={22} />
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                    style={{
+                      backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                      color: "var(--brand)",
+                    }}
+                  >
+                    <DollarSign size={15} />
                   </span>
                 </div>
-                <div className="mt-3">
-                  <p className="text-3xl font-extrabold tracking-tight text-foreground">{account.totalSales}</p>
-                  <p className="text-xs text-muted-foreground font-medium mt-1">Total revenue in period</p>
+                <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{account.totalSales}</p>
+                  <span className="text-[11px] text-muted-foreground font-medium">Total revenue in period</span>
                 </div>
               </div>
 
               {/* Total eBooks Sold */}
-              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
-                <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                     Total eBooks Sold
                   </span>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/12 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 shadow-2xs">
-                    <ShoppingBag size={22} />
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                    style={{
+                      backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                      color: "var(--brand)",
+                    }}
+                  >
+                    <ShoppingBag size={15} />
                   </span>
                 </div>
-                <div className="mt-3">
-                  <p className="text-3xl font-extrabold tracking-tight text-foreground">{account.totalPurchased}</p>
-                  <p className="text-xs text-muted-foreground font-medium mt-1">eBooks sold in period</p>
+                <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{account.totalPurchased}</p>
+                  <span className="text-[11px] text-muted-foreground font-medium">eBooks sold in period</span>
                 </div>
               </div>
 
               {/* Total eBooks Published */}
-              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs hover:shadow-md transition-shadow min-h-[140px]">
-                <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                     Total eBooks Published
                   </span>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 shadow-2xs">
-                    <BookOpen size={22} />
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                    style={{
+                      backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                      color: "var(--brand)",
+                    }}
+                  >
+                    <BookOpen size={15} />
                   </span>
                 </div>
-                <div className="mt-3">
-                  <p className="text-3xl font-extrabold tracking-tight text-foreground">{account.totalPublished}</p>
-                  <p className="text-xs text-muted-foreground font-medium mt-1">Active published titles</p>
+                <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{account.totalPublished}</p>
+                  <span className="text-[11px] text-muted-foreground font-medium">Active published titles</span>
                 </div>
               </div>
             </div>

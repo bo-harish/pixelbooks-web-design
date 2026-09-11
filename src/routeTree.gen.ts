@@ -17,7 +17,9 @@ import { Route as PbAdminIndexRouteImport } from './routes/pb-admin/index'
 import { Route as PbAdminLibIndexRouteImport } from './routes/pb-admin-lib/index'
 import { Route as LibraryUserIndexRouteImport } from './routes/library-user/index'
 import { Route as LibraryAdminIndexRouteImport } from './routes/library-admin/index'
+import { Route as InstitutionsIndexRouteImport } from './routes/institutions/index'
 import { Route as AuthorIndexRouteImport } from './routes/author/index'
+import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin.settings'
 import { Route as PublisherSupportRouteImport } from './routes/publisher/support'
 import { Route as PublisherSettingsRouteImport } from './routes/publisher/settings'
 import { Route as PublisherSalesReportRouteImport } from './routes/publisher/sales-report'
@@ -77,6 +79,7 @@ import { Route as LibraryAdminCoursesRouteImport } from './routes/library-admin/
 import { Route as LibraryAdminCatalogueRouteImport } from './routes/library-admin/catalogue'
 import { Route as LibraryAdminCartRouteImport } from './routes/library-admin/cart'
 import { Route as LibraryAdminBannersRouteImport } from './routes/library-admin/banners'
+import { Route as InstitutionsLoginRouteImport } from './routes/institutions/login'
 import { Route as AuthorProfileRouteImport } from './routes/author/profile'
 import { Route as PublisherPromoCodesIndexRouteImport } from './routes/publisher/promo-codes.index'
 import { Route as PublisherCatalogueIndexRouteImport } from './routes/publisher/catalogue.index'
@@ -115,6 +118,7 @@ import { Route as PbAdminLibOrdersIdRouteImport } from './routes/pb-admin-lib/or
 import { Route as PbAdminLibLibrariesNewRouteImport } from './routes/pb-admin-lib/libraries_.new'
 import { Route as PbAdminLibLibrariesIdRouteImport } from './routes/pb-admin-lib/libraries_.$id'
 import { Route as PbAdminPublishersAuthorsIdTitlesRouteImport } from './routes/pb-admin/publishers-authors.$id.titles'
+import { Route as PbAdminFeaturedCollectionsIdBooksRouteImport } from './routes/pb-admin/featured-collections_.$id.books'
 
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
@@ -156,9 +160,19 @@ const LibraryAdminIndexRoute = LibraryAdminIndexRouteImport.update({
   path: '/library-admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InstitutionsIndexRoute = InstitutionsIndexRouteImport.update({
+  id: '/institutions/',
+  path: '/institutions/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthorIndexRoute = AuthorIndexRouteImport.update({
   id: '/author/',
   path: '/author/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
+  id: '/super-admin/settings',
+  path: '/super-admin/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublisherSupportRoute = PublisherSupportRouteImport.update({
@@ -460,6 +474,11 @@ const LibraryAdminBannersRoute = LibraryAdminBannersRouteImport.update({
   path: '/library-admin/banners',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InstitutionsLoginRoute = InstitutionsLoginRouteImport.update({
+  id: '/institutions/login',
+  path: '/institutions/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthorProfileRoute = AuthorProfileRouteImport.update({
   id: '/author/profile',
   path: '/author/profile',
@@ -668,11 +687,18 @@ const PbAdminPublishersAuthorsIdTitlesRoute =
     path: '/titles',
     getParentRoute: () => PbAdminPublishersAuthorsIdRoute,
   } as any)
+const PbAdminFeaturedCollectionsIdBooksRoute =
+  PbAdminFeaturedCollectionsIdBooksRouteImport.update({
+    id: '/pb-admin/featured-collections_/$id/books',
+    path: '/pb-admin/featured-collections/$id/books',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
+  '/institutions/login': typeof InstitutionsLoginRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -732,7 +758,9 @@ export interface FileRoutesByFullPath {
   '/publisher/sales-report': typeof PublisherSalesReportRoute
   '/publisher/settings': typeof PublisherSettingsRoute
   '/publisher/support': typeof PublisherSupportRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/author/': typeof AuthorIndexRoute
+  '/institutions/': typeof InstitutionsIndexRoute
   '/library-admin/': typeof LibraryAdminIndexRoute
   '/library-user/': typeof LibraryUserIndexRoute
   '/pb-admin-lib/': typeof PbAdminLibIndexRoute
@@ -775,12 +803,14 @@ export interface FileRoutesByFullPath {
   '/publisher/catalogue-import/': typeof PublisherCatalogueImportIndexRoute
   '/publisher/catalogue/': typeof PublisherCatalogueIndexRoute
   '/publisher/promo-codes/': typeof PublisherPromoCodesIndexRoute
+  '/pb-admin/featured-collections/$id/books': typeof PbAdminFeaturedCollectionsIdBooksRoute
   '/pb-admin/publishers-authors/$id/titles': typeof PbAdminPublishersAuthorsIdTitlesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
+  '/institutions/login': typeof InstitutionsLoginRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -840,7 +870,9 @@ export interface FileRoutesByTo {
   '/publisher/sales-report': typeof PublisherSalesReportRoute
   '/publisher/settings': typeof PublisherSettingsRoute
   '/publisher/support': typeof PublisherSupportRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/author': typeof AuthorIndexRoute
+  '/institutions': typeof InstitutionsIndexRoute
   '/library-admin': typeof LibraryAdminIndexRoute
   '/library-user': typeof LibraryUserIndexRoute
   '/pb-admin-lib': typeof PbAdminLibIndexRoute
@@ -883,6 +915,7 @@ export interface FileRoutesByTo {
   '/publisher/catalogue-import': typeof PublisherCatalogueImportIndexRoute
   '/publisher/catalogue': typeof PublisherCatalogueIndexRoute
   '/publisher/promo-codes': typeof PublisherPromoCodesIndexRoute
+  '/pb-admin/featured-collections/$id/books': typeof PbAdminFeaturedCollectionsIdBooksRoute
   '/pb-admin/publishers-authors/$id/titles': typeof PbAdminPublishersAuthorsIdTitlesRoute
 }
 export interface FileRoutesById {
@@ -890,6 +923,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
+  '/institutions/login': typeof InstitutionsLoginRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -949,7 +983,9 @@ export interface FileRoutesById {
   '/publisher/sales-report': typeof PublisherSalesReportRoute
   '/publisher/settings': typeof PublisherSettingsRoute
   '/publisher/support': typeof PublisherSupportRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/author/': typeof AuthorIndexRoute
+  '/institutions/': typeof InstitutionsIndexRoute
   '/library-admin/': typeof LibraryAdminIndexRoute
   '/library-user/': typeof LibraryUserIndexRoute
   '/pb-admin-lib/': typeof PbAdminLibIndexRoute
@@ -992,6 +1028,7 @@ export interface FileRoutesById {
   '/publisher/catalogue-import/': typeof PublisherCatalogueImportIndexRoute
   '/publisher/catalogue/': typeof PublisherCatalogueIndexRoute
   '/publisher/promo-codes/': typeof PublisherPromoCodesIndexRoute
+  '/pb-admin/featured-collections_/$id/books': typeof PbAdminFeaturedCollectionsIdBooksRoute
   '/pb-admin/publishers-authors/$id/titles': typeof PbAdminPublishersAuthorsIdTitlesRoute
 }
 export interface FileRouteTypes {
@@ -1000,6 +1037,7 @@ export interface FileRouteTypes {
     | '/'
     | '/notifications'
     | '/author/profile'
+    | '/institutions/login'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -1059,7 +1097,9 @@ export interface FileRouteTypes {
     | '/publisher/sales-report'
     | '/publisher/settings'
     | '/publisher/support'
+    | '/super-admin/settings'
     | '/author/'
+    | '/institutions/'
     | '/library-admin/'
     | '/library-user/'
     | '/pb-admin-lib/'
@@ -1102,12 +1142,14 @@ export interface FileRouteTypes {
     | '/publisher/catalogue-import/'
     | '/publisher/catalogue/'
     | '/publisher/promo-codes/'
+    | '/pb-admin/featured-collections/$id/books'
     | '/pb-admin/publishers-authors/$id/titles'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/notifications'
     | '/author/profile'
+    | '/institutions/login'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -1167,7 +1209,9 @@ export interface FileRouteTypes {
     | '/publisher/sales-report'
     | '/publisher/settings'
     | '/publisher/support'
+    | '/super-admin/settings'
     | '/author'
+    | '/institutions'
     | '/library-admin'
     | '/library-user'
     | '/pb-admin-lib'
@@ -1210,12 +1254,14 @@ export interface FileRouteTypes {
     | '/publisher/catalogue-import'
     | '/publisher/catalogue'
     | '/publisher/promo-codes'
+    | '/pb-admin/featured-collections/$id/books'
     | '/pb-admin/publishers-authors/$id/titles'
   id:
     | '__root__'
     | '/'
     | '/notifications'
     | '/author/profile'
+    | '/institutions/login'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -1275,7 +1321,9 @@ export interface FileRouteTypes {
     | '/publisher/sales-report'
     | '/publisher/settings'
     | '/publisher/support'
+    | '/super-admin/settings'
     | '/author/'
+    | '/institutions/'
     | '/library-admin/'
     | '/library-user/'
     | '/pb-admin-lib/'
@@ -1318,6 +1366,7 @@ export interface FileRouteTypes {
     | '/publisher/catalogue-import/'
     | '/publisher/catalogue/'
     | '/publisher/promo-codes/'
+    | '/pb-admin/featured-collections_/$id/books'
     | '/pb-admin/publishers-authors/$id/titles'
   fileRoutesById: FileRoutesById
 }
@@ -1325,6 +1374,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NotificationsRoute: typeof NotificationsRoute
   AuthorProfileRoute: typeof AuthorProfileRoute
+  InstitutionsLoginRoute: typeof InstitutionsLoginRoute
   LibraryAdminBannersRoute: typeof LibraryAdminBannersRoute
   LibraryAdminCartRoute: typeof LibraryAdminCartRoute
   LibraryAdminCatalogueRoute: typeof LibraryAdminCatalogueRoute
@@ -1384,7 +1434,9 @@ export interface RootRouteChildren {
   PublisherSalesReportRoute: typeof PublisherSalesReportRoute
   PublisherSettingsRoute: typeof PublisherSettingsRoute
   PublisherSupportRoute: typeof PublisherSupportRoute
+  SuperAdminSettingsRoute: typeof SuperAdminSettingsRoute
   AuthorIndexRoute: typeof AuthorIndexRoute
+  InstitutionsIndexRoute: typeof InstitutionsIndexRoute
   LibraryAdminIndexRoute: typeof LibraryAdminIndexRoute
   LibraryUserIndexRoute: typeof LibraryUserIndexRoute
   PbAdminLibIndexRoute: typeof PbAdminLibIndexRoute
@@ -1425,6 +1477,7 @@ export interface RootRouteChildren {
   PublisherCatalogueImportIndexRoute: typeof PublisherCatalogueImportIndexRoute
   PublisherCatalogueIndexRoute: typeof PublisherCatalogueIndexRoute
   PublisherPromoCodesIndexRoute: typeof PublisherPromoCodesIndexRoute
+  PbAdminFeaturedCollectionsIdBooksRoute: typeof PbAdminFeaturedCollectionsIdBooksRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1485,11 +1538,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryAdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/institutions/': {
+      id: '/institutions/'
+      path: '/institutions'
+      fullPath: '/institutions/'
+      preLoaderRoute: typeof InstitutionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/author/': {
       id: '/author/'
       path: '/author'
       fullPath: '/author/'
       preLoaderRoute: typeof AuthorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/super-admin/settings': {
+      id: '/super-admin/settings'
+      path: '/super-admin/settings'
+      fullPath: '/super-admin/settings'
+      preLoaderRoute: typeof SuperAdminSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/publisher/support': {
@@ -1905,6 +1972,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryAdminBannersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/institutions/login': {
+      id: '/institutions/login'
+      path: '/institutions/login'
+      fullPath: '/institutions/login'
+      preLoaderRoute: typeof InstitutionsLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/author/profile': {
       id: '/author/profile'
       path: '/author/profile'
@@ -2171,6 +2245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbAdminPublishersAuthorsIdTitlesRouteImport
       parentRoute: typeof PbAdminPublishersAuthorsIdRoute
     }
+    '/pb-admin/featured-collections_/$id/books': {
+      id: '/pb-admin/featured-collections_/$id/books'
+      path: '/pb-admin/featured-collections/$id/books'
+      fullPath: '/pb-admin/featured-collections/$id/books'
+      preLoaderRoute: typeof PbAdminFeaturedCollectionsIdBooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2222,6 +2303,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NotificationsRoute: NotificationsRoute,
   AuthorProfileRoute: AuthorProfileRoute,
+  InstitutionsLoginRoute: InstitutionsLoginRoute,
   LibraryAdminBannersRoute: LibraryAdminBannersRoute,
   LibraryAdminCartRoute: LibraryAdminCartRoute,
   LibraryAdminCatalogueRoute: LibraryAdminCatalogueRoute,
@@ -2281,7 +2363,9 @@ const rootRouteChildren: RootRouteChildren = {
   PublisherSalesReportRoute: PublisherSalesReportRoute,
   PublisherSettingsRoute: PublisherSettingsRoute,
   PublisherSupportRoute: PublisherSupportRoute,
+  SuperAdminSettingsRoute: SuperAdminSettingsRoute,
   AuthorIndexRoute: AuthorIndexRoute,
+  InstitutionsIndexRoute: InstitutionsIndexRoute,
   LibraryAdminIndexRoute: LibraryAdminIndexRoute,
   LibraryUserIndexRoute: LibraryUserIndexRoute,
   PbAdminLibIndexRoute: PbAdminLibIndexRoute,
@@ -2322,6 +2406,8 @@ const rootRouteChildren: RootRouteChildren = {
   PublisherCatalogueImportIndexRoute: PublisherCatalogueImportIndexRoute,
   PublisherCatalogueIndexRoute: PublisherCatalogueIndexRoute,
   PublisherPromoCodesIndexRoute: PublisherPromoCodesIndexRoute,
+  PbAdminFeaturedCollectionsIdBooksRoute:
+    PbAdminFeaturedCollectionsIdBooksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

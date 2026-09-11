@@ -20,6 +20,10 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { usePublisherType } from "@/hooks/use-publisher-type";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/publisher/profile")({
   head: () => ({
@@ -132,6 +136,22 @@ function ProfilePage() {
   const [commission, setCommission] = useState("65");
   const [profileSlug, setProfileSlug] = useState("sj-publications");
   const [copied, setCopied] = useState(false);
+  const [publisherLogo, setPublisherLogo] = useState<string | null>(null);
+
+  const {
+    modalOpen,
+    setModalOpen,
+    selectedImageSrc,
+    fileInputRef,
+    openFilePicker,
+    handleFileChange,
+    handleApply,
+    handleSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setPublisherLogo(dataUrl);
+    },
+  });
 
   const handleCopyProfileUrl = async () => {
     const fullUrl = `${profileBaseUrl}${profileSlug}`;
@@ -146,21 +166,37 @@ function ProfilePage() {
 
   return (
     <AppShell title="Profile" subtitle="Manage your publisher profile and account details.">
-      <div className="space-y-8 p-4 md:p-8">
+      <div className="space-y-8 p-4 sm:p-6 md:p-8">
         {/* Publisher Profile */}
         <SectionCard title="Publisher Profile">
           <div className="space-y-6">
             {/* Logo & Avatar Header Card */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 rounded-xl border border-border bg-secondary/20 p-5">
               <div className="relative h-24 w-24 shrink-0">
-                <div
-                  className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-4xl font-extrabold"
-                  style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-                >
-                  P
-                </div>
+                {publisherLogo ? (
+                  <img
+                    src={publisherLogo}
+                    alt={publisherName}
+                    className="h-full w-full rounded-full object-cover border-2 border-background shadow-md"
+                  />
+                ) : (
+                  <div
+                    className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-4xl font-extrabold"
+                    style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+                  >
+                    {publisherName ? publisherName.charAt(0).toUpperCase() : "P"}
+                  </div>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
                 <button
                   type="button"
+                  onClick={openFilePicker}
                   className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
                   title="Upload Logo"
                 >
@@ -411,6 +447,16 @@ function ProfilePage() {
           setIsOtpModalOpen(false);
         }}
       />
+
+      <ProfilePictureAdjustModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        imageSrc={selectedImageSrc}
+        title="Adjust Publisher Logo"
+        cropShape="round-square"
+        onApply={handleApply}
+        onSelectNewFile={handleSelectNewFile}
+      />
     </AppShell>
   );
 }
@@ -509,7 +555,9 @@ function OtpModal({ isOpen, onClose, email, phone, onVerifySuccess }: OtpModalPr
             {mobileOtp.map((digit, idx) => (
               <input
                 key={`mobile-${idx}`}
-                ref={(el) => (mobileRefs.current[idx] = el)}
+                ref={(el) => {
+                  mobileRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}
@@ -528,7 +576,9 @@ function OtpModal({ isOpen, onClose, email, phone, onVerifySuccess }: OtpModalPr
             {emailOtp.map((digit, idx) => (
               <input
                 key={`email-${idx}`}
-                ref={(el) => (emailRefs.current[idx] = el)}
+                ref={(el) => {
+                  emailRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}

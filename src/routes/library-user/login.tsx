@@ -146,45 +146,57 @@ function UnifiedStudentLoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center p-4 sm:p-6 md:p-8 pt-6 sm:pt-10 select-none">
+    <div className="min-h-screen w-full bg-background text-foreground flex flex-col items-center p-4 sm:p-6 md:p-8 pt-3 sm:pt-5 select-none">
       {/* Top Header with PixelBooks Logo (Fixed top space) */}
-      <header className="w-full max-w-[540px] flex items-center justify-between mb-6 sm:mb-8 pt-1 sm:pt-2 shrink-0">
+      <header className="w-full max-w-[540px] flex items-center justify-between mb-3 sm:mb-4 pt-0 shrink-0">
         <Link to="/" id="btn-login-logo-link" className="flex items-center gap-2">
-          <img src="/logo.png" alt="PixelBooks Logo" className="h-9 sm:h-[43px] object-contain" />
+          <img src="/logo.png" alt="PixelBooks Logo" className="h-7 sm:h-[34px] object-contain" />
         </Link>
 
         <div className="flex items-center gap-2">
+          <Link
+            to="/institutions/login"
+            id="btn-login-back-institutions"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors bg-card border border-border px-2.5 py-1 rounded-full shadow-2xs"
+          >
+            <ArrowLeft size={12} />
+            Institutions Login
+          </Link>
           <Link
             to="/"
             id="btn-login-back-home"
             className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors bg-card border border-border px-2.5 py-1 rounded-full shadow-2xs"
           >
-            <ArrowLeft size={12} />
             Workspaces
           </Link>
         </div>
       </header>
 
       {/* Main Container Card (Fixed position below header) */}
-      <main className="w-full max-w-[540px] shrink-0 mt-2 sm:mt-4">
-        <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 pt-5 sm:pt-6 shadow-xl relative overflow-hidden space-y-6">
+      <main className="w-full max-w-[540px] shrink-0 mt-0 sm:mt-1">
+        <div className="bg-card border border-border rounded-3xl p-5 sm:p-7 pt-2 sm:pt-2.5 shadow-xl relative overflow-hidden space-y-6">
 
           {/* VIEW 1: MAIN LOGIN SCREEN */}
           {viewMode === "login" && (
-            <div className="space-y-5 animate-in fade-in duration-200">
+            <div className="space-y-4 animate-in fade-in duration-200">
               {/* Vimala College Crest / Logo */}
               <div className="flex flex-col items-center text-center space-y-2">
-                <div className="relative flex h-36 w-36 sm:h-40 sm:w-40 items-center justify-center p-0 pt-0">
+                <div className="relative flex h-44 w-44 sm:h-52 sm:w-52 items-center justify-center p-0 -mt-2 sm:-mt-2.5">
                   <img src="/vimala-logo.png" alt="Vimala College Crest" className="h-full w-full object-contain" />
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight leading-tight">
                     {institution.name}
                   </h1>
-                  <p className="text-sm font-semibold text-muted-foreground/90">
+                  <p className="text-xs sm:text-sm font-semibold text-muted-foreground/90">
                     {institution.location}
                   </p>
+                  <div className="pt-0.5">
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 border border-emerald-500/20">
+                      Student / Staff Login Portal
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -518,7 +530,7 @@ function UnifiedStudentLoginPage() {
       {/* Footer (Dynamic bottom space) */}
       <footer className="w-full text-center text-xs text-muted-foreground mt-auto pt-8 pb-4 flex items-center justify-center gap-2 shrink-0">
         <img src="/logo-app-icon.png" alt="PixelBooks Icon" className="h-4 w-4 object-contain" />
-        <span>© 2026 {institution.name} · Powered by PixelBooks</span>
+        <span>Copyright 2026 PixelBooks</span>
       </footer>
     </div>
   );

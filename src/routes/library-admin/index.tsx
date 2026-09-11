@@ -195,27 +195,27 @@ function RangePicker({ value, onChange }: { value: Range; onChange: (r: Range) =
 function StatCard({ stat }: { stat: Stat }) {
   const Icon = stat.icon;
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card p-5 shadow-2xs transition-shadow hover:shadow-md justify-between min-h-[128px]">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
           {stat.label}
         </span>
         <span
-          className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
-          style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+          className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+          style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
         >
-          <Icon size={18} />
+          <Icon size={15} />
         </span>
       </div>
 
-      <div className="mt-2">
-        <p className="text-2xl font-extrabold tracking-tight text-foreground">{stat.value}</p>
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{stat.value}</p>
+        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
           {stat.hasDropdown ? (
             <>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-0.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors shrink-0 cursor-pointer">
+                  <button className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-0.5 text-[10.5px] font-semibold text-muted-foreground hover:text-foreground transition-colors shrink-0 cursor-pointer">
                     <span>{stat.dropdownValue}</span>
                     <ChevronDown size={10} />
                   </button>
@@ -245,14 +245,14 @@ function StatCard({ stat }: { stat: Stat }) {
 
 function StatSkeleton() {
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card p-5 shadow-2xs justify-between min-h-[128px]">
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 min-h-[94px]">
       <div className="flex items-center justify-between">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-9 w-9 rounded-lg" />
+        <Skeleton className="h-3.5 w-28" />
+        <Skeleton className="h-7 w-7 rounded-lg" />
       </div>
-      <div className="mt-2">
-        <Skeleton className="h-7 w-16" />
-        <Skeleton className="mt-1 h-3 w-28" />
+      <div className="mt-1.5 flex items-baseline gap-2">
+        <Skeleton className="h-6 w-16" />
+        <Skeleton className="h-3.5 w-24" />
       </div>
     </div>
   );
@@ -417,7 +417,7 @@ function DashboardContent() {
         <div className="flex items-center gap-3.5">
           <span
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-            style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+            style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
           >
             <Users size={22} />
           </span>
@@ -427,12 +427,14 @@ function DashboardContent() {
                 Total Library Users
               </h2>
             </div>
-            <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground mt-0.5">
-              14
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Registered library members.
-            </p>
+            <div className="flex flex-wrap items-baseline gap-2.5 mt-0.5">
+              <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                14
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Registered library members.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -460,7 +462,7 @@ function DashboardContent() {
       </div>
 
       {/* Stats Cards Grid */}
-      <section className={`grid grid-cols-1 gap-4 ${isStandardAdmin ? "sm:grid-cols-1 max-w-md" : "sm:grid-cols-3"}`}>
+      <section className={`grid grid-cols-1 gap-3 ${isStandardAdmin ? "sm:grid-cols-1 max-w-md" : "sm:grid-cols-3"}`}>
         {loading
           ? Array.from({ length: stats.length }).map((_, i) => <StatSkeleton key={i} />)
           : stats.map((s) => <StatCard key={s.label} stat={s} />)}

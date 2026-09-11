@@ -241,30 +241,30 @@ function StatCard({ stat }: { stat: Stat }) {
   const Icon = stat.icon;
   const up = stat.delta >= 0;
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
           {stat.label}
         </span>
         <span
-          className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
-          style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+          className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+          style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
         >
-          <Icon size={18} />
+          <Icon size={15} />
         </span>
       </div>
 
-      <div className="mt-2">
-        <p className="text-2xl font-extrabold tracking-tight text-foreground">{stat.value}</p>
-        <div className="flex items-center gap-1.5 mt-0.5">
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{stat.value}</p>
+        <div className="flex items-center gap-1 text-[11px]">
           <span
-            className="inline-flex items-center gap-0.5 text-xs font-semibold"
+            className="inline-flex items-center gap-0.5 font-semibold"
             style={{ color: up ? "var(--success)" : "var(--danger)" }}
           >
-            {up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
+            {up ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
             {Math.abs(stat.delta).toFixed(1)}%
           </span>
-          <span className="text-xs text-muted-foreground">vs last period</span>
+          <span className="text-muted-foreground">vs last period</span>
         </div>
       </div>
     </div>
@@ -273,13 +273,15 @@ function StatCard({ stat }: { stat: Stat }) {
 
 function StatSkeleton() {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 min-h-[94px]">
       <div className="flex items-center justify-between">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-9 w-9 rounded-lg" />
+        <Skeleton className="h-3.5 w-28" />
+        <Skeleton className="h-7 w-7 rounded-lg" />
       </div>
-      <Skeleton className="mt-4 h-8 w-24" />
-      <Skeleton className="mt-2 h-3 w-40" />
+      <div className="mt-1.5 flex items-baseline gap-2">
+        <Skeleton className="h-6 w-20" />
+        <Skeleton className="h-3.5 w-24" />
+      </div>
     </div>
   );
 }
@@ -462,7 +464,7 @@ export function DashboardContent() {
         </div>
       </div>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {loading
           ? Array.from({ length: stats.length }).map((_, i) => <StatSkeleton key={i} />)
           : stats.map((s) => <StatCard key={s.label} stat={s} />)}

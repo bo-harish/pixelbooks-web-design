@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/library-admin/profile")({
   head: () => ({
@@ -125,8 +129,6 @@ function SectionCard({ title, children }: { title: string; children: React.React
 /* -------------------------------------------------------------------------- */
 
 function LibraryAdminProfilePage() {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const profileBaseUrl = "azdevlibcustomer.pixelbooksapp.com/library/";
   const [profileSlug, setProfileSlug] = useState("digital-library-sog");
   const [copied, setCopied] = useState(false);
@@ -135,6 +137,21 @@ function LibraryAdminProfilePage() {
   const [status, setStatus] = useState<"Onboarded" | "Pending" | "Rejected">("Onboarded");
   const [isSaved, setIsSaved] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  const {
+    modalOpen,
+    setModalOpen,
+    selectedImageSrc,
+    fileInputRef,
+    openFilePicker,
+    handleFileChange,
+    handleApply,
+    handleSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setProfileImage(dataUrl);
+    },
+  });
 
   // Library Details State
   const [libraryName, setLibraryName] = useState("Digital Library SOG");
@@ -189,15 +206,6 @@ function LibraryAdminProfilePage() {
     toast.success("Library status updated to Onboarded");
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setProfileImage(url);
-      toast.success("Logo uploaded successfully");
-    }
-  };
-
   return (
     <AppShell title="Profile" subtitle="Manage your library profile, address, contact and borrowing details.">
       <div className="space-y-8 p-4 md:p-8">
@@ -223,13 +231,13 @@ function LibraryAdminProfilePage() {
                 <input
                   type="file"
                   ref={fileInputRef}
-                  onChange={handleImageUpload}
+                  onChange={handleFileChange}
                   accept="image/*"
                   className="hidden"
                 />
                 <button
                   type="button"
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={openFilePicker}
                   className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
                   title="Upload Logo"
                 >
@@ -478,6 +486,16 @@ function LibraryAdminProfilePage() {
           toast.success("Verification successful");
         }}
       />
+
+      <ProfilePictureAdjustModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        imageSrc={selectedImageSrc}
+        title="Adjust Library Logo"
+        cropShape="round-square"
+        onApply={handleApply}
+        onSelectNewFile={handleSelectNewFile}
+      />
     </AppShell>
   );
 }
@@ -537,7 +555,7 @@ function OtpModal({ isOpen, onClose, email, phone, onVerifySuccess }: OtpModalPr
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number,
-    type: "mobile" | "email"
+    type: "mobile" | "email",
   ) => {
     if (e.key === "Backspace") {
       const currentArr = type === "mobile" ? mobileOtp : emailOtp;
@@ -580,7 +598,9 @@ function OtpModal({ isOpen, onClose, email, phone, onVerifySuccess }: OtpModalPr
             {mobileOtp.map((digit, idx) => (
               <input
                 key={`mobile-${idx}`}
-                ref={(el) => (mobileRefs.current[idx] = el)}
+                ref={(el) => {
+                  mobileRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}
@@ -599,7 +619,9 @@ function OtpModal({ isOpen, onClose, email, phone, onVerifySuccess }: OtpModalPr
             {emailOtp.map((digit, idx) => (
               <input
                 key={`email-${idx}`}
-                ref={(el) => (emailRefs.current[idx] = el)}
+                ref={(el) => {
+                  emailRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}

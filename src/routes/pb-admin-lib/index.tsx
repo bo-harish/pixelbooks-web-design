@@ -13,6 +13,8 @@ import {
   TrendingUp,
   Tag,
   Library,
+  ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
@@ -518,7 +520,7 @@ function PBAdminLibraryDashboard() {
         </div>
 
         {/* 4 Stat Cards Row */}
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {statCardKeys.map((key) => {
             const currentRange = cardRanges[key] || globalRange;
             const stat =
@@ -530,33 +532,46 @@ function PBAdminLibraryDashboard() {
             return (
               <div
                 key={key}
-                className="flex flex-col justify-between rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xs transition-all hover:shadow-md min-h-[156px]"
+                className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-2xs transition-all hover:shadow-xs min-h-[118px]"
               >
-                {/* Header: Label on Left + Mint Icon Badge on Right */}
-                <div className="flex items-start justify-between gap-3">
-                  <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground/80 pt-0.5">
+                {/* Header: Label on Left + Soft Badge on Right */}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider leading-tight">
                     {stat.label}
                   </span>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-teal-500/10 dark:bg-teal-950/40 text-teal-700 dark:text-teal-400 border border-teal-500/20 shadow-2xs">
-                    <Icon size={20} strokeWidth={2} />
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+                  >
+                    <Icon size={15} />
                   </span>
                 </div>
 
-                {/* Body: Large Bold Metric Display */}
-                <div className="mt-3 mb-1">
-                  <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                {/* Body: Value */}
+                <div className="mt-1.5">
+                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
                     {stat.value}
                   </p>
                 </div>
 
                 {/* Footer: Subtext */}
-                <div className="pt-1">
-                  <p className="text-xs sm:text-[13px] font-medium text-muted-foreground leading-snug">
-                    {stat.changePct ? (
-                      <span className="mr-1 font-medium">{stat.changePct}</span>
-                    ) : null}
-                    {stat.changeLabel}
-                  </p>
+                <div className="mt-2 border-t border-border/40 pt-2 text-[11px]">
+                  <div className="flex items-center gap-1 font-medium leading-snug">
+                    {stat.changePct ? (() => {
+                      const isUp = !stat.changePct.startsWith("-");
+                      const absVal = stat.changePct.replace(/^[+-]/, "");
+                      return (
+                        <span
+                          className="inline-flex items-center gap-0.5 font-semibold"
+                          style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
+                        >
+                          {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                          {absVal}
+                        </span>
+                      );
+                    })() : null}
+                    <span className="text-muted-foreground">{stat.changeLabel}</span>
+                  </div>
                 </div>
               </div>
             );

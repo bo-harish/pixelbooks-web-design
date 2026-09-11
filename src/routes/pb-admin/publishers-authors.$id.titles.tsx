@@ -25,6 +25,8 @@ import {
   Table,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { BookCover } from "@/components/ui/book-cover";
+import { getBooksForAccount } from "@/lib/publisher-author-books-data";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,6 +99,90 @@ const MOCK_ACCOUNTS_MAP: Record<string, AccountDetails> = {
     phone: "7778889990",
     city: "Lucknow",
     state: "Uttar Pradesh",
+  },
+  "pa-9": {
+    id: "pa-9",
+    name: "QA",
+    type: "Publisher",
+    gstNumber: "12AABCA1234F1Z9",
+    panCard: "QAPUB1234M",
+    commissionRate: "16%",
+    profileUrl: "https://pixelbooksapp.com/qa",
+    status: "Approved",
+    email: "qa.books@media.org",
+    phone: "9995890724",
+    city: "Itanagar",
+    state: "Arunachal Pradesh",
+  },
+  "pa-10": {
+    id: "pa-10",
+    name: "OBook Publication",
+    type: "Publisher",
+    gstNumber: "32AAAFO1234A1Z7",
+    panCard: "OBKPB4321R",
+    commissionRate: "16%",
+    profileUrl: "https://pixelbooksapp.com/obook-pub",
+    status: "Approved",
+    email: "info@obookpub.com",
+    phone: "6374024818",
+    city: "Calicut",
+    state: "Kerala",
+  },
+  "pa-11": {
+    id: "pa-11",
+    name: "Horizon Press",
+    type: "Publisher",
+    gstNumber: "27AAAFH5678B1Z3",
+    panCard: "HZNPB8765Q",
+    commissionRate: "18%",
+    profileUrl: "https://pixelbooksapp.com/horizon-press",
+    status: "Approved",
+    email: "editor@horizonpress.com",
+    phone: "9845012345",
+    city: "Mumbai",
+    state: "Maharashtra",
+  },
+  "pa-12": {
+    id: "pa-12",
+    name: "Aarav Sharma",
+    type: "Author",
+    gstNumber: "07AAAAA4321C1Z2",
+    panCard: "ARVSH1234P",
+    commissionRate: "15%",
+    profileUrl: "https://pixelbooksapp.com/aarav-sharma",
+    status: "Pending",
+    email: "aarav.sharma@authors.net",
+    phone: "9123456780",
+    city: "New Delhi",
+    state: "Delhi",
+  },
+  "pa-13": {
+    id: "pa-13",
+    name: "Apex Lit House",
+    type: "Publisher",
+    gstNumber: "33AAACA9876D1Z5",
+    panCard: "APXLH5678T",
+    commissionRate: "17%",
+    profileUrl: "https://pixelbooksapp.com/apex-lit",
+    status: "Approved",
+    email: "support@apexlithouse.com",
+    phone: "9711223344",
+    city: "Chennai",
+    state: "Tamil Nadu",
+  },
+  "pa-14": {
+    id: "pa-14",
+    name: "Meera Nair",
+    type: "Author",
+    gstNumber: "32AAAAA8765E1Z8",
+    panCard: "MRANR9876L",
+    commissionRate: "15%",
+    profileUrl: "https://pixelbooksapp.com/meera-nair",
+    status: "Pending",
+    email: "meera.nair@writers.in",
+    phone: "9447011223",
+    city: "Kottayam",
+    state: "Kerala",
   },
 };
 
@@ -352,9 +438,15 @@ function PublisherAuthorTitlesPage() {
     toast.success(`Account status updated to ${newStatus}`);
   };
 
+  // Account books dynamically loaded from shared source
+  const accountBooks = useMemo(() => {
+    const books = getBooksForAccount(id, account.name, account.type);
+    return books.length > 0 ? books : ALL_MOCK_TITLES;
+  }, [id, account]);
+
   // Filtered titles
   const filteredTitles = useMemo(() => {
-    return ALL_MOCK_TITLES.filter((book) => {
+    return accountBooks.filter((book) => {
       const matchesQuery =
         !searchQuery.trim() ||
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -367,7 +459,7 @@ function PublisherAuthorTitlesPage() {
 
       return matchesQuery && matchesStatus;
     });
-  }, [searchQuery, statusFilter]);
+  }, [accountBooks, searchQuery, statusFilter]);
 
   // Pagination bounds
   const totalItems = filteredTitles.length;
@@ -405,18 +497,33 @@ function PublisherAuthorTitlesPage() {
       subtitle={`Complete catalogue and publishing history for ${account.name}.`}
     >
       <div className="space-y-6 p-4 md:p-8">
-        {/* Back Navigation Control */}
-        <div className="flex items-center gap-3 mb-4">
+        {/* Back Navigation Control & Breadcrumbs */}
+        <div className="flex flex-wrap items-center gap-3 mb-4">
           <Link
-            to="/pb-admin/publishers-authors/$id"
-            params={{ id }}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            to="/pb-admin/publishers-authors"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs cursor-pointer"
+            title="Back to Publishers & Authors"
           >
             <ArrowLeft size={16} />
           </Link>
-          <span className="text-sm font-normal text-foreground">
-            Back to {account.name}
-          </span>
+          <div className="flex items-center gap-2 text-xs sm:text-sm">
+            <Link
+              to="/pb-admin/publishers-authors"
+              className="font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Publishers & Authors
+            </Link>
+            <span className="text-muted-foreground">/</span>
+            <Link
+              to="/pb-admin/publishers-authors/$id"
+              params={{ id }}
+              className="font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {account.name}
+            </Link>
+            <span className="text-muted-foreground">/</span>
+            <span className="font-semibold text-foreground">eBooks</span>
+          </div>
         </div>
 
 
@@ -535,15 +642,12 @@ function PublisherAuthorTitlesPage() {
                         {/* Title & Cover Thumbnail */}
                         <td className="py-4 px-4 md:px-6">
                           <div className="flex items-center gap-3">
-                            <div
-                              className="relative flex h-14 w-9 shrink-0 flex-col items-center justify-center rounded-md text-[10px] font-bold text-white shadow-xs ring-1 ring-black/10 overflow-hidden"
-                              style={{ background: book.coverGradient }}
-                            >
-                              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-                              <span className="relative z-10 text-[10px] font-extrabold tracking-wider">
-                                {book.initials}
-                              </span>
-                            </div>
+                            <BookCover
+                              initials={book.initials}
+                              coverGradient={book.coverGradient}
+                              title={book.title}
+                              size="sm"
+                            />
 
                             <div className="min-w-0 flex-1 space-y-1">
                               <p className="font-semibold text-sm leading-snug text-foreground transition-colors group-hover:text-[var(--brand)]">

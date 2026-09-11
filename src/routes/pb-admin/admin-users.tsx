@@ -534,64 +534,88 @@ function ManageAdminUsersPage() {
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
 
         {/* Summary Metrics Grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                 Total Admins
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                <UserCog size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <UserCog size={15} />
               </span>
             </div>
-            <div className="mt-3">
-              <span className="text-2xl font-extrabold text-foreground">{stats.total}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Active team & admin accounts</p>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.total}</span>
+              <span className="text-[11px] font-medium text-muted-foreground">Active team & admin accounts</span>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                 Super Admins
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400">
-                <Crown size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <Crown size={15} />
               </span>
             </div>
-            <div className="mt-3">
-              <span className="text-2xl font-extrabold text-foreground">{stats.superAdmins}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Unrestricted system access</p>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.superAdmins}</span>
+              <span className="text-[11px] font-medium text-muted-foreground">Unrestricted system access</span>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                 Pending Invites
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                <Clock size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <Clock size={15} />
               </span>
             </div>
-            <div className="mt-3">
-              <span className="text-2xl font-extrabold text-foreground">{stats.pendingInvites}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Awaiting user acceptance</p>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.pendingInvites}</span>
+              <span className="text-[11px] font-medium text-muted-foreground">Awaiting user acceptance</span>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                 Disabled Accounts
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400">
-                <UserX size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <UserX size={15} />
               </span>
             </div>
-            <div className="mt-3">
-              <span className="text-2xl font-extrabold text-foreground">{stats.disabledCount}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Access temporarily revoked</p>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.disabledCount}</span>
+              <span className="text-[11px] font-medium text-muted-foreground">Access temporarily revoked</span>
             </div>
           </div>
         </div>

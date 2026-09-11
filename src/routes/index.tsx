@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Sun,
   Moon,
+  Building2,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
@@ -112,16 +113,16 @@ function WorkspaceSelector() {
       badge: "Vimala College Portal",
     },
     {
-      id: "library-user",
-      title: "Library User Login",
-      subtitle: "Student & Reader Portal",
+      id: "institutions",
+      title: "Institutions Login",
+      subtitle: "Multi-Role Institutional Portal",
       description:
-        "Access institutional digital library, read assigned e-books in the interactive reader, track progress, and manage student profile.",
-      icon: GraduationCap,
-      path: "/library-user/login",
+        "Unified institutional login for campus publishers, library administrators, and students & staff to access books and resources.",
+      icon: Building2,
+      path: "/institutions/login",
       color: "oklch(0.58 0.17 330)", // magenta pink
       shadow: "rgba(219, 39, 119, 0.15)",
-      badge: "Ananya Roy · Student",
+      badge: "Vimala Knowledge Hub",
     },
   ];
 

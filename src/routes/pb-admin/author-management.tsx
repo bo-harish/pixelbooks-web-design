@@ -18,6 +18,10 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/pb-admin/author-management")({
   head: () => ({
@@ -175,6 +179,21 @@ function AuthorManagementPage() {
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editAvatarUrl, setEditAvatarUrl] = useState<string | undefined>(undefined);
+
+  const {
+    modalOpen: isCropModalOpen,
+    setModalOpen: setIsCropModalOpen,
+    selectedImageSrc: cropImageSrc,
+    fileInputRef: cropFileInputRef,
+    openFilePicker: openCropFilePicker,
+    handleFileChange: handleCropFileChange,
+    handleApply: handleApplyCrop,
+    handleSelectNewFile: handleCropSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setEditAvatarUrl(dataUrl);
+    },
+  });
 
   const totalResults = 582;
   const itemsPerPage = 10;
@@ -405,21 +424,21 @@ function AuthorManagementPage() {
                     </div>
                   )}
                   {/* Pencil Edit Icon Badge */}
-                  <label className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition-transform hover:scale-105 cursor-pointer">
+                  <input
+                    type="file"
+                    ref={cropFileInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleCropFileChange}
+                  />
+                  <button
+                    type="button"
+                    onClick={openCropFilePicker}
+                    className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition-transform hover:scale-105 cursor-pointer"
+                    title="Change Author Picture"
+                  >
                     <Pencil size={14} />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const url = URL.createObjectURL(file);
-                          setEditAvatarUrl(url);
-                        }
-                      }}
-                    />
-                  </label>
+                  </button>
                 </div>
               </div>
 
@@ -476,6 +495,14 @@ function AuthorManagementPage() {
           </DialogContent>
         </Dialog>
 
+        <ProfilePictureAdjustModal
+          open={isCropModalOpen}
+          onOpenChange={setIsCropModalOpen}
+          imageSrc={cropImageSrc}
+          title="Adjust Author Picture"
+          onApply={handleApplyCrop}
+          onSelectNewFile={handleCropSelectNewFile}
+        />
       </div>
     </AppShell>
   );

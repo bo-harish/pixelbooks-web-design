@@ -1,19 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useMemo, useEffect } from "react";
 import {
   Search,
-  Check,
-  FolderTree,
   ChevronsLeft,
   ChevronsRight,
   Pencil,
   BookPlus,
   BookOpen,
+  ChevronRight,
   Plus,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { Switch } from "@/components/ui/switch";
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
+import { BookCover } from "@/components/ui/book-cover";
 import {
   Dialog,
   DialogContent,
@@ -21,8 +26,15 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { BookCover } from "@/components/ui/book-cover";
 import { toast } from "sonner";
+import {
+  getStoredCollections,
+  saveStoredCollections,
+  getCollectionBookIds,
+  FEATURED_CATALOGUE_BOOKS,
+  type CollectionItem,
+  type FeaturedBook,
+} from "@/lib/featured-collections-data";
 
 export const Route = createFileRoute("/pb-admin/featured-collections")({
   head: () => ({
@@ -39,114 +51,105 @@ export const Route = createFileRoute("/pb-admin/featured-collections")({
 
 export type StatusValue = "All" | "Enabled" | "Disabled";
 
-export interface CollectionItem {
-  id: string;
-  name: string;
-  views: number;
-  avgSalesMonthly: number;
-  status: "Enabled" | "Disabled";
-  description?: string;
-  bookCount?: number;
-  sorting?: string;
-  designLayout?: "A1 Design" | "A2 Design";
+function CollectionBooksHoverCard({ collection }: { collection: CollectionItem }) {
+  const books = useMemo(() => {
+    const bookIds = getCollectionBookIds(collection.id);
+    return bookIds
+      .map((bId) => FEATURED_CATALOGUE_BOOKS.find((b) => b.id === bId))
+      .filter((b): b is FeaturedBook => b !== undefined);
+  }, [collection.id, collection.bookCount]);
+
+  return (
+    <HoverCard openDelay={150} closeDelay={150}>
+      <HoverCardTrigger asChild>
+        <Link
+          to="/pb-admin/featured-collections/$id/books"
+          params={{ id: collection.id }}
+          className="inline-flex items-center gap-1.5 rounded-full bg-[var(--sidebar-highlight)] px-3 py-1 text-xs font-bold text-[var(--brand)] border border-[var(--brand)]/25 shadow-2xs transition-all hover:bg-[var(--brand)] hover:text-white cursor-pointer group/pill"
+          title="Manage books in this collection"
+        >
+          <BookPlus size={13} className="group-hover/pill:scale-110 transition-transform" />
+          <span>
+            {collection.bookCount ?? 0} {collection.bookCount === 1 ? "Book" : "Books"}
+          </span>
+        </Link>
+      </HoverCardTrigger>
+      <HoverCardContent
+        align="center"
+        side="top"
+        sideOffset={8}
+        className="w-80 rounded-xl border border-border bg-card p-3.5 shadow-xl text-left z-50"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-border/80 pb-2 mb-2.5">
+          <div className="flex items-center gap-2 min-w-0">
+            <BookOpen size={14} className="text-[var(--brand)] shrink-0" />
+            <p className="text-xs font-bold text-foreground truncate">
+              {collection.name}
+            </p>
+          </div>
+          <span className="shrink-0 text-[11px] font-bold text-[var(--brand)] bg-[var(--sidebar-highlight)] px-2 py-0.5 rounded-full border border-[var(--brand)]/20">
+            {books.length} {books.length === 1 ? "Title" : "Titles"}
+          </span>
+        </div>
+
+        {/* Books List */}
+        {books.length === 0 ? (
+          <div className="py-4 text-center text-xs text-muted-foreground">
+            No books assigned yet. Click to add titles.
+          </div>
+        ) : (
+          <div className="max-h-56 overflow-y-auto space-y-2 pr-1 divide-y divide-border/40">
+            {books.map((b) => (
+              <div key={b.id} className="flex items-center gap-2.5 pt-2 first:pt-0">
+                <BookCover
+                  initials={b.initials}
+                  coverGradient={b.coverGradient}
+                  title={b.title}
+                  size="xs"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-foreground truncate leading-tight">
+                    {b.title}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground truncate">
+                    {b.author}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground font-medium">
+                    {b.category} • ₹{b.price}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Footer Quick Action */}
+        <div className="pt-2 mt-2 border-t border-border/70">
+          <Link
+            to="/pb-admin/featured-collections/$id/books"
+            params={{ id: collection.id }}
+            className="flex items-center justify-between text-[11px] font-semibold text-[var(--brand)] hover:underline"
+          >
+            <span>Click to Add / Remove Books</span>
+            <ChevronRight size={13} />
+          </Link>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  );
 }
-
-interface CandidateBook {
-  id: string;
-  title: string;
-  author: string;
-  initials: string;
-  genre: string;
-}
-
-const SAMPLE_CANDIDATE_BOOKS: CandidateBook[] = [
-  { id: "b1", title: "THE VOICE FROM ROOM 03", author: "Hellen Walker", initials: "VW", genre: "Crime, Thriller" },
-  { id: "b2", title: "Foreword - Classic Literary Introductions", author: "Various Authors", initials: "FW", genre: "Classics" },
-  { id: "b3", title: "NEP 2020 - Policy Formulation In Education", author: "Dr. Ashok Alex", initials: "NEP", genre: "Education" },
-  { id: "b4", title: "A Complete History of Music for Schools", author: "W. J. Baltzell", initials: "MUS", genre: "Music" },
-  { id: "b5", title: "The Curtiss Aviation Book", author: "Glenn H. Curtiss", initials: "CAB", genre: "History" },
-  { id: "b6", title: "John M Upton - Special Edition", author: "John M Upton", initials: "JMU", genre: "Special" },
-];
-
-// Initial seed dataset matching reference design
-const INITIAL_COLLECTIONS: CollectionItem[] = [
-  {
-    id: "cat-1",
-    name: "Fantasy Fiction",
-    views: 45,
-    avgSalesMonthly: 2,
-    status: "Enabled",
-    description: "Imaginative fiction featuring magical elements and mythical worlds.",
-    bookCount: 4,
-    designLayout: "A1 Design",
-  },
-  {
-    id: "cat-2",
-    name: "Fantasy Poems",
-    views: 0,
-    avgSalesMonthly: 0,
-    status: "Enabled",
-    description: "Poetic compositions focused on mythical themes and verse.",
-    bookCount: 2,
-    designLayout: "A2 Design",
-  },
-  {
-    id: "cat-3",
-    name: "Drama",
-    views: 2,
-    avgSalesMonthly: 0,
-    status: "Enabled",
-    description: "Theatrical stories focusing on realistic characters and emotional conflict.",
-    bookCount: 5,
-    designLayout: "A1 Design",
-  },
-  {
-    id: "cat-4",
-    name: "General & Literary Fiction",
-    views: 53,
-    avgSalesMonthly: 7,
-    status: "Enabled",
-    description: "Acclaimed literary works, narrative prose, and contemporary storytelling.",
-    bookCount: 8,
-    designLayout: "A2 Design",
-  },
-  {
-    id: "cat-5",
-    name: "Tech Cat2",
-    views: 0,
-    avgSalesMonthly: 0,
-    status: "Enabled",
-    description: "Technical literature, programming guides, and software engineering.",
-    bookCount: 3,
-    designLayout: "A1 Design",
-  },
-  {
-    id: "cat-6",
-    name: "Funny and Humorous",
-    views: 0,
-    avgSalesMonthly: 0,
-    status: "Enabled",
-    description: "Lighthearted comedy, satire, jokes, and funny prose.",
-    bookCount: 1,
-    designLayout: "A2 Design",
-  },
-  {
-    id: "cat-7",
-    name: "Science-Fiction & Fantasy",
-    views: 2,
-    avgSalesMonthly: 0,
-    status: "Enabled",
-    description: "Futuristic technology, space exploration, and speculative worlds.",
-    bookCount: 6,
-    designLayout: "A1 Design",
-  },
-];
 
 function FeaturedCollectionsPage() {
-  const [collections, setCollections] = useState<CollectionItem[]>(INITIAL_COLLECTIONS);
+  const [collections, setCollections] = useState<CollectionItem[]>(() => getStoredCollections());
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusValue>("All");
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Sync collections whenever mounted or focused
+  useEffect(() => {
+    setCollections(getStoredCollections());
+  }, []);
 
   // Add Collection Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -188,15 +191,12 @@ function FeaturedCollectionsPage() {
       designLayout: addDesignInput as "A1 Design" | "A2 Design",
     };
 
-    setCollections((prev) => [newCollection, ...prev]);
+    const updated = [newCollection, ...collections];
+    setCollections(updated);
+    saveStoredCollections(updated);
     toast.success(`Featured Collection "${addNameInput.trim()}" created successfully!`);
     setIsAddModalOpen(false);
   };
-
-  // Manage Books Modal State
-  const [managingBooksCollection, setManagingBooksCollection] = useState<CollectionItem | null>(null);
-  const [selectedBookIds, setSelectedBookIds] = useState<string[]>(["b1", "b2", "b3"]);
-  const [bookSearchQuery, setBookSearchQuery] = useState("");
 
   const itemsPerPage = 10;
   const simulatedTotalBase = 122;
@@ -225,18 +225,18 @@ function FeaturedCollectionsPage() {
   }, [filteredCollections, currentPage, itemsPerPage]);
 
   const handleToggleStatus = (collectionId: string) => {
-    setCollections((prev) =>
-      prev.map((c) => {
-        if (c.id === collectionId) {
-          const nextStatus = c.status === "Enabled" ? "Disabled" : "Enabled";
-          toast.success(`Status updated for "${c.name}"`, {
-            description: `Collection is now ${nextStatus}.`,
-          });
-          return { ...c, status: nextStatus };
-        }
-        return c;
-      })
-    );
+    const updated = collections.map((c) => {
+      if (c.id === collectionId) {
+        const nextStatus: "Enabled" | "Disabled" = c.status === "Enabled" ? "Disabled" : "Enabled";
+        toast.success(`Status updated for "${c.name}"`, {
+          description: `Collection is now ${nextStatus}.`,
+        });
+        return { ...c, status: nextStatus };
+      }
+      return c;
+    });
+    setCollections(updated);
+    saveStoredCollections(updated);
   };
 
   // Open Edit Collection Dialog
@@ -255,59 +255,23 @@ function FeaturedCollectionsPage() {
       return;
     }
 
-    setCollections((prev) =>
-      prev.map((c) =>
-        c.id === editingCollection.id
-          ? {
+    const updated = collections.map((c) =>
+      c.id === editingCollection.id
+        ? {
             ...c,
             name: editNameInput.trim(),
             description: editDescInput.trim(),
             sorting: editSortingInput.trim(),
             designLayout: editDesignInput as "A1 Design" | "A2 Design",
           }
-          : c
-      )
+        : c
     );
 
+    setCollections(updated);
+    saveStoredCollections(updated);
     toast.success(`Collection "${editNameInput.trim()}" updated!`);
     setEditingCollection(null);
   };
-
-  // Open Add/Remove Books Dialog
-  const handleOpenManageBooksModal = (item: CollectionItem) => {
-    setManagingBooksCollection(item);
-    setBookSearchQuery("");
-    // Default selection
-    setSelectedBookIds(["b1", "b2", "b3"]);
-  };
-
-  const handleToggleBookSelection = (bookId: string) => {
-    setSelectedBookIds((prev) =>
-      prev.includes(bookId) ? prev.filter((id) => id !== bookId) : [...prev, bookId]
-    );
-  };
-
-  const handleSaveManageBooks = () => {
-    if (!managingBooksCollection) return;
-    setCollections((prev) =>
-      prev.map((c) =>
-        c.id === managingBooksCollection.id
-          ? { ...c, bookCount: selectedBookIds.length }
-          : c
-      )
-    );
-
-    toast.success(`Books updated for "${managingBooksCollection.name}" (${selectedBookIds.length} books selected)`);
-    setManagingBooksCollection(null);
-  };
-
-  const filteredCandidateBooks = useMemo(() => {
-    if (!bookSearchQuery.trim()) return SAMPLE_CANDIDATE_BOOKS;
-    const q = bookSearchQuery.toLowerCase().trim();
-    return SAMPLE_CANDIDATE_BOOKS.filter(
-      (b) => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || b.genre.toLowerCase().includes(q)
-    );
-  }, [bookSearchQuery]);
 
   const statusLabel =
     statusFilter === "All" ? "All Status" : statusFilter === "Enabled" ? "Enabled" : "Disabled";
@@ -326,7 +290,7 @@ function FeaturedCollectionsPage() {
             />
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search collections..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -371,8 +335,8 @@ function FeaturedCollectionsPage() {
                 <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <th className="py-4 pl-6 pr-4 font-semibold">Collection Name</th>
                   <th className="py-4 pr-4 font-semibold">Design Layout</th>
+                  <th className="py-4 pr-4 font-semibold text-center">Books</th>
                   <th className="py-4 pr-4 font-semibold text-center">Views</th>
-                  <th className="py-4 pr-4 font-semibold text-center">Avg. Sales (Monthly)</th>
                   <th className="py-4 pr-4 font-semibold text-center">Status</th>
                   <th className="py-4 pr-6 font-semibold text-right">Action</th>
                 </tr>
@@ -393,11 +357,15 @@ function FeaturedCollectionsPage() {
                       {/* Name Column */}
                       <td className="py-4 pl-6 pr-4">
                         <div>
-                          <p className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors">
+                          <Link
+                            to="/pb-admin/featured-collections/$id/books"
+                            params={{ id: item.id }}
+                            className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors hover:underline inline-block"
+                          >
                             {item.name}
-                          </p>
+                          </Link>
                           {item.description && (
-                            <p className="text-xs text-muted-foreground line-clamp-1">
+                            <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
                               {item.description}
                             </p>
                           )}
@@ -411,14 +379,14 @@ function FeaturedCollectionsPage() {
                         </span>
                       </td>
 
+                      {/* Books Count Column (Direct Link to Manage Books with Hover Popup) */}
+                      <td className="py-4 pr-4 text-center">
+                        <CollectionBooksHoverCard collection={item} />
+                      </td>
+
                       {/* Views Column */}
                       <td className="py-4 pr-4 text-center font-medium text-foreground">
                         {item.views}
-                      </td>
-
-                      {/* Avg Sales Monthly Column */}
-                      <td className="py-4 pr-4 text-center font-medium text-foreground">
-                        {item.avgSalesMonthly}
                       </td>
 
                       {/* Status Switch Toggle Column */}
@@ -431,24 +399,24 @@ function FeaturedCollectionsPage() {
                         </div>
                       </td>
 
-                      {/* Action Column: Add/Remove Books & Edit */}
+                      {/* Action Column: High Priority Add/Remove Books Button & Secondary Edit */}
                       <td className="py-4 pr-6 text-right whitespace-nowrap">
                         <div className="inline-flex items-center justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenManageBooksModal(item)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
+                          <Link
+                            to="/pb-admin/featured-collections/$id/books"
+                            params={{ id: item.id }}
+                            className="inline-flex items-center gap-2 rounded-lg bg-[var(--brand)] px-3.5 py-2 text-xs font-bold text-white shadow-2xs transition-all hover:bg-[var(--brand)]/90 hover:shadow-sm cursor-pointer"
                           >
-                            <BookPlus size={14} className="text-[var(--brand)]" />
-                            <span>Add/Remove Books</span>
-                          </button>
+                            <BookPlus size={15} strokeWidth={2.5} />
+                            <span>Add / Remove Books</span>
+                          </Link>
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(item)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
+                            className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer shadow-2xs"
+                            title="Edit Collection Details"
                           >
-                            <Pencil size={13} className="text-muted-foreground" />
-                            <span>Edit</span>
+                            <Pencil size={13} />
                           </button>
                         </div>
                       </td>
@@ -491,10 +459,11 @@ function FeaturedCollectionsPage() {
                   key={pg}
                   type="button"
                   onClick={() => setCurrentPage(pg)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${pg === currentPage
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
+                    pg === currentPage
                       ? "bg-[var(--brand)] text-white shadow-2xs"
                       : "border border-border bg-card text-foreground hover:bg-secondary"
-                    }`}
+                  }`}
                 >
                   {pg}
                 </button>
@@ -684,114 +653,6 @@ function FeaturedCollectionsPage() {
               className="h-10 rounded-lg bg-[var(--brand)] px-5 text-xs font-semibold text-white shadow-2xs hover:opacity-90 cursor-pointer"
             >
               Save Changes
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Add / Remove Books Modal */}
-      <Dialog open={!!managingBooksCollection} onOpenChange={(open) => !open && setManagingBooksCollection(null)}>
-        <DialogContent className="sm:max-w-lg bg-card border-border">
-          <DialogHeader>
-            <DialogTitle className="text-base font-bold text-foreground flex items-center justify-between">
-              <span>Add / Remove Books</span>
-              {managingBooksCollection && (
-                <span className="text-xs font-normal text-muted-foreground">
-                  ({managingBooksCollection.name})
-                </span>
-              )}
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4 py-2">
-            {/* Search Books */}
-            <div className="relative">
-              <Search
-                size={15}
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              />
-              <input
-                type="text"
-                value={bookSearchQuery}
-                onChange={(e) => setBookSearchQuery(e.target.value)}
-                placeholder="Search titles or authors to add..."
-                className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-4 text-xs outline-none text-foreground placeholder:text-muted-foreground focus:border-[var(--brand)]"
-              />
-            </div>
-
-            {/* Selected Count Indicator */}
-            <div className="flex items-center justify-between px-1">
-              <span className="text-xs font-semibold text-muted-foreground">
-                Available Catalogue Titles
-              </span>
-              <span className="inline-flex items-center rounded-full bg-[var(--sidebar-highlight)] px-2.5 py-0.5 text-xs font-bold text-[var(--brand)] border border-[var(--brand)]/20">
-                {selectedBookIds.length} Selected
-              </span>
-            </div>
-
-            {/* Candidate Books List */}
-            <div className="max-h-60 overflow-y-auto space-y-2 pr-1 divide-y divide-border/40 border border-border rounded-xl p-2 bg-secondary/10">
-              {filteredCandidateBooks.length === 0 ? (
-                <p className="py-6 text-center text-xs text-muted-foreground">
-                  No books found matching search term.
-                </p>
-              ) : (
-                filteredCandidateBooks.map((book) => {
-                  const isChecked = selectedBookIds.includes(book.id);
-                  return (
-                    <label
-                      key={book.id}
-                      className={`flex items-center justify-between p-2.5 rounded-lg transition-colors cursor-pointer ${isChecked ? "bg-[var(--sidebar-highlight)]/40 border border-[var(--brand)]/20" : "hover:bg-secondary/60"
-                        }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => handleToggleBookSelection(book.id)}
-                          className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] cursor-pointer"
-                        />
-                        <BookCover
-                          initials={book.initials}
-                          coverGradient="linear-gradient(135deg, #0f172a, #1e293b)"
-                          title={book.title}
-                          size="xs"
-                        />
-                        <div>
-                          <p className="text-xs font-bold text-foreground leading-snug line-clamp-1">
-                            {book.title}
-                          </p>
-                          <p className="text-[11px] text-muted-foreground mt-0.5">
-                            {book.author} • {book.genre}
-                          </p>
-                        </div>
-                      </div>
-                      {isChecked && (
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brand)] text-white text-[10px]">
-                          <Check size={12} strokeWidth={3} />
-                        </span>
-                      )}
-                    </label>
-                  );
-                })
-              )}
-            </div>
-          </div>
-
-          <DialogFooter className="flex items-center justify-end gap-2 pt-2">
-            <button
-              type="button"
-              onClick={() => setManagingBooksCollection(null)}
-              className="h-10 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSaveManageBooks}
-              className="h-10 rounded-lg bg-[var(--brand)] px-5 text-xs font-semibold text-white shadow-2xs hover:opacity-90 cursor-pointer"
-            >
-              Save Books
             </button>
           </DialogFooter>
         </DialogContent>

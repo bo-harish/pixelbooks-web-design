@@ -19,6 +19,10 @@ import {
   UserCheck,
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/library-user/profile")({
   head: () => ({
@@ -96,6 +100,22 @@ function LibraryUserProfilePage() {
   const [readerTheme, setReaderTheme] = useState<"sepia" | "light" | "dark">("sepia");
   const [readerFontSize, setReaderFontSize] = useState<"sm" | "base" | "lg">("base");
   const [expiryReminder, setExpiryReminder] = useState(true);
+  const [studentPhoto, setStudentPhoto] = useState<string | null>(null);
+
+  const {
+    modalOpen,
+    setModalOpen,
+    selectedImageSrc,
+    fileInputRef,
+    openFilePicker,
+    handleFileChange,
+    handleApply,
+    handleSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setStudentPhoto(dataUrl);
+    },
+  });
 
   const handleSave = () => {
     toast.success("Student profile and reading preferences updated");
@@ -150,12 +170,27 @@ function LibraryUserProfilePage() {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 rounded-xl border border-border bg-emerald-500/5 p-5 dark:bg-emerald-500/10">
               <div className="relative h-24 w-24 shrink-0">
-                <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shadow-md">
-                  <GraduationCap size={40} />
-                </div>
+                {studentPhoto ? (
+                  <img
+                    src={studentPhoto}
+                    alt={studentName}
+                    className="h-full w-full rounded-full object-cover border-2 border-emerald-500/40 shadow-md"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shadow-md">
+                    <GraduationCap size={40} />
+                  </div>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
                 <button
                   type="button"
-                  onClick={() => toast.info("Photo upload opened")}
+                  onClick={openFilePicker}
                   className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
                   title="Upload Student Photo"
                 >
@@ -358,6 +393,15 @@ function LibraryUserProfilePage() {
             Save Student Profile
           </button>
         </div>
+
+        <ProfilePictureAdjustModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          imageSrc={selectedImageSrc}
+          title="Adjust Student Photo"
+          onApply={handleApply}
+          onSelectNewFile={handleSelectNewFile}
+        />
       </main>
     </div>
   );

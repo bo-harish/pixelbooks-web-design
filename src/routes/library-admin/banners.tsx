@@ -44,8 +44,8 @@ export const Route = createFileRoute("/library-admin/banners")({
 export interface LibraryBannerItem {
   id: string;
   title: string;
-  fromDate: string;
-  toDate: string;
+  fromDate?: string;
+  toDate?: string;
   imageColor: string;
   webCover?: string;
   mobileCover?: string;
@@ -83,8 +83,8 @@ export function LibraryAdminBannersPage() {
 
   // Form Inputs (ONLY original fields preserved)
   const [titleInput, setTitleInput] = useState("");
-  const [fromDateInput, setFromDateInput] = useState("2026-07-25");
-  const [toDateInput, setToDateInput] = useState("2026-12-31");
+  const [fromDateInput, setFromDateInput] = useState("");
+  const [toDateInput, setToDateInput] = useState("");
   const [webCoverUploaded, setWebCoverUploaded] = useState<string | null>(null);
   const [mobileCoverUploaded, setMobileCoverUploaded] = useState<string | null>(null);
 
@@ -103,7 +103,7 @@ export function LibraryAdminBannersPage() {
   }, [banners, searchQuery, statusFilter]);
 
   // Format Date string helper
-  const formatDateString = (dateStr: string) => {
+  const formatDateString = (dateStr?: string) => {
     if (!dateStr) return "-";
     const d = new Date(dateStr);
     if (isNaN(d.getTime())) return dateStr;
@@ -136,8 +136,8 @@ export function LibraryAdminBannersPage() {
   const handleOpenEditBanner = (item: LibraryBannerItem) => {
     setEditingBanner(item);
     setTitleInput(item.title);
-    setFromDateInput(item.fromDate || "2026-07-25");
-    setToDateInput(item.toDate || "2026-12-31");
+    setFromDateInput(item.fromDate || "");
+    setToDateInput(item.toDate || "");
     setWebCoverUploaded(item.webCover || item.imageColor);
     setMobileCoverUploaded(item.mobileCover || item.imageColor);
     setViewMode("create");
@@ -147,8 +147,8 @@ export function LibraryAdminBannersPage() {
   const handleOpenAddNewBanner = () => {
     setEditingBanner(null);
     setTitleInput("");
-    setFromDateInput("2026-07-25");
-    setToDateInput("2026-12-31");
+    setFromDateInput("");
+    setToDateInput("");
     setWebCoverUploaded(null);
     setMobileCoverUploaded(null);
     setViewMode("create");
@@ -434,7 +434,7 @@ export function LibraryAdminBannersPage() {
                   {/* Start Date - End Date (From Date - To Date) */}
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Start Date - End Date <span className="text-red-500">*</span>
+                      Start Date - End Date <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                     </label>
                     <div className="flex items-center gap-2 w-full">
                       <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">

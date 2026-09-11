@@ -252,22 +252,22 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card p-4 sm:p-5 transition-shadow hover:shadow-md justify-between min-h-[110px] sm:min-h-[120px]">
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{label}</span>
         <span
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
           style={{
-            backgroundColor: accent ? `color-mix(in oklab, ${accent} 12%, transparent)` : "var(--sidebar-highlight)",
+            backgroundColor: accent ? `color-mix(in oklab, ${accent} 10%, transparent)` : "color-mix(in oklab, var(--brand) 10%, transparent)",
             color: accent ?? "var(--brand)",
           }}
         >
-          <Icon size={18} />
+          <Icon size={15} />
         </span>
       </div>
-      <div>
-        <p className="text-2xl font-extrabold tracking-tight text-foreground">{value}</p>
-        {sublabel && <p className="mt-0.5 text-xs text-muted-foreground">{sublabel}</p>}
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{value}</p>
+        {sublabel && <span className="text-[11px] font-medium text-muted-foreground">{sublabel}</span>}
       </div>
     </div>
   );
@@ -432,7 +432,7 @@ function CartAnalysisPage() {
         </div>
 
         {/* Summary Stat Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             icon={ShoppingCart}
             label="Total Times Added"

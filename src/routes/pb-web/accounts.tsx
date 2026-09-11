@@ -53,6 +53,10 @@ import { PbWebHeader } from "@/components/pb-web-header";
 import { PbWebFooter } from "@/components/pb-web-footer";
 import { toast } from "sonner";
 import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
+import {
   notifications as notificationsData,
   groupByDate,
   type NotificationItem,
@@ -672,6 +676,22 @@ function PixelBooksAccountPage() {
   const [email, setEmail] = useState("harish@brandoptics.com");
   const [phone, setPhone] = useState("9387737551");
   const [bio, setBio] = useState("Lifelong reader, STEM educator, and collector of regional folklore & literature.");
+  const [userAvatar, setUserAvatar] = useState<string>("/images/harish-avatar.png");
+
+  const {
+    modalOpen,
+    setModalOpen,
+    selectedImageSrc,
+    fileInputRef,
+    openFilePicker,
+    handleFileChange,
+    handleApply,
+    handleSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setUserAvatar(dataUrl);
+    },
+  });
 
   // Address Form States
   const [addressLine1, setAddressLine1] = useState("No 4");
@@ -754,13 +774,20 @@ function PixelBooksAccountPage() {
 
               <div className="relative mt-2 mb-3">
                 <img
-                  src="/images/harish-avatar.png"
-                  alt="Harish K"
+                  src={userAvatar}
+                  alt={fullName}
                   className="h-20 w-20 rounded-full object-cover ring-4 ring-background shadow-md"
+                />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
                 />
                 <button
                   type="button"
-                  onClick={() => toast.info("Photo upload opened. Select an image file.")}
+                  onClick={openFilePicker}
                   title="Change avatar"
                   className="absolute bottom-0 right-0 p-1.5 rounded-full bg-[var(--brand)] text-white shadow-md hover:opacity-90 transition-opacity cursor-pointer ring-2 ring-background"
                 >
@@ -2489,6 +2516,15 @@ function PixelBooksAccountPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ProfilePictureAdjustModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        imageSrc={selectedImageSrc}
+        title="Adjust Profile Picture"
+        onApply={handleApply}
+        onSelectNewFile={handleSelectNewFile}
+      />
     </div>
   );
 }

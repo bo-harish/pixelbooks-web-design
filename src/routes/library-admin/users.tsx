@@ -30,6 +30,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/library-admin/users")({
   component: LibraryAdminUsersPage,
@@ -284,6 +288,22 @@ function LibraryAdminUsersPage() {
   const [editPinCode, setEditPinCode] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editPhone, setEditPhone] = useState("");
+  const [editUserAvatar, setEditUserAvatar] = useState<string | null>(null);
+
+  const {
+    modalOpen: isUserCropModalOpen,
+    setModalOpen: setIsUserCropModalOpen,
+    selectedImageSrc: userCropImageSrc,
+    fileInputRef: userCropFileInputRef,
+    openFilePicker: openUserCropFilePicker,
+    handleFileChange: handleUserCropFileChange,
+    handleApply: handleApplyUserCrop,
+    handleSelectNewFile: handleUserCropSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setEditUserAvatar(dataUrl);
+    },
+  });
 
   // Import User Upload states
   const [uploadFile, setUploadFile] = useState<File | null>(null);
@@ -577,21 +597,37 @@ function LibraryAdminUsersPage() {
             {/* Header: Avatar and User Type Selection */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/80">
               <div className="relative h-20 w-20 shrink-0">
-                <div
-                  className={`flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md transition-colors ${
-                    editUserType === "Staff"
-                      ? "bg-indigo-500/15 text-indigo-600 dark:bg-indigo-500/25 dark:text-indigo-400"
-                      : "bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400"
-                  }`}
-                >
-                  {editUserType === "Staff" ? (
-                    <UserCog size={36} strokeWidth={2} />
-                  ) : (
-                    <GraduationCap size={36} strokeWidth={2} />
-                  )}
-                </div>
+                {editUserAvatar ? (
+                  <img
+                    src={editUserAvatar}
+                    alt={editName}
+                    className="h-full w-full rounded-full object-cover border-2 border-background shadow-md"
+                  />
+                ) : (
+                  <div
+                    className={`flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md transition-colors ${
+                      editUserType === "Staff"
+                        ? "bg-indigo-500/15 text-indigo-600 dark:bg-indigo-500/25 dark:text-indigo-400"
+                        : "bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400"
+                    }`}
+                  >
+                    {editUserType === "Staff" ? (
+                      <UserCog size={36} strokeWidth={2} />
+                    ) : (
+                      <GraduationCap size={36} strokeWidth={2} />
+                    )}
+                  </div>
+                )}
+                <input
+                  type="file"
+                  ref={userCropFileInputRef}
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleUserCropFileChange}
+                />
                 <button
                   type="button"
+                  onClick={openUserCropFilePicker}
                   className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
                   title="Upload Photo"
                 >
@@ -906,6 +942,15 @@ function LibraryAdminUsersPage() {
             </div>
           </form>
         </div>
+
+        <ProfilePictureAdjustModal
+          open={isUserCropModalOpen}
+          onOpenChange={setIsUserCropModalOpen}
+          imageSrc={userCropImageSrc}
+          title="Adjust User Photo"
+          onApply={handleApplyUserCrop}
+          onSelectNewFile={handleUserCropSelectNewFile}
+        />
       </AppShell>
     );
   }

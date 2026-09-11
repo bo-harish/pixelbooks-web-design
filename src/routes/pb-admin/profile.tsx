@@ -21,6 +21,10 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/pb-admin/profile")({
   head: () => ({
@@ -96,6 +100,22 @@ function PbAdminProfilePage() {
   const [sessionTimeout, setSessionTimeout] = useState("30");
   const [auditLoggingEnabled, setAuditLoggingEnabled] = useState(true);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [adminAvatar, setAdminAvatar] = useState<string | null>(null);
+
+  const {
+    modalOpen,
+    setModalOpen,
+    selectedImageSrc,
+    fileInputRef,
+    openFilePicker,
+    handleFileChange,
+    handleApply,
+    handleSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setAdminAvatar(dataUrl);
+    },
+  });
 
   const handleSave = () => {
     toast.success("Admin profile updated successfully");
@@ -112,12 +132,27 @@ function PbAdminProfilePage() {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 rounded-xl border border-border bg-purple-500/5 p-5 dark:bg-purple-500/10">
               <div className="relative h-24 w-24 shrink-0">
-                <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-purple-500/30 bg-purple-500/15 text-purple-600 dark:text-purple-400 shadow-md">
-                  <Crown size={40} />
-                </div>
+                {adminAvatar ? (
+                  <img
+                    src={adminAvatar}
+                    alt={adminName}
+                    className="h-full w-full rounded-full object-cover border-2 border-purple-500/40 shadow-md"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-purple-500/30 bg-purple-500/15 text-purple-600 dark:text-purple-400 shadow-md">
+                    <Crown size={40} />
+                  </div>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
                 <button
                   type="button"
-                  onClick={() => toast.info("Photo upload opened")}
+                  onClick={openFilePicker}
                   className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
                   title="Upload Admin Avatar"
                 >
@@ -316,6 +351,15 @@ function PbAdminProfilePage() {
           toast.success("Verification successful");
         }}
       />
+
+      <ProfilePictureAdjustModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        imageSrc={selectedImageSrc}
+        title="Adjust Administrator Avatar"
+        onApply={handleApply}
+        onSelectNewFile={handleSelectNewFile}
+      />
     </AppShell>
   );
 }
@@ -397,7 +441,9 @@ function OtpModal({
             {mobileOtp.map((digit, idx) => (
               <input
                 key={`m-${idx}`}
-                ref={(el) => (mobileRefs.current[idx] = el)}
+                ref={(el) => {
+                  mobileRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}
@@ -414,7 +460,9 @@ function OtpModal({
             {emailOtp.map((digit, idx) => (
               <input
                 key={`e-${idx}`}
-                ref={(el) => (emailRefs.current[idx] = el)}
+                ref={(el) => {
+                  emailRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}

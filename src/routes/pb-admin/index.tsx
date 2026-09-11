@@ -13,6 +13,8 @@ import {
   ShoppingBag,
   Building2,
   TrendingDown,
+  ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
@@ -47,6 +49,7 @@ export const Route = createFileRoute("/pb-admin/")({
 type Stat = {
   label: string;
   value: string;
+  delta?: number;
   sub: string;
   icon: LucideIcon;
 };
@@ -55,19 +58,21 @@ const retailStats: Stat[] = [
   {
     label: "Total eBook Sales",
     value: "₹48,896.46",
-    sub: "-63.56% lower than last month",
+    delta: -63.56,
+    sub: "lower than last month",
     icon: Tag,
   },
   {
     label: "Total eBooks Sold",
     value: "44",
-    sub: "117% purchased last month",
+    delta: 117,
+    sub: "purchased last month",
     icon: Users,
   },
   {
     label: "Total eBooks Published",
     value: "22",
-    sub: "25 eBooks published last month",
+    sub: "eBooks published last month",
     icon: BookOpen,
   },
 ];
@@ -364,7 +369,7 @@ function LibraryDashboardView() {
   return (
     <div className="space-y-6">
       {/* 4 Stat Cards Row */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {libraryStatsData.map((stat) => {
           const Icon = stat.icon;
           const currentRange = cardRanges[stat.id] || stat.defaultRange;
@@ -372,36 +377,44 @@ function LibraryDashboardView() {
           return (
             <div
               key={stat.id}
-              className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs transition-all hover:shadow-md min-h-[148px]"
+              className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 shadow-2xs transition-all hover:shadow-xs min-h-[118px]"
             >
-              {/* Header: Icon + Label */}
-              <div className="flex items-center gap-3">
-                <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                  style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
-                >
-                  <Icon size={18} />
-                </span>
-                <span className="text-xs font-semibold text-muted-foreground leading-tight">
+              {/* Header: Label on Left + Soft Badge on Right */}
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider leading-tight">
                   {stat.label}
+                </span>
+                <span
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                  style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+                >
+                  <Icon size={15} />
                 </span>
               </div>
 
               {/* Body: Value */}
-              <div className="mt-3">
-                <p className="text-2xl font-extrabold tracking-tight text-foreground">
+              <div className="mt-1.5">
+                <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
                   {stat.value}
                 </p>
               </div>
 
               {/* Footer: Subtext on left + Dropdown Pill on right */}
-              <div className="mt-3 flex items-center justify-between gap-2 border-t border-border/40 pt-2.5">
-                <div className="text-[11.5px]">
-                  {stat.changePct ? (
-                    <span className="font-bold text-teal-600 dark:text-teal-400 mr-1">
-                      {stat.changePct}
-                    </span>
-                  ) : null}
+              <div className="mt-2 flex items-center justify-between gap-2 border-t border-border/40 pt-2">
+                <div className="flex items-center gap-1 text-[11px]">
+                  {stat.changePct ? (() => {
+                    const isUp = !stat.changePct.startsWith("-");
+                    const absVal = stat.changePct.replace(/^[+-]/, "");
+                    return (
+                      <span
+                        className="inline-flex items-center gap-0.5 font-semibold"
+                        style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
+                      >
+                        {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                        {absVal}
+                      </span>
+                    );
+                  })() : null}
                   {stat.changeLabel ? (
                     <span className="text-muted-foreground">{stat.changeLabel}</span>
                   ) : null}
@@ -433,8 +446,8 @@ function LibraryDashboardView() {
                 {fySelection === "FY (2026 - 2027)"
                   ? "Apr 2026 - Mar 2027"
                   : fySelection === "FY (2025 - 2026)"
-                  ? "Apr 2025 - Mar 2026"
-                  : "Apr 2024 - Mar 2025"}
+                    ? "Apr 2025 - Mar 2026"
+                    : "Apr 2024 - Mar 2025"}
               </p>
             </div>
 
@@ -543,8 +556,8 @@ function LibraryDashboardView() {
                     {item.name === "APJ Abdul Kalam Technological University"
                       ? "APJ Abdul K..."
                       : item.name === "The District Central Library, Salem"
-                      ? "The District ..."
-                      : "National Uni..."}
+                        ? "The District ..."
+                        : "National Uni..."}
                   </span>
                 </div>
                 <span className="text-xs font-bold text-foreground">{item.value}%</span>
@@ -706,31 +719,46 @@ function RetailDashboardView() {
         </div>
       </div>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {retailStats.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
-              className="flex flex-col rounded-xl border border-border bg-card p-5 shadow-2xs transition-shadow hover:shadow-md justify-between min-h-[128px]"
+              className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                   {stat.label}
                 </span>
                 <span
-                  className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
-                  style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                  style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
                 >
-                  <Icon size={18} />
+                  <Icon size={15} />
                 </span>
               </div>
 
-              <div className="mt-2">
-                <p className="text-2xl font-extrabold tracking-tight text-foreground">
+              <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+                <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
                   {stat.value}
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">{stat.sub}</p>
+                {stat.delta !== undefined ? (
+                  <div className="flex items-center gap-1 text-[11px]">
+                    <span
+                      className="inline-flex items-center gap-0.5 font-semibold"
+                      style={{ color: stat.delta >= 0 ? "var(--success)" : "var(--danger)" }}
+                    >
+                      {stat.delta >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                      {Math.abs(stat.delta).toFixed(2).replace(/\.00$/, "")}%
+                    </span>
+                    <span className="text-muted-foreground">{stat.sub}</span>
+                  </div>
+                ) : stat.sub ? (
+                  <span className="text-[11px] font-medium text-muted-foreground">
+                    {stat.sub}
+                  </span>
+                ) : null}
               </div>
             </div>
           );

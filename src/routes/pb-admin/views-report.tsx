@@ -113,16 +113,19 @@ function applyPresetDates(opt: string, setStart: (v: string) => void, setEnd: (v
 
 function StatCard({ icon: Icon, label, value, sublabel, iconClass }: { icon: React.ComponentType<{ size?: number }>; label: string; value: string; sublabel?: string; iconClass?: string }) {
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card p-4 sm:p-5 transition-shadow hover:shadow-md justify-between min-h-[110px] sm:min-h-[120px]">
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
-        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconClass || "bg-[var(--sidebar-highlight)] text-[var(--brand)]"}`}>
-          <Icon size={18} />
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${iconClass || ""}`}
+          style={!iconClass ? { backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" } : undefined}
+        >
+          <Icon size={15} />
         </span>
       </div>
-      <div>
-        <p className="text-2xl font-extrabold tracking-tight text-foreground">{value}</p>
-        {sublabel && <p className="mt-0.5 text-xs text-muted-foreground">{sublabel}</p>}
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{value}</p>
+        {sublabel && <span className="text-[11px] font-medium text-muted-foreground">{sublabel}</span>}
       </div>
     </div>
   );
@@ -380,7 +383,7 @@ function EntityReport({ type, onBack }: { type: "Publisher" | "Author"; onBack: 
           <DateRangePickers start={start} end={end} onStart={setStart} onEnd={setEnd} onPreset={() => setPreset("Custom")} />
         </FilterHeader>
 
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
           <StatCard icon={Eye}      label="Total Views"  value={totalViews.toLocaleString("en-IN")} sublabel={`Across ${totalTitles} title${totalTitles !== 1 ? 's' : ''}`} />
           <StatCard icon={BookOpen} label="Total Titles" value={totalTitles.toLocaleString("en-IN")} sublabel="Linked to this entity" />
           <StatCard icon={TrendingUp} label="Top Views"  value={topEntity ? topEntity.totalViews.toLocaleString("en-IN") : "0"} sublabel={topEntity ? topEntity.name : "No data"} />
@@ -523,7 +526,7 @@ function TitleReport({ onBack }: { onBack: () => void }) {
           <DateRangePickers start={start} end={end} onStart={setStart} onEnd={setEnd} onPreset={() => setPreset("Custom")} />
         </FilterHeader>
 
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatCard icon={Eye}        label="Total Views"     value={totalViews.toLocaleString("en-IN")} sublabel="In current period" />
           <StatCard icon={BookOpen}   label="Titles Shown"    value={filtered.length.toString()} sublabel="Matching filters" />
           <StatCard icon={TrendingUp} label="Avg Views/Title" value={filtered.length ? Math.round(totalViews / filtered.length).toString() : "0"} sublabel="Per title average" />
@@ -730,7 +733,7 @@ function CategoryReport({ onBack }: { onBack: () => void }) {
           <DateRangePickers start={start} end={end} onStart={setStart} onEnd={setEnd} onPreset={() => setPreset("Custom")} />
         </FilterHeader>
 
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatCard icon={Eye}        label="Total Views"      value={totalViews.toLocaleString("en-IN")} sublabel="All categories" />
           <StatCard icon={FolderOpen} label="Categories"       value={categoryData.length.toString()} sublabel="Unique categories" />
           <StatCard icon={BookOpen}   label="Total Titles"     value={titleViewsData.length.toString()} sublabel="Tracked titles" />
@@ -860,11 +863,11 @@ function ViewsDashboard({ onSelect }: { onSelect: (mode: Exclude<ReportMode, nul
     <AppShell title="Book Views" subtitle="Select a report type to explore view analytics.">
       <div className="space-y-6 p-4 md:p-8">
         {/* Summary strip */}
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatCard icon={Eye}       label="Total Views"       value={totalViews.toLocaleString("en-IN")} sublabel="Across all titles" />
           <StatCard icon={BookOpen}  label="Tracked Titles"    value={titleViewsData.length.toString()} sublabel="In the catalog" />
-          <StatCard icon={Building2} label="Publishers"        value={publishers.length.toString()} sublabel="Active publishers" iconClass="bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20" />
-          <StatCard icon={Feather}   label="Authors"           value={authors.length.toString()} sublabel="Registered authors" iconClass="bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20" />
+          <StatCard icon={Building2} label="Publishers"        value={publishers.length.toString()} sublabel="Active publishers" iconClass="bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400" />
+          <StatCard icon={Feather}   label="Authors"           value={authors.length.toString()} sublabel="Registered authors" iconClass="bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400" />
         </div>
 
         {/* 4 report cards */}

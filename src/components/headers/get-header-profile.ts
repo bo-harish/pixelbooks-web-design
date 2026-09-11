@@ -55,4 +55,14 @@ export function getProfileRoute(pathname: string): string {
   return "/publisher/profile";
 }
 
+export function getSettingsRoute(pathname: string): string {
+  if (pathname.startsWith("/pb-admin-lib")) {
+    return "/pb-admin-lib/settings";
+  }
+  if (pathname.startsWith("/pb-admin")) {
+    return "/pb-admin/settings";
+  }
+  return "/publisher/settings";
+}
+
 

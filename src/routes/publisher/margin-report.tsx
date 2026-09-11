@@ -231,26 +231,30 @@ function StatCard({
   subtitle?: string;
 }) {
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
           {label}
         </span>
         <span
-          className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
+          className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
           style={{
-            backgroundColor: "var(--sidebar-highlight)",
+            backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
             color: "var(--brand)",
           }}
         >
-          <Icon size={18} />
+          <Icon size={15} />
         </span>
       </div>
-      <div>
-        <p className="text-2xl font-extrabold text-foreground tracking-tight">
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+        <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
           {value}
         </p>
-        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+        {subtitle && (
+          <span className="text-[11px] font-medium text-muted-foreground">
+            {subtitle}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -760,7 +764,7 @@ function MarginReportPage() {
               <StatCard icon={TrendingUp} label="Net Earnings" value="₹67,829.89" subtitle="Net Payable Payout" />
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <StatCard icon={Tag} label="Total Sales" value="₹1,50,733.10" />
               <StatCard icon={Clock} label="Total Margin Amount" value="₹75,366.55" />
             </div>

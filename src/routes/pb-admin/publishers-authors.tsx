@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Outlet, useMatch, useMatches } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Search,
   ChevronDown,
@@ -23,14 +23,19 @@ import {
   Check,
   X,
   ExternalLink,
+  ArrowRight,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
+import { BookCover } from "@/components/ui/book-cover";
+import { getBooksForAccount, type PublisherAuthorBook } from "@/lib/publisher-author-books-data";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-admin/publishers-authors")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    role: typeof search.role === "string" ? search.role : undefined,
+  }),
   component: PublishersAuthorsWrapper,
 });
 
@@ -266,18 +271,85 @@ const INITIAL_ACCOUNTS: AccountItem[] = [
   },
 ];
 
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  subtext,
+}: {
+  icon: React.ComponentType<{ size?: number }>;
+  label: string;
+  value: string | number;
+  subtext: string;
+}) {
+  return (
+    <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+          {label}
+        </span>
+        <span
+          className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+          style={{
+            backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+            color: "var(--brand)",
+          }}
+        >
+          <Icon size={15} />
+        </span>
+      </div>
+      <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+        <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
+          {value}
+        </p>
+        <span className="text-[11px] font-medium text-muted-foreground">{subtext}</span>
+      </div>
+    </div>
+  );
+}
+
 function ManagePublisherAuthor() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const [accounts, setAccounts] = useState<AccountItem[]>(INITIAL_ACCOUNTS);
   const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string>("Publisher & Author");
+  const roleFilter: "Publisher" | "Author" = search.role === "Author" ? "Author" : "Publisher";
   const [statusFilter, setStatusFilter] = useState<string>("All Status");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Reset pagination & search when switching between Publishers and Authors
+  useEffect(() => {
+    setCurrentPage(1);
+    setSearchQuery("");
+  }, [search.role]);
+
   // Selected account for detail view / editing modal
   const [selectedAccount, setSelectedAccount] = useState<AccountItem | null>(null);
   const [editStatus, setEditStatus] = useState<EntityStatus>("Approved");
+
+  // "Show books" Modal state
+  const [booksModalAccount, setBooksModalAccount] = useState<AccountItem | null>(null);
+  const [bookSearchQuery, setBookSearchQuery] = useState("");
+
+  const accountBooks = useMemo(() => {
+    if (!booksModalAccount) return [];
+    return getBooksForAccount(booksModalAccount.id, booksModalAccount.name, booksModalAccount.type);
+  }, [booksModalAccount]);
+
+  const filteredAccountBooks = useMemo(() => {
+    if (!bookSearchQuery.trim()) return accountBooks;
+    const q = bookSearchQuery.toLowerCase();
+    return accountBooks.filter(
+      (b) =>
+        b.title.toLowerCase().includes(q) ||
+        b.isbn.toLowerCase().includes(q) ||
+        b.category.toLowerCase().includes(q) ||
+        b.author.toLowerCase().includes(q) ||
+        b.publisher.toLowerCase().includes(q) ||
+        b.language.toLowerCase().includes(q)
+    );
+  }, [accountBooks, bookSearchQuery]);
 
   // Filtered accounts
   const filteredAccounts = useMemo(() => {
@@ -319,6 +391,18 @@ function ManagePublisherAuthor() {
   const authorCount = accounts.filter((a) => a.type === "Author").length;
   const pendingCount = accounts.filter((a) => a.status === "Pending").length;
 
+  // Segmented metrics by role
+  const publisherAccounts = useMemo(() => accounts.filter((a) => a.type === "Publisher"), [accounts]);
+  const authorAccounts = useMemo(() => accounts.filter((a) => a.type === "Author"), [accounts]);
+
+  const publisherApprovedCount = useMemo(() => publisherAccounts.filter((a) => a.status === "Approved").length, [publisherAccounts]);
+  const publisherPendingCount = useMemo(() => publisherAccounts.filter((a) => a.status === "Pending").length, [publisherAccounts]);
+  const publisherTotalTitles = useMemo(() => publisherAccounts.reduce((acc, curr) => acc + curr.activeTitles, 0), [publisherAccounts]);
+
+  const authorApprovedCount = useMemo(() => authorAccounts.filter((a) => a.status === "Approved").length, [authorAccounts]);
+  const authorPendingCount = useMemo(() => authorAccounts.filter((a) => a.status === "Pending").length, [authorAccounts]);
+  const authorTotalTitles = useMemo(() => authorAccounts.reduce((acc, curr) => acc + curr.activeTitles, 0), [authorAccounts]);
+
   const handleOpenAccount = (item: AccountItem) => {
     navigate({ to: "/pb-admin/publishers-authors/$id", params: { id: item.id } });
   };
@@ -333,6 +417,7 @@ function ManagePublisherAuthor() {
   };
 
   const handleExportCSV = () => {
+    const roleSlug = roleFilter === "Publisher" ? "publishers" : roleFilter === "Author" ? "authors" : "publishers_authors";
     const csvContent =
       "data:text/csv;charset=utf-8," +
       ["Name,Type,Active Titles,Phone,State,Country,Status,Joined Date"]
@@ -346,11 +431,11 @@ function ManagePublisherAuthor() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `publishers_authors_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute("download", `${roleSlug}_export_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success(`Exported ${filteredAccounts.length} accounts to CSV`);
+    toast.success(`Exported ${filteredAccounts.length} ${roleFilter === "Publisher & Author" ? "account" : roleFilter.toLowerCase()}s to CSV`);
   };
 
   // Helper for initials
@@ -363,73 +448,110 @@ function ManagePublisherAuthor() {
       .slice(0, 2);
   };
 
+  const pageTitle =
+    roleFilter === "Publisher"
+      ? "Manage Publishers"
+      : roleFilter === "Author"
+      ? "Manage Authors"
+      : "Manage Publishers & Authors";
+
+  const pageSubtitle =
+    roleFilter === "Publisher"
+      ? "Overview and status management for registered Publishers."
+      : roleFilter === "Author"
+      ? "Overview and status management for registered Authors."
+      : "Overview and status management for registered Publishers and Authors.";
+
   return (
     <AppShell
-      title="Manage Publisher / Author"
-      subtitle="Overview and status management for registered Publishers and Authors."
+      title={pageTitle}
+      subtitle={pageSubtitle}
     >
       <div className="space-y-6 p-4 md:p-8">
         {/* Metric Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Total Registered
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <Users size={18} />
-              </span>
-            </div>
-            <div className="mt-2">
-              <span className="text-2xl font-bold text-foreground">{totalCount}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Across all portals</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Publishers
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <Building2 size={18} />
-              </span>
-            </div>
-            <div className="mt-2">
-              <span className="text-2xl font-bold text-foreground">{publisherCount}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Verified publishing entities</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Authors
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <Feather size={18} />
-              </span>
-            </div>
-            <div className="mt-2">
-              <span className="text-2xl font-bold text-foreground">{authorCount}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Independent creators</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between min-h-[120px] rounded-xl border border-border bg-card p-4 transition-shadow hover:shadow-md">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Pending Approval
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600">
-                <Clock size={18} />
-              </span>
-            </div>
-            <div className="mt-2">
-              <span className="text-2xl font-bold text-foreground">{pendingCount}</span>
-              <p className="text-xs text-muted-foreground mt-0.5">Requires review</p>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {roleFilter === "Publisher" ? (
+            <>
+              <StatCard
+                icon={Building2}
+                label="Total Publishers"
+                value={publisherAccounts.length}
+                subtext="Verified publishing entities"
+              />
+              <StatCard
+                icon={CheckCircle2}
+                label="Approved"
+                value={publisherApprovedCount}
+                subtext="Active & verified"
+              />
+              <StatCard
+                icon={Clock}
+                label="Pending Approval"
+                value={publisherPendingCount}
+                subtext="Requires review"
+              />
+              <StatCard
+                icon={BookOpen}
+                label="Active Titles"
+                value={publisherTotalTitles}
+                subtext="Catalogue titles"
+              />
+            </>
+          ) : roleFilter === "Author" ? (
+            <>
+              <StatCard
+                icon={Feather}
+                label="Total Authors"
+                value={authorAccounts.length}
+                subtext="Independent creators"
+              />
+              <StatCard
+                icon={CheckCircle2}
+                label="Approved"
+                value={authorApprovedCount}
+                subtext="Active & verified"
+              />
+              <StatCard
+                icon={Clock}
+                label="Pending Approval"
+                value={authorPendingCount}
+                subtext="Requires review"
+              />
+              <StatCard
+                icon={BookOpen}
+                label="Active Titles"
+                value={authorTotalTitles}
+                subtext="Catalogue titles"
+              />
+            </>
+          ) : (
+            <>
+              <StatCard
+                icon={Users}
+                label="Total Registered"
+                value={totalCount}
+                subtext="Across all portals"
+              />
+              <StatCard
+                icon={Building2}
+                label="Publishers"
+                value={publisherCount}
+                subtext="Verified publishing entities"
+              />
+              <StatCard
+                icon={Feather}
+                label="Authors"
+                value={authorCount}
+                subtext="Independent creators"
+              />
+              <StatCard
+                icon={Clock}
+                label="Pending Approval"
+                value={pendingCount}
+                subtext="Requires review"
+              />
+            </>
+          )}
         </div>
 
         {/* Filter Toolbar matching pixelbooks style guide */}
@@ -441,7 +563,7 @@ function ManagePublisherAuthor() {
               <Search size={16} className="mr-2.5 text-muted-foreground shrink-0" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder={roleFilter === "Publisher" ? "Search publishers..." : roleFilter === "Author" ? "Search authors..." : "Search..."}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -459,22 +581,8 @@ function ManagePublisherAuthor() {
               )}
             </label>
 
-            {/* Tightly Grouped Dropdowns: Pub/Auth + All Status */}
+            {/* Status Filter Dropdown */}
             <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-              {/* Role Filter Dropdown */}
-              <DropdownSelect
-                value={roleFilter}
-                options={["Publisher & Author", "Publisher", "Author"]}
-                onChange={(v) => {
-                  setRoleFilter(v);
-                  setCurrentPage(1);
-                }}
-                searchable
-                searchPlaceholder="Search role..."
-                className="w-auto min-w-[170px]"
-              />
-
-              {/* Status Filter Dropdown */}
               <DropdownSelect
                 value={statusFilter}
                 options={["All Status", "Approved", "Rejected", "Pending"]}
@@ -521,7 +629,9 @@ function ManagePublisherAuthor() {
                     <td colSpan={7} className="py-12 text-center text-muted-foreground">
                       <div className="flex flex-col items-center justify-center gap-2">
                         <Users size={32} className="text-muted-foreground/50" />
-                        <p className="font-medium text-foreground">No accounts found</p>
+                        <p className="font-medium text-foreground">
+                          No {roleFilter === "Publisher" ? "publishers" : roleFilter === "Author" ? "authors" : "accounts"} found
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           Try adjusting your search query or filter criteria.
                         </p>
@@ -555,8 +665,35 @@ function ManagePublisherAuthor() {
                         </div>
                       </td>
 
-                      {/* Active Titles */}
-                      <td className="py-4 px-4 font-semibold text-foreground">{item.activeTitles}</td>
+                      {/* Active Titles / Show Books */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setBooksModalAccount(item);
+                            setBookSearchQuery("");
+                          }}
+                          className={`group/btn inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+                            item.activeTitles > 0
+                              ? "border-[var(--brand)]/30 bg-[var(--sidebar-highlight)] text-[var(--brand)] hover:bg-[var(--brand)] hover:text-white hover:border-[var(--brand)]"
+                              : "border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          }`}
+                          title={`Show books by ${item.name} (${item.activeTitles} active titles)`}
+                        >
+                          <BookOpen
+                            size={13}
+                            className={`shrink-0 ${
+                              item.activeTitles > 0
+                                ? "text-[var(--brand)] group-hover/btn:text-white"
+                                : "text-muted-foreground group-hover/btn:text-foreground"
+                            }`}
+                          />
+                          <span>
+                            {item.activeTitles} {item.activeTitles === 1 ? "Book" : "Books"}
+                          </span>
+                        </button>
+                      </td>
 
                       {/* Phone */}
                       <td className="py-4 px-4 text-muted-foreground font-mono text-xs">{item.phone}</td>
@@ -642,6 +779,194 @@ function ManagePublisherAuthor() {
             </div>
           </div>
         </div>
+
+        {/* Books Modal Dialog */}
+        <Dialog
+          open={!!booksModalAccount}
+          onOpenChange={(open) => {
+            if (!open) {
+              setBooksModalAccount(null);
+              setBookSearchQuery("");
+            }
+          }}
+        >
+          <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden rounded-2xl bg-card border-border shadow-xl [&>button]:!top-2.5 [&>button]:!right-3">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-border bg-muted/20">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pr-10">
+                <div className="flex items-center gap-3.5">
+                  {booksModalAccount && (
+                    <EntityAvatar
+                      name={booksModalAccount.name}
+                      type={booksModalAccount.type}
+                      avatarBg={booksModalAccount.avatarBg}
+                    />
+                  )}
+                  <div>
+                    <div className="flex items-center gap-2.5">
+                      <h2 className="text-lg font-bold text-foreground">
+                        Books by {booksModalAccount?.name}
+                      </h2>
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold border ${
+                          booksModalAccount?.type === "Publisher"
+                            ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20"
+                            : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                        }`}
+                      >
+                        {booksModalAccount?.type === "Publisher" ? (
+                          <Building2 size={11} />
+                        ) : (
+                          <Feather size={11} />
+                        )}
+                        {booksModalAccount?.type}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {booksModalAccount?.state}, {booksModalAccount?.country} •{" "}
+                      <span className="font-semibold text-foreground">{accountBooks.length}</span>{" "}
+                      {accountBooks.length === 1 ? "book" : "books"} listed
+                    </p>
+                  </div>
+                </div>
+
+                {/* Direct link to dedicated eBook titles page */}
+                {booksModalAccount && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const targetId = booksModalAccount.id;
+                      setBooksModalAccount(null);
+                      navigate({
+                        to: "/pb-admin/publishers-authors/$id/titles",
+                        params: { id: targetId },
+                      });
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-2 text-xs font-semibold text-[var(--brand)] hover:bg-[var(--sidebar-highlight)] transition-colors cursor-pointer shrink-0 self-start sm:self-auto shadow-2xs"
+                  >
+                    <span>View All eBooks Page</span>
+                    <ArrowRight size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Search filter input inside modal */}
+              {accountBooks.length > 0 && (
+                <div className="mt-4 relative">
+                  <Search
+                    size={15}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Search by title, ISBN, category, language, author..."
+                    value={bookSearchQuery}
+                    onChange={(e) => setBookSearchQuery(e.target.value)}
+                    className="w-full h-10 rounded-lg border border-border bg-card pl-9 pr-8 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-[var(--brand)]"
+                  />
+                  {bookSearchQuery && (
+                    <button
+                      onClick={() => setBookSearchQuery("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs p-1 cursor-pointer"
+                    >
+                      <X size={13} />
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Body / Books List */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-3 max-h-[55vh]">
+              {filteredAccountBooks.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground/60 mb-3">
+                    <BookOpen size={24} />
+                  </div>
+                  <p className="font-semibold text-sm text-foreground">
+                    {accountBooks.length === 0
+                      ? `No published books found for ${booksModalAccount?.name}`
+                      : "No books match your search"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-sm">
+                    {accountBooks.length === 0
+                      ? `This ${booksModalAccount?.type.toLowerCase()} currently has 0 active titles in the catalogue.`
+                      : "Try clearing or changing your search keywords."}
+                  </p>
+                </div>
+              ) : (
+                <div className="divide-y divide-border border border-border rounded-xl bg-card overflow-hidden shadow-xs">
+                  {filteredAccountBooks.map((book) => (
+                    <div
+                      key={book.id}
+                      className="flex items-center justify-between p-3.5 hover:bg-secondary/40 transition-colors gap-4"
+                    >
+                      <div className="flex items-start gap-3.5 min-w-0">
+                        <BookCover
+                          initials={book.initials}
+                          coverGradient={book.coverGradient}
+                          title={book.title}
+                          size="sm"
+                        />
+                        <div className="min-w-0 space-y-1">
+                          <p className="text-xs sm:text-sm font-bold text-foreground truncate">
+                            {book.title}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                            <span className="font-medium text-foreground/90 bg-muted/60 px-2 py-0.5 rounded border border-border/50">
+                              {book.category}
+                            </span>
+                            <span>
+                              ISBN: <span className="font-mono text-foreground">{book.isbn}</span>
+                            </span>
+                            {booksModalAccount?.type === "Publisher" ? (
+                              <span>
+                                Author: <strong className="text-foreground">{book.author}</strong>
+                              </span>
+                            ) : (
+                              <span>
+                                Publisher: <strong className="text-foreground">{book.publisher}</strong>
+                              </span>
+                            )}
+                            <span>• {book.language}</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground pt-0.5">
+                            <span>Published: {book.dop}</span>
+                            <span className="font-semibold text-foreground">{book.price}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          <CheckCircle2 size={11} />
+                          {book.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-border bg-muted/20 flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">
+                Showing {filteredAccountBooks.length} of {accountBooks.length} books
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setBooksModalAccount(null);
+                  setBookSearchQuery("");
+                }}
+                className="px-4 py-2 rounded-lg text-xs font-semibold border border-border bg-card hover:bg-secondary text-foreground transition-colors cursor-pointer shadow-2xs"
+              >
+                Close
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </AppShell>
   );

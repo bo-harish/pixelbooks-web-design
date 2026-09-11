@@ -11,10 +11,8 @@ import {
   Sparkles,
   Users,
   TrendingUp,
-  SlidersHorizontal,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 
 function EntityAvatar({ type }: { name?: string; type: "Publisher" | "Author"; avatarBg?: string }) {
@@ -158,8 +156,18 @@ function CommissionRates() {
   const [publisherFilter, setPublisherFilter] = useState("Publisher & Author");
   const [rateFilter, setRateFilter] = useState("Rate Type");
 
-  const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false);
-  const [newCommissionRate, setNewCommissionRate] = useState("");
+  const [defaultPubRate] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("pb_default_publisher_rate") || "15";
+    }
+    return "15";
+  });
+  const [defaultAuthRate] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("pb_default_author_rate") || "15";
+    }
+    return "15";
+  });
 
   const getInitials = (name: string) => {
     return name
@@ -188,86 +196,112 @@ function CommissionRates() {
     return matchesSearch && matchesRole && matchesRateType;
   });
 
-  const handleUpdateCommission = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsCommissionModalOpen(false);
-    setNewCommissionRate("");
-  };
-
   return (
     <AppShell
       title="Commission Rates"
       subtitle="View and manage commission rates across your network."
     >
       <div className="space-y-6 p-4 md:p-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                 Total Enrolled
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
-                <Users size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <Users size={15} />
               </span>
             </div>
-            <div>
-              <p className="text-2xl font-extrabold text-foreground tracking-tight">
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
                 {commissionData.length}
               </p>
-              <p className="text-xs text-muted-foreground mt-0.5">Publishers & Authors</p>
+              <span className="text-[11px] font-medium text-muted-foreground">Publishers & Authors</span>
             </div>
           </div>
 
-          <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                 Default Rate
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <Percent size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <Percent size={15} />
               </span>
             </div>
-            <div>
-              <p className="text-2xl font-extrabold text-foreground tracking-tight">15%</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Standard Platform Commission</p>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
+                {defaultPubRate === defaultAuthRate
+                  ? `${defaultPubRate}%`
+                  : `${defaultPubRate}% / ${defaultAuthRate}%`}
+              </p>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                {defaultPubRate === defaultAuthRate
+                  ? "Standard Registration Default"
+                  : `Pub: ${defaultPubRate}% • Auth: ${defaultAuthRate}%`}
+              </span>
             </div>
           </div>
 
-          <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                 Avg. Commission Rate
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                <TrendingUp size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <TrendingUp size={15} />
               </span>
             </div>
-            <div>
-              <p className="text-2xl font-extrabold text-foreground tracking-tight">
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
                 {(
                   commissionData.reduce((acc, curr) => acc + curr.rateValue, 0) /
                   commissionData.length
                 ).toFixed(1)}
                 %
               </p>
-              <p className="text-xs text-muted-foreground mt-0.5">Across All Accounts</p>
+              <span className="text-[11px] font-medium text-muted-foreground">Across All Accounts</span>
             </div>
           </div>
 
-          <div className="flex flex-col rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md justify-between min-h-[128px]">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                 Custom Contracts
               </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                <Sparkles size={18} />
+              <span
+                className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                  color: "var(--brand)",
+                }}
+              >
+                <Sparkles size={15} />
               </span>
             </div>
-            <div>
-              <p className="text-2xl font-extrabold text-foreground tracking-tight">
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
+              <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
                 {commissionData.filter((d) => d.isCustom).length}
               </p>
-              <p className="text-xs text-muted-foreground mt-0.5">Special Tier Contracts</p>
+              <span className="text-[11px] font-medium text-muted-foreground">Special Tier Contracts</span>
             </div>
           </div>
         </div>
@@ -305,15 +339,6 @@ function CommissionRates() {
               searchPlaceholder="Search rate..."
               className="w-full sm:w-auto min-w-[140px]"
             />
-
-            <button
-              type="button"
-              onClick={() => setIsCommissionModalOpen(true)}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 cursor-pointer shrink-0"
-            >
-              <SlidersHorizontal size={16} />
-              <span>Bulk Update Rates</span>
-            </button>
           </div>
         </div>
 
@@ -432,102 +457,6 @@ function CommissionRates() {
           </div>
         </div>
 
-        {/* Set Commission Modal Dialog */}
-        <Dialog open={isCommissionModalOpen} onOpenChange={setIsCommissionModalOpen}>
-          <DialogContent className="max-w-md bg-card border border-border rounded-xl shadow-xl p-6">
-            <div className="border-b border-border pb-4 mb-4">
-              <DialogTitle className="text-lg font-bold tracking-tight text-foreground">
-                Set Bulk Commission Rate
-              </DialogTitle>
-              <p className="text-xs text-muted-foreground mt-1">
-                Apply a uniform commission rate percentage to selected user categories.
-              </p>
-            </div>
-
-            <form onSubmit={handleUpdateCommission} className="space-y-5 text-sm">
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">
-                    Select User Type
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={publisherFilter !== "Publisher & Author" ? publisherFilter : "Publisher"}
-                      onChange={(e) => setPublisherFilter(e.target.value)}
-                      className="h-11 w-full appearance-none rounded-lg border border-border bg-card px-3.5 text-sm focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] text-foreground font-medium"
-                    >
-                      <option value="Publisher">All Publishers</option>
-                      <option value="Author">All Authors</option>
-                    </select>
-                    <ChevronDown
-                      size={15}
-                      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">
-                    Rate Filter Scope
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={rateFilter !== "Rate Type" ? rateFilter : ""}
-                      onChange={(e) => setRateFilter(e.target.value || "Rate Type")}
-                      className="h-11 w-full appearance-none rounded-lg border border-border bg-card px-3.5 text-sm focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] text-foreground font-medium"
-                    >
-                      <option value="">All Rates</option>
-                      <option value="Default Rate">Default Rates Only</option>
-                      <option value="Other Rate">Custom Override Rates</option>
-                    </select>
-                    <ChevronDown
-                      size={15}
-                      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5 pt-2 border-t border-border/50">
-                  <label className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">
-                    New Commission Rate (%) <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative flex items-center">
-                    <input
-                      type="number"
-                      value={newCommissionRate}
-                      onChange={(e) => setNewCommissionRate(e.target.value)}
-                      placeholder="e.g. 15"
-                      className="h-11 w-full rounded-lg border border-border bg-card pl-3.5 pr-10 text-sm font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[var(--brand)] focus:border-[var(--brand)]"
-                      required
-                      min="0"
-                      max="100"
-                      step="0.1"
-                    />
-                    <span className="absolute right-3 text-muted-foreground font-bold text-sm">
-                      %
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-border/50">
-                <button
-                  type="button"
-                  onClick={() => setIsCommissionModalOpen(false)}
-                  className="h-10 rounded-lg border border-border bg-card px-4 text-sm font-semibold text-muted-foreground hover:bg-secondary/40 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="h-10 rounded-lg bg-[var(--brand)] text-white px-6 text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all shadow-xs cursor-pointer"
-                >
-                  Apply Rate
-                </button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
       </div>
     </AppShell>
   );

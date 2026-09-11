@@ -41,6 +41,7 @@ import {
   UserCheck,
   GitMerge,
   Copy,
+  Feather,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
@@ -63,7 +64,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { NotificationsPopover } from "@/components/notifications-popover";
-import { getHeaderProfile, getProfileRoute } from "@/components/headers/get-header-profile";
+import { getHeaderProfile, getProfileRoute, getSettingsRoute } from "@/components/headers/get-header-profile";
 import { toast } from "sonner";
 import { usePublisherType, type PublisherUserType } from "@/hooks/use-publisher-type";
 import { useLibraryAdminType, type LibraryAdminUserType } from "@/hooks/use-library-admin-type";
@@ -73,23 +74,26 @@ type NavItem = {
   label: string;
   icon: LucideIcon;
   to: string;
+  search?: Record<string, string>;
   badge?: string;
-  subItems?: { label: string; to: string; icon: LucideIcon }[];
+  subItems?: { label: string; to: string; search?: Record<string, string>; icon: LucideIcon }[];
 };
 
 import {
   getActivePublisherTheme,
   applyPublisherThemeStyles,
   PUBLISHER_THEME_EVENT,
+  isThemeablePath,
 } from "@/lib/publisher-theme";
 
 type NavSection = { heading: string; items: NavItem[] };
 
 export function getRoleTheme(pathname: string) {
   if (pathname.startsWith("/pb-admin")) {
+    const activeTheme = getActivePublisherTheme();
     return {
-      color: "oklch(0.60 0.18 30)", // warm coral
-      bgLight: "color-mix(in oklab, oklch(0.60 0.18 30) 14%, transparent)",
+      color: activeTheme.light.brand,
+      bgLight: activeTheme.light.bgLight,
       name: "PB Admin",
     };
   }
@@ -124,15 +128,51 @@ function normalizePath(p: string) {
   return trimmed;
 }
 
-function isActivePath(pathname: string, to: string) {
+function getSearchParam(search: unknown, key: string): string | undefined {
+  if (search && typeof search === "object" && key in search) {
+    const val = (search as Record<string, unknown>)[key];
+    if (typeof val === "string") return val;
+    if (typeof val === "number") return String(val);
+  }
+  if (typeof window !== "undefined" && window.location.search) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key) || undefined;
+  }
+  return undefined;
+}
+
+function isActivePath(
+  pathname: string,
+  to: string,
+  currentSearch?: unknown,
+  itemSearch?: Record<string, string>
+) {
   const normPath = normalizePath(pathname);
   const normTo = normalizePath(to);
 
-  if (normTo === "/") return normPath === "/";
-  if (normTo === "/library-admin" || normTo === "/publisher" || normTo === "/author" || normTo === "/pb-admin") {
-    return normPath === normTo;
+  let pathMatches = false;
+  if (normTo === "/") {
+    pathMatches = normPath === "/";
+  } else if (normTo === "/library-admin" || normTo === "/publisher" || normTo === "/author" || normTo === "/pb-admin") {
+    pathMatches = normPath === normTo;
+  } else {
+    pathMatches = normPath === normTo || normPath.startsWith(`${normTo}/`);
   }
-  return normPath === normTo || normPath.startsWith(`${normTo}/`);
+
+  if (!pathMatches) return false;
+
+  if (itemSearch && Object.keys(itemSearch).length > 0) {
+    for (const [k, v] of Object.entries(itemSearch)) {
+      let currentVal = getSearchParam(currentSearch, k);
+      if (!currentVal && normPath.startsWith("/pb-admin/publishers-authors") && k === "role") {
+        currentVal = "Publisher";
+      }
+      if (currentVal !== v) return false;
+    }
+    return true;
+  }
+
+  return true;
 }
 
 function useHideRetailBookStore() {
@@ -233,7 +273,18 @@ function getSections(
       {
         heading: "People",
         items: [
-          { label: "Publisher/Author", to: "/pb-admin/publishers-authors", icon: Building2 },
+          {
+            label: "Publishers",
+            to: "/pb-admin/publishers-authors",
+            search: { role: "Publisher" },
+            icon: Building2,
+          },
+          {
+            label: "Authors",
+            to: "/pb-admin/publishers-authors",
+            search: { role: "Author" },
+            icon: Feather,
+          },
           { label: "Customers", to: "/pb-admin/customers", icon: Users },
           { label: "Admin Users", to: "/pb-admin/admin-users", icon: ShieldCheck },
         ],
@@ -491,18 +542,20 @@ function NavRow({
   active,
   collapsed,
   pathname,
+  search,
   onNavigate,
 }: {
   item: NavItem;
   active: boolean;
   collapsed: boolean;
   pathname: string;
+  search?: unknown;
   onNavigate?: () => void;
 }) {
   const Icon = item.icon;
   const roleTheme = getRoleTheme(pathname);
   const hasSubItems = Boolean(item.subItems && item.subItems.length > 0);
-  const isChildActive = hasSubItems && item.subItems!.some((sub) => isActivePath(pathname, sub.to));
+  const isChildActive = hasSubItems && item.subItems!.some((sub) => isActivePath(pathname, sub.to, search, sub.search));
   const isParentOrChildActive = active || isChildActive;
 
   const [expanded, setExpanded] = useState<boolean>(isParentOrChildActive);
@@ -532,7 +585,8 @@ function NavRow({
     <div className="space-y-1">
       <div className="relative flex items-center">
         <Link
-          to={item.to}
+          to={item.to as any}
+          search={item.search as any}
           onClick={handleLinkClick}
           className={[
             "group relative flex flex-1 items-center gap-3 rounded-lg px-3 py-2.5 text-[14.5px] font-medium transition-all",
@@ -591,11 +645,12 @@ function NavRow({
         <ul className="mt-1 ml-4 space-y-1 pl-2.5 border-l border-border/40">
           {item.subItems!.map((subItem) => {
             const SubIcon = subItem.icon;
-            const subActive = isActivePath(pathname, subItem.to);
+            const subActive = isActivePath(pathname, subItem.to, search, subItem.search);
             return (
               <li key={subItem.label}>
                 <Link
-                  to={subItem.to}
+                  to={subItem.to as any}
+                  search={subItem.search as any}
                   onClick={onNavigate}
                   className={[
                     "flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13.5px] font-medium transition-all",
@@ -648,7 +703,7 @@ function NavRow({
 }
 
 function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const isPBAdmin = pathname.startsWith("/pb-admin");
   const [adminMode, setAdminMode] = useAdminMode();
@@ -720,9 +775,10 @@ function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate
                 <li key={item.label}>
                   <NavRow
                     item={item}
-                    active={isActivePath(pathname, item.to)}
+                    active={isActivePath(pathname, item.to, search, item.search)}
                     collapsed={collapsed}
                     pathname={pathname}
+                    search={search}
                     onNavigate={onNavigate}
                   />
                 </li>
@@ -792,14 +848,14 @@ function ProfileDropdown() {
                 className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-semibold"
                 style={{
                   backgroundColor: isPBAdmin
-                    ? "color-mix(in oklab, oklch(0.60 0.18 30) 16%, transparent)"
+                    ? roleTheme.bgLight
                     : isLibraryAdmin
                       ? "color-mix(in oklab, oklch(0.55 0.13 260) 12%, transparent)"
                       : isAuthor
                         ? "color-mix(in oklab, oklch(0.62 0.15 155) 16%, transparent)"
                         : "var(--sidebar-highlight)",
                   color: isPBAdmin
-                    ? "oklch(0.60 0.18 30)"
+                    ? roleTheme.color
                     : isLibraryAdmin
                       ? "oklch(0.55 0.13 260)"
                       : isAuthor
@@ -830,7 +886,7 @@ function ProfileDropdown() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/publisher/settings">
+            <Link to={getSettingsRoute(pathname)}>
               <Settings size={16} className="mr-2" /> Settings
             </Link>
           </DropdownMenuItem>
@@ -1009,12 +1065,12 @@ export function AppShell({
   const [, setPublisherThemeVersion] = useState(0);
 
   useEffect(() => {
-    const isPub = pathname.startsWith("/publisher");
-    applyPublisherThemeStyles(getActivePublisherTheme(), isPub);
+    const isThemeable = isThemeablePath(pathname);
+    applyPublisherThemeStyles(getActivePublisherTheme(), isThemeable);
 
     const onThemeChange = () => {
       setPublisherThemeVersion((v) => v + 1);
-      applyPublisherThemeStyles(getActivePublisherTheme(), pathname.startsWith("/publisher"));
+      applyPublisherThemeStyles(getActivePublisherTheme(), isThemeablePath(pathname));
     };
 
     window.addEventListener(PUBLISHER_THEME_EVENT, onThemeChange);

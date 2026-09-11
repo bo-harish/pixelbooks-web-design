@@ -386,25 +386,35 @@ export function getActivePublisherTheme(): PublisherColorTheme {
   return PUBLISHER_THEMES.find((t) => t.id === id) || PUBLISHER_THEMES[0];
 }
 
+export function isThemeablePath(pathname: string): boolean {
+  return pathname.startsWith("/publisher") || pathname.startsWith("/pb-admin");
+}
+
 export function setPublisherTheme(themeId: string): void {
   if (typeof window === "undefined") return;
   const exists = PUBLISHER_THEMES.some((t) => t.id === themeId);
   const targetId = exists ? themeId : DEFAULT_PUBLISHER_THEME_ID;
   localStorage.setItem(PUBLISHER_THEME_STORAGE_KEY, targetId);
 
+  // When setting color theme, always enforce light theme for the background
+  localStorage.setItem("pixelbooks-theme", "light");
+  document.documentElement.classList.remove("dark");
+  document.documentElement.style.colorScheme = "light";
+
   const theme = PUBLISHER_THEMES.find((t) => t.id === targetId) || PUBLISHER_THEMES[0];
-  applyPublisherThemeStyles(theme, window.location.pathname.startsWith("/publisher"));
+  applyPublisherThemeStyles(theme, isThemeablePath(window.location.pathname));
   window.dispatchEvent(new Event(PUBLISHER_THEME_EVENT));
+  window.dispatchEvent(new Event("storage"));
 }
 
 const STYLE_TAG_ID = "pb-publisher-dynamic-theme";
 
-export function applyPublisherThemeStyles(theme: PublisherColorTheme, isPublisherPath: boolean): void {
+export function applyPublisherThemeStyles(theme: PublisherColorTheme, isApplicable: boolean): void {
   if (typeof document === "undefined") return;
 
   let styleTag = document.getElementById(STYLE_TAG_ID) as HTMLStyleElement | null;
 
-  if (!isPublisherPath) {
+  if (!isApplicable) {
     if (styleTag) {
       styleTag.textContent = "";
     }
@@ -417,8 +427,21 @@ export function applyPublisherThemeStyles(theme: PublisherColorTheme, isPublishe
     document.head.appendChild(styleTag);
   }
 
+  const lightBg = `color-mix(in oklab, ${theme.light.brand} 6%, #ffffff)`;
+  const lightSidebar = `color-mix(in oklab, ${theme.light.brand} 4.5%, #ffffff)`;
+  const lightSecondary = `color-mix(in oklab, ${theme.light.brand} 10%, #ffffff)`;
+  const lightMuted = `color-mix(in oklab, ${theme.light.brand} 7.5%, #ffffff)`;
+  const lightBorder = `color-mix(in oklab, ${theme.light.brand} 16%, #ffffff)`;
+  const lightSidebarBorder = `color-mix(in oklab, ${theme.light.brand} 14%, #ffffff)`;
+
   styleTag.textContent = `
-    :root {
+    :root, .dark {
+      --background: ${lightBg};
+      --sidebar: ${lightSidebar};
+      --secondary: ${lightSecondary};
+      --muted: ${lightMuted};
+      --border: ${lightBorder};
+      --sidebar-border: ${lightSidebarBorder};
       --brand: ${theme.light.brand};
       --brand-contrast: ${theme.light.brandContrast};
       --brand-glow: ${theme.light.brandGlow};
@@ -428,17 +451,13 @@ export function applyPublisherThemeStyles(theme: PublisherColorTheme, isPublishe
       --ring: ${theme.light.ring};
       --sidebar-primary: ${theme.light.sidebarPrimary};
       --sidebar-accent: ${theme.light.sidebarAccent};
-    }
-    .dark {
-      --brand: ${theme.dark.brand};
-      --brand-contrast: ${theme.dark.brandContrast};
-      --brand-glow: ${theme.dark.brandGlow};
-      --sidebar-highlight: ${theme.dark.sidebarHighlight};
-      --sidebar-highlight-icon: ${theme.dark.sidebarHighlightIcon};
-      --primary: ${theme.dark.primary};
-      --ring: ${theme.dark.ring};
-      --sidebar-primary: ${theme.dark.sidebarPrimary};
-      --sidebar-accent: ${theme.dark.sidebarAccent};
+      --foreground: oklch(0.2 0.03 220);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.2 0.03 220);
+      --popover: oklch(1 0 0);
+      --popover-foreground: oklch(0.2 0.03 220);
+      --muted-foreground: oklch(0.5 0.02 220);
+      color-scheme: light;
     }
   `;
 }

@@ -20,6 +20,10 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/author/profile")({
   head: () => ({
@@ -102,6 +106,22 @@ function AuthorProfilePage() {
   const [verifiedPhone, setVerifiedPhone] = useState("+91 94471 28901");
   const [copied, setCopied] = useState(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+  const [authorAvatar, setAuthorAvatar] = useState<string | null>(null);
+
+  const {
+    modalOpen,
+    setModalOpen,
+    selectedImageSrc,
+    fileInputRef,
+    openFilePicker,
+    handleFileChange,
+    handleApply,
+    handleSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setAuthorAvatar(dataUrl);
+    },
+  });
 
   const handleCopyAuthorUrl = async () => {
     const fullUrl = `https://${profileBaseUrl}${authorSlug}`;
@@ -129,12 +149,27 @@ function AuthorProfilePage() {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 rounded-xl border border-border bg-emerald-500/5 p-5 dark:bg-emerald-500/10">
               <div className="relative h-24 w-24 shrink-0">
-                <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shadow-md">
-                  <Feather size={40} />
-                </div>
+                {authorAvatar ? (
+                  <img
+                    src={authorAvatar}
+                    alt={authorName}
+                    className="h-full w-full rounded-full object-cover border-2 border-emerald-500/40 shadow-md"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center rounded-full border-2 border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shadow-md">
+                    <Feather size={40} />
+                  </div>
+                )}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
                 <button
                   type="button"
-                  onClick={() => toast.info("Photo upload opened")}
+                  onClick={openFilePicker}
                   className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
                   title="Upload Author Portrait"
                 >
@@ -434,6 +469,15 @@ function AuthorProfilePage() {
           toast.success("Verification successful");
         }}
       />
+
+      <ProfilePictureAdjustModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        imageSrc={selectedImageSrc}
+        title="Adjust Author Portrait"
+        onApply={handleApply}
+        onSelectNewFile={handleSelectNewFile}
+      />
     </AppShell>
   );
 }
@@ -515,7 +559,9 @@ function OtpModal({
             {mobileOtp.map((digit, idx) => (
               <input
                 key={`m-${idx}`}
-                ref={(el) => (mobileRefs.current[idx] = el)}
+                ref={(el) => {
+                  mobileRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}
@@ -532,7 +578,9 @@ function OtpModal({
             {emailOtp.map((digit, idx) => (
               <input
                 key={`e-${idx}`}
-                ref={(el) => (emailRefs.current[idx] = el)}
+                ref={(el) => {
+                  emailRefs.current[idx] = el;
+                }}
                 type="text"
                 maxLength={1}
                 value={digit}

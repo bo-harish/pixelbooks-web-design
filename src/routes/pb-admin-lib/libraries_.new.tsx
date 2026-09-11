@@ -8,6 +8,10 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
+import {
+  ProfilePictureAdjustModal,
+  useProfilePictureUpload,
+} from "@/components/profile-picture-adjust-modal";
 
 export const Route = createFileRoute("/pb-admin-lib/libraries_/new")({
   component: AddLibraryPage,
@@ -36,17 +40,23 @@ function AddLibraryPage() {
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
+  const {
+    modalOpen,
+    setModalOpen,
+    selectedImageSrc,
+    fileInputRef,
+    openFilePicker,
+    handleFileChange,
+    handleApply,
+    handleSelectNewFile,
+  } = useProfilePictureUpload({
+    onImageApplied: (dataUrl) => {
+      setLogoPreview(dataUrl);
+    },
+  });
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setLogoPreview(url);
-      toast.success("Logo image selected.");
-    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,7 +90,11 @@ function AddLibraryPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5 md:p-6 shadow-2xs">
           <div className="flex items-center gap-4">
             {/* Interactive Logo Image Upload Placeholder */}
-            <label className="relative flex h-16 w-16 shrink-0 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/40 transition-all hover:bg-muted hover:border-[var(--brand)] overflow-hidden shadow-2xs group">
+            <button
+              type="button"
+              onClick={openFilePicker}
+              className="relative flex h-16 w-16 shrink-0 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/40 transition-all hover:bg-muted hover:border-[var(--brand)] overflow-hidden shadow-2xs group"
+            >
               {logoPreview ? (
                 <img src={logoPreview} alt="Library Logo" className="h-full w-full object-cover" />
               ) : (
@@ -89,13 +103,14 @@ function AddLibraryPage() {
                   <span className="text-[9px] font-semibold mt-0.5 leading-tight">Upload Logo</span>
                 </div>
               )}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleLogoChange}
-              />
-            </label>
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
 
             <div>
               <h1 className="text-xl font-bold tracking-tight text-foreground">
@@ -398,6 +413,17 @@ function AddLibraryPage() {
           </div>
         </form>
       </div>
+
+      <ProfilePictureAdjustModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        imageSrc={selectedImageSrc}
+        title="Adjust Library Logo"
+        description="Reposition, zoom, or rotate the library logo. Click apply when satisfied."
+        cropShape="round-square"
+        onApply={handleApply}
+        onSelectNewFile={handleSelectNewFile}
+      />
     </AppShell>
   );
 }
