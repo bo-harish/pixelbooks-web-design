@@ -341,6 +341,7 @@ function getSections(
           items: (
             [
               { label: "Catalogue", icon: BookMarked, to: "/library-admin/catalogue" },
+              { label: "Categories", icon: FolderTree, to: "/library-admin/categories" },
               { label: "Manage Borrowings", icon: FileEdit, to: "/library-admin/manage-ebooks" },
               !hideRetailBookStore && !isStandardAdmin && { label: "Book Store", icon: Store, to: "/library-admin/book-store" },
               !isStandardAdmin && { label: "Banners", icon: ImageIcon, to: "/library-admin/banners" },

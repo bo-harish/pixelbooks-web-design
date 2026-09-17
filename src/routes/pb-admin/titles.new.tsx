@@ -295,7 +295,7 @@ function UploadRow() {
                     color: "var(--brand)",
                   }}
                 >
-                  <Sparkles size={12} /> Generate Sample from Source
+                  <Sparkles size={12} /> Generate Sample from eBook
                 </button>
                 <span className="text-[11px] text-muted-foreground">Or</span>
               </>

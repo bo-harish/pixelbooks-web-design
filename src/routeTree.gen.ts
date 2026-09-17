@@ -76,6 +76,7 @@ import { Route as LibraryAdminOrdersRouteImport } from './routes/library-admin/o
 import { Route as LibraryAdminManageEbooksRouteImport } from './routes/library-admin/manage-ebooks'
 import { Route as LibraryAdminDepartmentsRouteImport } from './routes/library-admin/departments'
 import { Route as LibraryAdminCoursesRouteImport } from './routes/library-admin/courses'
+import { Route as LibraryAdminCategoriesRouteImport } from './routes/library-admin/categories'
 import { Route as LibraryAdminCatalogueRouteImport } from './routes/library-admin/catalogue'
 import { Route as LibraryAdminCartRouteImport } from './routes/library-admin/cart'
 import { Route as LibraryAdminBannersRouteImport } from './routes/library-admin/banners'
@@ -459,6 +460,11 @@ const LibraryAdminCoursesRoute = LibraryAdminCoursesRouteImport.update({
   path: '/library-admin/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibraryAdminCategoriesRoute = LibraryAdminCategoriesRouteImport.update({
+  id: '/library-admin/categories',
+  path: '/library-admin/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LibraryAdminCatalogueRoute = LibraryAdminCatalogueRouteImport.update({
   id: '/library-admin/catalogue',
   path: '/library-admin/catalogue',
@@ -702,6 +708,7 @@ export interface FileRoutesByFullPath {
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
+  '/library-admin/categories': typeof LibraryAdminCategoriesRoute
   '/library-admin/courses': typeof LibraryAdminCoursesRoute
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
@@ -814,6 +821,7 @@ export interface FileRoutesByTo {
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
+  '/library-admin/categories': typeof LibraryAdminCategoriesRoute
   '/library-admin/courses': typeof LibraryAdminCoursesRoute
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
@@ -927,6 +935,7 @@ export interface FileRoutesById {
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
+  '/library-admin/categories': typeof LibraryAdminCategoriesRoute
   '/library-admin/courses': typeof LibraryAdminCoursesRoute
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
@@ -1041,6 +1050,7 @@ export interface FileRouteTypes {
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
+    | '/library-admin/categories'
     | '/library-admin/courses'
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
@@ -1153,6 +1163,7 @@ export interface FileRouteTypes {
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
+    | '/library-admin/categories'
     | '/library-admin/courses'
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
@@ -1265,6 +1276,7 @@ export interface FileRouteTypes {
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
+    | '/library-admin/categories'
     | '/library-admin/courses'
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
@@ -1378,6 +1390,7 @@ export interface RootRouteChildren {
   LibraryAdminBannersRoute: typeof LibraryAdminBannersRoute
   LibraryAdminCartRoute: typeof LibraryAdminCartRoute
   LibraryAdminCatalogueRoute: typeof LibraryAdminCatalogueRoute
+  LibraryAdminCategoriesRoute: typeof LibraryAdminCategoriesRoute
   LibraryAdminCoursesRoute: typeof LibraryAdminCoursesRoute
   LibraryAdminDepartmentsRoute: typeof LibraryAdminDepartmentsRoute
   LibraryAdminManageEbooksRoute: typeof LibraryAdminManageEbooksRoute
@@ -1951,6 +1964,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryAdminCoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/library-admin/categories': {
+      id: '/library-admin/categories'
+      path: '/library-admin/categories'
+      fullPath: '/library-admin/categories'
+      preLoaderRoute: typeof LibraryAdminCategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/library-admin/catalogue': {
       id: '/library-admin/catalogue'
       path: '/library-admin/catalogue'
@@ -2307,6 +2327,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryAdminBannersRoute: LibraryAdminBannersRoute,
   LibraryAdminCartRoute: LibraryAdminCartRoute,
   LibraryAdminCatalogueRoute: LibraryAdminCatalogueRoute,
+  LibraryAdminCategoriesRoute: LibraryAdminCategoriesRoute,
   LibraryAdminCoursesRoute: LibraryAdminCoursesRoute,
   LibraryAdminDepartmentsRoute: LibraryAdminDepartmentsRoute,
   LibraryAdminManageEbooksRoute: LibraryAdminManageEbooksRoute,

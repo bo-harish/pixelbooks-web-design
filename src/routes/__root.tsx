@@ -14,6 +14,7 @@ import { AppShell } from "@/components/app-shell";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "@/hooks/use-theme";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   const pathname = typeof window !== "undefined" ? window.location.pathname : "";
@@ -184,6 +185,7 @@ function RootComponent() {
       <ThemeProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
+        <Toaster position="top-right" richColors />
       </ThemeProvider>
     </QueryClientProvider>
   );

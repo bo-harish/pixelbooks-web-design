@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   BookOpen,
   Search,
@@ -13,8 +13,15 @@ import {
   Star,
   BookMarked,
   UserCheck,
+  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  loadLibraryCategories,
+  type LibraryCategoryItem,
+  getSubcategoryName,
+  getSubcategoryLink,
+} from "@/lib/categories-data";
 
 export const Route = createFileRoute("/library-user/")({
   component: LibraryUserDashboard,
@@ -42,6 +49,78 @@ function LibraryUserDashboard() {
   const [readerTheme, setReaderTheme] = useState<"sepia" | "light" | "dark">("sepia");
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Sync categories from Library Admin
+  const [libraryCategories, setLibraryCategories] = useState<LibraryCategoryItem[]>(() => {
+    return loadLibraryCategories();
+  });
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setLibraryCategories(loadLibraryCategories());
+    };
+    window.addEventListener("pixelbooks_library_categories_updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("pixelbooks_library_categories_updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
+
+  // Compute category pills including any designated external link category
+  const displayCategories = useMemo(() => {
+    const items: { name: string; isExternal: boolean; link?: string }[] = [
+      { name: "All", isExternal: false },
+      { name: "Academic", isExternal: false },
+      { name: "Music", isExternal: false },
+      { name: "Style", isExternal: false },
+      { name: "General", isExternal: false },
+    ];
+
+    const activeLibraryCats = libraryCategories.filter(
+      (c) =>
+        c.enabled !== false &&
+        (c as any).status !== "Disabled"
+    );
+
+    activeLibraryCats.forEach((libCat) => {
+      const isExt = Boolean(libCat.enableExternalLink && libCat.externalLink);
+      const matchIdx = items.findIndex(
+        (i) => i.name.toLowerCase() === libCat.name.toLowerCase()
+      );
+      if (matchIdx !== -1) {
+        items[matchIdx] = {
+          name: libCat.name,
+          isExternal: isExt,
+          link: libCat.externalLink,
+        };
+      } else {
+        items.push({
+          name: libCat.name,
+          isExternal: isExt,
+          link: libCat.externalLink,
+        });
+      }
+    });
+
+    return items;
+  }, [libraryCategories]);
+
+  const currentCategoryObj = useMemo(() => {
+    return libraryCategories.find(
+      (c) => c.name.toLowerCase() === activeCategory.toLowerCase()
+    );
+  }, [libraryCategories, activeCategory]);
+
+  const activeCategorySubcategories = useMemo(() => {
+    if (!currentCategoryObj) return [];
+    return (
+      currentCategoryObj.subcategories ||
+      currentCategoryObj.selectedSubcategories ||
+      currentCategoryObj.masterSubcategories ||
+      []
+    );
+  }, [currentCategoryObj]);
 
   const books: Book[] = [
     {
@@ -271,21 +350,84 @@ function LibraryUserDashboard() {
         <section className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-1.5">
-              {["All", "Academic", "Music", "Style", "General"].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium border transition-colors ${
-                    activeCategory === cat
-                      ? "bg-[oklch(0.62_0.15_155)] border-[oklch(0.62_0.15_155)] text-white"
-                      : "border-border bg-card text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+              {displayCategories.map((cat) => {
+                const isActive = activeCategory === cat.name;
+                return (
+                  <button
+                    key={cat.name}
+                    onClick={() => {
+                      if (cat.isExternal && cat.link) {
+                        window.open(cat.link, "_blank", "noopener,noreferrer");
+                        toast.success(`Opening ${cat.name} in a new tab`, {
+                          description: cat.link,
+                        });
+                      } else {
+                        setActiveCategory(cat.name);
+                      }
+                    }}
+                    title={
+                      cat.isExternal && cat.link
+                        ? `External Link: Opens ${cat.link} in a new tab`
+                        : undefined
+                    }
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium border transition-all inline-flex items-center gap-1.5 cursor-pointer ${
+                      cat.isExternal
+                        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 font-semibold shadow-2xs"
+                        : isActive
+                        ? "bg-[oklch(0.62_0.15_155)] border-[oklch(0.62_0.15_155)] text-white shadow-2xs"
+                        : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-border/80"
+                    }`}
+                  >
+                    <span>{cat.name}</span>
+                    {cat.isExternal && (
+                      <ExternalLink size={12} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
+
+          {/* Subcategories Row if available for the active category */}
+          {activeCategorySubcategories.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-border/70 bg-card/60 p-2.5 animate-in fade-in-50">
+              <span className="text-[11.5px] font-semibold text-muted-foreground px-1">
+                Subcategories:
+              </span>
+              {activeCategorySubcategories.map((sub, idx) => {
+                const subName = getSubcategoryName(sub);
+                const subLink = getSubcategoryLink(sub);
+
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      if (subLink) {
+                        window.open(subLink, "_blank", "noopener,noreferrer");
+                        toast.success(`Opening ${subName} in a new tab`, {
+                          description: subLink,
+                        });
+                      } else {
+                        toast.info(`Selected subcategory: ${subName}`);
+                      }
+                    }}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-medium border transition-all inline-flex items-center gap-1.5 cursor-pointer ${
+                      subLink
+                        ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20 font-semibold shadow-2xs"
+                        : "border-border bg-secondary/50 text-foreground hover:bg-secondary"
+                    }`}
+                    title={subLink ? `Opens external link in new tab: ${subLink}` : subName}
+                  >
+                    <span>{subName}</span>
+                    {subLink && (
+                      <ExternalLink size={11} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {/* Books Shelf Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">

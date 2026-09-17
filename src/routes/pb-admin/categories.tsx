@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import {
   Search,
   ChevronsLeft,
@@ -9,11 +9,15 @@ import {
   X,
   Check,
   Trash2,
+  AlertCircle,
+  GripVertical,
+  ChevronDown,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { MASTER_CATEGORIES } from "@/lib/categories-data";
 
 export const Route = createFileRoute("/pb-admin/categories")({
   head: () => ({
@@ -36,60 +40,19 @@ export interface CategoryItem {
   subcategories: string[];
   views: number;
   status: "Enabled" | "Disabled";
+  displayOrder: number;
+  isCustom?: boolean;
 }
 
-// Initial seed dataset matching reference design
-const INITIAL_CATEGORIES: CategoryItem[] = [
-  {
-    id: "cat-1",
-    name: "Fantasy Fiction",
-    subcategories: ["High Fantasy", "Urban Fantasy", "Dark Fantasy", "Epic Fantasy"],
-    views: 45,
-    status: "Enabled",
-  },
-  {
-    id: "cat-2",
-    name: "Fantasy Poems",
-    subcategories: ["Mythological Verse", "Folk Ballads"],
-    views: 0,
-    status: "Enabled",
-  },
-  {
-    id: "cat-3",
-    name: "Drama",
-    subcategories: ["Tragedy", "Historical Drama", "Contemporary"],
-    views: 2,
-    status: "Enabled",
-  },
-  {
-    id: "cat-4",
-    name: "General & Literary Fiction",
-    subcategories: ["Modern Classics", "Cultural Fiction", "Philosophical"],
-    views: 53,
-    status: "Enabled",
-  },
-  {
-    id: "cat-5",
-    name: "Tech Cat2",
-    subcategories: ["Software Engineering", "AI & Data Science", "Web Development"],
-    views: 0,
-    status: "Enabled",
-  },
-  {
-    id: "cat-6",
-    name: "Funny and Humorous",
-    subcategories: ["Satire", "Comic Strips", "Parody"],
-    views: 0,
-    status: "Enabled",
-  },
-  {
-    id: "cat-7",
-    name: "Science-Fiction & Fantasy",
-    subcategories: ["Cyberpunk", "Space Opera", "Dystopian"],
-    views: 2,
-    status: "Enabled",
-  },
-];
+// Master dataset matching reference design and library admin
+const INITIAL_CATEGORIES: CategoryItem[] = MASTER_CATEGORIES.slice(0, 12).map((m, idx) => ({
+  id: m.id,
+  name: m.name,
+  subcategories: m.subcategories.map((s) => (typeof s === "string" ? s : s.name)),
+  views: m.views,
+  status: m.status,
+  displayOrder: m.displayOrder ?? idx + 1,
+}));
 
 function ManageCategoryPage() {
   const [categories, setCategories] = useState<CategoryItem[]>(INITIAL_CATEGORIES);
@@ -97,10 +60,27 @@ function ManageCategoryPage() {
   const [statusFilter, setStatusFilter] = useState<StatusValue>("All");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Drag and Drop state
+  const [draggedCategoryId, setDraggedCategoryId] = useState<string | null>(null);
+  const [dragOverCategoryId, setDragOverCategoryId] = useState<string | null>(null);
+
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryItem | null>(null);
+
+  // Add / Search Master Category State
+  const [categorySearchTerm, setCategorySearchTerm] = useState("");
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Single Edit Name & Display Order State
   const [formName, setFormName] = useState("");
+  const [formDisplayOrder, setFormDisplayOrder] = useState<number | string>(1);
+
+  // Inline Error Message State
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Subcategories State (Optional)
   const [formSubcategories, setFormSubcategories] = useState<string[]>([]);
   const [newSubcatInput, setNewSubcatInput] = useState("");
   const [formStatus, setFormStatus] = useState<"Enabled" | "Disabled">("Enabled");
@@ -112,15 +92,68 @@ function ManageCategoryPage() {
   const itemsPerPage = 10;
   const simulatedTotalBase = categories.length;
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsCategoryDropdownOpen(false);
+      }
+    };
+    if (isCategoryDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCategoryDropdownOpen]);
+
+  // Master categories available in system for multi-select
+  const allSystemCategories = useMemo(() => {
+    return MASTER_CATEGORIES;
+  }, []);
+
+  const filteredMasterOptions = useMemo(() => {
+    const q = categorySearchTerm.toLowerCase().trim();
+    if (!q) return allSystemCategories;
+    return allSystemCategories.filter((cat) =>
+      cat.name.toLowerCase().includes(q)
+    );
+  }, [allSystemCategories, categorySearchTerm]);
+
+  // Existing System Categories - categories already added in system show at the bottom of the list
+  const sortedMasterOptions = useMemo(() => {
+    return [...filteredMasterOptions].sort((a, b) => {
+      const aInPbAdmin = categories.some(
+        (c) => c.name.toLowerCase() === a.name.toLowerCase()
+      );
+      const bInPbAdmin = categories.some(
+        (c) => c.name.toLowerCase() === b.name.toLowerCase()
+      );
+      if (aInPbAdmin !== bInPbAdmin) {
+        return aInPbAdmin ? 1 : -1; // Existing categories placed at the bottom
+      }
+      return 0;
+    });
+  }, [filteredMasterOptions, categories]);
+
+  const exactMatchExists = useMemo(() => {
+    const q = categorySearchTerm.trim().toLowerCase();
+    if (!q) return true;
+    return allSystemCategories.some((cat) => cat.name.toLowerCase() === q);
+  }, [allSystemCategories, categorySearchTerm]);
+
   const filteredCategories = useMemo(() => {
-    return categories.filter((cat) => {
+    const list = categories.filter((cat) => {
       if (statusFilter === "Enabled" && cat.status !== "Enabled") return false;
       if (statusFilter === "Disabled" && cat.status !== "Disabled") return false;
 
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
-        const matchesName = cat.name.toLowerCase().includes(query);
-        const matchesSubcat = cat.subcategories.some((sub) =>
+        const matchesName = (cat.name || "").toLowerCase().includes(query);
+        const matchesSubcat = (cat.subcategories || []).some((sub) =>
           sub.toLowerCase().includes(query)
         );
         if (!matchesName && !matchesSubcat) return false;
@@ -128,6 +161,8 @@ function ManageCategoryPage() {
 
       return true;
     });
+
+    return list.sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
   }, [categories, searchQuery, statusFilter]);
 
   const totalPages = Math.ceil(filteredCategories.length / itemsPerPage) || 1;
@@ -136,6 +171,73 @@ function ManageCategoryPage() {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredCategories.slice(start, start + itemsPerPage);
   }, [filteredCategories, currentPage, itemsPerPage]);
+
+  // Drag and Drop Handlers
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    const target = e.target as HTMLElement;
+    // Don't initiate drag if clicking buttons, switches, or inputs
+    if (target.closest("button, input, [role='switch']")) {
+      e.preventDefault();
+      return;
+    }
+    setDraggedCategoryId(id);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", id);
+  };
+
+  const handleDragOver = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (draggedCategoryId && draggedCategoryId !== targetId && dragOverCategoryId !== targetId) {
+      setDragOverCategoryId(targetId);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent, targetId: string) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+    if (dragOverCategoryId === targetId) {
+      setDragOverCategoryId(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (!draggedCategoryId || draggedCategoryId === targetId) {
+      setDraggedCategoryId(null);
+      setDragOverCategoryId(null);
+      return;
+    }
+
+    setCategories((prev) => {
+      const fromIndex = prev.findIndex((c) => c.id === draggedCategoryId);
+      const toIndex = prev.findIndex((c) => c.id === targetId);
+      if (fromIndex === -1 || toIndex === -1) return prev;
+
+      const newCategories = [...prev];
+      const [movedItem] = newCategories.splice(fromIndex, 1);
+      newCategories.splice(toIndex, 0, movedItem);
+
+      // Reassign sequential displayOrder based on new array order
+      const updated = newCategories.map((c, idx) => ({
+        ...c,
+        displayOrder: idx + 1,
+      }));
+
+      toast.success(`Display order updated for "${movedItem.name}"`, {
+        description: `Position changed from #${fromIndex + 1} to #${toIndex + 1}.`,
+      });
+
+      return updated;
+    });
+
+    setDraggedCategoryId(null);
+    setDragOverCategoryId(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedCategoryId(null);
+    setDragOverCategoryId(null);
+  };
 
   const handleToggleStatus = (categoryId: string) => {
     setCategories((prev) =>
@@ -153,8 +255,13 @@ function ManageCategoryPage() {
   };
 
   const handleOpenAddModal = () => {
+    const maxOrder = categories.reduce((max, c) => Math.max(max, c.displayOrder || 0), 0);
     setEditingCategory(null);
+    setCategorySearchTerm("");
+    setIsCategoryDropdownOpen(false);
     setFormName("");
+    setFormDisplayOrder(maxOrder + 1);
+    setErrorMessage("");
     setFormSubcategories([]);
     setNewSubcatInput("");
     setEditingSubcatIndex(null);
@@ -165,7 +272,11 @@ function ManageCategoryPage() {
 
   const handleOpenEditModal = (cat: CategoryItem, focusSubcatIndex?: number) => {
     setEditingCategory(cat);
+    setCategorySearchTerm("");
+    setIsCategoryDropdownOpen(false);
     setFormName(cat.name);
+    setFormDisplayOrder(cat.displayOrder ?? 1);
+    setErrorMessage("");
     setFormSubcategories([...cat.subcategories]);
     setNewSubcatInput("");
     setFormStatus(cat.status);
@@ -181,12 +292,43 @@ function ManageCategoryPage() {
     setIsModalOpen(true);
   };
 
+  const handleSelectMasterCategory = (cat: (typeof MASTER_CATEGORIES)[number]) => {
+    const isAlreadyInPbAdmin = categories.some(
+      (c) => c.name.toLowerCase() === cat.name.toLowerCase()
+    );
+    if (isAlreadyInPbAdmin) {
+      toast.error(`Category "${cat.name}" already exists in PixelBooks Admin.`);
+      setErrorMessage(`Category "${cat.name}" already exists in PixelBooks Admin.`);
+      return;
+    }
+
+    setFormName(cat.name);
+    setCategorySearchTerm("");
+    setIsCategoryDropdownOpen(false);
+    setErrorMessage("");
+
+    // Pull default subcategories if available
+    if (cat.subcategories && cat.subcategories.length > 0) {
+      const stringSubs = cat.subcategories.map((s) =>
+        typeof s === "string" ? s : s.name
+      );
+      setFormSubcategories(stringSubs);
+    } else {
+      setFormSubcategories([]);
+    }
+  };
+
   const handleAddSubcategory = () => {
     const trimmed = newSubcatInput.trim();
-    if (trimmed && !formSubcategories.includes(trimmed)) {
-      setFormSubcategories((prev) => [...prev, trimmed]);
-      setNewSubcatInput("");
+    if (!trimmed) return;
+    setErrorMessage("");
+    if (formSubcategories.some((sub) => sub.toLowerCase() === trimmed.toLowerCase())) {
+      toast.error("Subcategory already exists.");
+      setErrorMessage(`Subcategory "${trimmed}" already exists.`);
+      return;
     }
+    setFormSubcategories((prev) => [...prev, trimmed]);
+    setNewSubcatInput("");
   };
 
   const handleRemoveSubcategory = (index: number) => {
@@ -203,21 +345,27 @@ function ManageCategoryPage() {
 
   const handleSaveSubcategoryEdit = (index: number) => {
     const trimmed = editingSubcatText.trim();
-    if (trimmed) {
-      setFormSubcategories((prev) =>
-        prev.map((sub, i) => (i === index ? trimmed : sub))
-      );
+    if (!trimmed) {
+      setEditingSubcatIndex(null);
+      setEditingSubcatText("");
+      return;
     }
+    setErrorMessage("");
+    if (formSubcategories.some((sub, i) => i !== index && sub.toLowerCase() === trimmed.toLowerCase())) {
+      toast.error("Subcategory already exists.");
+      setErrorMessage(`Subcategory "${trimmed}" already exists.`);
+      return;
+    }
+    setFormSubcategories((prev) =>
+      prev.map((sub, i) => (i === index ? trimmed : sub))
+    );
     setEditingSubcatIndex(null);
     setEditingSubcatText("");
   };
 
   const handleSaveCategory = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formName.trim()) {
-      toast.error("Category name is required.");
-      return;
-    }
+    setErrorMessage("");
 
     // Save active subcategory edit if open
     let finalSubcategories = [...formSubcategories];
@@ -225,33 +373,86 @@ function ManageCategoryPage() {
       finalSubcategories[editingSubcatIndex] = editingSubcatText.trim();
     }
 
+    const trimmedName = formName.trim();
+    if (!trimmedName) {
+      toast.error("Category name is required.");
+      setErrorMessage("Category name is required.");
+      return;
+    }
+
     if (editingCategory) {
+      // Edit single existing category
+      const isDuplicate = categories.some(
+        (c) =>
+          c.id !== editingCategory.id &&
+          c.name.toLowerCase() === trimmedName.toLowerCase()
+      );
+      if (isDuplicate) {
+        toast.error("Category already exists.");
+        setErrorMessage(`Category "${trimmedName}" already exists.`);
+        return;
+      }
+
+      const parsedOrder = parseInt(String(formDisplayOrder), 10);
+      const finalDisplayOrder = isNaN(parsedOrder) || parsedOrder < 1 ? 1 : parsedOrder;
+
       setCategories((prev) =>
         prev.map((c) =>
           c.id === editingCategory.id
             ? {
                 ...c,
-                name: formName.trim(),
+                name: trimmedName,
                 subcategories: finalSubcategories,
                 status: formStatus,
+                displayOrder: finalDisplayOrder,
               }
             : c
         )
       );
-      toast.success(`Category "${formName.trim()}" updated successfully`);
+      toast.success(`Category "${trimmedName}" updated successfully`);
+      setIsModalOpen(false);
     } else {
-      const newCat: CategoryItem = {
-        id: `cat-${Date.now()}`,
-        name: formName.trim(),
-        subcategories: finalSubcategories,
-        views: 0,
-        status: formStatus,
-      };
-      setCategories((prev) => [newCat, ...prev]);
-      toast.success(`Category "${formName.trim()}" added successfully`);
-    }
+      // Add Mode: Single Category
+      const isDuplicate = categories.some(
+        (c) => c.name.toLowerCase() === trimmedName.toLowerCase()
+      );
+      if (isDuplicate) {
+        toast.error("Category already exists.");
+        setErrorMessage(`Category "${trimmedName}" already exists.`);
+        return;
+      }
 
-    setIsModalOpen(false);
+      const maxOrder = categories.reduce((max, c) => Math.max(max, c.displayOrder || 0), 0);
+      const parsedOrder = parseInt(String(formDisplayOrder), 10);
+      const startOrder = isNaN(parsedOrder) || parsedOrder < 1 ? maxOrder + 1 : parsedOrder;
+
+      const master = MASTER_CATEGORIES.find(
+        (m) => m.name.toLowerCase() === trimmedName.toLowerCase()
+      );
+
+      const subs =
+        finalSubcategories.length > 0
+          ? finalSubcategories
+          : master?.subcategories
+          ? master.subcategories.map((s) => (typeof s === "string" ? s : s.name))
+          : [];
+
+      const newCat: CategoryItem = {
+        id: master?.id || `cat-${Date.now()}`,
+        name: trimmedName,
+        subcategories: subs,
+        views: master?.views || 0,
+        status: formStatus,
+        displayOrder: startOrder,
+        isCustom: !master,
+      };
+
+      setCategories((prev) => [newCat, ...prev]);
+      toast.success(`Category "${trimmedName}" added globally`, {
+        description: "Reflects across all publishers in the catalogue.",
+      });
+      setIsModalOpen(false);
+    }
   };
 
   const statusLabel =
@@ -314,7 +515,8 @@ function ManageCategoryPage() {
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <th className="py-4 pl-6 pr-4 font-semibold min-w-[180px]">Category Name</th>
+                  <th className="py-4 pl-6 pr-4 font-semibold text-center w-28">Display Order</th>
+                  <th className="py-4 pr-4 font-semibold min-w-[180px]">Category Name</th>
                   <th className="py-4 pr-4 font-semibold">Subcategories</th>
                   <th className="py-4 pr-4 font-semibold text-center w-24">Views</th>
                   <th className="py-4 pr-4 font-semibold text-center w-28">Status</th>
@@ -324,20 +526,52 @@ function ManageCategoryPage() {
               <tbody className="divide-y divide-border/60">
                 {paginatedCategories.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-12 text-center text-xs text-muted-foreground">
+                    <td colSpan={6} className="py-12 text-center text-xs text-muted-foreground">
                       No categories found matching your search criteria.
                     </td>
                   </tr>
                 ) : (
-                  paginatedCategories.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="group border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50"
-                    >
-                      {/* Name Column */}
-                      <td className="py-4 pl-6 pr-4 font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors align-top">
-                        {item.name}
-                      </td>
+                  paginatedCategories.map((item) => {
+                    const isDragging = draggedCategoryId === item.id;
+                    const isDragOver = dragOverCategoryId === item.id && !isDragging;
+
+                    return (
+                      <tr
+                        key={item.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, item.id)}
+                        onDragOver={(e) => handleDragOver(e, item.id)}
+                        onDragLeave={(e) => handleDragLeave(e, item.id)}
+                        onDrop={(e) => handleDrop(e, item.id)}
+                        onDragEnd={handleDragEnd}
+                        className={`group border-b border-border/60 transition-all last:border-0 hover:bg-secondary/50 ${
+                          isDragging ? "opacity-35 bg-secondary/60 scale-[0.99]" : ""
+                        } ${
+                          isDragOver
+                            ? "border-t-2 border-t-[var(--brand)] bg-[var(--brand)]/10"
+                            : ""
+                        }`}
+                      >
+                        {/* Display Order Column with Drag Handle */}
+                        <td className="py-4 pl-6 pr-4 text-center align-top select-none">
+                          <div
+                            className="inline-flex items-center justify-center gap-1.5 cursor-grab active:cursor-grabbing text-muted-foreground/60 hover:text-foreground transition-colors group-hover:text-foreground"
+                            title="Drag row to reorder display order"
+                          >
+                            <GripVertical
+                              size={15}
+                              className="shrink-0 text-muted-foreground/50 group-hover:text-[var(--brand)] transition-colors"
+                            />
+                            <span className="inline-flex items-center justify-center min-w-[32px] px-2 py-0.5 rounded-md border border-border bg-secondary/80 text-xs font-semibold text-foreground shadow-2xs">
+                              {item.displayOrder}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Name Column */}
+                        <td className="py-4 pr-4 font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors align-top">
+                          {item.name}
+                        </td>
 
                       {/* Subcategories Column */}
                       <td className="py-4 pr-4 align-top">
@@ -388,8 +622,9 @@ function ManageCategoryPage() {
                         </button>
                       </td>
                     </tr>
-                  ))
-                )}
+                  );
+                })
+              )}
               </tbody>
             </table>
           </div>
@@ -462,34 +697,250 @@ function ManageCategoryPage() {
       {/* Add / Edit Category Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-xl border border-border bg-card p-6 shadow-xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="w-full max-w-[740px] rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-border pb-4 mb-5">
-              <h2 className="text-base font-semibold text-foreground">
-                {editingCategory ? "Edit Category" : "Add New Category"}
-              </h2>
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">
+                  {editingCategory ? "Edit Category" : "Add Category (Global Master)"}
+                </h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {editingCategory
+                    ? "Update master category details, subcategories, and status."
+                    : "Select an existing system category or type a new one. Changes reflect across all publishers."}
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
+                className="rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSaveCategory} className="space-y-4">
-              {/* Category Name Input */}
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5">
-                  Category Name <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Science Fiction"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  className="h-10 w-full rounded-lg border border-border bg-background px-3 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
-                />
+            <form onSubmit={handleSaveCategory} className="space-y-5">
+              {/* Informative notice for PB Admin */}
+              {!editingCategory && (
+                <div className="flex items-center gap-2 rounded-xl border border-[var(--brand)]/20 bg-[var(--sidebar-highlight)]/50 px-3.5 py-2.5 text-xs text-foreground animate-in fade-in-50">
+                  <span className="font-semibold text-[var(--brand)] shrink-0">Global Scope:</span>
+                  <span className="text-muted-foreground">
+                    Categories created or added here will reflect across all publishers in the PixelBooks catalogue.
+                  </span>
+                </div>
+              )}
+
+              {errorMessage && (
+                <div className="flex items-center gap-2.5 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs font-semibold text-destructive animate-in fade-in-50">
+                  <AlertCircle size={16} className="shrink-0 text-destructive" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              {/* Category Name & Display Order (Both Add & Edit allow entering/editing 1 category at a time) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2 space-y-1.5" ref={categoryDropdownRef}>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-foreground">
+                      Category Name <span className="text-destructive">*</span>
+                    </label>
+                    {!editingCategory && (
+                      <span className="text-[11.5px] text-muted-foreground">
+                        Select 1 category or type custom name
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <div className="relative flex items-center">
+                      <input
+                        type="text"
+                        required
+                        placeholder="Select system category or type custom name..."
+                        value={formName}
+                        onChange={(e) => {
+                          setFormName(e.target.value);
+                          setCategorySearchTerm(e.target.value);
+                          setErrorMessage("");
+                          if (!editingCategory) {
+                            setIsCategoryDropdownOpen(true);
+                          }
+                        }}
+                        onFocus={() => {
+                          if (!editingCategory) {
+                            setCategorySearchTerm(formName);
+                            setIsCategoryDropdownOpen(true);
+                          }
+                        }}
+                        className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card pl-3.5 pr-16 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                      />
+
+                      {!editingCategory && (
+                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                          {formName && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormName("");
+                                setCategorySearchTerm("");
+                                setFormSubcategories([]);
+                              }}
+                              className="p-1 text-muted-foreground hover:text-foreground rounded cursor-pointer"
+                              title="Clear"
+                            >
+                              <X size={14} />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCategorySearchTerm(formName);
+                              setIsCategoryDropdownOpen((prev) => !prev);
+                            }}
+                            className="p-1 text-muted-foreground hover:text-foreground cursor-pointer"
+                            title="Toggle system categories"
+                          >
+                            <ChevronDown
+                              size={16}
+                              className={`transition-transform duration-200 ${
+                                isCategoryDropdownOpen ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Dropdown Menu of Existing System Categories */}
+                    {!editingCategory && isCategoryDropdownOpen && (
+                      <div className="absolute left-0 top-full z-30 mt-1.5 max-h-80 w-full overflow-hidden rounded-xl border border-border bg-card shadow-2xl flex flex-col animate-in fade-in-50 zoom-in-95">
+                        <div className="flex items-center justify-between border-b border-border bg-secondary/50 px-3.5 py-2 text-xs">
+                          <span className="font-semibold text-muted-foreground">
+                            Existing System Categories ({allSystemCategories.length})
+                          </span>
+                          <span className="text-[11px] text-muted-foreground">
+                            Select 1 category
+                          </span>
+                        </div>
+
+                        <div className="overflow-y-auto max-h-64 py-1.5 divide-y divide-border/20">
+                          {categorySearchTerm.trim() && !exactMatchExists && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormName(categorySearchTerm.trim());
+                                setIsCategoryDropdownOpen(false);
+                              }}
+                              className="flex items-center gap-2.5 w-full px-3.5 py-2.5 text-left text-xs font-semibold text-[var(--brand)] hover:bg-[var(--sidebar-highlight)] transition-colors cursor-pointer bg-secondary/30"
+                            >
+                              <Plus size={15} className="shrink-0" />
+                              <span className="truncate">
+                                Use custom category: "{categorySearchTerm.trim()}" (Global)
+                              </span>
+                            </button>
+                          )}
+
+                          {sortedMasterOptions.length === 0 && !categorySearchTerm.trim() ? (
+                            <div className="px-4 py-4 text-center text-xs text-muted-foreground">
+                              No categories found.
+                            </div>
+                          ) : (
+                            sortedMasterOptions.map((cat, index) => {
+                              const isSelected =
+                                formName.toLowerCase() === cat.name.toLowerCase();
+                              const isAlreadyInPbAdmin = categories.some(
+                                (c) => c.name.toLowerCase() === cat.name.toLowerCase()
+                              );
+
+                              const prevCat = index > 0 ? sortedMasterOptions[index - 1] : null;
+                              const prevInPbAdmin = prevCat
+                                ? categories.some(
+                                    (c) => c.name.toLowerCase() === prevCat.name.toLowerCase()
+                                  )
+                                : false;
+                              const showAlreadyInSystemHeader =
+                                isAlreadyInPbAdmin && (!prevCat || !prevInPbAdmin);
+
+                              return (
+                                <div key={cat.id}>
+                                  {showAlreadyInSystemHeader && (
+                                    <div className="flex items-center justify-between px-3.5 py-2 bg-secondary/80 border-t border-b border-border/50 text-[11px] font-semibold text-muted-foreground">
+                                      <span className="flex items-center gap-1.5">
+                                        <span>Already in System</span>
+                                        <span className="rounded bg-secondary px-1.5 py-0.2 border border-border/60 text-[10px]">
+                                          {
+                                            categories.filter((c) =>
+                                              allSystemCategories.some(
+                                                (m) =>
+                                                  m.name.toLowerCase() === c.name.toLowerCase()
+                                              )
+                                            ).length
+                                          }
+                                        </span>
+                                      </span>
+                                      <span className="text-[10px] text-muted-foreground/70 font-normal">
+                                        Already added to system
+                                      </span>
+                                    </div>
+                                  )}
+                                  <button
+                                    type="button"
+                                    disabled={isAlreadyInPbAdmin}
+                                    onClick={() => handleSelectMasterCategory(cat)}
+                                    className={`flex items-center justify-between w-full px-3.5 py-2.5 text-left text-xs transition-colors cursor-pointer hover:bg-secondary ${
+                                      isSelected
+                                        ? "bg-[var(--sidebar-highlight)]/70 font-semibold text-[var(--brand)]"
+                                        : isAlreadyInPbAdmin
+                                        ? "opacity-60 text-muted-foreground bg-muted/20 cursor-not-allowed"
+                                        : "text-foreground"
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2.5 min-w-0">
+                                      <span className="truncate">{cat.name}</span>
+                                      {isSelected && (
+                                        <Check
+                                          size={14}
+                                          className="text-[var(--brand)] shrink-0"
+                                        />
+                                      )}
+                                      {isAlreadyInPbAdmin && (
+                                        <span className="text-[10px] font-semibold text-muted-foreground bg-secondary px-1.5 py-0.5 rounded border border-border/50 shrink-0">
+                                          In System
+                                        </span>
+                                      )}
+                                    </div>
+                                    {cat.subcategories && cat.subcategories.length > 0 && (
+                                      <span className="text-[10.5px] text-muted-foreground shrink-0 pl-2">
+                                        {cat.subcategories.length} subs
+                                      </span>
+                                    )}
+                                  </button>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    Display Order <span className="text-destructive">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="e.g. 1"
+                    value={formDisplayOrder}
+                    onChange={(e) => {
+                      setFormDisplayOrder(e.target.value);
+                      setErrorMessage("");
+                    }}
+                    className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                  />
+                </div>
               </div>
 
               {/* Multiple Subcategories Section */}
@@ -498,7 +949,7 @@ function ManageCategoryPage() {
                   <label className="block text-xs font-semibold text-foreground">
                     Subcategories ({formSubcategories.length})
                   </label>
-                  <span className="text-[11px] text-muted-foreground">
+                  <span className="text-[11.5px] text-muted-foreground">
                     Click name or pencil icon to edit
                   </span>
                 </div>
@@ -509,19 +960,22 @@ function ManageCategoryPage() {
                     type="text"
                     placeholder="Type subcategory and press Add or Enter"
                     value={newSubcatInput}
-                    onChange={(e) => setNewSubcatInput(e.target.value)}
+                    onChange={(e) => {
+                      setNewSubcatInput(e.target.value);
+                      setErrorMessage("");
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
                         handleAddSubcategory();
                       }
                     }}
-                    className="h-10 flex-1 rounded-lg border border-border bg-background px-3 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                    className="h-11 flex-1 rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
                   />
                   <button
                     type="button"
                     onClick={handleAddSubcategory}
-                    className="h-10 px-4 rounded-lg border border-border bg-secondary text-xs font-semibold text-foreground hover:bg-secondary/80 transition-colors cursor-pointer shrink-0"
+                    className="h-11 px-5 rounded-lg bg-[var(--brand)] text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shadow-2xs shrink-0"
                   >
                     Add
                   </button>
@@ -529,11 +983,11 @@ function ManageCategoryPage() {
 
                 {/* Editable Subcategories List */}
                 {formSubcategories.length > 0 ? (
-                  <div className="flex flex-col gap-2 rounded-lg border border-border bg-secondary/30 p-3 max-h-48 overflow-y-auto">
+                  <div className="flex flex-col gap-2 rounded-xl border border-border bg-secondary/30 p-3.5 max-h-56 overflow-y-auto">
                     {formSubcategories.map((sub, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 shadow-2xs transition-colors"
+                        className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3.5 py-2.5 shadow-2xs transition-colors"
                       >
                         {editingSubcatIndex === idx ? (
                           <div className="flex items-center gap-1.5 flex-1">
@@ -549,7 +1003,7 @@ function ManageCategoryPage() {
                                   setEditingSubcatIndex(null);
                                 }
                               }}
-                              className="h-8 flex-1 rounded-md border border-border bg-background px-2.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
+                              className="h-8 flex-1 rounded-md border border-border bg-white dark:bg-card px-2.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
                               autoFocus
                             />
                             <button
@@ -603,23 +1057,41 @@ function ManageCategoryPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground italic">
+                  <p className="text-xs text-muted-foreground italic px-1">
                     No subcategories added yet. Type above and press Add or Enter.
                   </p>
                 )}
               </div>
 
-              {/* Status Select */}
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5">
-                  Status
-                </label>
-                <DropdownSelect
-                  value={formStatus}
-                  options={["Enabled", "Disabled"]}
-                  onChange={(v) => setFormStatus(v as "Enabled" | "Disabled")}
-                  className="w-full"
-                />
+              {/* Status Switch Toggle */}
+              <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
+                <div>
+                  <label className="block text-xs font-semibold text-foreground">
+                    Status
+                  </label>
+                  <p className="text-[11.5px] text-muted-foreground mt-0.5">
+                    {formStatus === "Enabled"
+                      ? "Category is active across PixelBooks."
+                      : "Category is disabled and hidden from listings."}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <span
+                    className={`text-xs font-semibold ${
+                      formStatus === "Enabled"
+                        ? "text-emerald-600 dark:text-emerald-400"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {formStatus}
+                  </span>
+                  <Switch
+                    checked={formStatus === "Enabled"}
+                    onCheckedChange={(checked) =>
+                      setFormStatus(checked ? "Enabled" : "Disabled")
+                    }
+                  />
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -627,15 +1099,15 @@ function ManageCategoryPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="h-10 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  className="h-11 px-5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="h-10 px-5 rounded-lg bg-[var(--brand)] text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer"
+                  className="h-11 px-6 rounded-lg bg-[var(--brand)] text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shadow-2xs"
                 >
-                  {editingCategory ? "Save Changes" : "Create Category"}
+                  {editingCategory ? "Save Changes" : "Add Category"}
                 </button>
               </div>
             </form>

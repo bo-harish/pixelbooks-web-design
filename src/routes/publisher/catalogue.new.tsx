@@ -44,7 +44,7 @@ import { usePublisherType } from "@/hooks/use-publisher-type";
 import { seedBooks } from "@/lib/catalogue-data";
 
 export const Route = createFileRoute("/publisher/catalogue/new")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { edit?: string } => ({
     edit: (search.edit as string) || undefined,
   }),
   head: () => ({
@@ -810,6 +810,165 @@ You have reached the end of the free preview sample.`
   );
 }
 
+function createCoverImageFromEbook(file: File): Promise<File> {
+  return new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 438;
+    canvas.height = 678;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      resolve(new File([""], `Cover_${file.name.replace(/\.[^/.]+$/, "")}.png`, { type: "image/png" }));
+      return;
+    }
+
+    // Clean title from filename
+    const rawTitle = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+    const formattedTitle = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 438, 678);
+    gradient.addColorStop(0, "#1e1b4b");
+    gradient.addColorStop(0.4, "#312e81");
+    gradient.addColorStop(0.8, "#1e293b");
+    gradient.addColorStop(1, "#0f172a");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 438, 678);
+
+    // Decorative border frames
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(20, 20, 398, 638);
+    ctx.strokeRect(26, 26, 386, 626);
+
+    // Corner accents
+    ctx.strokeStyle = "#818cf8";
+    ctx.lineWidth = 3;
+    // Top-left
+    ctx.beginPath();
+    ctx.moveTo(20, 48);
+    ctx.lineTo(20, 20);
+    ctx.lineTo(48, 20);
+    ctx.stroke();
+    // Top-right
+    ctx.beginPath();
+    ctx.moveTo(390, 20);
+    ctx.lineTo(418, 20);
+    ctx.lineTo(418, 48);
+    ctx.stroke();
+    // Bottom-left
+    ctx.beginPath();
+    ctx.moveTo(20, 630);
+    ctx.lineTo(20, 658);
+    ctx.lineTo(48, 658);
+    ctx.stroke();
+    // Bottom-right
+    ctx.beginPath();
+    ctx.moveTo(390, 658);
+    ctx.lineTo(418, 658);
+    ctx.lineTo(418, 630);
+    ctx.stroke();
+
+    // Top Header Badge
+    ctx.fillStyle = "rgba(99, 102, 241, 0.35)";
+    ctx.beginPath();
+    ctx.roundRect(139, 52, 160, 28, 14);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(165, 180, 252, 0.5)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = "#e0e7ff";
+    ctx.font = "bold 11px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("PIXELBOOKS EDITION", 219, 70);
+
+    // Central Emblem Circle
+    ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
+    ctx.beginPath();
+    ctx.arc(219, 195, 60, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(165, 180, 252, 0.35)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Inner Emblem Circle
+    ctx.fillStyle = "rgba(99, 102, 241, 0.25)";
+    ctx.beginPath();
+    ctx.arc(219, 195, 45, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Book Emoji / Icon in center
+    ctx.font = "34px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("📖", 219, 195);
+    ctx.textBaseline = "alphabetic";
+
+    // Book Title (wrapped)
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 22px sans-serif";
+    ctx.textAlign = "center";
+
+    const words = formattedTitle.split(" ");
+    let line = "";
+    const lines: string[] = [];
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + " ";
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > 320 && n > 0) {
+        lines.push(line.trim());
+        line = words[n] + " ";
+      } else {
+        line = testLine;
+      }
+    }
+    lines.push(line.trim());
+
+    const startY = 320;
+    lines.slice(0, 3).forEach((l, idx) => {
+      ctx.fillText(l, 219, startY + idx * 30);
+    });
+
+    // Subtitle / Extracted label
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "italic 13px sans-serif";
+    ctx.fillText(
+      "Extracted Cover & Manuscript Edition",
+      219,
+      startY + Math.min(lines.length, 3) * 30 + 24
+    );
+
+    // Separator line
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.beginPath();
+    ctx.moveTo(119, 540);
+    ctx.lineTo(319, 540);
+    ctx.stroke();
+
+    // Footer Author / System
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "600 13px sans-serif";
+    ctx.fillText("PixelBooks Publishing", 219, 575);
+
+    ctx.fillStyle = "#64748b";
+    ctx.font = "11px sans-serif";
+    ctx.fillText("Auto-generated from digital publication", 219, 598);
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const coverName = `Cover_${file.name.replace(/\.[^/.]+$/, "")}.png`;
+        resolve(new File([blob], coverName, { type: "image/png" }));
+      } else {
+        resolve(
+          new File([""], `Cover_${file.name.replace(/\.[^/.]+$/, "")}.png`, {
+            type: "image/png",
+          })
+        );
+      }
+    }, "image/png");
+  });
+}
+
 function UploadRow() {
   const [autofill, setAutofill] = useState(true);
   const [ebookFile, setEbookFile] = useState<File | null>(null);
@@ -817,6 +976,7 @@ function UploadRow() {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [samplePreviewOpen, setSamplePreviewOpen] = useState(false);
   const [sourcePreviewOpen, setSourcePreviewOpen] = useState(false);
+  const [isGeneratingCover, setIsGeneratingCover] = useState(false);
   const sampleInputRef = useRef<HTMLInputElement>(null);
 
   const handleGenerateSample = () => {
@@ -828,6 +988,22 @@ function UploadRow() {
     );
     setSampleFile(generatedSample);
     setSamplePreviewOpen(true);
+  };
+
+  const handleGenerateCover = async () => {
+    if (!ebookFile) return;
+    setIsGeneratingCover(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      const generatedCover = await createCoverImageFromEbook(ebookFile);
+      setCoverFile(generatedCover);
+      toast.success("Cover image successfully generated from eBook!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to generate cover image from eBook.");
+    } finally {
+      setIsGeneratingCover(false);
+    }
   };
 
   const handleApproveSample = () => {
@@ -884,7 +1060,7 @@ function UploadRow() {
                   className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--brand)]/30 bg-gradient-to-r from-[var(--brand)]/15 via-[var(--brand)]/10 to-[var(--brand)]/5 px-3 text-xs font-bold text-[var(--brand)] shadow-2xs transition-all hover:border-[var(--brand)] hover:shadow-xs active:scale-[0.99] cursor-pointer"
                 >
                   <Sparkles size={14} className="animate-pulse text-[var(--brand)]" />
-                  Generate Sample from Source
+                  Generate Sample from eBook
                 </button>
               ) : (
                 <div
@@ -910,6 +1086,27 @@ function UploadRow() {
             isCover
             onFileChange={setCoverFile}
             externalFile={coverFile}
+            extra={
+              ebookFile ? (
+                <button
+                  type="button"
+                  onClick={handleGenerateCover}
+                  disabled={isGeneratingCover}
+                  className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--brand)]/30 bg-gradient-to-r from-[var(--brand)]/15 via-[var(--brand)]/10 to-[var(--brand)]/5 px-3 text-xs font-bold text-[var(--brand)] shadow-2xs transition-all hover:border-[var(--brand)] hover:shadow-xs active:scale-[0.99] cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                >
+                  {isGeneratingCover ? (
+                    <Loader2 size={14} className="animate-spin text-[var(--brand)]" />
+                  ) : (
+                    <Sparkles size={14} className="animate-pulse text-[var(--brand)]" />
+                  )}
+                  <span>
+                    {isGeneratingCover
+                      ? "Generating Cover..."
+                      : "Generate Cover image from eBook"}
+                  </span>
+                </button>
+              ) : undefined
+            }
           />
         </div>
 
@@ -1844,41 +2041,145 @@ function BookUrlSection() {
 function CategoriesSection() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Record<string, string[]>>({
-    "Academic & Educational": [],
-    Articles: [],
+    "Academic & Educational": ["Higher Education", "Curriculum Books"],
+    Articles: ["Peer Reviewed"],
     Autobiography: [],
   });
   const groups = Object.entries(selected).map(([name, subs]) => ({ name, subs }));
+  const totalSubs = groups.reduce((acc, g) => acc + g.subs.length, 0);
+
+  const handleRemoveCategory = (catName: string) => {
+    setSelected((prev) => {
+      const next = { ...prev };
+      delete next[catName];
+      return next;
+    });
+    toast.success(`Removed category "${catName}"`);
+  };
+
   return (
-    <SectionCard title="Selected Categories">
-      <ul className="space-y-3 text-sm">
-        {groups.map((g) => (
-          <li key={g.name}>
-            <div className="flex items-center gap-2 font-semibold">
-              <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
-              {g.name}
+    <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+      {/* Card Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 shadow-2xs">
+            <Tag size={22} />
+          </span>
+          <div>
+            <h2 className="text-base font-extrabold text-foreground leading-tight">
+              Select Categories
+            </h2>
+            <p className="text-xs text-muted-foreground font-medium mt-0.5">
+              Select one or more categories and subcategories to classify this eBook in the catalogue.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="inline-flex h-11 items-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors shadow-2xs cursor-pointer"
+          >
+            {groups.length > 0 ? <Pencil size={15} /> : <Plus size={16} />}
+            <span>Select Categories</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Selected Categories Breakdown Table */}
+      {groups.length > 0 ? (
+        <div className="rounded-xl border border-border/80 bg-secondary/20 p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
+              <span>Selected Categories & Subcategories</span>
+            </h3>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold text-muted-foreground">
+                Total: <strong className="text-foreground font-extrabold">{groups.length} categories • {totalSubs} subcategories</strong>
+              </span>
+
             </div>
-            {g.subs.length > 0 && (
-              <ul className="mt-1 space-y-1 pl-6 text-muted-foreground">
-                {g.subs.map((s, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="mt-4 inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-semibold"
-        style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-      >
-        <Pencil size={14} /> Edit Category
-      </button>
+          </div>
+
+          <div className="divide-y divide-border/40">
+            {groups.map((g) => {
+              return (
+                <div key={g.name} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-purple-600 dark:text-purple-400">
+                      <Tag size={16} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-foreground truncate">{g.name}</p>
+                      {g.subs.length > 0 ? (
+                        <div className="flex flex-wrap items-center gap-1 mt-1">
+                          {g.subs.map((s, idx) => (
+                            <span
+                              key={idx}
+                              className="inline-flex items-center rounded-md bg-secondary border border-border/60 px-2 py-0.5 text-[10.5px] font-medium text-muted-foreground"
+                            >
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-[11px] text-muted-foreground italic">No subcategories </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                    {g.subs.length > 0 && (
+                      <span className="inline-flex items-center rounded-full bg-secondary border border-border px-2.5 py-0.5 text-xs font-semibold text-foreground">
+                        {g.subs.length} subcategories
+                      </span>
+                    )}
+
+                    {/* Edit Button */}
+                    <button
+                      type="button"
+                      onClick={() => setOpen(true)}
+                      className="h-9 px-3 rounded-lg border border-border bg-card flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                      title="Edit category in dialog"
+                    >
+                      <Pencil size={13} />
+                      <span>Edit</span>
+                    </button>
+
+                    {/* Delete Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCategory(g.name)}
+                      className="h-9 w-9 rounded-lg border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      title={`Remove ${g.name}`}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border p-6 text-center space-y-3 bg-secondary/10">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-muted-foreground">
+            <Tag size={18} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-foreground">No categories selected</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Please select at least one category to classify this eBook.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="inline-flex h-11 items-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors shadow-2xs cursor-pointer"
+          >
+            <Plus size={16} /> <span>Select Categories</span>
+          </button>
+        </div>
+      )}
+
       {open && (
         <CategoryDialog
           initial={selected}
@@ -1889,7 +2190,7 @@ function CategoriesSection() {
           }}
         />
       )}
-    </SectionCard>
+    </div>
   );
 }
 
@@ -2695,9 +2996,8 @@ function LibraryMultiSelectDropdown({
     <div className="relative w-full" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
-          isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
-        }`}
+        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
+          }`}
       >
         <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
           {selectedNames.length === 0 ? (
@@ -2799,9 +3099,8 @@ function LibraryMultiSelectDropdown({
                 return (
                   <div
                     key={lib.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${
-                      isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
-                    }`}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
+                      }`}
                   >
                     <div
                       className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer pr-2"
@@ -2810,7 +3109,7 @@ function LibraryMultiSelectDropdown({
                       <input
                         type="checkbox"
                         checked={isSelected}
-                        onChange={() => {}}
+                        onChange={() => { }}
                         className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
                       />
                       <div className="min-w-0">
@@ -2965,11 +3264,10 @@ function LibraryAllocationSection() {
                             key={preset}
                             type="button"
                             onClick={() => updateCopies(libName, preset)}
-                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${
-                              copies === preset
-                                ? "bg-[var(--brand)] text-white border-[var(--brand)]"
-                                : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
-                            }`}
+                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${copies === preset
+                              ? "bg-[var(--brand)] text-white border-[var(--brand)]"
+                              : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+                              }`}
                           >
                             {preset}
                           </button>
@@ -3063,11 +3361,11 @@ function AddEBookPage() {
           <EBookDetailsSection />
           <AuthorsSection />
           {!isLibraryOnly && <BookUrlSection />}
-          <CategoriesSection />
+          {isLibraryOnly && <LibraryAllocationSection />}
           {!isLibraryOnly && <PaymentSection />}
           {!isLibraryOnly && <PriceDetailsSection />}
           {!isLibraryOnly && <RentalSection />}
-          {isLibraryOnly && <LibraryAllocationSection />}
+          <CategoriesSection />
 
           {submitted && (
             <div
