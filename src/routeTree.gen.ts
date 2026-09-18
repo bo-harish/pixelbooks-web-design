@@ -26,6 +26,8 @@ import { Route as PublisherSalesReportRouteImport } from './routes/publisher/sal
 import { Route as PublisherProfileRouteImport } from './routes/publisher/profile'
 import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
 import { Route as PublisherLoginRouteImport } from './routes/publisher/login'
+import { Route as PublisherLinkSourcesRouteImport } from './routes/publisher/link-sources'
+import { Route as PublisherCategoriesRouteImport } from './routes/publisher/categories'
 import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
 import { Route as PbWebTermsConditionsRouteImport } from './routes/pb-web/terms-conditions'
 import { Route as PbWebSupportRouteImport } from './routes/pb-web/support'
@@ -76,7 +78,6 @@ import { Route as LibraryAdminOrdersRouteImport } from './routes/library-admin/o
 import { Route as LibraryAdminManageEbooksRouteImport } from './routes/library-admin/manage-ebooks'
 import { Route as LibraryAdminDepartmentsRouteImport } from './routes/library-admin/departments'
 import { Route as LibraryAdminCoursesRouteImport } from './routes/library-admin/courses'
-import { Route as LibraryAdminCategoriesRouteImport } from './routes/library-admin/categories'
 import { Route as LibraryAdminCatalogueRouteImport } from './routes/library-admin/catalogue'
 import { Route as LibraryAdminCartRouteImport } from './routes/library-admin/cart'
 import { Route as LibraryAdminBannersRouteImport } from './routes/library-admin/banners'
@@ -204,6 +205,16 @@ const PublisherMarginReportRoute = PublisherMarginReportRouteImport.update({
 const PublisherLoginRoute = PublisherLoginRouteImport.update({
   id: '/publisher/login',
   path: '/publisher/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherLinkSourcesRoute = PublisherLinkSourcesRouteImport.update({
+  id: '/publisher/link-sources',
+  path: '/publisher/link-sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherCategoriesRoute = PublisherCategoriesRouteImport.update({
+  id: '/publisher/categories',
+  path: '/publisher/categories',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
@@ -460,11 +471,6 @@ const LibraryAdminCoursesRoute = LibraryAdminCoursesRouteImport.update({
   path: '/library-admin/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryAdminCategoriesRoute = LibraryAdminCategoriesRouteImport.update({
-  id: '/library-admin/categories',
-  path: '/library-admin/categories',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LibraryAdminCatalogueRoute = LibraryAdminCatalogueRouteImport.update({
   id: '/library-admin/catalogue',
   path: '/library-admin/catalogue',
@@ -708,7 +714,6 @@ export interface FileRoutesByFullPath {
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
-  '/library-admin/categories': typeof LibraryAdminCategoriesRoute
   '/library-admin/courses': typeof LibraryAdminCoursesRoute
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
@@ -759,6 +764,8 @@ export interface FileRoutesByFullPath {
   '/pb-web/support': typeof PbWebSupportRoute
   '/pb-web/terms-conditions': typeof PbWebTermsConditionsRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
+  '/publisher/categories': typeof PublisherCategoriesRoute
+  '/publisher/link-sources': typeof PublisherLinkSourcesRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
@@ -821,7 +828,6 @@ export interface FileRoutesByTo {
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
-  '/library-admin/categories': typeof LibraryAdminCategoriesRoute
   '/library-admin/courses': typeof LibraryAdminCoursesRoute
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
@@ -872,6 +878,8 @@ export interface FileRoutesByTo {
   '/pb-web/support': typeof PbWebSupportRoute
   '/pb-web/terms-conditions': typeof PbWebTermsConditionsRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
+  '/publisher/categories': typeof PublisherCategoriesRoute
+  '/publisher/link-sources': typeof PublisherLinkSourcesRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
@@ -935,7 +943,6 @@ export interface FileRoutesById {
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
-  '/library-admin/categories': typeof LibraryAdminCategoriesRoute
   '/library-admin/courses': typeof LibraryAdminCoursesRoute
   '/library-admin/departments': typeof LibraryAdminDepartmentsRoute
   '/library-admin/manage-ebooks': typeof LibraryAdminManageEbooksRoute
@@ -986,6 +993,8 @@ export interface FileRoutesById {
   '/pb-web/support': typeof PbWebSupportRoute
   '/pb-web/terms-conditions': typeof PbWebTermsConditionsRoute
   '/publisher/bank-accounts': typeof PublisherBankAccountsRoute
+  '/publisher/categories': typeof PublisherCategoriesRoute
+  '/publisher/link-sources': typeof PublisherLinkSourcesRoute
   '/publisher/login': typeof PublisherLoginRoute
   '/publisher/margin-report': typeof PublisherMarginReportRoute
   '/publisher/profile': typeof PublisherProfileRoute
@@ -1050,7 +1059,6 @@ export interface FileRouteTypes {
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
-    | '/library-admin/categories'
     | '/library-admin/courses'
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
@@ -1101,6 +1109,8 @@ export interface FileRouteTypes {
     | '/pb-web/support'
     | '/pb-web/terms-conditions'
     | '/publisher/bank-accounts'
+    | '/publisher/categories'
+    | '/publisher/link-sources'
     | '/publisher/login'
     | '/publisher/margin-report'
     | '/publisher/profile'
@@ -1163,7 +1173,6 @@ export interface FileRouteTypes {
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
-    | '/library-admin/categories'
     | '/library-admin/courses'
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
@@ -1214,6 +1223,8 @@ export interface FileRouteTypes {
     | '/pb-web/support'
     | '/pb-web/terms-conditions'
     | '/publisher/bank-accounts'
+    | '/publisher/categories'
+    | '/publisher/link-sources'
     | '/publisher/login'
     | '/publisher/margin-report'
     | '/publisher/profile'
@@ -1276,7 +1287,6 @@ export interface FileRouteTypes {
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
-    | '/library-admin/categories'
     | '/library-admin/courses'
     | '/library-admin/departments'
     | '/library-admin/manage-ebooks'
@@ -1327,6 +1337,8 @@ export interface FileRouteTypes {
     | '/pb-web/support'
     | '/pb-web/terms-conditions'
     | '/publisher/bank-accounts'
+    | '/publisher/categories'
+    | '/publisher/link-sources'
     | '/publisher/login'
     | '/publisher/margin-report'
     | '/publisher/profile'
@@ -1390,7 +1402,6 @@ export interface RootRouteChildren {
   LibraryAdminBannersRoute: typeof LibraryAdminBannersRoute
   LibraryAdminCartRoute: typeof LibraryAdminCartRoute
   LibraryAdminCatalogueRoute: typeof LibraryAdminCatalogueRoute
-  LibraryAdminCategoriesRoute: typeof LibraryAdminCategoriesRoute
   LibraryAdminCoursesRoute: typeof LibraryAdminCoursesRoute
   LibraryAdminDepartmentsRoute: typeof LibraryAdminDepartmentsRoute
   LibraryAdminManageEbooksRoute: typeof LibraryAdminManageEbooksRoute
@@ -1441,6 +1452,8 @@ export interface RootRouteChildren {
   PbWebSupportRoute: typeof PbWebSupportRoute
   PbWebTermsConditionsRoute: typeof PbWebTermsConditionsRoute
   PublisherBankAccountsRoute: typeof PublisherBankAccountsRoute
+  PublisherCategoriesRoute: typeof PublisherCategoriesRoute
+  PublisherLinkSourcesRoute: typeof PublisherLinkSourcesRoute
   PublisherLoginRoute: typeof PublisherLoginRoute
   PublisherMarginReportRoute: typeof PublisherMarginReportRoute
   PublisherProfileRoute: typeof PublisherProfileRoute
@@ -1612,6 +1625,20 @@ declare module '@tanstack/react-router' {
       path: '/publisher/login'
       fullPath: '/publisher/login'
       preLoaderRoute: typeof PublisherLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/link-sources': {
+      id: '/publisher/link-sources'
+      path: '/publisher/link-sources'
+      fullPath: '/publisher/link-sources'
+      preLoaderRoute: typeof PublisherLinkSourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/categories': {
+      id: '/publisher/categories'
+      path: '/publisher/categories'
+      fullPath: '/publisher/categories'
+      preLoaderRoute: typeof PublisherCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/publisher/bank-accounts': {
@@ -1962,13 +1989,6 @@ declare module '@tanstack/react-router' {
       path: '/library-admin/courses'
       fullPath: '/library-admin/courses'
       preLoaderRoute: typeof LibraryAdminCoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/categories': {
-      id: '/library-admin/categories'
-      path: '/library-admin/categories'
-      fullPath: '/library-admin/categories'
-      preLoaderRoute: typeof LibraryAdminCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library-admin/catalogue': {
@@ -2327,7 +2347,6 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryAdminBannersRoute: LibraryAdminBannersRoute,
   LibraryAdminCartRoute: LibraryAdminCartRoute,
   LibraryAdminCatalogueRoute: LibraryAdminCatalogueRoute,
-  LibraryAdminCategoriesRoute: LibraryAdminCategoriesRoute,
   LibraryAdminCoursesRoute: LibraryAdminCoursesRoute,
   LibraryAdminDepartmentsRoute: LibraryAdminDepartmentsRoute,
   LibraryAdminManageEbooksRoute: LibraryAdminManageEbooksRoute,
@@ -2378,6 +2397,8 @@ const rootRouteChildren: RootRouteChildren = {
   PbWebSupportRoute: PbWebSupportRoute,
   PbWebTermsConditionsRoute: PbWebTermsConditionsRoute,
   PublisherBankAccountsRoute: PublisherBankAccountsRoute,
+  PublisherCategoriesRoute: PublisherCategoriesRoute,
+  PublisherLinkSourcesRoute: PublisherLinkSourcesRoute,
   PublisherLoginRoute: PublisherLoginRoute,
   PublisherMarginReportRoute: PublisherMarginReportRoute,
   PublisherProfileRoute: PublisherProfileRoute,

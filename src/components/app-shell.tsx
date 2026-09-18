@@ -341,7 +341,6 @@ function getSections(
           items: (
             [
               { label: "Catalogue", icon: BookMarked, to: "/library-admin/catalogue" },
-              { label: "Categories", icon: FolderTree, to: "/library-admin/categories" },
               { label: "Manage Borrowings", icon: FileEdit, to: "/library-admin/manage-ebooks" },
               !hideRetailBookStore && !isStandardAdmin && { label: "Book Store", icon: Store, to: "/library-admin/book-store" },
               !isStandardAdmin && { label: "Banners", icon: ImageIcon, to: "/library-admin/banners" },
@@ -410,6 +409,8 @@ function getSections(
         [
           !isLibraryOnlyPublisher && { label: "Dashboard", icon: LayoutDashboard, to: "/publisher" },
           { label: "eBook Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
+          { label: "Categories", icon: FolderTree, to: "/publisher/categories" },
+          isLibraryOnlyPublisher && { label: "Link Sources", icon: Network, to: "/publisher/link-sources" },
           { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
           !isLibraryOnlyPublisher && { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
           !isLibraryOnlyPublisher && { label: "Promo Codes", icon: TicketPercent, to: "/publisher/promo-codes" },

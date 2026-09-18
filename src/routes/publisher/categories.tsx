@@ -12,7 +12,6 @@ import {
   ChevronDown,
   AlertCircle,
   GripVertical,
-  ExternalLink,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
@@ -22,16 +21,15 @@ import {
   MASTER_CATEGORIES,
   type SubcategoryItem,
   getSubcategoryName,
-  getSubcategoryLink,
 } from "@/lib/categories-data";
 
-export const Route = createFileRoute("/library-admin/categories")({
+export const Route = createFileRoute("/publisher/categories")({
   head: () => ({
     meta: [
-      { title: "Manage Category — Library Admin" },
+      { title: "Manage Category — Publisher" },
       {
         name: "description",
-        content: "View and manage book categories, subcategories, and views in Library Admin.",
+        content: "View and manage book categories, subcategories, and views in Publisher.",
       },
     ],
   }),
@@ -48,8 +46,6 @@ export interface CategoryItem {
   status: "Enabled" | "Disabled";
   displayOrder: number;
   isCustom?: boolean;
-  enableExternalLink?: boolean;
-  externalLink?: string;
 }
 
 const LIBRARY_CATEGORIES_STORAGE_KEY = "pixelbooks_library_categories_vimala";
@@ -62,8 +58,6 @@ const INITIAL_CATEGORIES: CategoryItem[] = MASTER_CATEGORIES.slice(0, 10).map((m
   views: m.views,
   status: m.status,
   displayOrder: m.displayOrder ?? idx + 1,
-  enableExternalLink: m.enableExternalLink,
-  externalLink: m.externalLink,
 }));
 
 function ManageLibraryCategoryPage() {
@@ -82,8 +76,6 @@ function ManageLibraryCategoryPage() {
               status: item.status === "Disabled" ? "Disabled" : "Enabled",
               displayOrder: typeof item.displayOrder === "number" ? item.displayOrder : idx + 1,
               isCustom: Boolean(item.isCustom),
-              enableExternalLink: Boolean(item.enableExternalLink),
-              externalLink: item.externalLink || "",
             }));
           }
         }
@@ -129,25 +121,17 @@ function ManageLibraryCategoryPage() {
   const [formName, setFormName] = useState("");
   const [formDisplayOrder, setFormDisplayOrder] = useState<number | string>(1);
 
-  // Enable External Link State
-  const [enableExternalLink, setEnableExternalLink] = useState(false);
-  const [externalLink, setExternalLink] = useState("");
-
   // Inline Error Message State
   const [errorMessage, setErrorMessage] = useState("");
 
   // Subcategories State (Optional)
   const [formSubcategories, setFormSubcategories] = useState<SubcategoryItem[]>([]);
   const [newSubcatInput, setNewSubcatInput] = useState("");
-  const [newSubcatEnableLink, setNewSubcatEnableLink] = useState(false);
-  const [newSubcatLink, setNewSubcatLink] = useState("");
   const [formStatus, setFormStatus] = useState<"Enabled" | "Disabled">("Enabled");
 
   // Inline Subcategory Edit State inside Modal
   const [editingSubcatIndex, setEditingSubcatIndex] = useState<number | null>(null);
   const [editingSubcatText, setEditingSubcatText] = useState("");
-  const [editingSubcatEnableLink, setEditingSubcatEnableLink] = useState(false);
-  const [editingSubcatLink, setEditingSubcatLink] = useState("");
 
   const itemsPerPage = 10;
   const simulatedTotalBase = categories.length;
@@ -321,17 +305,11 @@ function ManageLibraryCategoryPage() {
     setIsCategoryDropdownOpen(false);
     setFormName("");
     setFormDisplayOrder(maxOrder + 1);
-    setEnableExternalLink(false);
-    setExternalLink("");
     setErrorMessage("");
     setFormSubcategories([]);
     setNewSubcatInput("");
-    setNewSubcatEnableLink(false);
-    setNewSubcatLink("");
     setEditingSubcatIndex(null);
     setEditingSubcatText("");
-    setEditingSubcatEnableLink(false);
-    setEditingSubcatLink("");
     setFormStatus("Enabled");
     setIsModalOpen(true);
   };
@@ -342,13 +320,9 @@ function ManageLibraryCategoryPage() {
     setIsCategoryDropdownOpen(false);
     setFormName(cat.name);
     setFormDisplayOrder(cat.displayOrder ?? 1);
-    setEnableExternalLink(cat.enableExternalLink ?? false);
-    setExternalLink(cat.externalLink ?? "");
     setErrorMessage("");
     setFormSubcategories([...cat.subcategories]);
     setNewSubcatInput("");
-    setNewSubcatEnableLink(false);
-    setNewSubcatLink("");
     setFormStatus(cat.status);
 
     if (
@@ -359,14 +333,9 @@ function ManageLibraryCategoryPage() {
       const targetSub = cat.subcategories[focusSubcatIndex];
       setEditingSubcatIndex(focusSubcatIndex);
       setEditingSubcatText(getSubcategoryName(targetSub));
-      const link = getSubcategoryLink(targetSub);
-      setEditingSubcatEnableLink(Boolean(link));
-      setEditingSubcatLink(link || "");
     } else {
       setEditingSubcatIndex(null);
       setEditingSubcatText("");
-      setEditingSubcatEnableLink(false);
-      setEditingSubcatLink("");
     }
 
     setIsModalOpen(true);
@@ -394,14 +363,6 @@ function ManageLibraryCategoryPage() {
       setFormSubcategories([]);
     }
 
-    // Pre-fill external link if present
-    if (cat.enableExternalLink && cat.externalLink) {
-      setEnableExternalLink(true);
-      setExternalLink(cat.externalLink);
-    } else {
-      setEnableExternalLink(false);
-      setExternalLink("");
-    }
   };
 
   const handleAddSubcategory = () => {
@@ -418,28 +379,8 @@ function ManageLibraryCategoryPage() {
       return;
     }
 
-    let formattedLink = "";
-    if (newSubcatEnableLink) {
-      const linkTrimmed = newSubcatLink.trim();
-      if (!linkTrimmed) {
-        toast.error("Please enter the external link URL for the subcategory.");
-        setErrorMessage("Please enter the external link URL for the subcategory.");
-        return;
-      }
-      formattedLink =
-        linkTrimmed.startsWith("http://") || linkTrimmed.startsWith("https://")
-          ? linkTrimmed
-          : `https://${linkTrimmed}`;
-    }
-
-    const newSubItem: SubcategoryItem = newSubcatEnableLink
-      ? { name: trimmed, externalLink: formattedLink }
-      : trimmed;
-
-    setFormSubcategories((prev) => [...prev, newSubItem]);
+    setFormSubcategories((prev) => [...prev, trimmed]);
     setNewSubcatInput("");
-    setNewSubcatEnableLink(false);
-    setNewSubcatLink("");
   };
 
   const handleRemoveSubcategory = (index: number) => {
@@ -447,8 +388,6 @@ function ManageLibraryCategoryPage() {
     if (editingSubcatIndex === index) {
       setEditingSubcatIndex(null);
       setEditingSubcatText("");
-      setEditingSubcatEnableLink(false);
-      setEditingSubcatLink("");
     }
   };
 
@@ -456,9 +395,6 @@ function ManageLibraryCategoryPage() {
     const targetSub = formSubcategories[index];
     setEditingSubcatIndex(index);
     setEditingSubcatText(getSubcategoryName(targetSub));
-    const link = getSubcategoryLink(targetSub);
-    setEditingSubcatEnableLink(Boolean(link));
-    setEditingSubcatLink(link || "");
   };
 
   const handleSaveSubcategoryEdit = (index: number) => {
@@ -466,8 +402,6 @@ function ManageLibraryCategoryPage() {
     if (!trimmed) {
       setEditingSubcatIndex(null);
       setEditingSubcatText("");
-      setEditingSubcatEnableLink(false);
-      setEditingSubcatLink("");
       return;
     }
     setErrorMessage("");
@@ -483,31 +417,11 @@ function ManageLibraryCategoryPage() {
       return;
     }
 
-    let formattedLink = "";
-    if (editingSubcatEnableLink) {
-      const linkTrimmed = editingSubcatLink.trim();
-      if (!linkTrimmed) {
-        toast.error("Please enter the external link URL for the subcategory.");
-        setErrorMessage("Please enter the external link URL for the subcategory.");
-        return;
-      }
-      formattedLink =
-        linkTrimmed.startsWith("http://") || linkTrimmed.startsWith("https://")
-          ? linkTrimmed
-          : `https://${linkTrimmed}`;
-    }
-
-    const updatedSubItem: SubcategoryItem = editingSubcatEnableLink
-      ? { name: trimmed, externalLink: formattedLink }
-      : trimmed;
-
     setFormSubcategories((prev) =>
-      prev.map((sub, i) => (i === index ? updatedSubItem : sub))
+      prev.map((sub, i) => (i === index ? trimmed : sub))
     );
     setEditingSubcatIndex(null);
     setEditingSubcatText("");
-    setEditingSubcatEnableLink(false);
-    setEditingSubcatLink("");
   };
 
   const handleSaveCategory = (e: React.FormEvent) => {
@@ -518,33 +432,7 @@ function ManageLibraryCategoryPage() {
     let finalSubcategories = [...formSubcategories];
     if (editingSubcatIndex !== null && editingSubcatText.trim()) {
       const trimmed = editingSubcatText.trim();
-      let formattedLink = "";
-      if (editingSubcatEnableLink && editingSubcatLink.trim()) {
-        const linkTrimmed = editingSubcatLink.trim();
-        formattedLink =
-          linkTrimmed.startsWith("http://") || linkTrimmed.startsWith("https://")
-            ? linkTrimmed
-            : `https://${linkTrimmed}`;
-      }
-      finalSubcategories[editingSubcatIndex] =
-        editingSubcatEnableLink && formattedLink
-          ? { name: trimmed, externalLink: formattedLink }
-          : trimmed;
-    }
-
-    // Format and validate external link if enabled
-    let formattedLink = "";
-    if (enableExternalLink) {
-      const trimmed = externalLink.trim();
-      if (!trimmed) {
-        toast.error("Please enter the external link URL.");
-        setErrorMessage("Please enter the external link URL.");
-        return;
-      }
-      formattedLink =
-        trimmed.startsWith("http://") || trimmed.startsWith("https://")
-          ? trimmed
-          : `https://${trimmed}`;
+      finalSubcategories[editingSubcatIndex] = trimmed;
     }
 
     const trimmedName = formName.trim();
@@ -576,20 +464,14 @@ function ManageLibraryCategoryPage() {
             ? {
               ...c,
               name: trimmedName,
-              subcategories: enableExternalLink ? [] : finalSubcategories,
+              subcategories: finalSubcategories,
               status: formStatus,
               displayOrder: finalDisplayOrder,
-              enableExternalLink: enableExternalLink,
-              externalLink: enableExternalLink ? formattedLink : undefined,
             }
             : c
         )
       );
-      toast.success(
-        enableExternalLink
-          ? `Category "${trimmedName}" updated with external link (${formattedLink})`
-          : `Category "${trimmedName}" updated successfully`
-      );
+      toast.success(`Category "${trimmedName}" updated successfully`);
       setIsModalOpen(false);
     } else {
       // Add Mode: Single Category
@@ -613,26 +495,17 @@ function ManageLibraryCategoryPage() {
       const newCat: CategoryItem = {
         id: masterCat ? masterCat.id : `cat-${Date.now()}`,
         name: trimmedName,
-        subcategories: enableExternalLink ? [] : finalSubcategories,
+        subcategories: finalSubcategories,
         views: masterCat ? masterCat.views : 0,
         status: formStatus,
         displayOrder: finalDisplayOrder,
         isCustom: !masterCat,
-        enableExternalLink: enableExternalLink,
-        externalLink: enableExternalLink ? formattedLink : undefined,
       };
 
       setCategories((prev) => [newCat, ...prev]);
-      toast.success(
-        enableExternalLink
-          ? `Category "${trimmedName}" added with external link`
-          : `Category "${trimmedName}" added successfully`,
-        {
-          description: enableExternalLink
-            ? formattedLink
-            : "Applies only to the publisher associated with this library.",
-        }
-      );
+      toast.success(`Category "${trimmedName}" added successfully`, {
+        description: "Applies only to this publisher account.",
+      });
       setIsModalOpen(false);
     }
   };
@@ -753,109 +626,37 @@ function ManageLibraryCategoryPage() {
 
                         {/* Name Column */}
                         <td className="py-4 pr-4 font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors align-top">
-                          <div className="flex flex-col items-start gap-1">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span>{item.name}</span>
-                              {item.enableExternalLink && item.externalLink && (
-                                <a
-                                  href={item.externalLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer"
-                                  title={`Opens external link in new tab: ${item.externalLink}`}
-                                >
-                                  <ExternalLink size={11} className="shrink-0" />
-                                  <span>External Link</span>
-                                </a>
-                              )}
-                            </div>
-                            {item.enableExternalLink && item.externalLink && (
-                              <a
-                                href={item.externalLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="text-[11.5px] text-muted-foreground hover:text-[var(--brand)] font-mono truncate max-w-[280px] flex items-center gap-1 hover:underline"
-                              >
-                                {item.externalLink}
-                              </a>
-                            )}
-                          </div>
+                          <span>{item.name}</span>
                         </td>
 
                         {/* Subcategories Column */}
                         <td className="py-4 pr-4 align-top">
-                          {item.enableExternalLink ? (
-                            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground italic bg-secondary/50 border border-border/50 rounded-md px-2.5 py-1">
-                              External Link Category (Direct URL)
-                            </span>
-                          ) : (
-                            <div className="flex flex-wrap gap-1.5 max-w-xl">
-                              {item.subcategories && item.subcategories.length > 0 ? (
-                                item.subcategories.map((sub, idx) => {
-                                  const subName = getSubcategoryName(sub);
-                                  const subLink = getSubcategoryLink(sub);
-
-                                  if (subLink) {
-                                    return (
-                                      <div
-                                        key={idx}
-                                        className="group/tag inline-flex items-center gap-1.5 rounded-md border border-emerald-500/35 bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors shadow-2xs hover:bg-emerald-500/15"
-                                      >
-                                        <button
-                                          type="button"
-                                          onClick={() => handleOpenEditModal(item, idx)}
-                                          title={`Click to edit subcategory "${subName}"`}
-                                          className="hover:underline cursor-pointer font-medium"
-                                        >
-                                          {subName}
-                                        </button>
-                                        <a
-                                          href={subLink}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          onClick={(e) => e.stopPropagation()}
-                                          className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-200 transition-colors cursor-pointer p-0.5"
-                                          title={`Opens external link in new tab: ${subLink}`}
-                                        >
-                                          <ExternalLink size={11} className="shrink-0" />
-                                        </a>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleOpenEditModal(item, idx)}
-                                          className="text-emerald-700/60 hover:text-emerald-800 dark:hover:text-emerald-200 transition-colors cursor-pointer"
-                                          title={`Edit "${subName}"`}
-                                        >
-                                          <Pencil size={11} />
-                                        </button>
-                                      </div>
-                                    );
-                                  }
-
-                                  return (
-                                    <button
-                                      key={idx}
-                                      type="button"
-                                      onClick={() => handleOpenEditModal(item, idx)}
-                                      title={`Click to edit subcategory "${subName}"`}
-                                      className="group/tag inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/70 hover:bg-secondary hover:border-[var(--brand)]/50 px-2.5 py-0.5 text-xs font-medium text-foreground transition-colors cursor-pointer"
-                                    >
-                                      <span>{subName}</span>
-                                      <Pencil
-                                        size={11}
-                                        className="text-muted-foreground group-hover/tag:text-[var(--brand)] transition-colors"
-                                      />
-                                    </button>
-                                  );
-                                })
-                              ) : (
-                                <span className="text-xs text-muted-foreground italic">
-                                  No subcategories
-                                </span>
-                              )}
-                            </div>
-                          )}
+                          <div className="flex flex-wrap gap-1.5 max-w-xl">
+                            {item.subcategories && item.subcategories.length > 0 ? (
+                              item.subcategories.map((sub, idx) => {
+                                const subName = getSubcategoryName(sub);
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => handleOpenEditModal(item, idx)}
+                                    title={`Click to edit subcategory "${subName}"`}
+                                    className="group/tag inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/70 hover:bg-secondary hover:border-[var(--brand)]/50 px-2.5 py-0.5 text-xs font-medium text-foreground transition-colors cursor-pointer"
+                                  >
+                                    <span>{subName}</span>
+                                    <Pencil
+                                      size={11}
+                                      className="text-muted-foreground group-hover/tag:text-[var(--brand)] transition-colors"
+                                    />
+                                  </button>
+                                );
+                              })
+                            ) : (
+                              <span className="text-xs text-muted-foreground italic">
+                                No subcategories
+                              </span>
+                            )}
+                          </div>
                         </td>
 
                         {/* Views Column */}
@@ -990,9 +791,9 @@ function ManageLibraryCategoryPage() {
               {/* Informative notice for Library Admin scope */}
               {!editingCategory && (
                 <div className="flex items-center gap-2 rounded-xl border border-sky-500/20 bg-sky-500/10 px-3.5 py-2.5 text-xs text-foreground animate-in fade-in-50">
-                  <span className="font-semibold text-sky-600 dark:text-sky-400 shrink-0">Library Scope:</span>
+                  <span className="font-semibold text-sky-600 dark:text-sky-400 shrink-0">Publisher Scope:</span>
                   <span className="text-muted-foreground">
-                    Categories configured here will only apply to the publisher associated with this library.
+                    Categories configured here will only apply to this publisher account.
                   </span>
                 </div>
               )}
@@ -1083,8 +884,6 @@ function ManageLibraryCategoryPage() {
                                 setFormName("");
                                 setCategorySearchTerm("");
                                 setFormSubcategories([]);
-                                setEnableExternalLink(false);
-                                setExternalLink("");
                               }}
                               className="p-1 text-muted-foreground hover:text-foreground rounded cursor-pointer"
                               title="Clear"
@@ -1245,84 +1044,14 @@ function ManageLibraryCategoryPage() {
                 </div>
               )}
 
-              {/* Enable External Link Section */}
-              <div className="rounded-xl border border-border bg-secondary/30 p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="checkbox"
-                      id="enable-external-link"
-                      checked={enableExternalLink}
-                      onChange={(e) => {
-                        setEnableExternalLink(e.target.checked);
-                        setErrorMessage("");
-                      }}
-                      className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] cursor-pointer accent-[var(--brand)]"
-                    />
-                    <label
-                      htmlFor="enable-external-link"
-                      className="text-xs font-semibold text-foreground cursor-pointer select-none flex items-center gap-1.5"
-                    >
-                      <ExternalLink size={14} className="text-[var(--brand)]" />
-                      <span>Enable External Link</span>
-                    </label>
-                  </div>
-                  <span className="text-[11.5px] text-muted-foreground">
-                    Opens external URL in a new tab
-                  </span>
-                </div>
-
-                {/* Once checked, a textbox is shown to enter the link */}
-                {enableExternalLink && (
-                  <div className="space-y-1.5 pt-1 animate-in fade-in-50 slide-in-from-top-1 duration-150">
-                    <div className="flex items-center justify-between">
-                      <label className="block text-xs font-semibold text-foreground">
-                        External Link URL <span className="text-destructive">*</span>
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setExternalLink("https://in.pearson.com/");
-                          setErrorMessage("");
-                        }}
-                        className="text-[11px] font-semibold text-[var(--brand)] hover:underline cursor-pointer"
-                      >
-
-                      </button>
-                    </div>
-                    <div className="relative">
-                      <input
-                        type="url"
-                        required={enableExternalLink}
-                        placeholder="https://in.pearson.com/"
-                        value={externalLink}
-                        onChange={(e) => {
-                          setExternalLink(e.target.value);
-                          setErrorMessage("");
-                        }}
-                        className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card pl-9 pr-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors placeholder:text-muted-foreground/70 font-mono"
-                      />
-                      <ExternalLink
-                        size={15}
-                        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                      />
-                    </div>
-                    <p className="text-[11px] text-muted-foreground">
-                      In the front end, clicking this category will open this link in a new tab (e.g. <span className="font-mono text-foreground font-medium">https://in.pearson.com/</span>).
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Subcategories Section (Optional) - Hidden when External Link is enabled */}
-              {!enableExternalLink && (
+              {/* Subcategories Section (Optional) */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="block text-xs font-semibold text-foreground">
                       Subcategories <span className="text-[11px] font-normal text-muted-foreground">(Optional)</span>
                     </label>
                     <span className="text-[11.5px] text-muted-foreground">
-                      Optional: add subcategories with optional external links
+                      Optional: add subcategories
                     </span>
                   </div>
 
@@ -1331,14 +1060,14 @@ function ManageLibraryCategoryPage() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        placeholder="Subcategory name (e.g. Pearson Courseware)..."
+                        placeholder="Subcategory name"
                         value={newSubcatInput}
                         onChange={(e) => {
                           setNewSubcatInput(e.target.value);
                           setErrorMessage("");
                         }}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter" && !newSubcatEnableLink) {
+                          if (e.key === "Enter") {
                             e.preventDefault();
                             handleAddSubcategory();
                           }
@@ -1354,64 +1083,6 @@ function ManageLibraryCategoryPage() {
                         <span>Add</span>
                       </button>
                     </div>
-
-                    {/* Enable External Link option for this new subcategory */}
-                    <div className="pt-1.5 border-t border-border/40">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            id="subcat-enable-external-link"
-                            checked={newSubcatEnableLink}
-                            onChange={(e) => {
-                              setNewSubcatEnableLink(e.target.checked);
-                              setErrorMessage("");
-                            }}
-                            className="h-3.5 w-3.5 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] cursor-pointer accent-[var(--brand)]"
-                          />
-                          <label
-                            htmlFor="subcat-enable-external-link"
-                            className="text-xs font-medium text-foreground cursor-pointer select-none flex items-center gap-1.5"
-                          >
-                            <ExternalLink size={13} className="text-[var(--brand)]" />
-                            <span>Enable External Link for this subcategory</span>
-                          </label>
-                        </div>
-                        <span className="text-[11px] text-muted-foreground hidden sm:block">
-                          Opens in new tab
-                        </span>
-                      </div>
-
-                      {newSubcatEnableLink && (
-                        <div className="mt-2 space-y-1 animate-in fade-in-50 duration-150">
-                          <div className="relative">
-                            <input
-                              type="url"
-                              placeholder="https://in.pearson.com/..."
-                              value={newSubcatLink}
-                              onChange={(e) => {
-                                setNewSubcatLink(e.target.value);
-                                setErrorMessage("");
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  handleAddSubcategory();
-                                }
-                              }}
-                              className="h-9 w-full rounded-lg border border-border bg-white dark:bg-card pl-8 pr-3 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors font-mono"
-                            />
-                            <ExternalLink
-                              size={13}
-                              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                            />
-                          </div>
-                          <p className="text-[10.5px] text-muted-foreground">
-                            In the front end, clicking this subcategory will open this link in a new tab.
-                          </p>
-                        </div>
-                      )}
-                    </div>
                   </div>
 
                   {/* Editable Subcategories List */}
@@ -1419,7 +1090,6 @@ function ManageLibraryCategoryPage() {
                     <div className="flex flex-col gap-2 rounded-xl border border-border bg-secondary/30 p-3 max-h-60 overflow-y-auto">
                       {formSubcategories.map((sub, idx) => {
                         const subName = getSubcategoryName(sub);
-                        const subLink = getSubcategoryLink(sub);
                         const isEditing = editingSubcatIndex === idx;
 
                         if (isEditing) {
@@ -1437,7 +1107,7 @@ function ManageLibraryCategoryPage() {
                                   className="h-8 flex-1 rounded-md border border-border bg-white dark:bg-card px-2.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
                                   autoFocus
                                   onKeyDown={(e) => {
-                                    if (e.key === "Enter" && !editingSubcatEnableLink) {
+                                    if (e.key === "Enter") {
                                       e.preventDefault();
                                       handleSaveSubcategoryEdit(idx);
                                     } else if (e.key === "Escape") {
@@ -1463,47 +1133,6 @@ function ManageLibraryCategoryPage() {
                                   <X size={14} />
                                 </button>
                               </div>
-
-                              {/* External Link edit option */}
-                              <div className="pt-2 border-t border-border/50 space-y-1.5">
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    type="checkbox"
-                                    id={`edit-subcat-enable-link-${idx}`}
-                                    checked={editingSubcatEnableLink}
-                                    onChange={(e) => setEditingSubcatEnableLink(e.target.checked)}
-                                    className="h-3.5 w-3.5 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] cursor-pointer accent-[var(--brand)]"
-                                  />
-                                  <label
-                                    htmlFor={`edit-subcat-enable-link-${idx}`}
-                                    className="text-xs font-medium text-foreground cursor-pointer select-none flex items-center gap-1.5"
-                                  >
-                                    <ExternalLink size={13} className="text-[var(--brand)]" />
-                                    <span>Enable External Link</span>
-                                  </label>
-                                </div>
-                                {editingSubcatEnableLink && (
-                                  <div className="relative animate-in fade-in-50 duration-150">
-                                    <input
-                                      type="url"
-                                      placeholder="https://in.pearson.com/..."
-                                      value={editingSubcatLink}
-                                      onChange={(e) => setEditingSubcatLink(e.target.value)}
-                                      onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                          e.preventDefault();
-                                          handleSaveSubcategoryEdit(idx);
-                                        }
-                                      }}
-                                      className="h-8 w-full rounded-md border border-border bg-white dark:bg-card pl-8 pr-2.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors font-mono"
-                                    />
-                                    <ExternalLink
-                                      size={13}
-                                      className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-                                    />
-                                  </div>
-                                )}
-                              </div>
                             </div>
                           );
                         }
@@ -1522,33 +1151,7 @@ function ManageLibraryCategoryPage() {
                               >
                                 {subName}
                               </button>
-                              {subLink && (
-                                <a
-                                  href={subLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[10.5px] font-semibold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors shrink-0 cursor-pointer"
-                                  title={`Opens external link in new tab: ${subLink}`}
-                                >
-                                  <ExternalLink size={10} className="shrink-0" />
-                                  <span>Link</span>
-                                </a>
-                              )}
                             </div>
-
-                            {subLink && (
-                              <a
-                                href={subLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="text-[11px] text-muted-foreground hover:text-[var(--brand)] font-mono truncate max-w-[180px] hidden md:block hover:underline"
-                                title={subLink}
-                              >
-                                {subLink}
-                              </a>
-                            )}
 
                             <div className="flex items-center gap-1 shrink-0">
                               <button
@@ -1578,7 +1181,6 @@ function ManageLibraryCategoryPage() {
                     </p>
                   )}
                 </div>
-              )}
 
               {/* Status Switch Toggle */}
               <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
