@@ -2223,6 +2223,7 @@ function CategoryDialog({
   const mains = Object.keys(CATEGORY_DATA);
   const [selected, setSelected] = useState<Record<string, string[]>>(initial);
   const [active, setActive] = useState<string>(Object.keys(initial)[0] ?? mains[0]);
+  const [mainCategorySearch, setMainCategorySearch] = useState("");
 
   const toggleMain = (name: string) => {
     setSelected((prev) => {
@@ -2248,6 +2249,11 @@ function CategoryDialog({
   const activeSubs = CATEGORY_DATA[active] ?? [];
   const activeSelected = selected[active] ?? [];
   const isMainSelected = (name: string) => name in selected;
+  const filteredMains = useMemo(() => {
+    const q = mainCategorySearch.trim().toLowerCase();
+    if (!q) return mains;
+    return mains.filter((name) => name.toLowerCase().includes(q));
+  }, [mains, mainCategorySearch]);
 
   return (
     <div
@@ -2260,7 +2266,7 @@ function CategoryDialog({
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-5">
-          <h2 className="text-xl font-semibold">eBook Category</h2>
+          <h2 className="text-xl font-semibold">Select Category</h2>
           <button
             type="button"
             onClick={onClose}
@@ -2274,11 +2280,29 @@ function CategoryDialog({
         <div className="grid flex-1 grid-cols-1 overflow-hidden md:grid-cols-[minmax(240px,1fr)_minmax(280px,1.4fr)_minmax(260px,1fr)]">
           {/* Main categories */}
           <div className="flex flex-col overflow-hidden border-r border-border">
-            <div className="flex h-12 items-center border-b border-border bg-secondary/40 px-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Main Category
+            <div className="space-y-2 border-b border-border bg-secondary/40 px-5 py-3">
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Main Category
+              </div>
+              <div className="relative">
+                <Search
+                  size={14}
+                  className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+                <input
+                  type="text"
+                  value={mainCategorySearch}
+                  onChange={(e) => setMainCategorySearch(e.target.value)}
+                  placeholder="Search category..."
+                  className="h-9 w-full rounded-md border border-border bg-white dark:bg-card pl-8 pr-2.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
+                />
+              </div>
             </div>
             <ul className="flex-1 overflow-y-auto">
-              {mains.map((name) => {
+              {filteredMains.length === 0 && (
+                <li className="px-5 py-4 text-xs text-muted-foreground">No main categories found.</li>
+              )}
+              {filteredMains.map((name) => {
                 const checked = isMainSelected(name);
                 const isActive = active === name;
                 const count = (selected[name] ?? []).length;
@@ -3361,11 +3385,11 @@ function AddEBookPage() {
           <EBookDetailsSection />
           <AuthorsSection />
           {!isLibraryOnly && <BookUrlSection />}
+          <CategoriesSection />
           {isLibraryOnly && <LibraryAllocationSection />}
           {!isLibraryOnly && <PaymentSection />}
           {!isLibraryOnly && <PriceDetailsSection />}
           {!isLibraryOnly && <RentalSection />}
-          <CategoriesSection />
 
           {submitted && (
             <div

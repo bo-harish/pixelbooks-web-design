@@ -14,6 +14,7 @@ import {
   GripVertical,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { usePublisherType } from "@/hooks/use-publisher-type";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
@@ -61,6 +62,9 @@ const INITIAL_CATEGORIES: CategoryItem[] = MASTER_CATEGORIES.slice(0, 10).map((m
 }));
 
 function ManageLibraryCategoryPage() {
+  const [publisherType] = usePublisherType();
+  const showStatusColumn = publisherType === "Library-Only Publisher";
+
   const [categories, setCategories] = useState<CategoryItem[]>(() => {
     if (typeof window !== "undefined") {
       try {
@@ -577,14 +581,16 @@ function ManageLibraryCategoryPage() {
                   <th className="py-4 pr-4 font-semibold min-w-[180px]">Category Name</th>
                   <th className="py-4 pr-4 font-semibold">Subcategories</th>
                   <th className="py-4 pr-4 font-semibold text-center w-24">Views</th>
-                  <th className="py-4 pr-4 font-semibold text-center w-28">Status</th>
+                  {showStatusColumn && (
+                    <th className="py-4 pr-4 font-semibold text-center w-28">Status</th>
+                  )}
                   <th className="py-4 pr-6 font-semibold text-right w-24">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
                 {paginatedCategories.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-xs text-muted-foreground">
+                    <td colSpan={showStatusColumn ? 6 : 5} className="py-12 text-center text-xs text-muted-foreground">
                       No categories found matching your search criteria.
                     </td>
                   </tr>
@@ -664,15 +670,16 @@ function ManageLibraryCategoryPage() {
                           {item.views}
                         </td>
 
-                        {/* Status Switch Toggle Column */}
-                        <td className="py-4 pr-4 text-center align-top">
-                          <div className="inline-flex items-center justify-center">
-                            <Switch
-                              checked={item.status === "Enabled"}
-                              onCheckedChange={() => handleToggleStatus(item.id)}
-                            />
-                          </div>
-                        </td>
+                        {showStatusColumn && (
+                          <td className="py-4 pr-4 text-center align-top">
+                            <div className="inline-flex items-center justify-center">
+                              <Switch
+                                checked={item.status === "Enabled"}
+                                onCheckedChange={() => handleToggleStatus(item.id)}
+                              />
+                            </div>
+                          </td>
+                        )}
 
                         {/* Actions Column */}
                         <td className="py-4 pr-6 text-right align-top">
