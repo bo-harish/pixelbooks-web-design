@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo, useRef, useEffect } from "react";
 import {
   Search,
@@ -62,8 +62,22 @@ const INITIAL_CATEGORIES: CategoryItem[] = MASTER_CATEGORIES.slice(0, 10).map((m
 }));
 
 function ManageLibraryCategoryPage() {
+  const navigate = useNavigate();
   const [publisherType] = usePublisherType();
   const showStatusColumn = publisherType === "Library-Only Publisher";
+  const isAuthor =
+    typeof window !== "undefined" &&
+    (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
+
+  useEffect(() => {
+    if (isAuthor) {
+      navigate({ to: "/author", replace: true });
+    }
+  }, [isAuthor, navigate]);
+
+  if (isAuthor) {
+    return null;
+  }
 
   const [categories, setCategories] = useState<CategoryItem[]>(() => {
     if (typeof window !== "undefined") {
