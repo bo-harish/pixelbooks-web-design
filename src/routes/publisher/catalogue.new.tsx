@@ -810,7 +810,7 @@ You have reached the end of the free preview sample.`
   );
 }
 
-function createCoverImageFromEbook(file: File): Promise<File> {
+function createCoverImageFromEbook(file: File, pageNumber: number): Promise<File> {
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
     canvas.width = 438;
@@ -956,11 +956,11 @@ function createCoverImageFromEbook(file: File): Promise<File> {
 
     canvas.toBlob((blob) => {
       if (blob) {
-        const coverName = `Cover_${file.name.replace(/\.[^/.]+$/, "")}.png`;
+        const coverName = `Cover_${file.name.replace(/\.[^/.]+$/, "")}_Page${pageNumber}.png`;
         resolve(new File([blob], coverName, { type: "image/png" }));
       } else {
         resolve(
-          new File([""], `Cover_${file.name.replace(/\.[^/.]+$/, "")}.png`, {
+          new File([""], `Cover_${file.name.replace(/\.[^/.]+$/, "")}_Page${pageNumber}.png`, {
             type: "image/png",
           })
         );
@@ -977,6 +977,7 @@ function UploadRow() {
   const [samplePreviewOpen, setSamplePreviewOpen] = useState(false);
   const [sourcePreviewOpen, setSourcePreviewOpen] = useState(false);
   const [isGeneratingCover, setIsGeneratingCover] = useState(false);
+  const [selectedCoverPage, setSelectedCoverPage] = useState(1);
   const sampleInputRef = useRef<HTMLInputElement>(null);
 
   const handleGenerateSample = () => {
@@ -995,9 +996,9 @@ function UploadRow() {
     setIsGeneratingCover(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 600));
-      const generatedCover = await createCoverImageFromEbook(ebookFile);
+      const generatedCover = await createCoverImageFromEbook(ebookFile, selectedCoverPage);
       setCoverFile(generatedCover);
-      toast.success("Cover image successfully generated from eBook!");
+      toast.success(`Cover image generated from eBook using Page ${selectedCoverPage}.`);
     } catch (err) {
       console.error(err);
       toast.error("Failed to generate cover image from eBook.");
@@ -1088,23 +1089,45 @@ function UploadRow() {
             externalFile={coverFile}
             extra={
               ebookFile ? (
-                <button
-                  type="button"
-                  onClick={handleGenerateCover}
-                  disabled={isGeneratingCover}
-                  className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--brand)]/30 bg-gradient-to-r from-[var(--brand)]/15 via-[var(--brand)]/10 to-[var(--brand)]/5 px-3 text-xs font-bold text-[var(--brand)] shadow-2xs transition-all hover:border-[var(--brand)] hover:shadow-xs active:scale-[0.99] cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-                >
-                  {isGeneratingCover ? (
-                    <Loader2 size={14} className="animate-spin text-[var(--brand)]" />
-                  ) : (
-                    <Sparkles size={14} className="animate-pulse text-[var(--brand)]" />
-                  )}
-                  <span>
-                    {isGeneratingCover
-                      ? "Generating Cover..."
-                      : "Generate Cover image from eBook"}
-                  </span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-[104px]">
+                    <select
+                      value={selectedCoverPage}
+                      onChange={(e) => setSelectedCoverPage(Number(e.target.value))}
+                      disabled={isGeneratingCover}
+                      aria-label="Select eBook page for cover generation"
+                      className="h-10 w-full appearance-none rounded-xl border border-border bg-card px-3 pr-8 text-xs font-semibold text-foreground outline-none transition-colors focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-75"
+                    >
+                      <option value={1}>Page 1</option>
+                      <option value={2}>Page 2</option>
+                      <option value={3}>Page 3</option>
+                      <option value={4}>Page 4</option>
+                      <option value={5}>Page 5</option>
+                    </select>
+                    <ChevronDown
+                      size={14}
+                      className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleGenerateCover}
+                    disabled={isGeneratingCover}
+                    className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-[var(--brand)]/30 bg-gradient-to-r from-[var(--brand)]/15 via-[var(--brand)]/10 to-[var(--brand)]/5 px-3 text-xs font-bold text-[var(--brand)] shadow-2xs transition-all hover:border-[var(--brand)] hover:shadow-xs active:scale-[0.99] cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    {isGeneratingCover ? (
+                      <Loader2 size={14} className="animate-spin text-[var(--brand)]" />
+                    ) : (
+                      <Sparkles size={14} className="animate-pulse text-[var(--brand)]" />
+                    )}
+                    <span>
+                      {isGeneratingCover
+                        ? "Generating Cover..."
+                        : "Generate Cover image from eBook"}
+                    </span>
+                  </button>
+                </div>
               ) : undefined
             }
           />

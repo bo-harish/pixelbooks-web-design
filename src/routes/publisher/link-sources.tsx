@@ -172,7 +172,7 @@ function PublisherLinkSourcesPage() {
     const formattedUrl = normalizeUrl(externalLink);
 
     if (!trimmedName) {
-      toast.error("Category Name is required.");
+      toast.error("Publisher/Source Name is required.");
       return;
     }
 
@@ -272,7 +272,7 @@ function PublisherLinkSourcesPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-foreground">
-                Category Name <span className="text-destructive">*</span>
+                Publisher/Source Name <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
@@ -450,7 +450,7 @@ function PublisherLinkSourcesPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search Category Name or External Link"
+                placeholder="Search Publisher/Source Name or External Link"
                 className="h-10 w-full rounded-lg border border-border bg-white dark:bg-card pl-9 pr-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
               />
             </div>
@@ -460,7 +460,7 @@ function PublisherLinkSourcesPage() {
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-border text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <th className="py-3.5 px-4">Category Name</th>
+                  <th className="py-3.5 px-4">Publisher/Source Name</th>
                   <th className="py-3.5 px-4">External Link</th>
                   <th className="py-3.5 px-4">Libraries</th>
                   <th className="py-3.5 px-4 text-center w-28">Status</th>
