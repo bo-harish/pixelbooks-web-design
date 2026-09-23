@@ -61,6 +61,58 @@ const INITIAL_CATEGORIES: CategoryItem[] = MASTER_CATEGORIES.slice(0, 10).map((m
   displayOrder: m.displayOrder ?? idx + 1,
 }));
 
+const DEFAULT_LISTING_SUBCATEGORIES: SubcategoryItem[] = ["General", "Featured"];
+const PREFERRED_SUBCATEGORY_CATEGORY_NAMES = ["drama", "fantasy fiction"];
+
+function getMasterSubcategoriesForCategory(category: CategoryItem): SubcategoryItem[] {
+  const masterMatch = MASTER_CATEGORIES.find(
+    (m) => m.id === category.id || m.name.toLowerCase() === category.name.toLowerCase()
+  );
+
+  if (masterMatch?.subcategories && masterMatch.subcategories.length > 0) {
+    return [...masterMatch.subcategories];
+  }
+
+  return [...DEFAULT_LISTING_SUBCATEGORIES];
+}
+
+function ensureAtLeastTwoCategoriesWithSubcategories(items: CategoryItem[]): CategoryItem[] {
+  const normalized = [...items];
+
+  // Ensure requested categories always show subcategories in the listing.
+  for (let i = 0; i < normalized.length; i += 1) {
+    const current = normalized[i];
+    const normalizedName = (current.name || "").trim().toLowerCase();
+    const isPreferredCategory = PREFERRED_SUBCATEGORY_CATEGORY_NAMES.includes(normalizedName);
+
+    if (!isPreferredCategory || (current.subcategories?.length ?? 0) > 0) continue;
+
+    normalized[i] = {
+      ...current,
+      subcategories: getMasterSubcategoriesForCategory(current),
+    };
+  }
+
+  let categoriesWithSubs = normalized.filter(
+    (item) => (item.subcategories?.length ?? 0) > 0
+  ).length;
+  if (categoriesWithSubs >= 2) return normalized;
+
+  for (let i = 0; i < normalized.length && categoriesWithSubs < 2; i += 1) {
+    const current = normalized[i];
+    if ((current.subcategories?.length ?? 0) > 0) continue;
+
+    normalized[i] = {
+      ...current,
+      subcategories: getMasterSubcategoriesForCategory(current),
+    };
+
+    categoriesWithSubs += 1;
+  }
+
+  return normalized;
+}
+
 function ManageLibraryCategoryPage() {
   const navigate = useNavigate();
   const [publisherType] = usePublisherType();
@@ -86,7 +138,7 @@ function ManageLibraryCategoryPage() {
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.map((item: any, idx: number) => ({
+            return ensureAtLeastTwoCategoriesWithSubcategories(parsed.map((item: any, idx: number) => ({
               id: item.id || `cat-${idx + 1}`,
               name: item.name || "Untitled Category",
               subcategories: Array.isArray(item.subcategories) ? item.subcategories : [],
@@ -94,14 +146,14 @@ function ManageLibraryCategoryPage() {
               status: item.status === "Disabled" ? "Disabled" : "Enabled",
               displayOrder: typeof item.displayOrder === "number" ? item.displayOrder : idx + 1,
               isCustom: Boolean(item.isCustom),
-            }));
+            })));
           }
         }
       } catch (e) {
         console.error("Error loading categories from localStorage", e);
       }
     }
-    return INITIAL_CATEGORIES;
+    return ensureAtLeastTwoCategoriesWithSubcategories(INITIAL_CATEGORIES);
   });
 
   // Persist changes to localStorage and broadcast event
@@ -598,13 +650,12 @@ function ManageLibraryCategoryPage() {
                   {showStatusColumn && (
                     <th className="py-4 pr-4 font-semibold text-center w-28">Status</th>
                   )}
-                  <th className="py-4 pr-6 font-semibold text-right w-24">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
                 {paginatedCategories.length === 0 ? (
                   <tr>
-                    <td colSpan={showStatusColumn ? 6 : 5} className="py-12 text-center text-xs text-muted-foreground">
+                    <td colSpan={showStatusColumn ? 5 : 4} className="py-12 text-center text-xs text-muted-foreground">
                       No categories found matching your search criteria.
                     </td>
                   </tr>
@@ -694,18 +745,6 @@ function ManageLibraryCategoryPage() {
                             </div>
                           </td>
                         )}
-
-                        {/* Actions Column */}
-                        <td className="py-4 pr-6 text-right align-top">
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(item)}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)] cursor-pointer"
-                            title="Edit Category"
-                          >
-                            <Pencil size={15} />
-                          </button>
-                        </td>
                       </tr>
                     );
                   })
@@ -809,16 +848,6 @@ function ManageLibraryCategoryPage() {
             </div>
 
             <form onSubmit={handleSaveCategory} className="space-y-5">
-              {/* Informative notice for Library Admin scope */}
-              {!editingCategory && (
-                <div className="flex items-center gap-2 rounded-xl border border-sky-500/20 bg-sky-500/10 px-3.5 py-2.5 text-xs text-foreground animate-in fade-in-50">
-                  <span className="font-semibold text-sky-600 dark:text-sky-400 shrink-0">Publisher Scope:</span>
-                  <span className="text-muted-foreground">
-                    Categories configured here will only apply to this publisher account.
-                  </span>
-                </div>
-              )}
-
               {errorMessage && (
                 <div className="flex items-center gap-2.5 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs font-semibold text-destructive animate-in fade-in-50">
                   <AlertCircle size={16} className="shrink-0 text-destructive" />
@@ -827,9 +856,9 @@ function ManageLibraryCategoryPage() {
               )}
 
               {editingCategory ? (
-                /* Edit Mode: Single Category Name & Display Order */
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="sm:col-span-2">
+                /* Edit Mode: Category Name with optional Display Order for library-only publisher */
+                <div className={showStatusColumn ? "grid grid-cols-1 sm:grid-cols-3 gap-4" : "space-y-1.5"}>
+                  <div className={showStatusColumn ? "sm:col-span-2" : ""}>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Category Name <span className="text-destructive">*</span>
                     </label>
@@ -846,28 +875,30 @@ function ManageLibraryCategoryPage() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Display Order <span className="text-destructive">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      required
-                      placeholder="e.g. 1"
-                      value={formDisplayOrder}
-                      onChange={(e) => {
-                        setFormDisplayOrder(e.target.value);
-                        setErrorMessage("");
-                      }}
-                      className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
-                    />
-                  </div>
+                  {showStatusColumn && (
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5">
+                        Display Order <span className="text-destructive">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        required
+                        placeholder="e.g. 1"
+                        value={formDisplayOrder}
+                        onChange={(e) => {
+                          setFormDisplayOrder(e.target.value);
+                          setErrorMessage("");
+                        }}
+                        className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                      />
+                    </div>
+                  )}
                 </div>
               ) : (
-                /* Add Mode: Single Category Name & Display Order with System Categories Dropdown */
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="sm:col-span-2 space-y-1.5" ref={categoryDropdownRef}>
+                /* Add Mode: Single Category Name with System Categories Dropdown */
+                <div className={showStatusColumn ? "grid grid-cols-1 sm:grid-cols-3 gap-4" : "space-y-1.5"}>
+                  <div className={showStatusColumn ? "sm:col-span-2 space-y-1.5" : "space-y-1.5"} ref={categoryDropdownRef}>
                     <div className="flex items-center justify-between">
                       <label className="block text-xs font-semibold text-foreground">
                         Category Name <span className="text-destructive">*</span>
@@ -1045,23 +1076,25 @@ function ManageLibraryCategoryPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Display Order <span className="text-destructive">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      required
-                      placeholder="e.g. 1"
-                      value={formDisplayOrder}
-                      onChange={(e) => {
-                        setFormDisplayOrder(e.target.value);
-                        setErrorMessage("");
-                      }}
-                      className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
-                    />
-                  </div>
+                  {showStatusColumn && (
+                    <div>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5">
+                        Display Order <span className="text-destructive">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        required
+                        placeholder="e.g. 1"
+                        value={formDisplayOrder}
+                        onChange={(e) => {
+                          setFormDisplayOrder(e.target.value);
+                          setErrorMessage("");
+                        }}
+                        className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1071,9 +1104,7 @@ function ManageLibraryCategoryPage() {
                     <label className="block text-xs font-semibold text-foreground">
                       Subcategories <span className="text-[11px] font-normal text-muted-foreground">(Optional)</span>
                     </label>
-                    <span className="text-[11.5px] text-muted-foreground">
-                      Optional: add subcategories
-                    </span>
+                    
                   </div>
 
                   {/* Add new subcategory card */}
@@ -1203,35 +1234,67 @@ function ManageLibraryCategoryPage() {
                   )}
                 </div>
 
-              {/* Status Switch Toggle */}
-              <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground">
-                    Status
-                  </label>
-                  <p className="text-[11.5px] text-muted-foreground mt-0.5">
-                    {formStatus === "Enabled"
-                      ? "This category will be active and visible in your library."
-                      : "This category will be hidden from library users and catalogue filters."}
-                  </p>
+              {editingCategory && showStatusColumn && (
+                <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground">
+                      Status
+                    </label>
+                    <p className="text-[11.5px] text-muted-foreground mt-0.5">
+                      {formStatus === "Enabled"
+                        ? "This category will be active and visible in your library."
+                        : "This category will be hidden from library users and catalogue filters."}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <span
+                      className={`text-xs font-semibold ${formStatus === "Enabled"
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-muted-foreground"
+                        }`}
+                    >
+                      {formStatus}
+                    </span>
+                    <Switch
+                      checked={formStatus === "Enabled"}
+                      onCheckedChange={(checked) =>
+                        setFormStatus(checked ? "Enabled" : "Disabled")
+                      }
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2.5 shrink-0">
-                  <span
-                    className={`text-xs font-semibold ${formStatus === "Enabled"
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-muted-foreground"
-                      }`}
-                  >
-                    {formStatus}
-                  </span>
-                  <Switch
-                    checked={formStatus === "Enabled"}
-                    onCheckedChange={(checked) =>
-                      setFormStatus(checked ? "Enabled" : "Disabled")
-                    }
-                  />
+              )}
+
+              {!editingCategory && showStatusColumn && (
+                <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground">
+                      Status
+                    </label>
+                    <p className="text-[11.5px] text-muted-foreground mt-0.5">
+                      {formStatus === "Enabled"
+                        ? "This category will be active and visible in your library."
+                        : "This category will be hidden from library users and catalogue filters."}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <span
+                      className={`text-xs font-semibold ${formStatus === "Enabled"
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-muted-foreground"
+                        }`}
+                    >
+                      {formStatus}
+                    </span>
+                    <Switch
+                      checked={formStatus === "Enabled"}
+                      onCheckedChange={(checked) =>
+                        setFormStatus(checked ? "Enabled" : "Disabled")
+                      }
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border mt-6">

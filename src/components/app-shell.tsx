@@ -475,14 +475,35 @@ function useCollapsed() {
 
 function SidebarBrand({ collapsed }: { collapsed: boolean }) {
   const { pathname } = useLocation();
+  const [publisherUserType] = usePublisherType();
+  const [libraryAdminUserType] = useLibraryAdminType();
   const isCustomBranded = pathname.startsWith("/library-admin") || pathname.startsWith("/publisher");
+  const isCompletePublisher =
+    pathname.startsWith("/publisher") && publisherUserType === "Complete Publisher";
+  const isCompleteLibraryAdmin =
+    pathname.startsWith("/library-admin") && libraryAdminUserType === "Complete Library Admin";
+  const collapsedLogoSrc = isCompleteLibraryAdmin
+    ? "/brilliant-study-centre-logo.svg"
+    : isCompletePublisher
+      ? "/haritham-books-logo.svg"
+      : "/vimala-logo.png";
+  const expandedLogoSrc = isCompleteLibraryAdmin
+    ? "/brilliant-study-centre-logo.svg"
+    : isCompletePublisher
+      ? "/haritham-books-logo.svg"
+      : "/vimala-banner-logo.png";
+  const expandedLogoAlt = isCompleteLibraryAdmin
+    ? "Brilliant Study Centre, Pala"
+    : isCompletePublisher
+      ? "Kairali Books"
+      : "Vimala College Autonomous Thrissur";
 
   if (isCustomBranded) {
     return (
       <div
         className={[
           "flex items-center gap-3 pt-4 pb-4",
-          collapsed ? "justify-center px-2" : "px-3.5",
+          collapsed ? "justify-center px-2" : isCompletePublisher ? "justify-center px-3.5" : "px-3.5",
         ].join(" ")}
       >
         {collapsed ? (
@@ -492,19 +513,21 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
             className="flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
             title="Return to Main Index"
           >
-            <img src="/vimala-logo.png" alt="Vimala College Crest" className="h-10 w-10 object-contain" />
+            <img src={collapsedLogoSrc} alt={expandedLogoAlt} className="h-10 w-10 object-contain" />
           </Link>
         ) : (
           <Link
             to="/"
             id="sidebar-logo-link-expanded"
-            className="flex items-center group w-full overflow-hidden hover:opacity-95 transition-opacity"
+            className={`flex items-center group overflow-hidden hover:opacity-95 transition-opacity ${
+              isCompletePublisher || isCompleteLibraryAdmin ? "justify-center w-full" : "w-full"
+            }`}
             title="Return to Main Index"
           >
             <div className="bg-white dark:bg-white/95 rounded-xl px-3 py-2 shadow-2xs border border-border/40 w-full flex items-center justify-center">
               <img
-                src="/vimala-banner-logo.png"
-                alt="Vimala College Autonomous Thrissur"
+                src={expandedLogoSrc}
+                alt={expandedLogoAlt}
                 className="h-11 sm:h-12 w-auto max-w-full object-contain"
               />
             </div>
@@ -985,12 +1008,12 @@ function DesktopSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
         className="absolute top-0 left-0 right-0 h-[3px] transition-colors duration-300 z-20"
         style={{ backgroundColor: roleTheme.color }}
       />
-      <div className="flex items-center justify-between">
+      <div className="relative">
         <SidebarBrand collapsed={collapsed} />
         <button
           onClick={onToggle}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="mr-2 flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          className="absolute right-2 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
         >
           {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
         </button>
