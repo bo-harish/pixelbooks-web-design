@@ -117,6 +117,7 @@ function ManageLibraryCategoryPage() {
   const navigate = useNavigate();
   const [publisherType] = usePublisherType();
   const showStatusColumn = publisherType === "Library-Only Publisher";
+  const isCompletePublisher = publisherType === "Complete Publisher";
   const isAuthor =
     typeof window !== "undefined" &&
     (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
@@ -396,6 +397,7 @@ function ManageLibraryCategoryPage() {
     setFormStatus(cat.status);
 
     if (
+      !isCompletePublisher &&
       focusSubcatIndex !== undefined &&
       focusSubcatIndex >= 0 &&
       focusSubcatIndex < cat.subcategories.length
@@ -723,9 +725,15 @@ function ManageLibraryCategoryPage() {
                                 );
                               })
                             ) : (
-                              <span className="text-xs text-muted-foreground italic">
-                                No subcategories
-                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEditModal(item)}
+                                className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border bg-secondary/40 px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-[var(--brand)]/50 hover:bg-secondary hover:text-foreground cursor-pointer"
+                                title={`Add subcategories to "${item.name}"`}
+                              >
+                                <Plus size={12} className="shrink-0" />
+                                <span>Add Subcategory</span>
+                              </button>
                             )}
                           </div>
                         </td>
@@ -834,8 +842,8 @@ function ManageLibraryCategoryPage() {
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {editingCategory
-                    ? "Update category name, subcategories, and visibility status."
-                    : "Enter a category name or select from existing system categories for your library."}
+                    ? "Update category & subcategories details"
+                    : "Enter a category name or select from existing system categories"}
                 </p>
               </div>
               <button
@@ -848,6 +856,15 @@ function ManageLibraryCategoryPage() {
             </div>
 
             <form onSubmit={handleSaveCategory} className="space-y-5">
+              {isCompletePublisher && (
+                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-3 text-xs text-foreground">
+                  <span className="font-semibold">Note:</span>{" "}
+                  Please review the category/subcategory name carefully before adding. Once added, the category
+                  cannot be edited or deleted. Any changes must be requested through the System
+                  Administrator.
+                </div>
+              )}
+
               {errorMessage && (
                 <div className="flex items-center gap-2.5 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs font-semibold text-destructive animate-in fade-in-50">
                   <AlertCircle size={16} className="shrink-0 text-destructive" />
@@ -1144,7 +1161,7 @@ function ManageLibraryCategoryPage() {
                         const subName = getSubcategoryName(sub);
                         const isEditing = editingSubcatIndex === idx;
 
-                        if (isEditing) {
+                        if (isEditing && !isCompletePublisher) {
                           return (
                             <div
                               key={idx}
@@ -1195,34 +1212,42 @@ function ManageLibraryCategoryPage() {
                             className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 shadow-2xs transition-colors hover:border-border/80"
                           >
                             <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <button
-                                type="button"
-                                onClick={() => handleStartSubcategoryEdit(idx)}
-                                className="text-xs font-medium text-foreground text-left truncate hover:text-[var(--brand)] transition-colors cursor-pointer"
-                                title="Click to edit subcategory"
-                              >
-                                {subName}
-                              </button>
+                              {isCompletePublisher ? (
+                                <span className="text-xs font-medium text-foreground text-left truncate">
+                                  {subName}
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartSubcategoryEdit(idx)}
+                                  className="text-xs font-medium text-foreground text-left truncate hover:text-[var(--brand)] transition-colors cursor-pointer"
+                                  title="Click to edit subcategory"
+                                >
+                                  {subName}
+                                </button>
+                              )}
                             </div>
 
-                            <div className="flex items-center gap-1 shrink-0">
-                              <button
-                                type="button"
-                                onClick={() => handleStartSubcategoryEdit(idx)}
-                                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-[var(--brand)] transition-colors cursor-pointer"
-                                title="Edit Subcategory"
-                              >
-                                <Pencil size={13} />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveSubcategory(idx)}
-                                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
-                                title="Delete Subcategory"
-                              >
-                                <Trash2 size={13} />
-                              </button>
-                            </div>
+                            {!isCompletePublisher && (
+                              <div className="flex items-center gap-1 shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartSubcategoryEdit(idx)}
+                                  className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-[var(--brand)] transition-colors cursor-pointer"
+                                  title="Edit Subcategory"
+                                >
+                                  <Pencil size={13} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveSubcategory(idx)}
+                                  className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
+                                  title="Delete Subcategory"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
