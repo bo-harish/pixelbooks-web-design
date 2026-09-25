@@ -1071,8 +1071,8 @@ function ManageCategoryPage() {
                   </label>
                   <p className="text-[11.5px] text-muted-foreground mt-0.5">
                     {formStatus === "Enabled"
-                      ? "Category is active across PixelBooks."
-                      : "Category is disabled and hidden from listings."}
+                      ? "Category is active in PixelBooks retail app."
+                      : "Category is disabled and hidden from PixelBooks retail app."}
                   </p>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">

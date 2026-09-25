@@ -515,17 +515,8 @@ function ManageLibraryCategoryPage() {
     }
 
     if (editingCategory) {
-      // Edit single existing category
-      const isDuplicate = categories.some(
-        (c) =>
-          c.id !== editingCategory.id &&
-          c.name.toLowerCase() === trimmedName.toLowerCase()
-      );
-      if (isDuplicate) {
-        toast.error("Category already exists.");
-        setErrorMessage(`Category "${trimmedName}" already exists.`);
-        return;
-      }
+      // Category name is locked in publisher edit modal; only subcategories/status/order can update here.
+      const lockedCategoryName = editingCategory.name;
 
       const parsedOrder = parseInt(String(formDisplayOrder), 10);
       const finalDisplayOrder = isNaN(parsedOrder) || parsedOrder < 1 ? 1 : parsedOrder;
@@ -535,7 +526,7 @@ function ManageLibraryCategoryPage() {
           c.id === editingCategory.id
             ? {
               ...c,
-              name: trimmedName,
+              name: lockedCategoryName,
               subcategories: finalSubcategories,
               status: formStatus,
               displayOrder: finalDisplayOrder,
@@ -543,7 +534,7 @@ function ManageLibraryCategoryPage() {
             : c
         )
       );
-      toast.success(`Category "${trimmedName}" updated successfully`);
+      toast.success(`Category "${lockedCategoryName}" updated successfully`);
       setIsModalOpen(false);
     } else {
       // Add Mode: Single Category
@@ -884,12 +875,14 @@ function ManageLibraryCategoryPage() {
                       required
                       placeholder="e.g. Science Fiction"
                       value={formName}
-                      onChange={(e) => {
-                        setFormName(e.target.value);
-                        setErrorMessage("");
-                      }}
-                      className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                      readOnly
+                      aria-readonly="true"
+                      title="Category name is locked. Only System Admin can edit category names."
+                      className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-foreground outline-none cursor-not-allowed"
                     />
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      Only System Admin can edit category names.
+                    </p>
                   </div>
 
                   {showStatusColumn && (
@@ -1121,6 +1114,9 @@ function ManageLibraryCategoryPage() {
                     <label className="block text-xs font-semibold text-foreground">
                       Subcategories <span className="text-[11px] font-normal text-muted-foreground">(Optional)</span>
                     </label>
+                    {editingCategory && (
+                      <span className="text-[11px] text-muted-foreground">Existing entries are read-only in edit mode</span>
+                    )}
                     
                   </div>
 
@@ -1161,7 +1157,19 @@ function ManageLibraryCategoryPage() {
                         const subName = getSubcategoryName(sub);
                         const isEditing = editingSubcatIndex === idx;
 
-                        if (isEditing && !isCompletePublisher) {
+                        if (editingCategory) {
+                          return (
+                            <div
+                              key={idx}
+                              className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-foreground flex items-center cursor-not-allowed"
+                              title="Subcategory is read-only in edit mode"
+                            >
+                              <span className="truncate">{subName}</span>
+                            </div>
+                          );
+                        }
+
+                        if (isEditing && !isCompletePublisher && !editingCategory) {
                           return (
                             <div
                               key={idx}
@@ -1212,7 +1220,7 @@ function ManageLibraryCategoryPage() {
                             className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 shadow-2xs transition-colors hover:border-border/80"
                           >
                             <div className="flex items-center gap-2 flex-1 min-w-0">
-                              {isCompletePublisher ? (
+                              {isCompletePublisher || editingCategory ? (
                                 <span className="text-xs font-medium text-foreground text-left truncate">
                                   {subName}
                                 </span>
@@ -1228,7 +1236,7 @@ function ManageLibraryCategoryPage() {
                               )}
                             </div>
 
-                            {!isCompletePublisher && (
+                            {!isCompletePublisher && !editingCategory && (
                               <div className="flex items-center gap-1 shrink-0">
                                 <button
                                   type="button"
@@ -1251,6 +1259,10 @@ function ManageLibraryCategoryPage() {
                           </div>
                         );
                       })}
+                    </div>
+                  ) : editingCategory ? (
+                    <div className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-muted-foreground italic flex items-center cursor-not-allowed">
+                      No subcategories added.
                     </div>
                   ) : (
                     <p className="text-xs text-muted-foreground italic px-1">
