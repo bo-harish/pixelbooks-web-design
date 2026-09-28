@@ -148,7 +148,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="Enter current password"
-                className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
+                className="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
               />
               <button
                 type="button"
@@ -168,7 +168,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Min 6 characters"
-                className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
+                className="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
               />
               <button
                 type="button"
@@ -187,7 +187,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter new password"
-              className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+              className="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
             />
           </div>
 

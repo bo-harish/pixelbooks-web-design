@@ -135,8 +135,11 @@ function ProfilePage() {
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
   const [commission, setCommission] = useState("65");
   const [profileSlug, setProfileSlug] = useState("sj-publications");
+  const [aboutPublisher, setAboutPublisher] = useState("");
   const [copied, setCopied] = useState(false);
   const [publisherLogo, setPublisherLogo] = useState<string | null>(null);
+  const [horizontalLogo, setHorizontalLogo] = useState<string | null>(null);
+  const horizontalLogoInputRef = useRef<HTMLInputElement>(null);
 
   const {
     modalOpen,
@@ -170,48 +173,108 @@ function ProfilePage() {
         {/* Publisher Profile */}
         <SectionCard title="Publisher Profile">
           <div className="space-y-6">
-            {/* Logo & Avatar Header Card */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-6 rounded-xl border border-border bg-secondary/20 p-5">
-              <div className="relative h-24 w-24 shrink-0">
-                {publisherLogo ? (
-                  <img
-                    src={publisherLogo}
-                    alt={publisherName}
-                    className="h-full w-full rounded-full object-cover border-2 border-background shadow-md"
-                  />
-                ) : (
-                  <div
-                    className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-4xl font-extrabold"
-                    style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-                  >
-                    {publisherName ? publisherName.charAt(0).toUpperCase() : "P"}
+            {/* Brand Identity: Round Logo + Horizontal Logo shown together */}
+            <div className="rounded-xl border border-border bg-secondary/20 p-5">
+              <div className="flex flex-col lg:flex-row lg:items-stretch gap-6">
+                {/* Round Logo */}
+                <div className="flex flex-1 items-center gap-5 min-w-0">
+                  <div className="relative h-24 w-24 shrink-0">
+                    {publisherLogo ? (
+                      <img
+                        src={publisherLogo}
+                        alt={publisherName}
+                        className="h-full w-full rounded-full object-cover border-2 border-background shadow-md"
+                      />
+                    ) : (
+                      <div
+                        className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-4xl font-extrabold"
+                        style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+                      >
+                        {publisherName ? publisherName.charAt(0).toUpperCase() : "P"}
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={openFilePicker}
+                      className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
+                      title="Upload Logo"
+                    >
+                      <Camera size={15} />
+                    </button>
                   </div>
-                )}
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={openFilePicker}
-                  className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
-                  title="Upload Logo"
-                >
-                  <Camera size={15} />
-                </button>
-              </div>
 
-              <div className="flex-1 space-y-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-foreground">{publisherName || "Publisher Profile"}</h3>
-                 
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <h3 className="text-lg font-bold text-foreground truncate">{publisherName || "Publisher Profile"}</h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Round logo for avatars, storefront badges &amp; invoices. PNG or JPEG, 512×512px.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Upload a high-resolution logo to represent your brand across PixelBooks catalogues, store fronts, and invoices. Recommended format: PNG or JPEG (512x512px).
-                </p>
+
+                {/* Divider */}
+                <div className="hidden lg:block w-px bg-border" />
+                <div className="lg:hidden h-px w-full bg-border" />
+
+                {/* Horizontal Logo */}
+                <div className="flex-1 min-w-0 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-foreground">
+                      Horizontal Logo <span className="text-muted-foreground font-normal">(Optional)</span>
+                    </span>
+                    {horizontalLogo && (
+                      <button
+                        type="button"
+                        onClick={() => setHorizontalLogo(null)}
+                        className="text-[11px] font-medium text-destructive hover:underline cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={horizontalLogoInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        setHorizontalLogo(URL.createObjectURL(e.target.files[0]));
+                      }
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => horizontalLogoInputRef.current?.click()}
+                    className="group relative flex h-16 w-full items-center justify-center overflow-hidden rounded-lg border border-dashed border-border bg-card px-4 transition-colors hover:border-[var(--brand)]/50 hover:bg-secondary/40 cursor-pointer"
+                  >
+                    {horizontalLogo ? (
+                      <>
+                        <img src={horizontalLogo} alt="Horizontal Logo" className="h-full max-w-full object-contain py-1.5" />
+                        <span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/50 text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
+                          <Upload size={13} /> Change Logo
+                        </span>
+                      </>
+                    ) : (
+                      <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                        <Upload size={14} />
+                        Upload horizontal logo
+                      </span>
+                    )}
+                  </button>
+
+                  <p className="text-[11px] text-muted-foreground">
+                    Displayed at the top-left of the screen header. Recommended: wide format (e.g. 280×64px), transparent PNG.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -267,6 +330,17 @@ function ProfilePage() {
                       <ExternalLink size={16} />
                     </a>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">About Publisher</label>
+                  <textarea
+                    value={aboutPublisher}
+                    onChange={(e) => setAboutPublisher(e.target.value)}
+                    rows={2}
+                    placeholder="Add a short description about this publisher"
+                    className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground shadow-2xs transition-all focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
                 </div>
               </div>
             )}

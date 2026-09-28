@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Search,
   Plus,
@@ -309,6 +309,35 @@ function LibraryAdminUsersPage() {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadDragging, setUploadDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [sendWelcomeEmailOnImport, setSendWelcomeEmailOnImport] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readWelcomeEmailSetting = () => {
+      const stored =
+        localStorage.getItem("pb_send_welcome_email_on_import_LIB-101") ??
+        localStorage.getItem("pb_send_welcome_email_on_import");
+      setSendWelcomeEmailOnImport(stored === "true");
+    };
+
+    readWelcomeEmailSetting();
+
+    const handleWelcomeEmailSettingChange = () => readWelcomeEmailSetting();
+    window.addEventListener(
+      "pb-send-welcome-email-on-import-change",
+      handleWelcomeEmailSettingChange as EventListener,
+    );
+    window.addEventListener("storage", handleWelcomeEmailSettingChange);
+
+    return () => {
+      window.removeEventListener(
+        "pb-send-welcome-email-on-import-change",
+        handleWelcomeEmailSettingChange as EventListener,
+      );
+      window.removeEventListener("storage", handleWelcomeEmailSettingChange);
+    };
+  }, []);
 
   // Filtering logic
   const filteredUsers = useMemo(() => {
@@ -557,7 +586,11 @@ function LibraryAdminUsersPage() {
         setUploadProgress(null);
         setIsUploadOpen(false);
         setPage(1);
-        toast.success(`Spreadsheet upload completed! Imported user successfully.`);
+        toast.success(
+          sendWelcomeEmailOnImport
+            ? "Spreadsheet upload completed! Imported user successfully and welcome email queued."
+            : "Spreadsheet upload completed! Imported user successfully.",
+        );
       }
     }, 150);
   };

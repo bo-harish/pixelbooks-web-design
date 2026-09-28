@@ -308,6 +308,7 @@ function getSections(
         heading: "Banners",
         items: [
           { label: "Image Banners", icon: ImageIcon, to: "/pb-admin/ad-banners/image" },
+          { label: "Genre Banner", icon: Megaphone, to: "/pb-admin/ad-banners/genre" },
           { label: "Popup Banners", icon: BadgePercent, to: "/pb-admin/ad-banners/popup" },
         ],
       },

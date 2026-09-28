@@ -9,6 +9,7 @@ import {
   Copy,
   Check,
   ExternalLink,
+  Upload,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
@@ -137,6 +138,8 @@ function LibraryAdminProfilePage() {
   const [status, setStatus] = useState<"Onboarded" | "Pending" | "Rejected">("Onboarded");
   const [isSaved, setIsSaved] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [horizontalLogo, setHorizontalLogo] = useState<string | null>(null);
+  const horizontalLogoInputRef = useRef<HTMLInputElement>(null);
 
   const {
     modalOpen,
@@ -212,55 +215,119 @@ function LibraryAdminProfilePage() {
         {/* Profile Image & Logo SectionCard */}
         <SectionCard title="Library Profile">
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-6 rounded-xl border border-border bg-secondary/20 p-5">
-              <div className="relative h-24 w-24 shrink-0">
-                {profileImage ? (
-                  <img
-                    src={profileImage}
-                    alt="Library Logo"
-                    className="h-full w-full rounded-full object-cover border-2 border-background shadow-md"
-                  />
-                ) : (
-                  <div
-                    className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-3xl font-extrabold"
-                    style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
-                  >
-                    {libraryName ? libraryName.charAt(0).toUpperCase() : "L"}
+            {/* Brand Identity: Round Logo + Horizontal Logo shown together */}
+            <div className="rounded-xl border border-border bg-secondary/20 p-5">
+              <div className="flex flex-col lg:flex-row lg:items-stretch gap-6">
+                {/* Round Logo */}
+                <div className="flex flex-1 items-center gap-5 min-w-0">
+                  <div className="relative h-24 w-24 shrink-0">
+                    {profileImage ? (
+                      <img
+                        src={profileImage}
+                        alt="Library Logo"
+                        className="h-full w-full rounded-full object-cover border-2 border-background shadow-md"
+                      />
+                    ) : (
+                      <div
+                        className="flex h-full w-full items-center justify-center rounded-full border-2 border-background shadow-md text-3xl font-extrabold"
+                        style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+                      >
+                        {libraryName ? libraryName.charAt(0).toUpperCase() : "L"}
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={openFilePicker}
+                      className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
+                      title="Upload Logo"
+                    >
+                      <Camera size={15} />
+                    </button>
                   </div>
-                )}
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={openFilePicker}
-                  className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-card border border-border text-foreground shadow-sm hover:bg-secondary transition-transform hover:scale-105 cursor-pointer"
-                  title="Upload Logo"
-                >
-                  <Camera size={15} />
-                </button>
-              </div>
 
-              <div className="flex-1 space-y-2">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-foreground">{libraryName || "Library Details"}</h3>
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
-                      status === "Onboarded"
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                        : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
-                    }`}
-                  >
-                    <CheckCircle2 size={13} /> {status}
-                  </span>
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-lg font-bold text-foreground truncate">{libraryName || "Library Details"}</h3>
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border shrink-0 ${
+                          status === "Onboarded"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                            : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+                        }`}
+                      >
+                        <CheckCircle2 size={13} /> {status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Round logo for avatars, storefront badges &amp; invoices. PNG or JPEG, 512×512px.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Upload a high-resolution logo to represent your library across PixelBooks catalogues, store fronts, and invoices. Recommended format: PNG or JPEG (512x512px).
-                </p>
+
+                {/* Divider */}
+                <div className="hidden lg:block w-px bg-border" />
+                <div className="lg:hidden h-px w-full bg-border" />
+
+                {/* Horizontal Logo */}
+                <div className="flex-1 min-w-0 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-foreground">
+                      Horizontal Logo <span className="text-muted-foreground font-normal">(Optional)</span>
+                    </span>
+                    {horizontalLogo && (
+                      <button
+                        type="button"
+                        onClick={() => setHorizontalLogo(null)}
+                        className="text-[11px] font-medium text-destructive hover:underline cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={horizontalLogoInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        setHorizontalLogo(URL.createObjectURL(e.target.files[0]));
+                      }
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => horizontalLogoInputRef.current?.click()}
+                    className="group relative flex h-16 w-full items-center justify-center overflow-hidden rounded-lg border border-dashed border-border bg-card px-4 transition-colors hover:border-[var(--brand)]/50 hover:bg-secondary/40 cursor-pointer"
+                  >
+                    {horizontalLogo ? (
+                      <>
+                        <img src={horizontalLogo} alt="Horizontal Logo" className="h-full max-w-full object-contain py-1.5" />
+                        <span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/50 text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
+                          <Upload size={13} /> Change Logo
+                        </span>
+                      </>
+                    ) : (
+                      <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                        <Upload size={14} />
+                        Upload horizontal logo
+                      </span>
+                    )}
+                  </button>
+
+                  <p className="text-[11px] text-muted-foreground">
+                    Displayed at the top-left of the screen header. Recommended: wide format (e.g. 280×64px), transparent PNG.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -317,6 +384,7 @@ function LibraryAdminProfilePage() {
                 </div>
               </div>
             </div>
+
           </div>
         </SectionCard>
 

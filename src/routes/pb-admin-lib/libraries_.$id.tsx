@@ -12,6 +12,9 @@ import {
   Store,
   Eye,
   EyeOff,
+  Smartphone,
+  Lock,
+  Mail,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
@@ -43,6 +46,10 @@ type LibraryDetail = {
   returnLimitDays: string;
   status: "Onboarded" | "Pending" | "Rejected";
   hideRetailBookStore?: boolean;
+  disableOtpLogins?: boolean;
+  restrictPasswordReset?: boolean;
+  enableResetPasswordFirstTimeLogin?: boolean;
+  sendWelcomeEmailOnImport?: boolean;
 };
 
 const mockLibraryDetails: Record<string, LibraryDetail> = {
@@ -65,6 +72,10 @@ const mockLibraryDetails: Record<string, LibraryDetail> = {
     returnLimitDays: "20",
     status: "Onboarded",
     hideRetailBookStore: false,
+    disableOtpLogins: false,
+    restrictPasswordReset: false,
+    enableResetPasswordFirstTimeLogin: false,
+    sendWelcomeEmailOnImport: false,
   },
   "LIB-102": {
     id: "LIB-102",
@@ -85,6 +96,10 @@ const mockLibraryDetails: Record<string, LibraryDetail> = {
     returnLimitDays: "30",
     status: "Onboarded",
     hideRetailBookStore: false,
+    disableOtpLogins: false,
+    restrictPasswordReset: false,
+    enableResetPasswordFirstTimeLogin: false,
+    sendWelcomeEmailOnImport: false,
   },
 };
 
@@ -107,6 +122,10 @@ const defaultLibrary: LibraryDetail = {
   returnLimitDays: "20",
   status: "Onboarded",
   hideRetailBookStore: false,
+  disableOtpLogins: false,
+  restrictPasswordReset: false,
+  enableResetPasswordFirstTimeLogin: false,
+  sendWelcomeEmailOnImport: false,
 };
 
 /* -------------------------------------------------------------------------- */
@@ -121,8 +140,38 @@ function LibraryPreviewDetailPage() {
     const initial = mockLibraryDetails[id] || defaultLibrary;
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem(`pb_hide_retail_bookstore_${id}`) ?? localStorage.getItem("pb_hide_retail_bookstore");
-      if (stored !== null) {
-        return { ...initial, hideRetailBookStore: stored === "true" };
+      const otpStored = localStorage.getItem(`pb_disable_otp_logins_${id}`) ?? localStorage.getItem("pb_disable_otp_logins");
+      const passwordResetStored = localStorage.getItem(`pb_restrict_password_reset_${id}`) ?? localStorage.getItem("pb_restrict_password_reset");
+      const firstTimeResetStored =
+        localStorage.getItem(`pb_enable_first_time_reset_${id}`) ??
+        localStorage.getItem("pb_enable_first_time_reset");
+      const welcomeEmailStored =
+        localStorage.getItem(`pb_send_welcome_email_on_import_${id}`) ??
+        localStorage.getItem("pb_send_welcome_email_on_import");
+      if (
+        stored !== null ||
+        otpStored !== null ||
+        passwordResetStored !== null ||
+        firstTimeResetStored !== null ||
+        welcomeEmailStored !== null
+      ) {
+        return {
+          ...initial,
+          hideRetailBookStore: stored !== null ? stored === "true" : initial.hideRetailBookStore,
+          disableOtpLogins: otpStored !== null ? otpStored === "true" : initial.disableOtpLogins,
+          restrictPasswordReset:
+            passwordResetStored !== null
+              ? passwordResetStored === "true"
+              : initial.restrictPasswordReset,
+          enableResetPasswordFirstTimeLogin:
+            firstTimeResetStored !== null
+              ? firstTimeResetStored === "true"
+              : initial.enableResetPasswordFirstTimeLogin,
+          sendWelcomeEmailOnImport:
+            welcomeEmailStored !== null
+              ? welcomeEmailStored === "true"
+              : initial.sendWelcomeEmailOnImport,
+        };
       }
     }
     return initial;
@@ -140,9 +189,31 @@ function LibraryPreviewDetailPage() {
     setFormData((prev) => {
       const updated = { ...prev, [field]: checked };
       if (typeof window !== "undefined") {
-        localStorage.setItem(`pb_hide_retail_bookstore_${prev.id}`, checked ? "true" : "false");
-        localStorage.setItem("pb_hide_retail_bookstore", checked ? "true" : "false");
-        window.dispatchEvent(new CustomEvent("pb-hide-bookstore-change", { detail: checked }));
+        if (field === "hideRetailBookStore") {
+          localStorage.setItem(`pb_hide_retail_bookstore_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_hide_retail_bookstore", checked ? "true" : "false");
+          window.dispatchEvent(new CustomEvent("pb-hide-bookstore-change", { detail: checked }));
+        }
+        if (field === "disableOtpLogins") {
+          localStorage.setItem(`pb_disable_otp_logins_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_disable_otp_logins", checked ? "true" : "false");
+          window.dispatchEvent(new CustomEvent("pb-disable-otp-logins-change", { detail: checked }));
+        }
+        if (field === "restrictPasswordReset") {
+          localStorage.setItem(`pb_restrict_password_reset_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_restrict_password_reset", checked ? "true" : "false");
+          window.dispatchEvent(new CustomEvent("pb-restrict-password-reset-change", { detail: checked }));
+        }
+        if (field === "enableResetPasswordFirstTimeLogin") {
+          localStorage.setItem(`pb_enable_first_time_reset_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_enable_first_time_reset", checked ? "true" : "false");
+          window.dispatchEvent(new CustomEvent("pb-enable-first-time-reset-change", { detail: checked }));
+        }
+        if (field === "sendWelcomeEmailOnImport") {
+          localStorage.setItem(`pb_send_welcome_email_on_import_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_send_welcome_email_on_import", checked ? "true" : "false");
+          window.dispatchEvent(new CustomEvent("pb-send-welcome-email-on-import-change", { detail: checked }));
+        }
       }
       return updated;
     });
@@ -155,6 +226,18 @@ function LibraryPreviewDetailPage() {
       localStorage.setItem(`pb_hide_retail_bookstore_${formData.id}`, formData.hideRetailBookStore ? "true" : "false");
       localStorage.setItem("pb_hide_retail_bookstore", formData.hideRetailBookStore ? "true" : "false");
       window.dispatchEvent(new CustomEvent("pb-hide-bookstore-change", { detail: Boolean(formData.hideRetailBookStore) }));
+      localStorage.setItem(`pb_disable_otp_logins_${formData.id}`, formData.disableOtpLogins ? "true" : "false");
+      localStorage.setItem("pb_disable_otp_logins", formData.disableOtpLogins ? "true" : "false");
+      window.dispatchEvent(new CustomEvent("pb-disable-otp-logins-change", { detail: Boolean(formData.disableOtpLogins) }));
+      localStorage.setItem(`pb_restrict_password_reset_${formData.id}`, formData.restrictPasswordReset ? "true" : "false");
+      localStorage.setItem("pb_restrict_password_reset", formData.restrictPasswordReset ? "true" : "false");
+      window.dispatchEvent(new CustomEvent("pb-restrict-password-reset-change", { detail: Boolean(formData.restrictPasswordReset) }));
+      localStorage.setItem(`pb_enable_first_time_reset_${formData.id}`, formData.enableResetPasswordFirstTimeLogin ? "true" : "false");
+      localStorage.setItem("pb_enable_first_time_reset", formData.enableResetPasswordFirstTimeLogin ? "true" : "false");
+      window.dispatchEvent(new CustomEvent("pb-enable-first-time-reset-change", { detail: Boolean(formData.enableResetPasswordFirstTimeLogin) }));
+      localStorage.setItem(`pb_send_welcome_email_on_import_${formData.id}`, formData.sendWelcomeEmailOnImport ? "true" : "false");
+      localStorage.setItem("pb_send_welcome_email_on_import", formData.sendWelcomeEmailOnImport ? "true" : "false");
+      window.dispatchEvent(new CustomEvent("pb-send-welcome-email-on-import-change", { detail: Boolean(formData.sendWelcomeEmailOnImport) }));
     }
     toast.success("Library details updated successfully.");
     setTimeout(() => setIsSaved(false), 3000);
@@ -396,7 +479,7 @@ function LibraryPreviewDetailPage() {
             </div>
           </section>
 
-          {/* Section: Retail Book Store Settings */}
+          {/* Section: Library Settings */}
           <section className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
               <div className="flex items-center gap-3">
@@ -405,24 +488,14 @@ function LibraryPreviewDetailPage() {
                 </span>
                 <div>
                   <h2 className="text-base font-extrabold text-foreground leading-tight">
-                    Retail Book Store Settings
+                    Library Settings
                   </h2>
                   <p className="text-xs text-muted-foreground font-medium mt-0.5">
-                    Configure visibility rules for the Retail Book Store menu in the Library Admin portal.
+                    Configure portal-level visibility and authentication settings for this library.
                   </p>
                 </div>
               </div>
-              {formData.hideRetailBookStore ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 px-3 py-1 text-xs font-semibold text-rose-600 dark:text-rose-400 border border-rose-500/20 self-start sm:self-auto">
-                  <EyeOff size={13} />
-                  Book Store Hidden
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 self-start sm:self-auto">
-                  <Eye size={13} />
-                  Book Store Visible
-                </span>
-              )}
+             
             </div>
 
             <div className="space-y-4">
@@ -440,6 +513,82 @@ function LibraryPreviewDetailPage() {
                   </span>
                   <p className="text-xs text-muted-foreground">
                     When enabled, the Book Store menu option will be hidden from the Library Admin portal sidebar navigation for users belonging to this library.
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group">
+                <input
+                  id="disableOtpLogins"
+                  type="checkbox"
+                  checked={formData.disableOtpLogins || false}
+                  onChange={(e) => handleCheckboxChange("disableOtpLogins", e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-sm font-extrabold text-foreground group-hover:text-[var(--brand)] transition-colors inline-flex items-center gap-1.5">
+                    <Smartphone size={14} />
+                    Disable OTP Logins
+                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    When enabled, Student and Staff login screens will hide Phone / Email OTP sign-in options and allow only Login ID & Password access.
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group">
+                <input
+                  id="restrictPasswordReset"
+                  type="checkbox"
+                  checked={formData.restrictPasswordReset || false}
+                  onChange={(e) => handleCheckboxChange("restrictPasswordReset", e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-sm font-extrabold text-foreground group-hover:text-[var(--brand)] transition-colors inline-flex items-center gap-1.5">
+                    <Lock size={14} />
+                    Restrict Password Reset
+                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    When enabled, Student and Staff login screens will hide Forgot Password and password reset flows.
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group">
+                <input
+                  id="enableResetPasswordFirstTimeLogin"
+                  type="checkbox"
+                  checked={formData.enableResetPasswordFirstTimeLogin || false}
+                  onChange={(e) => handleCheckboxChange("enableResetPasswordFirstTimeLogin", e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-sm font-extrabold text-foreground group-hover:text-[var(--brand)] transition-colors inline-flex items-center gap-1.5">
+                    <Lock size={14} />
+                    Enable Password Reset for First Time Login
+                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    When enabled, Student and Staff login screens show first-time users a guided path to set their password.
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group">
+                <input
+                  id="sendWelcomeEmailOnImport"
+                  type="checkbox"
+                  checked={formData.sendWelcomeEmailOnImport || false}
+                  onChange={(e) => handleCheckboxChange("sendWelcomeEmailOnImport", e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-sm font-extrabold text-foreground group-hover:text-[var(--brand)] transition-colors inline-flex items-center gap-1.5">
+                    <Mail size={14} />
+                    Send Welcome Email while Importing Students/Staff
+                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    When enabled, imported students and staff will be queued for welcome email notifications after successful import.
                   </p>
                 </div>
               </label>

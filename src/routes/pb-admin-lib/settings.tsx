@@ -118,7 +118,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="••••••••"
-                className="h-11 w-full rounded-xl border border-border bg-card pr-10 pl-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                className="h-11 w-full rounded-xl border border-border bg-white pr-10 pl-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors"
               />
               <button
                 type="button"
@@ -141,7 +141,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="••••••••"
-                className="h-11 w-full rounded-xl border border-border bg-card pr-10 pl-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                className="h-11 w-full rounded-xl border border-border bg-white pr-10 pl-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors"
               />
               <button
                 type="button"
@@ -163,7 +163,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
-              className="h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+              className="h-11 w-full rounded-xl border border-border bg-white px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors"
             />
           </div>
 

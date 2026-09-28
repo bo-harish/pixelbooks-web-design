@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -44,6 +44,9 @@ export const INSTITUTION_LINKS = {
 function InstitutionsLoginPage() {
   const navigate = useNavigate();
   const [hoveredBox, setHoveredBox] = useState<string | null>(null);
+  const [disableOtpLogins, setDisableOtpLogins] = useState(false);
+  const [restrictPasswordReset, setRestrictPasswordReset] = useState(false);
+  const [enableFirstTimeReset, setEnableFirstTimeReset] = useState(false);
 
   // Institution Branding details
   const institution = {
@@ -68,6 +71,95 @@ function InstitutionsLoginPage() {
 
   // Forgot Password State
   const [forgotId, setForgotId] = useState("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readOtpSetting = () => {
+      const stored = localStorage.getItem("pb_disable_otp_logins_LIB-101") ?? localStorage.getItem("pb_disable_otp_logins");
+      setDisableOtpLogins(stored === "true");
+    };
+
+    readOtpSetting();
+
+    const handleOtpSettingChange = () => readOtpSetting();
+    window.addEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+    window.addEventListener("storage", handleOtpSettingChange);
+
+    return () => {
+      window.removeEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+      window.removeEventListener("storage", handleOtpSettingChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readFirstTimeResetSetting = () => {
+      const stored =
+        localStorage.getItem("pb_enable_first_time_reset_LIB-101") ??
+        localStorage.getItem("pb_enable_first_time_reset");
+      setEnableFirstTimeReset(stored === "true");
+    };
+
+    readFirstTimeResetSetting();
+
+    const handleFirstTimeResetSettingChange = () => readFirstTimeResetSetting();
+    window.addEventListener(
+      "pb-enable-first-time-reset-change",
+      handleFirstTimeResetSettingChange as EventListener,
+    );
+    window.addEventListener("storage", handleFirstTimeResetSettingChange);
+
+    return () => {
+      window.removeEventListener(
+        "pb-enable-first-time-reset-change",
+        handleFirstTimeResetSettingChange as EventListener,
+      );
+      window.removeEventListener("storage", handleFirstTimeResetSettingChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readPasswordResetSetting = () => {
+      const stored =
+        localStorage.getItem("pb_restrict_password_reset_LIB-101") ??
+        localStorage.getItem("pb_restrict_password_reset");
+      setRestrictPasswordReset(stored === "true");
+    };
+
+    readPasswordResetSetting();
+
+    const handlePasswordResetSettingChange = () => readPasswordResetSetting();
+    window.addEventListener(
+      "pb-restrict-password-reset-change",
+      handlePasswordResetSettingChange as EventListener,
+    );
+    window.addEventListener("storage", handlePasswordResetSettingChange);
+
+    return () => {
+      window.removeEventListener(
+        "pb-restrict-password-reset-change",
+        handlePasswordResetSettingChange as EventListener,
+      );
+      window.removeEventListener("storage", handlePasswordResetSettingChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (disableOtpLogins && loginMethod === "otp") {
+      setLoginMethod("password");
+      setOtpSent(false);
+    }
+  }, [disableOtpLogins, loginMethod]);
+
+  useEffect(() => {
+    if (restrictPasswordReset && viewMode === "forgot-password") {
+      setViewMode("login");
+    }
+  }, [restrictPasswordReset, viewMode]);
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -417,7 +509,7 @@ function InstitutionsLoginPage() {
                   </p>
 
                   {/* Method Switcher Tabs: Password vs OTP */}
-                  <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-secondary/40 border border-border/60">
+                  <div className={`grid ${disableOtpLogins ? "grid-cols-1" : "grid-cols-2"} gap-1.5 p-1 rounded-xl bg-secondary/40 border border-border/60`}>
                     <button
                       type="button"
                       onClick={() => {
@@ -432,24 +524,32 @@ function InstitutionsLoginPage() {
                       <Lock size={13} />
                       <span>Login ID & Password</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setLoginMethod("otp");
-                        setOtpSent(false);
-                      }}
-                      className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${loginMethod === "otp"
-                        ? "bg-card text-foreground shadow-2xs"
-                        : "text-muted-foreground hover:text-foreground"
-                        }`}
-                    >
-                      <Smartphone size={13} />
-                      <span>Phone / Email OTP</span>
-                    </button>
+                    {!disableOtpLogins && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginMethod("otp");
+                          setOtpSent(false);
+                        }}
+                        className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${loginMethod === "otp"
+                          ? "bg-card text-foreground shadow-2xs"
+                          : "text-muted-foreground hover:text-foreground"
+                          }`}
+                      >
+                        <Smartphone size={13} />
+                        <span>Phone / Email OTP</span>
+                      </button>
+                    )}
                   </div>
 
+                  {disableOtpLogins && (
+                    <p className="text-[11px] text-muted-foreground">
+                      Phone / Email OTP login is disabled by the library administrator.
+                    </p>
+                  )}
+
                   {/* Method 1: Password Form */}
-                  {loginMethod === "password" ? (
+                  {loginMethod === "password" || disableOtpLogins ? (
                     <form onSubmit={handlePasswordLogin} className="space-y-3.5 pt-1">
                       {/* Login ID Field */}
                       <div className="space-y-1.5 text-left">
@@ -512,19 +612,33 @@ function InstitutionsLoginPage() {
                             />
                             <span>Remember Login ID</span>
                           </label>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setForgotId(identifier);
-                              setViewMode("forgot-password");
-                            }}
-                            id="btn-open-forgot-password"
-                            className="text-[11px] font-semibold text-muted-foreground hover:text-foreground underline cursor-pointer"
-                          >
-                            Forgot Password?
-                          </button>
+                          {!restrictPasswordReset && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setForgotId(identifier);
+                                setViewMode("forgot-password");
+                              }}
+                              id="btn-open-forgot-password"
+                              className="text-[11px] font-semibold text-muted-foreground hover:text-foreground underline cursor-pointer"
+                            >
+                              Forgot Password?
+                            </button>
+                          )}
                         </div>
                       </div>
+
+                      {restrictPasswordReset && (
+                        <p className="text-[11px] text-muted-foreground">
+                          Password reset is restricted by the library administrator.
+                        </p>
+                      )}
+
+                      {!restrictPasswordReset && enableFirstTimeReset && (
+                        <p className="text-[11px] text-muted-foreground">
+                          First time login? Use Forgot Password to set your password.
+                        </p>
+                      )}
 
                       {/* Submit Button */}
                       <button
@@ -644,7 +758,7 @@ function InstitutionsLoginPage() {
                     </div>
                   )}
                 </div>
-              ) : (
+              ) : !restrictPasswordReset ? (
                 /* Forgot Password Inline View */
                 <div className="space-y-4 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between">
@@ -705,6 +819,14 @@ function InstitutionsLoginPage() {
                       <ArrowRight size={14} />
                     </button>
                   </form>
+                </div>
+              ) : (
+                <div className="space-y-4 animate-in fade-in duration-200">
+                  <div className="rounded-xl border border-border bg-secondary/20 p-4">
+                    <p className="text-xs text-muted-foreground">
+                      Password reset is currently restricted by the library administrator. Please contact your library support team.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

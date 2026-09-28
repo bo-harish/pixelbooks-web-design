@@ -1444,12 +1444,17 @@ function EBookDetailsSection() {
             <option>French</option>
           </SelectInput>
         </Field>
-        <Field label="Date of Publication">
-          <TextInput defaultValue="Harry Potter" />
-        </Field>
-        <Field label="eBook Size (in MB)">
-          <TextInput defaultValue="25.4" placeholder="e.g. 25.4" />
-        </Field>
+        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-4">
+          <Field label="Date of Publication in PixelBooks">
+            <TextInput defaultValue="Harry Potter" />
+          </Field>
+          <Field label="Date of Paperback Publication">
+            <TextInput defaultValue="Harry Potter" />
+          </Field>
+          <Field label="eBook Size (in MB)">
+            <TextInput defaultValue="25.4" placeholder="e.g. 25.4" />
+          </Field>
+        </div>
       </div>
 
       <div className="mt-4">

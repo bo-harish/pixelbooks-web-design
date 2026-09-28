@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   User,
   Lock,
@@ -31,6 +31,9 @@ type ViewMode = "login" | "forgot-password";
 
 function UnifiedStudentLoginPage() {
   const navigate = useNavigate();
+  const [disableOtpLogins, setDisableOtpLogins] = useState(false);
+  const [restrictPasswordReset, setRestrictPasswordReset] = useState(false);
+  const [enableFirstTimeReset, setEnableFirstTimeReset] = useState(false);
 
   // Navigation & View Modes
   const [viewMode, setViewMode] = useState<ViewMode>("login");
@@ -56,6 +59,95 @@ function UnifiedStudentLoginPage() {
     name: "Vimala Knowledge Hub",
     location: "Thrissur, Kerala",
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readOtpSetting = () => {
+      const stored = localStorage.getItem("pb_disable_otp_logins_LIB-101") ?? localStorage.getItem("pb_disable_otp_logins");
+      setDisableOtpLogins(stored === "true");
+    };
+
+    readOtpSetting();
+
+    const handleOtpSettingChange = () => readOtpSetting();
+    window.addEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+    window.addEventListener("storage", handleOtpSettingChange);
+
+    return () => {
+      window.removeEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+      window.removeEventListener("storage", handleOtpSettingChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readFirstTimeResetSetting = () => {
+      const stored =
+        localStorage.getItem("pb_enable_first_time_reset_LIB-101") ??
+        localStorage.getItem("pb_enable_first_time_reset");
+      setEnableFirstTimeReset(stored === "true");
+    };
+
+    readFirstTimeResetSetting();
+
+    const handleFirstTimeResetSettingChange = () => readFirstTimeResetSetting();
+    window.addEventListener(
+      "pb-enable-first-time-reset-change",
+      handleFirstTimeResetSettingChange as EventListener,
+    );
+    window.addEventListener("storage", handleFirstTimeResetSettingChange);
+
+    return () => {
+      window.removeEventListener(
+        "pb-enable-first-time-reset-change",
+        handleFirstTimeResetSettingChange as EventListener,
+      );
+      window.removeEventListener("storage", handleFirstTimeResetSettingChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const readPasswordResetSetting = () => {
+      const stored =
+        localStorage.getItem("pb_restrict_password_reset_LIB-101") ??
+        localStorage.getItem("pb_restrict_password_reset");
+      setRestrictPasswordReset(stored === "true");
+    };
+
+    readPasswordResetSetting();
+
+    const handlePasswordResetSettingChange = () => readPasswordResetSetting();
+    window.addEventListener(
+      "pb-restrict-password-reset-change",
+      handlePasswordResetSettingChange as EventListener,
+    );
+    window.addEventListener("storage", handlePasswordResetSettingChange);
+
+    return () => {
+      window.removeEventListener(
+        "pb-restrict-password-reset-change",
+        handlePasswordResetSettingChange as EventListener,
+      );
+      window.removeEventListener("storage", handlePasswordResetSettingChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (disableOtpLogins && loginMethod === "otp") {
+      setLoginMethod("password");
+      setOtpSent(false);
+    }
+  }, [disableOtpLogins, loginMethod]);
+
+  useEffect(() => {
+    if (restrictPasswordReset && viewMode === "forgot-password") {
+      setViewMode("login");
+    }
+  }, [restrictPasswordReset, viewMode]);
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -248,21 +340,35 @@ function UnifiedStudentLoginPage() {
                           {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                         </button>
                       </div>
-                      <div className="text-right pt-0.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setForgotId(identifier);
-                            setForgotSubmitted(false);
-                            setViewMode("forgot-password");
-                          }}
-                          id="btn-open-forgot-password"
-                          className="text-xs font-semibold text-muted-foreground hover:text-foreground underline cursor-pointer"
-                        >
-                          Forgot Password?
-                        </button>
-                      </div>
+                      {!restrictPasswordReset && (
+                        <div className="text-right pt-0.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setForgotId(identifier);
+                              setForgotSubmitted(false);
+                              setViewMode("forgot-password");
+                            }}
+                            id="btn-open-forgot-password"
+                            className="text-xs font-semibold text-muted-foreground hover:text-foreground underline cursor-pointer"
+                          >
+                            Forgot Password?
+                          </button>
+                        </div>
+                      )}
                     </div>
+
+                    {restrictPasswordReset && (
+                      <p className="text-[11px] text-muted-foreground text-right">
+                        Password reset is restricted by the library administrator.
+                      </p>
+                    )}
+
+                    {!restrictPasswordReset && enableFirstTimeReset && (
+                      <p className="text-[11px] text-muted-foreground text-right">
+                        First time login? Use Forgot Password to set your password.
+                      </p>
+                    )}
 
                     {/* Primary Login Button */}
                     <button
@@ -278,29 +384,39 @@ function UnifiedStudentLoginPage() {
                       {isSubmitting ? "Authenticating..." : "Login"}
                     </button>
 
-                    {/* Subtle Divider */}
-                    <div className="relative my-3 text-center">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-border/70" />
-                      </div>
-                      <div className="relative flex justify-center text-[11px]">
-                        <span className="bg-card px-2 text-muted-foreground font-medium">or continue with</span>
-                      </div>
-                    </div>
+                    {!disableOtpLogins && (
+                      <>
+                        {/* Subtle Divider */}
+                        <div className="relative my-3 text-center">
+                          <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-border/70" />
+                          </div>
+                          <div className="relative flex justify-center text-[11px]">
+                            <span className="bg-card px-2 text-muted-foreground font-medium">or continue with</span>
+                          </div>
+                        </div>
 
-                    {/* One-Click OTP Alternative Button */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setLoginMethod("otp");
-                        setOtpSent(false);
-                      }}
-                      id="btn-switch-to-otp-mode"
-                      className="w-full h-10 rounded-full border border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
-                    >
-                      <Smartphone size={14} />
-                      Sign in with Phone / Email OTP
-                    </button>
+                        {/* One-Click OTP Alternative Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLoginMethod("otp");
+                            setOtpSent(false);
+                          }}
+                          id="btn-switch-to-otp-mode"
+                          className="w-full h-10 rounded-full border border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+                        >
+                          <Smartphone size={14} />
+                          Sign in with Phone / Email OTP
+                        </button>
+                      </>
+                    )}
+
+                    {disableOtpLogins && (
+                      <p className="text-[11px] text-muted-foreground text-center">
+                        Phone / Email OTP login is disabled by the library administrator.
+                      </p>
+                    )}
                   </div>
                 )}
 
@@ -427,7 +543,7 @@ function UnifiedStudentLoginPage() {
           )}
 
           {/* VIEW 2: FORGOT PASSWORD SCREEN */}
-          {viewMode === "forgot-password" && (
+          {viewMode === "forgot-password" && !restrictPasswordReset && (
             <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
               {/* Back to Login Link */}
               <div className="flex items-center justify-between">

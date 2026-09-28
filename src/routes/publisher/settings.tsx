@@ -139,7 +139,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="Enter current password"
-                className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
+                className="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
               />
               <button
                 type="button"
@@ -159,7 +159,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Min 6 characters"
-                className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
+                className="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)] pr-10"
               />
               <button
                 type="button"
@@ -178,7 +178,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter new password"
-              className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
+              className="w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-[var(--brand)] focus:outline-none focus:ring-1 focus:ring-[var(--brand)]"
             />
           </div>
 
@@ -276,6 +276,7 @@ function DocumentModal({
 function PublisherSettingsPage() {
   const { currentTheme, setTheme, resetToDefault, isDefault } = usePublisherTheme();
   const [pushNotifications, setPushNotifications] = useState(true);
+  const [autofillMetadataOnUpload, setAutofillMetadataOnUpload] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
   const [termsModalOpen, setTermsModalOpen] = useState(false);
@@ -333,7 +334,35 @@ function PublisherSettingsPage() {
             </div>
           </div>
 
-          {/* Row 2: Change Password */}
+          {/* Row 2: Autofill Metadata During eBook Upload */}
+          <div className="flex items-center justify-between p-5 sm:p-6 hover:bg-secondary/20 transition-colors">
+            <div className="flex items-start gap-4">
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                style={{ backgroundColor: "var(--sidebar-highlight)", color: "var(--brand)" }}
+              >
+                <SunMoon size={18} />
+              </span>
+              <div>
+                <p className="text-sm font-bold text-foreground">Autofill Metadata While Uploading eBook</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Automatically extract and prefill title metadata fields when uploading eBook files.
+                </p>
+              </div>
+            </div>
+            <div className="shrink-0 pl-4 flex items-center gap-2.5">
+              <Toggle
+                id="toggle-autofill-metadata-upload"
+                checked={autofillMetadataOnUpload}
+                onChange={(val) => {
+                  setAutofillMetadataOnUpload(val);
+                  toast.success(val ? "Metadata autofill enabled" : "Metadata autofill disabled");
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Row 3: Change Password */}
           <div className="flex items-center justify-between p-5 sm:p-6 hover:bg-secondary/20 transition-colors">
             <div className="flex items-start gap-4">
               <span
@@ -362,7 +391,7 @@ function PublisherSettingsPage() {
             </div>
           </div>
 
-          {/* Row 3: Privacy Policy */}
+          {/* Row 4: Privacy Policy */}
           <div className="flex items-center justify-between p-5 sm:p-6 hover:bg-secondary/20 transition-colors">
             <div className="flex items-start gap-4">
               <span
@@ -391,7 +420,7 @@ function PublisherSettingsPage() {
             </div>
           </div>
 
-          {/* Row 4: Terms and Conditions */}
+          {/* Row 5: Terms and Conditions */}
           <div className="flex items-center justify-between p-5 sm:p-6 hover:bg-secondary/20 transition-colors">
             <div className="flex items-start gap-4">
               <span

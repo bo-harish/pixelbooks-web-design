@@ -112,6 +112,7 @@ import { Route as PbAdminBundlesBundleIdRouteImport } from './routes/pb-admin/bu
 import { Route as PbAdminAuthorManagementAuthorIdRouteImport } from './routes/pb-admin/author-management.$authorId'
 import { Route as PbAdminAdBannersPopupRouteImport } from './routes/pb-admin/ad-banners.popup'
 import { Route as PbAdminAdBannersImageRouteImport } from './routes/pb-admin/ad-banners.image'
+import { Route as PbAdminAdBannersGenreRouteImport } from './routes/pb-admin/ad-banners.genre'
 import { Route as PbAdminLibTermsConditionsNewRouteImport } from './routes/pb-admin-lib/terms-conditions_.new'
 import { Route as PbAdminLibTermsConditionsIdRouteImport } from './routes/pb-admin-lib/terms-conditions_.$id'
 import { Route as PbAdminLibPrivacyPolicyNewRouteImport } from './routes/pb-admin-lib/privacy-policy_.new'
@@ -654,6 +655,11 @@ const PbAdminAdBannersImageRoute = PbAdminAdBannersImageRouteImport.update({
   path: '/pb-admin/ad-banners/image',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PbAdminAdBannersGenreRoute = PbAdminAdBannersGenreRouteImport.update({
+  id: '/pb-admin/ad-banners/genre',
+  path: '/pb-admin/ad-banners/genre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PbAdminLibTermsConditionsNewRoute =
   PbAdminLibTermsConditionsNewRouteImport.update({
     id: '/pb-admin-lib/terms-conditions_/new',
@@ -788,6 +794,7 @@ export interface FileRoutesByFullPath {
   '/pb-admin-lib/privacy-policy/new': typeof PbAdminLibPrivacyPolicyNewRoute
   '/pb-admin-lib/terms-conditions/$id': typeof PbAdminLibTermsConditionsIdRoute
   '/pb-admin-lib/terms-conditions/new': typeof PbAdminLibTermsConditionsNewRoute
+  '/pb-admin/ad-banners/genre': typeof PbAdminAdBannersGenreRoute
   '/pb-admin/ad-banners/image': typeof PbAdminAdBannersImageRoute
   '/pb-admin/ad-banners/popup': typeof PbAdminAdBannersPopupRoute
   '/pb-admin/author-management/$authorId': typeof PbAdminAuthorManagementAuthorIdRoute
@@ -902,6 +909,7 @@ export interface FileRoutesByTo {
   '/pb-admin-lib/privacy-policy/new': typeof PbAdminLibPrivacyPolicyNewRoute
   '/pb-admin-lib/terms-conditions/$id': typeof PbAdminLibTermsConditionsIdRoute
   '/pb-admin-lib/terms-conditions/new': typeof PbAdminLibTermsConditionsNewRoute
+  '/pb-admin/ad-banners/genre': typeof PbAdminAdBannersGenreRoute
   '/pb-admin/ad-banners/image': typeof PbAdminAdBannersImageRoute
   '/pb-admin/ad-banners/popup': typeof PbAdminAdBannersPopupRoute
   '/pb-admin/author-management/$authorId': typeof PbAdminAuthorManagementAuthorIdRoute
@@ -1017,6 +1025,7 @@ export interface FileRoutesById {
   '/pb-admin-lib/privacy-policy_/new': typeof PbAdminLibPrivacyPolicyNewRoute
   '/pb-admin-lib/terms-conditions_/$id': typeof PbAdminLibTermsConditionsIdRoute
   '/pb-admin-lib/terms-conditions_/new': typeof PbAdminLibTermsConditionsNewRoute
+  '/pb-admin/ad-banners/genre': typeof PbAdminAdBannersGenreRoute
   '/pb-admin/ad-banners/image': typeof PbAdminAdBannersImageRoute
   '/pb-admin/ad-banners/popup': typeof PbAdminAdBannersPopupRoute
   '/pb-admin/author-management/$authorId': typeof PbAdminAuthorManagementAuthorIdRoute
@@ -1133,6 +1142,7 @@ export interface FileRouteTypes {
     | '/pb-admin-lib/privacy-policy/new'
     | '/pb-admin-lib/terms-conditions/$id'
     | '/pb-admin-lib/terms-conditions/new'
+    | '/pb-admin/ad-banners/genre'
     | '/pb-admin/ad-banners/image'
     | '/pb-admin/ad-banners/popup'
     | '/pb-admin/author-management/$authorId'
@@ -1247,6 +1257,7 @@ export interface FileRouteTypes {
     | '/pb-admin-lib/privacy-policy/new'
     | '/pb-admin-lib/terms-conditions/$id'
     | '/pb-admin-lib/terms-conditions/new'
+    | '/pb-admin/ad-banners/genre'
     | '/pb-admin/ad-banners/image'
     | '/pb-admin/ad-banners/popup'
     | '/pb-admin/author-management/$authorId'
@@ -1361,6 +1372,7 @@ export interface FileRouteTypes {
     | '/pb-admin-lib/privacy-policy_/new'
     | '/pb-admin-lib/terms-conditions_/$id'
     | '/pb-admin-lib/terms-conditions_/new'
+    | '/pb-admin/ad-banners/genre'
     | '/pb-admin/ad-banners/image'
     | '/pb-admin/ad-banners/popup'
     | '/pb-admin/author-management/$authorId'
@@ -1476,6 +1488,7 @@ export interface RootRouteChildren {
   PbAdminLibPrivacyPolicyNewRoute: typeof PbAdminLibPrivacyPolicyNewRoute
   PbAdminLibTermsConditionsIdRoute: typeof PbAdminLibTermsConditionsIdRoute
   PbAdminLibTermsConditionsNewRoute: typeof PbAdminLibTermsConditionsNewRoute
+  PbAdminAdBannersGenreRoute: typeof PbAdminAdBannersGenreRoute
   PbAdminAdBannersImageRoute: typeof PbAdminAdBannersImageRoute
   PbAdminAdBannersPopupRoute: typeof PbAdminAdBannersPopupRoute
   PbAdminBundlesBundleIdRoute: typeof PbAdminBundlesBundleIdRoute
@@ -2229,6 +2242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbAdminAdBannersImageRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pb-admin/ad-banners/genre': {
+      id: '/pb-admin/ad-banners/genre'
+      path: '/pb-admin/ad-banners/genre'
+      fullPath: '/pb-admin/ad-banners/genre'
+      preLoaderRoute: typeof PbAdminAdBannersGenreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-admin-lib/terms-conditions_/new': {
       id: '/pb-admin-lib/terms-conditions_/new'
       path: '/pb-admin-lib/terms-conditions/new'
@@ -2421,6 +2441,7 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminLibPrivacyPolicyNewRoute: PbAdminLibPrivacyPolicyNewRoute,
   PbAdminLibTermsConditionsIdRoute: PbAdminLibTermsConditionsIdRoute,
   PbAdminLibTermsConditionsNewRoute: PbAdminLibTermsConditionsNewRoute,
+  PbAdminAdBannersGenreRoute: PbAdminAdBannersGenreRoute,
   PbAdminAdBannersImageRoute: PbAdminAdBannersImageRoute,
   PbAdminAdBannersPopupRoute: PbAdminAdBannersPopupRoute,
   PbAdminBundlesBundleIdRoute: PbAdminBundlesBundleIdRoute,
