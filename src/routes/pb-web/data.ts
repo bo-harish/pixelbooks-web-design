@@ -121,7 +121,7 @@ export const sampleBooksByGenre: Record<string, PbWebBook[]> = {
       tag: "Biology Essential",
       gradient: "from-emerald-700 to-teal-950",
       isbn: "978-93-91067-15-9",
-      cover: "/images/covers/neet-biology.png",
+      cover: "/images/covers/NEP.jpeg",
     },
     {
       title: "NEET Courseware Chemistry Class-XII",
