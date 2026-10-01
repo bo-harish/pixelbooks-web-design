@@ -24,7 +24,8 @@ export const Route = createFileRoute("/library-admin/profile")({
       { title: "Profile — PixelBooks" },
       {
         name: "description",
-        content: "Manage institutional library details, address, contact information, and borrowing limits.",
+        content:
+          "Manage institutional library details, address, contact information, and borrowing limits.",
       },
     ],
   }),
@@ -110,7 +111,10 @@ function SelectField({
             </option>
           ))}
         </select>
-        <ChevronDown size={16} className="pointer-events-none absolute right-4 text-muted-foreground" />
+        <ChevronDown
+          size={16}
+          className="pointer-events-none absolute right-4 text-muted-foreground"
+        />
       </div>
     </div>
   );
@@ -210,7 +214,10 @@ function LibraryAdminProfilePage() {
   };
 
   return (
-    <AppShell title="Profile" subtitle="Manage your library profile, address, contact and borrowing details.">
+    <AppShell
+      title="Profile"
+      subtitle="Manage your library profile, address, contact and borrowing details."
+    >
       <div className="space-y-8 p-4 md:p-8">
         {/* Profile Image & Logo SectionCard */}
         <SectionCard title="Library Profile">
@@ -254,7 +261,9 @@ function LibraryAdminProfilePage() {
 
                   <div className="flex-1 min-w-0 space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-lg font-bold text-foreground truncate">{libraryName || "Library Details"}</h3>
+                      <h3 className="text-lg font-bold text-foreground truncate">
+                        {libraryName || "Library Details"}
+                      </h3>
                       <span
                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border shrink-0 ${
                           status === "Onboarded"
@@ -266,7 +275,8 @@ function LibraryAdminProfilePage() {
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Round logo for avatars, storefront badges &amp; invoices. PNG or JPEG, 512×512px.
+                      Round logo for avatars, storefront badges &amp; invoices. PNG or JPEG,
+                      512×512px.
                     </p>
                   </div>
                 </div>
@@ -279,7 +289,8 @@ function LibraryAdminProfilePage() {
                 <div className="flex-1 min-w-0 space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-semibold text-foreground">
-                      Horizontal Logo <span className="text-muted-foreground font-normal">(Optional)</span>
+                      Horizontal Logo{" "}
+                      <span className="text-muted-foreground font-normal">(Optional)</span>
                     </span>
                     {horizontalLogo && (
                       <button
@@ -311,7 +322,11 @@ function LibraryAdminProfilePage() {
                   >
                     {horizontalLogo ? (
                       <>
-                        <img src={horizontalLogo} alt="Horizontal Logo" className="h-full max-w-full object-contain py-1.5" />
+                        <img
+                          src={horizontalLogo}
+                          alt="Horizontal Logo"
+                          className="h-full max-w-full object-contain py-1.5"
+                        />
                         <span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/50 text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
                           <Upload size={13} /> Change Logo
                         </span>
@@ -325,7 +340,8 @@ function LibraryAdminProfilePage() {
                   </button>
 
                   <p className="text-[11px] text-muted-foreground">
-                    Displayed at the top-left of the screen header. Recommended: wide format (e.g. 280×64px), transparent PNG.
+                    Displayed at the top-left of the screen header. Recommended: wide format (e.g.
+                    280×64px), transparent PNG.
                   </p>
                 </div>
               </div>
@@ -384,7 +400,6 @@ function LibraryAdminProfilePage() {
                 </div>
               </div>
             </div>
-
           </div>
         </SectionCard>
 
@@ -392,12 +407,7 @@ function LibraryAdminProfilePage() {
           {/* Library Details */}
           <SectionCard title="Library Details">
             <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
-              <Field
-                label="Library Name"
-                required
-                value={libraryName}
-                onChange={setLibraryName}
-              />
+              <Field label="Library Name" required value={libraryName} onChange={setLibraryName} />
               <SelectField
                 label="Library Type"
                 required
@@ -414,7 +424,12 @@ function LibraryAdminProfilePage() {
               />
               <Field label="ID" required value={libraryId} onChange={setLibraryId} />
               <Field label="GST Details" required value={gstDetails} onChange={setGstDetails} />
-              <Field label="Address Line 1" required value={addressLine1} onChange={setAddressLine1} />
+              <Field
+                label="Address Line 1"
+                required
+                value={addressLine1}
+                onChange={setAddressLine1}
+              />
               <Field label="Address Line 2" value={addressLine2} onChange={setAddressLine2} />
               <SelectField
                 label="State"
@@ -730,6 +745,3 @@ function OtpModal({ isOpen, onClose, email, phone, onVerifySuccess }: OtpModalPr
     </div>
   );
 }
-
-
-

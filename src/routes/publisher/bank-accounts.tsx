@@ -107,11 +107,7 @@ function BankAccountsPage() {
     accountNumber: string;
   }) => {
     if (editingId) {
-      setAccounts((prev) =>
-        prev.map((acc) =>
-          acc.id === editingId ? { ...acc, ...data } : acc
-        )
-      );
+      setAccounts((prev) => prev.map((acc) => (acc.id === editingId ? { ...acc, ...data } : acc)));
     } else {
       const newAccount: BankAccount = {
         id: `ba${Date.now()}`,
@@ -133,7 +129,7 @@ function BankAccountsPage() {
       prev.map((acc) => ({
         ...acc,
         isActive: acc.id === accountToSetDefault.id,
-      }))
+      })),
     );
     setSetDefaultId(null);
   };
@@ -212,7 +208,8 @@ function BankAccountsPage() {
                 <span className="font-semibold text-foreground">
                   {accountToSetDefault?.bankName} ({accountToSetDefault?.accountHolder})
                 </span>{" "}
-                as your default account for royalty payouts? All future payouts will be automatically transferred to this account.
+                as your default account for royalty payouts? All future payouts will be
+                automatically transferred to this account.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="mt-4">
@@ -283,10 +280,11 @@ function BankAccountsPage() {
           {accounts.map((acc) => (
             <div
               key={acc.id}
-              className={`rounded-2xl border bg-card p-6 transition-all duration-200 hover:shadow-md flex flex-col justify-between relative ${acc.isActive
-                ? "border-[var(--brand)] ring-1 ring-[var(--brand)]/30 shadow-xs"
-                : "border-border hover:border-border/80"
-                }`}
+              className={`rounded-2xl border bg-card p-6 transition-all duration-200 hover:shadow-md flex flex-col justify-between relative ${
+                acc.isActive
+                  ? "border-[var(--brand)] ring-1 ring-[var(--brand)]/30 shadow-xs"
+                  : "border-border hover:border-border/80"
+              }`}
             >
               <div>
                 {/* Header Badge */}

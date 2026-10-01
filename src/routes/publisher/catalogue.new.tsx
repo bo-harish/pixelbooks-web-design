@@ -254,8 +254,9 @@ function EbookDocumentPreview({ file }: { file: File }) {
         {/* Top Format Badge & Header Line */}
         <div className="flex items-center justify-between border-b border-border/40 pb-1.5">
           <span
-            className={`inline-block rounded px-1 py-0.2 text-[8px] font-extrabold uppercase tracking-wider text-white shadow-2xs ${isPdf ? "bg-rose-500" : "bg-teal-600"
-              }`}
+            className={`inline-block rounded px-1 py-0.2 text-[8px] font-extrabold uppercase tracking-wider text-white shadow-2xs ${
+              isPdf ? "bg-rose-500" : "bg-teal-600"
+            }`}
           >
             {formatLabel}
           </span>
@@ -428,9 +429,7 @@ function UploadTile({
             style={{ backgroundColor: "color-mix(in oklab, var(--brand) 12%, var(--card))" }}
           >
             <Upload size={28} className="animate-bounce text-[var(--brand)]" />
-            <p className="text-xs font-bold text-[var(--brand)]">
-              Release to upload file
-            </p>
+            <p className="text-xs font-bold text-[var(--brand)]">Release to upload file</p>
           </div>
         )}
 
@@ -456,7 +455,14 @@ function UploadTile({
             ) : (
               /* eBook Document / PDF / ePUB Page Preview */
               <div
-                onClick={onPreview ? (e) => { e.stopPropagation(); onPreview(); } : undefined}
+                onClick={
+                  onPreview
+                    ? (e) => {
+                        e.stopPropagation();
+                        onPreview();
+                      }
+                    : undefined
+                }
                 className={onPreview ? "cursor-pointer" : undefined}
                 title={onPreview ? "Click to open Sample Preview" : undefined}
               >
@@ -464,9 +470,7 @@ function UploadTile({
               </div>
             )}
 
-            <p className="max-w-[180px] truncate text-xs font-bold text-foreground">
-              {file.name}
-            </p>
+            <p className="max-w-[180px] truncate text-xs font-bold text-foreground">{file.name}</p>
             <p className="mt-0.5 text-[11px] font-medium text-muted-foreground">
               {formatBytes(file.size)}
             </p>
@@ -501,10 +505,11 @@ function UploadTile({
                   e.stopPropagation();
                   updateFile(null);
                 }}
-                className={`inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold transition-all cursor-pointer ${isUploading
-                  ? "border-2 border-dotted border-rose-500/60 bg-rose-500/5 text-rose-600/80 animate-pulse cursor-wait"
-                  : "border border-rose-500/20 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400"
-                  }`}
+                className={`inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-[11px] font-semibold transition-all cursor-pointer ${
+                  isUploading
+                    ? "border-2 border-dotted border-rose-500/60 bg-rose-500/5 text-rose-600/80 animate-pulse cursor-wait"
+                    : "border border-rose-500/20 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400"
+                }`}
               >
                 {isUploading ? (
                   <Loader2 size={12} className="animate-spin text-rose-500" />
@@ -523,9 +528,7 @@ function UploadTile({
               {icon}
             </div>
 
-            <p className="text-xs font-bold text-foreground">
-              Drag & drop file here
-            </p>
+            <p className="text-xs font-bold text-foreground">Drag & drop file here</p>
 
             <span className="my-2 text-[11px] font-medium text-muted-foreground">or</span>
 
@@ -548,9 +551,7 @@ function UploadTile({
             </p>
 
             {hint && (
-              <p className="mt-1 text-[10px] font-medium text-muted-foreground/75">
-                {hint}
-              </p>
+              <p className="mt-1 text-[10px] font-medium text-muted-foreground/75">{hint}</p>
             )}
           </div>
         )}
@@ -588,8 +589,9 @@ function SamplePreviewDialog({
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = isSample ? 6 : 12;
   const fileName = isSample
-    ? (sampleFile?.name || (ebookFile ? `Sample_${ebookFile.name.replace(/\.[^/.]+$/, "")}.epub` : "Sample_eBook.epub"))
-    : (ebookFile?.name || "Source_eBook.epub");
+    ? sampleFile?.name ||
+      (ebookFile ? `Sample_${ebookFile.name.replace(/\.[^/.]+$/, "")}.epub` : "Sample_eBook.epub")
+    : ebookFile?.name || "Source_eBook.epub";
   const bookTitle =
     ebookFile?.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ") ||
     "The Complete Guide to Modern Architecture";
@@ -611,7 +613,8 @@ Key Takeaways:
 • Material selection dictates thermal performance and aesthetic longevity.
 • Daylight harvesting reduces building energy consumption by up to 35%.
 • Acoustic damping buffers urban noise for optimized indoor wellness.`,
-      quote: "Space and light and order. Those are the things that men need just as much as they need bread or a place to sleep.",
+      quote:
+        "Space and light and order. Those are the things that men need just as much as they need bread or a place to sleep.",
       quoteAuthor: "Le Corbusier",
     },
     {
@@ -619,7 +622,8 @@ Key Takeaways:
       content: `Cross-laminated timber (CLT), recycled steel composites, and ultra-high-performance concrete are redefining the physical footprint of new structures. By prioritizing low embodied carbon materials, developers can achieve net-zero lifecycle goals while enhancing structural resilience.
 
 When evaluating sustainable material pipelines, architects must balance regional availability, supply chain transport emissions, and long-term maintenance cycles.`,
-      quote: "The mother art is architecture. Without an architecture of our own we have no soul of our own civilization.",
+      quote:
+        "The mother art is architecture. Without an architecture of our own we have no soul of our own civilization.",
       quoteAuthor: "Frank Lloyd Wright",
     },
     {
@@ -633,7 +637,8 @@ In dense metropolitan areas, light optimization requires strategic orientation a
     {
       title: "2.1 Passive Heating & Cooling Strategies",
       content: `Thermal mass strategies utilize materials with high heat capacity to absorb thermal energy during peak sun hours and slowly release it during cooler night periods. Combined with cross-ventilation corridors, mechanical HVAC requirements can be dramatically reduced.`,
-      quote: "Architecture is the learned game, correct and magnificent, of forms assembled in the light.",
+      quote:
+        "Architecture is the learned game, correct and magnificent, of forms assembled in the light.",
       quoteAuthor: "Le Corbusier",
     },
     {
@@ -643,7 +648,9 @@ In dense metropolitan areas, light optimization requires strategic orientation a
 
 You have reached the end of the free preview sample.`
         : `This is page 6 of your full manuscript source file. You can continue paging through the remaining chapters to verify layout integrity and formatting.`,
-      quote: isSample ? "End of Sample Preview — PixelBooks Auto-Parser" : "Source Manuscript — PixelBooks Publisher",
+      quote: isSample
+        ? "End of Sample Preview — PixelBooks Auto-Parser"
+        : "Source Manuscript — PixelBooks Publisher",
       quoteAuthor: "PixelBooks System",
     },
   ];
@@ -758,13 +765,17 @@ You have reached the end of the free preview sample.`
           <div className="border-t border-amber-500/25 bg-amber-500/10 px-6 py-4 text-amber-900 dark:text-amber-100 shrink-0">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
-                <AlertCircle size={20} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                <AlertCircle
+                  size={20}
+                  className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
+                />
                 <div>
                   <p className="text-xs font-bold leading-tight">
                     Please review and make sure the sample is generated correctly.
                   </p>
                   <p className="text-[11px] opacity-90 leading-normal mt-0.5">
-                    Verify the extracted chapters, text layout, and formatting above before approving.
+                    Verify the extracted chapters, text layout, and formatting above before
+                    approving.
                   </p>
                 </div>
               </div>
@@ -817,7 +828,9 @@ function createCoverImageFromEbook(file: File, pageNumber: number): Promise<File
     canvas.height = 678;
     const ctx = canvas.getContext("2d");
     if (!ctx) {
-      resolve(new File([""], `Cover_${file.name.replace(/\.[^/.]+$/, "")}.png`, { type: "image/png" }));
+      resolve(
+        new File([""], `Cover_${file.name.replace(/\.[^/.]+$/, "")}.png`, { type: "image/png" }),
+      );
       return;
     }
 
@@ -935,7 +948,7 @@ function createCoverImageFromEbook(file: File, pageNumber: number): Promise<File
     ctx.fillText(
       "Extracted Cover & Manuscript Edition",
       219,
-      startY + Math.min(lines.length, 3) * 30 + 24
+      startY + Math.min(lines.length, 3) * 30 + 24,
     );
 
     // Separator line
@@ -962,7 +975,7 @@ function createCoverImageFromEbook(file: File, pageNumber: number): Promise<File
         resolve(
           new File([""], `Cover_${file.name.replace(/\.[^/.]+$/, "")}_Page${pageNumber}.png`, {
             type: "image/png",
-          })
+          }),
         );
       }
     }, "image/png");
@@ -985,7 +998,7 @@ function UploadRow() {
     const generatedSample = new File(
       [ebookFile],
       `Sample_${ebookFile.name.replace(/\.[^/.]+$/, "")}.epub`,
-      { type: "application/epub+zip" }
+      { type: "application/epub+zip" },
     );
     setSampleFile(generatedSample);
     setSamplePreviewOpen(true);
@@ -1144,12 +1157,12 @@ function UploadRow() {
           <AlertCircle size={16} className="mt-0.5 shrink-0" />
           <p className="leading-relaxed">
             PixelBooks&apos; auto content generation API uses automated parsing to extract and
-            autofill metadata from your eBook files (ePub &amp; PDF). Because automated extraction is
-            inherently subject to inaccuracies, some data may be incomplete, malformatted, or
+            autofill metadata from your eBook files (ePub &amp; PDF). Because automated extraction
+            is inherently subject to inaccuracies, some data may be incomplete, malformatted, or
             incorrectly assigned depending on the structure and quality of the source file. You are
             solely responsible for reviewing and verifying all auto-populated information. Please
-            ensure that all generated metadata is manually reviewed and verified before publishing. If
-            you prefer, you may disable this option and enter all details manually.
+            ensure that all generated metadata is manually reviewed and verified before publishing.
+            If you prefer, you may disable this option and enter all details manually.
           </p>
         </div>
 
@@ -1200,12 +1213,9 @@ function UploadRow() {
   );
 }
 
-
 /* -------------------------------------------------------------------------- */
 /*  Section: Guidelines                                                        */
 /* -------------------------------------------------------------------------- */
-
-
 
 function GuidelinesSection() {
   const [publisherType] = usePublisherType();
@@ -1233,8 +1243,7 @@ function GuidelinesSection() {
     {
       icon: <CheckCircle size={18} />,
       title: "Review and Publish",
-      description:
-        `Take a final look and ensure everything is in order before hitting "${isLibraryOnly ? "Publish eBook" : "Submit eBook for Review"}."`,
+      description: `Take a final look and ensure everything is in order before hitting "${isLibraryOnly ? "Publish eBook" : "Submit eBook for Review"}."`,
     },
   ];
 
@@ -1446,10 +1455,10 @@ function EBookDetailsSection() {
         </Field>
         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-4">
           <Field label="Date of Publication in PixelBooks">
-            <TextInput defaultValue="Harry Potter" />
+            <TextInput type="date" defaultValue="2024-01-15" />
           </Field>
           <Field label="Date of Paperback Publication">
-            <TextInput defaultValue="Harry Potter" />
+            <TextInput type="date" defaultValue="2023-08-20" />
           </Field>
           <Field label="eBook Size (in MB)">
             <TextInput defaultValue="25.4" placeholder="e.g. 25.4" />
@@ -1616,10 +1625,11 @@ function AuthorSearchResultCard({
           onAdd();
         }
       }}
-      className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ${isSelected
-        ? "cursor-default border-border/70 bg-secondary/30 text-muted-foreground"
-        : "border-border bg-background hover:bg-secondary/50 cursor-pointer"
-        }`}
+      className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ${
+        isSelected
+          ? "cursor-default border-border/70 bg-secondary/30 text-muted-foreground"
+          : "border-border bg-background hover:bg-secondary/50 cursor-pointer"
+      }`}
     >
       {match.avatar ? (
         <img
@@ -1652,8 +1662,9 @@ function AuthorSearchResultCard({
               e.stopPropagation();
               if (match.books > 0) setShowBooksPopup((v) => !v);
             }}
-            className={`inline-flex items-center gap-1 text-[11px] text-muted-foreground cursor-pointer ${match.books > 0 ? "hover:text-foreground" : ""
-              }`}
+            className={`inline-flex items-center gap-1 text-[11px] text-muted-foreground cursor-pointer ${
+              match.books > 0 ? "hover:text-foreground" : ""
+            }`}
           >
             <BookOpen size={11} />
             <span className={match.books > 0 ? "underline-offset-2 hover:underline" : ""}>
@@ -2098,7 +2109,8 @@ function CategoriesSection() {
               Select Categories
             </h2>
             <p className="text-xs text-muted-foreground font-medium mt-0.5">
-              Select one or more categories and subcategories to classify this eBook in the catalogue.
+              Select one or more categories and subcategories to classify this eBook in the
+              catalogue.
             </p>
           </div>
         </div>
@@ -2123,16 +2135,21 @@ function CategoriesSection() {
             </h3>
             <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-muted-foreground">
-                Total: <strong className="text-foreground font-extrabold">{groups.length} categories • {totalSubs} subcategories</strong>
+                Total:{" "}
+                <strong className="text-foreground font-extrabold">
+                  {groups.length} categories • {totalSubs} subcategories
+                </strong>
               </span>
-
             </div>
           </div>
 
           <div className="divide-y divide-border/40">
             {groups.map((g) => {
               return (
-                <div key={g.name} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+                <div
+                  key={g.name}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3"
+                >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-purple-600 dark:text-purple-400">
                       <Tag size={16} />
@@ -2151,7 +2168,9 @@ function CategoriesSection() {
                           ))}
                         </div>
                       ) : (
-                        <p className="text-[11px] text-muted-foreground italic">No subcategories </p>
+                        <p className="text-[11px] text-muted-foreground italic">
+                          No subcategories{" "}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -2196,7 +2215,9 @@ function CategoriesSection() {
           </div>
           <div>
             <p className="text-xs font-semibold text-foreground">No categories selected</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Please select at least one category to classify this eBook.</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Please select at least one category to classify this eBook.
+            </p>
           </div>
           <button
             type="button"
@@ -2328,7 +2349,9 @@ function CategoryDialog({
             </div>
             <ul className="flex-1 overflow-y-auto">
               {filteredMains.length === 0 && (
-                <li className="px-5 py-4 text-xs text-muted-foreground">No main categories found.</li>
+                <li className="px-5 py-4 text-xs text-muted-foreground">
+                  No main categories found.
+                </li>
               )}
               {filteredMains.map((name) => {
                 const checked = isMainSelected(name);
@@ -2339,8 +2362,9 @@ function CategoryDialog({
                     <button
                       type="button"
                       onClick={() => setActive(name)}
-                      className={`flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors ${isActive ? "bg-secondary/60" : "hover:bg-secondary/30"
-                        }`}
+                      className={`flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors ${
+                        isActive ? "bg-secondary/60" : "hover:bg-secondary/30"
+                      }`}
                     >
                       <span
                         role="checkbox"
@@ -2349,8 +2373,9 @@ function CategoryDialog({
                           e.stopPropagation();
                           toggleMain(name);
                         }}
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${checked ? "border-transparent" : "border-border bg-background"
-                          }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
+                          checked ? "border-transparent" : "border-border bg-background"
+                        }`}
                         style={
                           checked
                             ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
@@ -2395,8 +2420,9 @@ function CategoryDialog({
                       className="flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors hover:bg-secondary/30 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${checked ? "border-transparent" : "border-border bg-background"
-                          }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
+                          checked ? "border-transparent" : "border-border bg-background"
+                        }`}
                         style={
                           checked
                             ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
@@ -2840,9 +2866,9 @@ function RentalDialog({
                   style={
                     p === page
                       ? {
-                        backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
-                        color: "var(--brand)",
-                      }
+                          backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
+                          color: "var(--brand)",
+                        }
                       : undefined
                   }
                 >
@@ -3048,8 +3074,11 @@ function LibraryMultiSelectDropdown({
     <div className="relative w-full" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
-          }`}
+        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
+          isOpen
+            ? "border-[var(--brand)] ring-1 ring-[var(--brand)]"
+            : "border-border hover:bg-secondary/30"
+        }`}
       >
         <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
           {selectedNames.length === 0 ? (
@@ -3104,7 +3133,10 @@ function LibraryMultiSelectDropdown({
         <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-80 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
           <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
             <div className="relative flex items-center">
-              <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+              <Search
+                size={14}
+                className="absolute left-3 text-muted-foreground pointer-events-none"
+              />
               <input
                 type="text"
                 value={searchTerm}
@@ -3151,8 +3183,9 @@ function LibraryMultiSelectDropdown({
                 return (
                   <div
                     key={lib.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
-                      }`}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${
+                      isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
+                    }`}
                   >
                     <div
                       className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer pr-2"
@@ -3161,7 +3194,7 @@ function LibraryMultiSelectDropdown({
                       <input
                         type="checkbox"
                         checked={isSelected}
-                        onChange={() => { }}
+                        onChange={() => {}}
                         className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
                       />
                       <div className="min-w-0">
@@ -3187,7 +3220,9 @@ function LibraryMultiSelectDropdown({
                           type="number"
                           min="1"
                           value={copies}
-                          onChange={(e) => updateCopies(lib.name, parseInt(e.target.value, 10) || 1)}
+                          onChange={(e) =>
+                            updateCopies(lib.name, parseInt(e.target.value, 10) || 1)
+                          }
                           className="w-12 h-6 text-center text-xs font-bold text-foreground bg-transparent outline-none"
                         />
                         <span className="text-[10px] text-muted-foreground pr-1">copies</span>
@@ -3246,7 +3281,8 @@ function LibraryAllocationSection() {
               Library Allocation & License Copies
             </h2>
             <p className="text-xs text-muted-foreground font-medium mt-0.5">
-              Select authorized institutional libraries and allocate the number of license copies for each library.
+              Select authorized institutional libraries and allocate the number of license copies
+              for each library.
             </p>
           </div>
         </div>
@@ -3273,10 +3309,7 @@ function LibraryAllocationSection() {
             </span>
           </div>
 
-          <LibraryMultiSelectDropdown
-            allocations={allocations}
-            onChange={setAllocations}
-          />
+          <LibraryMultiSelectDropdown allocations={allocations} onChange={setAllocations} />
         </div>
 
         {/* Selected Libraries Copies Breakdown Table */}
@@ -3287,7 +3320,8 @@ function LibraryAllocationSection() {
                 <span>Allocated Libraries License Breakdown</span>
               </h3>
               <span className="text-xs font-semibold text-muted-foreground">
-                Total: <strong className="text-foreground font-extrabold">{totalCopies} copies</strong>
+                Total:{" "}
+                <strong className="text-foreground font-extrabold">{totalCopies} copies</strong>
               </span>
             </div>
 
@@ -3297,14 +3331,19 @@ function LibraryAllocationSection() {
                 const copies = allocations[libName];
 
                 return (
-                  <div key={libName} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+                  <div
+                    key={libName}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3"
+                  >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground">
                         <Building2 size={16} />
                       </div>
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-foreground truncate">{libName}</p>
-                        <p className="text-[11px] text-muted-foreground">{libInfo?.city ?? "Institutional Library"}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {libInfo?.city ?? "Institutional Library"}
+                        </p>
                       </div>
                     </div>
 
@@ -3316,10 +3355,11 @@ function LibraryAllocationSection() {
                             key={preset}
                             type="button"
                             onClick={() => updateCopies(libName, preset)}
-                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${copies === preset
-                              ? "bg-[var(--brand)] text-white border-[var(--brand)]"
-                              : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
-                              }`}
+                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${
+                              copies === preset
+                                ? "bg-[var(--brand)] text-white border-[var(--brand)]"
+                                : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+                            }`}
                           >
                             {preset}
                           </button>
@@ -3342,7 +3382,9 @@ function LibraryAllocationSection() {
                           onChange={(e) => updateCopies(libName, parseInt(e.target.value, 10) || 1)}
                           className="w-14 h-7 text-center text-xs font-extrabold text-foreground outline-none bg-transparent"
                         />
-                        <span className="text-xs text-muted-foreground font-medium pr-1">copies</span>
+                        <span className="text-xs text-muted-foreground font-medium pr-1">
+                          copies
+                        </span>
                         <button
                           type="button"
                           onClick={() => updateCopies(libName, copies + 5)}
@@ -3369,7 +3411,9 @@ function LibraryAllocationSection() {
           </div>
         ) : (
           <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
-            <span>⚠️ Please select at least one library and allocate license copies to proceed.</span>
+            <span>
+              ⚠️ Please select at least one library and allocate license copies to proceed.
+            </span>
           </p>
         )}
       </div>
@@ -3392,7 +3436,9 @@ function AddEBookPage() {
           <div className="mb-4 flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-xs font-semibold text-amber-700 dark:text-amber-400 shadow-2xs">
             <span className="flex items-center gap-2">
               <Sparkles size={16} />
-              <span>Editing Draft eBook: <strong>{targetBook?.title ?? "Draft Title"}</strong></span>
+              <span>
+                Editing Draft eBook: <strong>{targetBook?.title ?? "Draft Title"}</strong>
+              </span>
             </span>
             <span className="rounded-md bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
               Draft Mode
@@ -3427,7 +3473,8 @@ function AddEBookPage() {
                 color: "var(--brand)",
               }}
             >
-              <CheckCircle2 size={16} /> {isLibraryOnly ? "eBook published successfully." : "eBook submitted for review."}
+              <CheckCircle2 size={16} />{" "}
+              {isLibraryOnly ? "eBook published successfully." : "eBook submitted for review."}
             </div>
           )}
         </div>

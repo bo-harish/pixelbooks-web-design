@@ -23,7 +23,8 @@ export const Route = createFileRoute("/pb-admin/sales-report")({
       { title: "Sales Report — PixelBooks Admin" },
       {
         name: "description",
-        content: "Track eBook sales, quantity, discounts, tax, and net revenue across publishers & authors.",
+        content:
+          "Track eBook sales, quantity, discounts, tax, and net revenue across publishers & authors.",
       },
     ],
   }),
@@ -326,9 +327,7 @@ function StatCard({
           {value}
         </p>
         {subtitle && (
-          <span className="text-[11px] font-medium text-muted-foreground">
-            {subtitle}
-          </span>
+          <span className="text-[11px] font-medium text-muted-foreground">{subtitle}</span>
         )}
       </div>
     </div>
@@ -339,7 +338,8 @@ function AdminSalesReportPage() {
   const [selectedEntity, setSelectedEntity] = useState<SalesReportRow | null>(null);
 
   // Main page filters
-  const [typeFilter, setTypeFilter] = useState<(typeof filterTypeOptions)[number]>("Publishers & Authors");
+  const [typeFilter, setTypeFilter] =
+    useState<(typeof filterTypeOptions)[number]>("Publishers & Authors");
   const [typeFilterOpen, setTypeFilterOpen] = useState(false);
   const [presetFilter, setPresetFilter] = useState<(typeof presetOptions)[number]>("MTD");
   const [presetFilterOpen, setPresetFilterOpen] = useState(false);
@@ -448,7 +448,8 @@ function AdminSalesReportPage() {
     const detailStart = (currentDetailPage - 1) * PAGE_SIZE;
     const detailPageItems = detailItems.slice(detailStart, detailStart + PAGE_SIZE);
 
-    const discountColumnTitle = selectedEntity.type === "Author" ? "Author Discount" : "Publisher Discount";
+    const discountColumnTitle =
+      selectedEntity.type === "Author" ? "Author Discount" : "Publisher Discount";
 
     return (
       <AppShell title={selectedEntity.name} subtitle="Sales Report - Sales Details">
@@ -463,9 +464,7 @@ function AdminSalesReportPage() {
             >
               <ArrowLeft size={16} />
             </button>
-            <span className="text-sm font-normal text-foreground">
-              Back to Sales Report
-            </span>
+            <span className="text-sm font-normal text-foreground">Back to Sales Report</span>
           </div>
 
           {/* Filters Toolbar Card */}
@@ -507,7 +506,9 @@ function AdminSalesReportPage() {
                           setDetailViewOpen(false);
                         }}
                         className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
-                          opt === detailViewMode ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
+                          opt === detailViewMode
+                            ? "font-semibold text-foreground bg-secondary/50"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {opt}
@@ -539,7 +540,9 @@ function AdminSalesReportPage() {
                           setDetailPage(1);
                         }}
                         className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
-                          opt === detailSaleType ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
+                          opt === detailSaleType
+                            ? "font-semibold text-foreground bg-secondary/50"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {opt}
@@ -567,7 +570,9 @@ function AdminSalesReportPage() {
                         type="button"
                         onClick={() => handleDetailPresetSelect(opt)}
                         className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
-                          opt === detailPreset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
+                          opt === detailPreset
+                            ? "font-bold text-brand bg-secondary/60"
+                            : "text-foreground"
                         }`}
                       >
                         {opt}
@@ -687,7 +692,9 @@ function AdminSalesReportPage() {
                               <p className="font-semibold text-foreground text-sm leading-snug line-clamp-2">
                                 {item.title}
                               </p>
-                              <p className="text-xs text-muted-foreground mt-0.5">{item.category}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {item.category}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -757,7 +764,8 @@ function AdminSalesReportPage() {
             {/* Pagination Row */}
             <div className="flex flex-col gap-3 border-t border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
-                Showing {detailItems.length === 0 ? 0 : detailStart + 1} from {detailItems.length} results
+                Showing {detailItems.length === 0 ? 0 : detailStart + 1} from {detailItems.length}{" "}
+                results
               </p>
               <div className="flex items-center gap-1">
                 <button
@@ -812,7 +820,10 @@ function AdminSalesReportPage() {
 
   // Main Sales Report Overview View
   return (
-    <AppShell title="Sales Report" subtitle="Track eBook sales, discounts and revenue across publishers & authors.">
+    <AppShell
+      title="Sales Report"
+      subtitle="Track eBook sales, discounts and revenue across publishers & authors."
+    >
       <div className="space-y-6 p-4 md:p-8">
         {/* Top Header Row with Date Range Filter Controls placed ABOVE the 4 stat boxes */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-card border border-border rounded-xl p-4 shadow-2xs">
@@ -828,7 +839,9 @@ function AdminSalesReportPage() {
             </span>
             <div>
               <h3 className="text-sm font-bold text-foreground">Report Filters & Date Range</h3>
-              <p className="text-xs text-muted-foreground">Select entity type and period to update summary metrics</p>
+              <p className="text-xs text-muted-foreground">
+                Select entity type and period to update summary metrics
+              </p>
             </div>
           </div>
 
@@ -855,7 +868,9 @@ function AdminSalesReportPage() {
                         setPage(1);
                       }}
                       className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
-                        opt === typeFilter ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
+                        opt === typeFilter
+                          ? "font-semibold text-foreground bg-secondary/50"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {opt}
@@ -883,7 +898,9 @@ function AdminSalesReportPage() {
                       type="button"
                       onClick={() => handlePresetSelect(opt)}
                       className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
-                        opt === presetFilter ? "font-bold text-brand bg-secondary/60" : "text-foreground"
+                        opt === presetFilter
+                          ? "font-bold text-brand bg-secondary/60"
+                          : "text-foreground"
                       }`}
                     >
                       {opt}
@@ -930,24 +947,14 @@ function AdminSalesReportPage() {
             value="₹48,896.46"
             subtitle="Net Period Revenue"
           />
-          <StatCard
-            icon={BookMarked}
-            label="Total Books Sold"
-            value="44"
-            subtitle="Units Sold"
-          />
+          <StatCard icon={BookMarked} label="Total Books Sold" value="44" subtitle="Units Sold" />
           <StatCard
             icon={Building2}
             label="Total Publishers"
             value="165"
             subtitle="Active Publishers"
           />
-          <StatCard
-            icon={Users}
-            label="Total Authors"
-            value="13"
-            subtitle="Active Authors"
-          />
+          <StatCard icon={Users} label="Total Authors" value="13" subtitle="Active Authors" />
         </div>
 
         {/* Toolbar Filters White Card Container */}

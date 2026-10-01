@@ -15,8 +15,12 @@ import {
   Smartphone,
   Lock,
   Mail,
+  ExternalLink,
+  Video,
+  Headphones,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/pb-admin-lib/libraries_/$id")({
@@ -50,6 +54,9 @@ type LibraryDetail = {
   restrictPasswordReset?: boolean;
   enableResetPasswordFirstTimeLogin?: boolean;
   sendWelcomeEmailOnImport?: boolean;
+  enableExternalLinks?: boolean;
+  enableVideoLibrary?: boolean;
+  enableAudioLibrary?: boolean;
 };
 
 const mockLibraryDetails: Record<string, LibraryDetail> = {
@@ -74,8 +81,11 @@ const mockLibraryDetails: Record<string, LibraryDetail> = {
     hideRetailBookStore: false,
     disableOtpLogins: false,
     restrictPasswordReset: false,
-    enableResetPasswordFirstTimeLogin: false,
-    sendWelcomeEmailOnImport: false,
+    enableResetPasswordFirstTimeLogin: true,
+    sendWelcomeEmailOnImport: true,
+    enableExternalLinks: true,
+    enableVideoLibrary: true,
+    enableAudioLibrary: true,
   },
   "LIB-102": {
     id: "LIB-102",
@@ -98,8 +108,11 @@ const mockLibraryDetails: Record<string, LibraryDetail> = {
     hideRetailBookStore: false,
     disableOtpLogins: false,
     restrictPasswordReset: false,
-    enableResetPasswordFirstTimeLogin: false,
-    sendWelcomeEmailOnImport: false,
+    enableResetPasswordFirstTimeLogin: true,
+    sendWelcomeEmailOnImport: true,
+    enableExternalLinks: true,
+    enableVideoLibrary: true,
+    enableAudioLibrary: true,
   },
 };
 
@@ -124,8 +137,11 @@ const defaultLibrary: LibraryDetail = {
   hideRetailBookStore: false,
   disableOtpLogins: false,
   restrictPasswordReset: false,
-  enableResetPasswordFirstTimeLogin: false,
-  sendWelcomeEmailOnImport: false,
+  enableResetPasswordFirstTimeLogin: true,
+  sendWelcomeEmailOnImport: true,
+  enableExternalLinks: true,
+  enableVideoLibrary: true,
+  enableAudioLibrary: true,
 };
 
 /* -------------------------------------------------------------------------- */
@@ -139,21 +155,40 @@ function LibraryPreviewDetailPage() {
   const [formData, setFormData] = useState<LibraryDetail>(() => {
     const initial = mockLibraryDetails[id] || defaultLibrary;
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(`pb_hide_retail_bookstore_${id}`) ?? localStorage.getItem("pb_hide_retail_bookstore");
-      const otpStored = localStorage.getItem(`pb_disable_otp_logins_${id}`) ?? localStorage.getItem("pb_disable_otp_logins");
-      const passwordResetStored = localStorage.getItem(`pb_restrict_password_reset_${id}`) ?? localStorage.getItem("pb_restrict_password_reset");
+      const stored =
+        localStorage.getItem(`pb_hide_retail_bookstore_${id}`) ??
+        localStorage.getItem("pb_hide_retail_bookstore");
+      const otpStored =
+        localStorage.getItem(`pb_disable_otp_logins_${id}`) ??
+        localStorage.getItem("pb_disable_otp_logins");
+      const passwordResetStored =
+        localStorage.getItem(`pb_restrict_password_reset_${id}`) ??
+        localStorage.getItem("pb_restrict_password_reset");
       const firstTimeResetStored =
         localStorage.getItem(`pb_enable_first_time_reset_${id}`) ??
         localStorage.getItem("pb_enable_first_time_reset");
       const welcomeEmailStored =
         localStorage.getItem(`pb_send_welcome_email_on_import_${id}`) ??
         localStorage.getItem("pb_send_welcome_email_on_import");
+      const externalLinksStored =
+        localStorage.getItem(`pb_enable_external_links_${id}`) ??
+        localStorage.getItem("pb_enable_external_links");
+      const videoLibraryStored =
+        localStorage.getItem(`pb_enable_video_library_${id}`) ??
+        localStorage.getItem("pb_enable_video_library");
+      const audioLibraryStored =
+        localStorage.getItem(`pb_enable_audio_library_${id}`) ??
+        localStorage.getItem("pb_enable_audio_library");
+
       if (
         stored !== null ||
         otpStored !== null ||
         passwordResetStored !== null ||
         firstTimeResetStored !== null ||
-        welcomeEmailStored !== null
+        welcomeEmailStored !== null ||
+        externalLinksStored !== null ||
+        videoLibraryStored !== null ||
+        audioLibraryStored !== null
       ) {
         return {
           ...initial,
@@ -171,14 +206,24 @@ function LibraryPreviewDetailPage() {
             welcomeEmailStored !== null
               ? welcomeEmailStored === "true"
               : initial.sendWelcomeEmailOnImport,
+          enableExternalLinks:
+            externalLinksStored !== null
+              ? externalLinksStored === "true"
+              : initial.enableExternalLinks ?? true,
+          enableVideoLibrary:
+            videoLibraryStored !== null
+              ? videoLibraryStored === "true"
+              : initial.enableVideoLibrary ?? true,
+          enableAudioLibrary:
+            audioLibraryStored !== null
+              ? audioLibraryStored === "true"
+              : initial.enableAudioLibrary ?? true,
         };
       }
     }
     return initial;
   });
-  const [status, setStatus] = useState<"Onboarded" | "Pending" | "Rejected">(
-    library.status
-  );
+  const [status, setStatus] = useState<"Onboarded" | "Pending" | "Rejected">(library.status);
   const [isSaved, setIsSaved] = useState(false);
 
   const handleInputChange = (field: keyof LibraryDetail, value: string) => {
@@ -197,22 +242,54 @@ function LibraryPreviewDetailPage() {
         if (field === "disableOtpLogins") {
           localStorage.setItem(`pb_disable_otp_logins_${prev.id}`, checked ? "true" : "false");
           localStorage.setItem("pb_disable_otp_logins", checked ? "true" : "false");
-          window.dispatchEvent(new CustomEvent("pb-disable-otp-logins-change", { detail: checked }));
+          window.dispatchEvent(
+            new CustomEvent("pb-disable-otp-logins-change", { detail: checked }),
+          );
         }
         if (field === "restrictPasswordReset") {
           localStorage.setItem(`pb_restrict_password_reset_${prev.id}`, checked ? "true" : "false");
           localStorage.setItem("pb_restrict_password_reset", checked ? "true" : "false");
-          window.dispatchEvent(new CustomEvent("pb-restrict-password-reset-change", { detail: checked }));
+          window.dispatchEvent(
+            new CustomEvent("pb-restrict-password-reset-change", { detail: checked }),
+          );
         }
         if (field === "enableResetPasswordFirstTimeLogin") {
           localStorage.setItem(`pb_enable_first_time_reset_${prev.id}`, checked ? "true" : "false");
           localStorage.setItem("pb_enable_first_time_reset", checked ? "true" : "false");
-          window.dispatchEvent(new CustomEvent("pb-enable-first-time-reset-change", { detail: checked }));
+          window.dispatchEvent(
+            new CustomEvent("pb-enable-first-time-reset-change", { detail: checked }),
+          );
         }
         if (field === "sendWelcomeEmailOnImport") {
-          localStorage.setItem(`pb_send_welcome_email_on_import_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem(
+            `pb_send_welcome_email_on_import_${prev.id}`,
+            checked ? "true" : "false",
+          );
           localStorage.setItem("pb_send_welcome_email_on_import", checked ? "true" : "false");
-          window.dispatchEvent(new CustomEvent("pb-send-welcome-email-on-import-change", { detail: checked }));
+          window.dispatchEvent(
+            new CustomEvent("pb-send-welcome-email-on-import-change", { detail: checked }),
+          );
+        }
+        if (field === "enableExternalLinks") {
+          localStorage.setItem(`pb_enable_external_links_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_enable_external_links", checked ? "true" : "false");
+          window.dispatchEvent(
+            new CustomEvent("pb-enable-external-links-change", { detail: checked }),
+          );
+        }
+        if (field === "enableVideoLibrary") {
+          localStorage.setItem(`pb_enable_video_library_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_enable_video_library", checked ? "true" : "false");
+          window.dispatchEvent(
+            new CustomEvent("pb-enable-video-library-change", { detail: checked }),
+          );
+        }
+        if (field === "enableAudioLibrary") {
+          localStorage.setItem(`pb_enable_audio_library_${prev.id}`, checked ? "true" : "false");
+          localStorage.setItem("pb_enable_audio_library", checked ? "true" : "false");
+          window.dispatchEvent(
+            new CustomEvent("pb-enable-audio-library-change", { detail: checked }),
+          );
         }
       }
       return updated;
@@ -223,21 +300,107 @@ function LibraryPreviewDetailPage() {
     e.preventDefault();
     setIsSaved(true);
     if (typeof window !== "undefined") {
-      localStorage.setItem(`pb_hide_retail_bookstore_${formData.id}`, formData.hideRetailBookStore ? "true" : "false");
-      localStorage.setItem("pb_hide_retail_bookstore", formData.hideRetailBookStore ? "true" : "false");
-      window.dispatchEvent(new CustomEvent("pb-hide-bookstore-change", { detail: Boolean(formData.hideRetailBookStore) }));
-      localStorage.setItem(`pb_disable_otp_logins_${formData.id}`, formData.disableOtpLogins ? "true" : "false");
+      localStorage.setItem(
+        `pb_hide_retail_bookstore_${formData.id}`,
+        formData.hideRetailBookStore ? "true" : "false",
+      );
+      localStorage.setItem(
+        "pb_hide_retail_bookstore",
+        formData.hideRetailBookStore ? "true" : "false",
+      );
+      window.dispatchEvent(
+        new CustomEvent("pb-hide-bookstore-change", {
+          detail: Boolean(formData.hideRetailBookStore),
+        }),
+      );
+      localStorage.setItem(
+        `pb_disable_otp_logins_${formData.id}`,
+        formData.disableOtpLogins ? "true" : "false",
+      );
       localStorage.setItem("pb_disable_otp_logins", formData.disableOtpLogins ? "true" : "false");
-      window.dispatchEvent(new CustomEvent("pb-disable-otp-logins-change", { detail: Boolean(formData.disableOtpLogins) }));
-      localStorage.setItem(`pb_restrict_password_reset_${formData.id}`, formData.restrictPasswordReset ? "true" : "false");
-      localStorage.setItem("pb_restrict_password_reset", formData.restrictPasswordReset ? "true" : "false");
-      window.dispatchEvent(new CustomEvent("pb-restrict-password-reset-change", { detail: Boolean(formData.restrictPasswordReset) }));
-      localStorage.setItem(`pb_enable_first_time_reset_${formData.id}`, formData.enableResetPasswordFirstTimeLogin ? "true" : "false");
-      localStorage.setItem("pb_enable_first_time_reset", formData.enableResetPasswordFirstTimeLogin ? "true" : "false");
-      window.dispatchEvent(new CustomEvent("pb-enable-first-time-reset-change", { detail: Boolean(formData.enableResetPasswordFirstTimeLogin) }));
-      localStorage.setItem(`pb_send_welcome_email_on_import_${formData.id}`, formData.sendWelcomeEmailOnImport ? "true" : "false");
-      localStorage.setItem("pb_send_welcome_email_on_import", formData.sendWelcomeEmailOnImport ? "true" : "false");
-      window.dispatchEvent(new CustomEvent("pb-send-welcome-email-on-import-change", { detail: Boolean(formData.sendWelcomeEmailOnImport) }));
+      window.dispatchEvent(
+        new CustomEvent("pb-disable-otp-logins-change", {
+          detail: Boolean(formData.disableOtpLogins),
+        }),
+      );
+      localStorage.setItem(
+        `pb_restrict_password_reset_${formData.id}`,
+        formData.restrictPasswordReset ? "true" : "false",
+      );
+      localStorage.setItem(
+        "pb_restrict_password_reset",
+        formData.restrictPasswordReset ? "true" : "false",
+      );
+      window.dispatchEvent(
+        new CustomEvent("pb-restrict-password-reset-change", {
+          detail: Boolean(formData.restrictPasswordReset),
+        }),
+      );
+      localStorage.setItem(
+        `pb_enable_first_time_reset_${formData.id}`,
+        formData.enableResetPasswordFirstTimeLogin ? "true" : "false",
+      );
+      localStorage.setItem(
+        "pb_enable_first_time_reset",
+        formData.enableResetPasswordFirstTimeLogin ? "true" : "false",
+      );
+      window.dispatchEvent(
+        new CustomEvent("pb-enable-first-time-reset-change", {
+          detail: Boolean(formData.enableResetPasswordFirstTimeLogin),
+        }),
+      );
+      localStorage.setItem(
+        `pb_send_welcome_email_on_import_${formData.id}`,
+        formData.sendWelcomeEmailOnImport ? "true" : "false",
+      );
+      localStorage.setItem(
+        "pb_send_welcome_email_on_import",
+        formData.sendWelcomeEmailOnImport ? "true" : "false",
+      );
+      window.dispatchEvent(
+        new CustomEvent("pb-send-welcome-email-on-import-change", {
+          detail: Boolean(formData.sendWelcomeEmailOnImport),
+        }),
+      );
+      localStorage.setItem(
+        `pb_enable_external_links_${formData.id}`,
+        formData.enableExternalLinks ? "true" : "false",
+      );
+      localStorage.setItem(
+        "pb_enable_external_links",
+        formData.enableExternalLinks ? "true" : "false",
+      );
+      window.dispatchEvent(
+        new CustomEvent("pb-enable-external-links-change", {
+          detail: Boolean(formData.enableExternalLinks),
+        }),
+      );
+      localStorage.setItem(
+        `pb_enable_video_library_${formData.id}`,
+        formData.enableVideoLibrary ? "true" : "false",
+      );
+      localStorage.setItem(
+        "pb_enable_video_library",
+        formData.enableVideoLibrary ? "true" : "false",
+      );
+      window.dispatchEvent(
+        new CustomEvent("pb-enable-video-library-change", {
+          detail: Boolean(formData.enableVideoLibrary),
+        }),
+      );
+      localStorage.setItem(
+        `pb_enable_audio_library_${formData.id}`,
+        formData.enableAudioLibrary ? "true" : "false",
+      );
+      localStorage.setItem(
+        "pb_enable_audio_library",
+        formData.enableAudioLibrary ? "true" : "false",
+      );
+      window.dispatchEvent(
+        new CustomEvent("pb-enable-audio-library-change", {
+          detail: Boolean(formData.enableAudioLibrary),
+        }),
+      );
     }
     toast.success("Library details updated successfully.");
     setTimeout(() => setIsSaved(false), 3000);
@@ -277,9 +440,7 @@ function LibraryPreviewDetailPage() {
               <Library size={28} />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-foreground">
-                {formData.name}
-              </h1>
+              <h1 className="text-xl font-bold tracking-tight text-foreground">{formData.name}</h1>
               <p className="text-xs text-muted-foreground font-medium mt-0.5">
                 ID: {formData.customId} · {formData.city}, {formData.state}
               </p>
@@ -293,8 +454,8 @@ function LibraryPreviewDetailPage() {
                 status === "Onboarded"
                   ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                   : status === "Pending"
-                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
-                  : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                    : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
               }`}
             >
               {status === "Onboarded" ? (
@@ -495,7 +656,6 @@ function LibraryPreviewDetailPage() {
                   </p>
                 </div>
               </div>
-             
             </div>
 
             <div className="space-y-4">
@@ -512,7 +672,8 @@ function LibraryPreviewDetailPage() {
                     Hide Retail Book Store
                   </span>
                   <p className="text-xs text-muted-foreground">
-                    When enabled, the Book Store menu option will be hidden from the Library Admin portal sidebar navigation for users belonging to this library.
+                    When enabled, the Book Store menu option will be hidden from the Library Admin
+                    portal sidebar navigation for users belonging to this library.
                   </p>
                 </div>
               </label>
@@ -531,7 +692,8 @@ function LibraryPreviewDetailPage() {
                     Disable OTP Logins
                   </span>
                   <p className="text-xs text-muted-foreground">
-                    When enabled, Student and Staff login screens will hide Phone / Email OTP sign-in options and allow only Login ID & Password access.
+                    When enabled, Student and Staff login screens will hide Phone / Email OTP
+                    sign-in options and allow only Login ID & Password access.
                   </p>
                 </div>
               </label>
@@ -550,7 +712,8 @@ function LibraryPreviewDetailPage() {
                     Restrict Password Reset
                   </span>
                   <p className="text-xs text-muted-foreground">
-                    When enabled, Student and Staff login screens will hide Forgot Password and password reset flows.
+                    When enabled, Student and Staff login screens will hide Forgot Password and
+                    password reset flows.
                   </p>
                 </div>
               </label>
@@ -560,7 +723,9 @@ function LibraryPreviewDetailPage() {
                   id="enableResetPasswordFirstTimeLogin"
                   type="checkbox"
                   checked={formData.enableResetPasswordFirstTimeLogin || false}
-                  onChange={(e) => handleCheckboxChange("enableResetPasswordFirstTimeLogin", e.target.checked)}
+                  onChange={(e) =>
+                    handleCheckboxChange("enableResetPasswordFirstTimeLogin", e.target.checked)
+                  }
                   className="mt-0.5 h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
                 />
                 <div className="space-y-0.5">
@@ -569,7 +734,8 @@ function LibraryPreviewDetailPage() {
                     Enable Password Reset for First Time Login
                   </span>
                   <p className="text-xs text-muted-foreground">
-                    When enabled, Student and Staff login screens show first-time users a guided path to set their password.
+                    When enabled, Student and Staff login screens show first-time users a guided
+                    path to set their password.
                   </p>
                 </div>
               </label>
@@ -579,7 +745,9 @@ function LibraryPreviewDetailPage() {
                   id="sendWelcomeEmailOnImport"
                   type="checkbox"
                   checked={formData.sendWelcomeEmailOnImport || false}
-                  onChange={(e) => handleCheckboxChange("sendWelcomeEmailOnImport", e.target.checked)}
+                  onChange={(e) =>
+                    handleCheckboxChange("sendWelcomeEmailOnImport", e.target.checked)
+                  }
                   className="mt-0.5 h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
                 />
                 <div className="space-y-0.5">
@@ -588,10 +756,149 @@ function LibraryPreviewDetailPage() {
                     Send Welcome Email while Importing Students/Staff
                   </span>
                   <p className="text-xs text-muted-foreground">
-                    When enabled, imported students and staff will be queued for welcome email notifications after successful import.
+                    When enabled, imported students and staff will be queued for welcome email
+                    notifications after successful import.
                   </p>
                 </div>
               </label>
+
+              {/* Sub-sections Divider */}
+              <div className="pt-2 border-t border-border/60">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+                  Media & External Resource Access
+                </h3>
+
+                <div className="space-y-3">
+                  {/* Sub-section: External Links */}
+                  <div className="rounded-xl border border-border bg-card p-4 space-y-2.5 shadow-2xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/50 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/12 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 shadow-2xs">
+                          <ExternalLink size={18} />
+                        </span>
+                        <div>
+                          <h4 className="text-sm font-extrabold text-foreground leading-tight">
+                            External Links
+                          </h4>
+                          <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                            Enable and manage external academic and research portals for this library.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-secondary/30 px-3 py-1.5 self-start sm:self-auto">
+                        <span className="text-xs font-semibold text-muted-foreground">Status:</span>
+                        <Switch
+                          id="enable-external-links-switch"
+                          checked={formData.enableExternalLinks ?? true}
+                          onCheckedChange={(checked) => handleCheckboxChange("enableExternalLinks", checked)}
+                          aria-label="Toggle External Links"
+                        />
+                        <label
+                          htmlFor="enable-external-links-switch"
+                          className={`text-xs font-bold cursor-pointer select-none ${
+                            formData.enableExternalLinks ?? true
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : "text-amber-600 dark:text-amber-400"
+                          }`}
+                        >
+                          {(formData.enableExternalLinks ?? true) ? "Enabled" : "Disabled"}
+                        </label>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground">
+                      When enabled, patrons and faculty will have access to designated external catalog and institutional web links configured for this library.
+                    </p>
+                  </div>
+
+                  {/* Sub-section: Video Library */}
+                  <div className="rounded-xl border border-border bg-card p-4 space-y-2.5 shadow-2xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/50 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 shadow-2xs">
+                          <Video size={18} />
+                        </span>
+                        <div>
+                          <h4 className="text-sm font-extrabold text-foreground leading-tight">
+                            Video Library
+                          </h4>
+                          <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                            Enable educational video resources, recorded lectures, and multimedia content.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-secondary/30 px-3 py-1.5 self-start sm:self-auto">
+                        <span className="text-xs font-semibold text-muted-foreground">Status:</span>
+                        <Switch
+                          id="enable-video-library-switch"
+                          checked={formData.enableVideoLibrary ?? true}
+                          onCheckedChange={(checked) => handleCheckboxChange("enableVideoLibrary", checked)}
+                          aria-label="Toggle Video Library"
+                        />
+                        <label
+                          htmlFor="enable-video-library-switch"
+                          className={`text-xs font-bold cursor-pointer select-none ${
+                            formData.enableVideoLibrary ?? true
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : "text-amber-600 dark:text-amber-400"
+                          }`}
+                        >
+                          {(formData.enableVideoLibrary ?? true) ? "Enabled" : "Disabled"}
+                        </label>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground">
+                      When enabled, curated videos and lectures published for institutional access will be available to members of this library.
+                    </p>
+                  </div>
+
+                  {/* Sub-section: Audio Library */}
+                  <div className="rounded-xl border border-border bg-card p-4 space-y-2.5 shadow-2xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/50 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-500/12 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400 shadow-2xs">
+                          <Headphones size={18} />
+                        </span>
+                        <div>
+                          <h4 className="text-sm font-extrabold text-foreground leading-tight">
+                            Audio Library
+                          </h4>
+                          <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                            Enable audiobooks, narrated lectures, and educational podcasts for this library.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-secondary/30 px-3 py-1.5 self-start sm:self-auto">
+                        <span className="text-xs font-semibold text-muted-foreground">Status:</span>
+                        <Switch
+                          id="enable-audio-library-switch"
+                          checked={formData.enableAudioLibrary ?? true}
+                          onCheckedChange={(checked) => handleCheckboxChange("enableAudioLibrary", checked)}
+                          aria-label="Toggle Audio Library"
+                        />
+                        <label
+                          htmlFor="enable-audio-library-switch"
+                          className={`text-xs font-bold cursor-pointer select-none ${
+                            formData.enableAudioLibrary ?? true
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : "text-amber-600 dark:text-amber-400"
+                          }`}
+                        >
+                          {(formData.enableAudioLibrary ?? true) ? "Enabled" : "Disabled"}
+                        </label>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground">
+                      When enabled, spoken audio titles, podcasts, and narrated materials will be active for patrons belonging to this institution.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 

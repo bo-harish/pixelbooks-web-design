@@ -76,9 +76,7 @@ function CreateTermsConditionsPage() {
           >
             <ArrowLeft size={16} />
           </Link>
-          <span className="text-sm font-semibold text-foreground">
-            Back to Terms & Conditions
-          </span>
+          <span className="text-sm font-semibold text-foreground">Back to Terms & Conditions</span>
         </div>
 
         {/* Redesigned Policy Applicable For Role Selector */}
@@ -204,25 +202,23 @@ function CreateTermsConditionsPage() {
                     className="absolute left-0 top-full z-20 mt-1 w-36 rounded-lg border border-border bg-card py-1 shadow-lg"
                     onMouseLeave={() => setHeadingDropdownOpen(false)}
                   >
-                    {["Heading 1", "Heading 2", "Heading 3", "Paragraph"].map(
-                      (h) => (
-                        <button
-                          key={h}
-                          type="button"
-                          onClick={() => {
-                            setSelectedHeading(h);
-                            setHeadingDropdownOpen(false);
-                          }}
-                          className={`block w-full px-3 py-1.5 text-left text-xs hover:bg-secondary ${
-                            selectedHeading === h
-                              ? "font-bold text-[var(--brand)]"
-                              : "text-foreground"
-                          }`}
-                        >
-                          {h}
-                        </button>
-                      )
-                    )}
+                    {["Heading 1", "Heading 2", "Heading 3", "Paragraph"].map((h) => (
+                      <button
+                        key={h}
+                        type="button"
+                        onClick={() => {
+                          setSelectedHeading(h);
+                          setHeadingDropdownOpen(false);
+                        }}
+                        className={`block w-full px-3 py-1.5 text-left text-xs hover:bg-secondary ${
+                          selectedHeading === h
+                            ? "font-bold text-[var(--brand)]"
+                            : "text-foreground"
+                        }`}
+                      >
+                        {h}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>

@@ -203,7 +203,11 @@ function DropdownPill({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[140px]">
         {options.map((opt) => (
-          <DropdownMenuItem key={opt} onClick={() => onSelect(opt)} className="text-xs font-medium cursor-pointer">
+          <DropdownMenuItem
+            key={opt}
+            onClick={() => onSelect(opt)}
+            className="text-xs font-medium cursor-pointer"
+          >
             {opt}
           </DropdownMenuItem>
         ))}
@@ -214,13 +218,7 @@ function DropdownPill({
 
 const RANGES = ["7d", "30d", "90d", "Yearly", "Till Date"] as const;
 
-function RangePicker({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (r: string) => void;
-}) {
+function RangePicker({ value, onChange }: { value: string; onChange: (r: string) => void }) {
   return (
     <div
       role="group"
@@ -386,7 +384,10 @@ function LibraryDashboardView() {
                 </span>
                 <span
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-                  style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+                  style={{
+                    backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                    color: "var(--brand)",
+                  }}
                 >
                   <Icon size={15} />
                 </span>
@@ -402,19 +403,21 @@ function LibraryDashboardView() {
               {/* Footer: Subtext on left + Dropdown Pill on right */}
               <div className="mt-2 flex items-center justify-between gap-2 border-t border-border/40 pt-2">
                 <div className="flex items-center gap-1 text-[11px]">
-                  {stat.changePct ? (() => {
-                    const isUp = !stat.changePct.startsWith("-");
-                    const absVal = stat.changePct.replace(/^[+-]/, "");
-                    return (
-                      <span
-                        className="inline-flex items-center gap-0.5 font-semibold"
-                        style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
-                      >
-                        {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                        {absVal}
-                      </span>
-                    );
-                  })() : null}
+                  {stat.changePct
+                    ? (() => {
+                        const isUp = !stat.changePct.startsWith("-");
+                        const absVal = stat.changePct.replace(/^[+-]/, "");
+                        return (
+                          <span
+                            className="inline-flex items-center gap-0.5 font-semibold"
+                            style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
+                          >
+                            {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                            {absVal}
+                          </span>
+                        );
+                      })()
+                    : null}
                   {stat.changeLabel ? (
                     <span className="text-muted-foreground">{stat.changeLabel}</span>
                   ) : null}
@@ -496,9 +499,7 @@ function LibraryDashboardView() {
         {/* Right Column: Top Library Sales Donut Chart */}
         <div className="lg:col-span-4 rounded-xl border border-border bg-card p-5 md:p-6 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between gap-2 mb-4">
-            <h2 className="text-lg font-bold tracking-tight text-foreground">
-              Top Library Sales
-            </h2>
+            <h2 className="text-lg font-bold tracking-tight text-foreground">Top Library Sales</h2>
 
             <DropdownPill
               value={topSalesRange}
@@ -691,7 +692,8 @@ function RetailDashboardView() {
               ₹425,713.27
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Last payment Date 19 Jun 2026 • Cumulative net unpaid balance across all publishers & authors.
+              Last payment Date 19 Jun 2026 • Cumulative net unpaid balance across all publishers &
+              authors.
             </p>
           </div>
         </div>
@@ -733,7 +735,10 @@ function RetailDashboardView() {
                 </span>
                 <span
                   className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
-                  style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+                  style={{
+                    backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                    color: "var(--brand)",
+                  }}
                 >
                   <Icon size={15} />
                 </span>
@@ -755,9 +760,7 @@ function RetailDashboardView() {
                     <span className="text-muted-foreground">{stat.sub}</span>
                   </div>
                 ) : stat.sub ? (
-                  <span className="text-[11px] font-medium text-muted-foreground">
-                    {stat.sub}
-                  </span>
+                  <span className="text-[11px] font-medium text-muted-foreground">{stat.sub}</span>
                 ) : null}
               </div>
             </div>
@@ -774,7 +777,10 @@ function RetailDashboardView() {
 
           <div className="h-[160px] w-full md:h-[190px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={dynamicChartConfig.data} margin={{ top: 8, right: 6, left: -22, bottom: 0 }}>
+              <BarChart
+                data={dynamicChartConfig.data}
+                margin={{ top: 8, right: 6, left: -22, bottom: 0 }}
+              >
                 <CartesianGrid stroke="var(--border)" vertical={false} />
                 <XAxis
                   dataKey="label"
@@ -818,7 +824,9 @@ function RetailDashboardView() {
       <section className="rounded-xl border border-border bg-card p-4 shadow-sm md:p-6">
         <div className="mb-6">
           <h2 className="text-[1.35rem] font-semibold tracking-tight">Top 10 Selling eBooks</h2>
-          <p className="text-xs text-muted-foreground">Filtered by: {dynamicChartConfig.subtitle}</p>
+          <p className="text-xs text-muted-foreground">
+            Filtered by: {dynamicChartConfig.subtitle}
+          </p>
         </div>
 
         <div className="overflow-x-auto">

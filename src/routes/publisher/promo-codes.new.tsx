@@ -112,17 +112,10 @@ interface DateRangePickerFieldProps {
   onChange: (range: DateRange | undefined) => void;
 }
 
-function DateRangePickerField({
-  label,
-  required,
-  value,
-  onChange,
-}: DateRangePickerFieldProps) {
+function DateRangePickerField({ label, required, value, onChange }: DateRangePickerFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [tempRange, setTempRange] = useState<DateRange | undefined>(value);
-  const [currentMonth, setCurrentMonth] = useState<Date>(
-    value?.from || new Date("2026-07-01")
-  );
+  const [currentMonth, setCurrentMonth] = useState<Date>(value?.from || new Date("2026-07-01"));
 
   // Sync temp state whenever popover opens or prop updates
   useEffect(() => {
@@ -187,7 +180,7 @@ function DateRangePickerField({
         getRange: () => ({ from: now, to: new Date(2026, 11, 31) }),
       },
     ],
-    []
+    [],
   );
 
   const selectedPresetIndex = useMemo(() => {
@@ -196,10 +189,7 @@ function DateRangePickerField({
     const toStr = format(tempRange.to, "yyyy-MM-dd");
     const idx = presets.findIndex((p) => {
       const r = p.getRange();
-      return (
-        format(r.from, "yyyy-MM-dd") === fromStr &&
-        format(r.to, "yyyy-MM-dd") === toStr
-      );
+      return format(r.from, "yyyy-MM-dd") === fromStr && format(r.to, "yyyy-MM-dd") === toStr;
     });
     return idx !== -1 ? String(idx) : "custom";
   }, [tempRange, presets]);
@@ -276,9 +266,7 @@ function DateRangePickerField({
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 min-w-0">
                 <CalendarIcon size={14} className="text-[var(--brand)] shrink-0" />
-                <span className="text-xs font-bold text-foreground truncate">
-                  Validity Period
-                </span>
+                <span className="text-xs font-bold text-foreground truncate">Validity Period</span>
               </div>
 
               {/* Quick Presets Dropdown */}
@@ -620,4 +608,3 @@ function CreatePromoCodePage() {
     </AppShell>
   );
 }
-

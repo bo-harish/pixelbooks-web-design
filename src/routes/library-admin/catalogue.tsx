@@ -503,7 +503,8 @@ function LibraryCataloguePage() {
             value={activeTab === "All" ? "All Statuses" : `${activeTab} Status`}
             options={["All Statuses", "Active Status", "Inactive Status"]}
             onChange={(tab) => {
-              const next = tab === "All Statuses" ? "All" : tab === "Active Status" ? "Active" : "Inactive";
+              const next =
+                tab === "All Statuses" ? "All" : tab === "Active Status" ? "Active" : "Inactive";
               setActiveTab(next as "All" | "Active" | "Inactive");
               setPage(1);
             }}

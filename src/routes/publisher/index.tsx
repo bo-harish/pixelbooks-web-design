@@ -1,7 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { usePublisherType } from "@/hooks/use-publisher-type";
-import { Tag, Users, BookOpen, Star, ArrowUpRight, ArrowDownRight, ChevronDown, Wallet } from "lucide-react";
+import {
+  Tag,
+  Users,
+  BookOpen,
+  Star,
+  ArrowUpRight,
+  ArrowDownRight,
+  ChevronDown,
+  Wallet,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -201,7 +210,11 @@ function RangeDropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[160px]">
         {options.map((opt) => (
-          <DropdownMenuItem key={opt} onClick={() => onSelect(opt)} className="text-xs font-medium cursor-pointer">
+          <DropdownMenuItem
+            key={opt}
+            onClick={() => onSelect(opt)}
+            className="text-xs font-medium cursor-pointer"
+          >
             {opt}
           </DropdownMenuItem>
         ))}
@@ -248,14 +261,19 @@ function StatCard({ stat }: { stat: Stat }) {
         </span>
         <span
           className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
-          style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+          style={{
+            backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+            color: "var(--brand)",
+          }}
         >
           <Icon size={15} />
         </span>
       </div>
 
       <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{stat.value}</p>
+        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
+          {stat.value}
+        </p>
         <div className="flex items-center gap-1 text-[11px]">
           <span
             className="inline-flex items-center gap-0.5 font-semibold"
@@ -394,13 +412,19 @@ export function DashboardContent() {
       {/* Total Receivable Till Date — Premium Card */}
       <div
         className="relative overflow-hidden rounded-2xl p-px"
-        style={{ background: "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))" }}
+        style={{
+          background:
+            "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))",
+        }}
       >
         <div className="relative rounded-[15px] bg-card p-5 sm:p-6">
           {/* Subtle background glow */}
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.07]"
-            style={{ background: "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)" }}
+            style={{
+              background:
+                "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)",
+            }}
           />
 
           <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -425,15 +449,15 @@ export function DashboardContent() {
                     </span>
                   )}
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  All-time cumulative balance.
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">All-time cumulative balance.</p>
               </div>
             </div>
             <div className="hidden h-10 w-px bg-border sm:block self-center" />
             <div className="flex items-center gap-6 sm:shrink-0">
               <div className="text-center">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Last Payout</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Last Payout
+                </p>
                 <p className="mt-1 text-sm font-bold text-foreground">24 Mar 2026</p>
                 <p className="mt-0.5 text-[10px] text-muted-foreground">₹3,200 disbursed</p>
               </div>
@@ -483,7 +507,10 @@ export function DashboardContent() {
               <Skeleton className="h-full w-full" />
             ) : (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dynamicChartConfig.data} margin={{ top: 8, right: 6, left: -22, bottom: 0 }}>
+                <BarChart
+                  data={dynamicChartConfig.data}
+                  margin={{ top: 8, right: 6, left: -22, bottom: 0 }}
+                >
                   <CartesianGrid stroke="var(--border)" vertical={false} />
                   <XAxis
                     dataKey="label"
@@ -528,7 +555,9 @@ export function DashboardContent() {
       <section className="rounded-xl border border-border bg-card p-4 md:p-6">
         <div className="mb-6">
           <h2 className="text-[1.35rem] font-semibold tracking-tight">Top 10 Selling eBooks</h2>
-          <p className="text-xs text-muted-foreground">Filtered by: {dynamicChartConfig.subtitle}</p>
+          <p className="text-xs text-muted-foreground">
+            Filtered by: {dynamicChartConfig.subtitle}
+          </p>
         </div>
 
         <div className="overflow-x-auto">
@@ -546,48 +575,50 @@ export function DashboardContent() {
             <tbody className="divide-y divide-border/20">
               {loading
                 ? Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-border/60 last:border-0">
-                    <td className="py-4 pr-4" colSpan={6}>
-                      <Skeleton className="h-10 w-full" />
-                    </td>
-                  </tr>
-                ))
+                    <tr key={i} className="border-b border-border/60 last:border-0">
+                      <td className="py-4 pr-4" colSpan={6}>
+                        <Skeleton className="h-10 w-full" />
+                      </td>
+                    </tr>
+                  ))
                 : dynamicTopBooks.map((book, index) => (
-                  <tr key={book.title} className="hover:bg-secondary/50 transition-colors">
-                    <td className="py-4 pr-3 pl-2 text-xs font-bold text-muted-foreground">{index + 1}</td>
-                    <td className="py-4 pr-4 pl-2">
-                      <div className="flex items-center gap-4">
-                        <div
-                          className="flex h-16 w-11 shrink-0 items-center justify-center rounded-[4px] shadow-sm text-[10px] font-bold text-white/90"
-                          style={{ background: book.cover }}
-                        >
-                          {book.initials}
+                    <tr key={book.title} className="hover:bg-secondary/50 transition-colors">
+                      <td className="py-4 pr-3 pl-2 text-xs font-bold text-muted-foreground">
+                        {index + 1}
+                      </td>
+                      <td className="py-4 pr-4 pl-2">
+                        <div className="flex items-center gap-4">
+                          <div
+                            className="flex h-16 w-11 shrink-0 items-center justify-center rounded-[4px] shadow-sm text-[10px] font-bold text-white/90"
+                            style={{ background: book.cover }}
+                          >
+                            {book.initials}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-foreground">{book.title}</p>
+                            <p className="text-xs text-muted-foreground">{book.category}</p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-foreground">{book.title}</p>
-                          <p className="text-xs text-muted-foreground">{book.category}</p>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="flex justify-center">
+                          <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
+                            <Star size={13} className="fill-amber-400 text-amber-400 shrink-0" />
+                            <span>{book.rating.toFixed(1)}</span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex justify-center">
-                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
-                          <Star size={13} className="fill-amber-400 text-amber-400 shrink-0" />
-                          <span>{book.rating.toFixed(1)}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-center font-medium text-foreground">
-                      {book.views}
-                    </td>
-                    <td className="py-4 px-4 text-center font-medium text-foreground">
-                      {book.sales}
-                    </td>
-                    <td className="py-4 pl-4 pr-2 text-right font-semibold text-foreground">
-                      {book.revenue}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-4 px-4 text-center font-medium text-foreground">
+                        {book.views}
+                      </td>
+                      <td className="py-4 px-4 text-center font-medium text-foreground">
+                        {book.sales}
+                      </td>
+                      <td className="py-4 pl-4 pr-2 text-right font-semibold text-foreground">
+                        {book.revenue}
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>

@@ -34,7 +34,8 @@ export const Route = createFileRoute("/pb-admin/quizz-rewards")({
       { title: "Rewards — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage reward coupon codes, discount percentages, and campaign durations in PixelBooks.",
+        content:
+          "Manage reward coupon codes, discount percentages, and campaign durations in PixelBooks.",
       },
     ],
   }),
@@ -97,7 +98,9 @@ export function CouponCodePage() {
   const [viewMode, setViewMode] = useState<"list" | "create">("list");
   const [coupons, setCoupons] = useState<CouponItem[]>(INITIAL_COUPONS);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive" | "Expired">("All Status");
+  const [statusFilter, setStatusFilter] = useState<
+    "All Status" | "Active" | "Inactive" | "Expired"
+  >("All Status");
 
   // Active editing item (null = creating new coupon)
   const [editingCoupon, setEditingCoupon] = useState<CouponItem | null>(null);
@@ -180,7 +183,7 @@ export function CouponCodePage() {
           return { ...item, status: next };
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -244,8 +247,8 @@ export function CouponCodePage() {
                 endDate: endDateInput,
                 description: descriptionInput || c.description,
               }
-            : c
-        )
+            : c,
+        ),
       );
       toast.success(`Coupon code "${couponCodeInput}" updated successfully!`);
     } else {
@@ -372,7 +375,10 @@ export function CouponCodePage() {
                           className="group cursor-pointer border-b border-border/60 transition-colors hover:bg-secondary/50"
                         >
                           {/* Coupon Code Monospace Pill Column matching screenshot */}
-                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <div className="inline-flex h-10 min-w-[170px] items-center justify-between gap-3 rounded-lg bg-muted/60 pl-3.5 pr-2 text-xs font-bold tracking-wider text-foreground border border-border/60 shadow-2xs font-mono">
                               <span>{item.code}</span>
                               <button
@@ -409,7 +415,10 @@ export function CouponCodePage() {
                           </td>
 
                           {/* Current Status Switch Toggle Column */}
-                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Switch
                               checked={item.status}
                               onCheckedChange={() => handleToggleStatus(item.id)}
@@ -482,9 +491,7 @@ export function CouponCodePage() {
               >
                 <ArrowLeft size={16} />
               </button>
-              <span className="text-sm font-normal text-foreground">
-                Back to Rewards
-              </span>
+              <span className="text-sm font-normal text-foreground">Back to Rewards</span>
             </div>
 
             {/* Main Form Wrapper */}
@@ -583,14 +590,22 @@ export function CouponCodePage() {
                               {dateRange?.from ? (
                                 dateRange.to ? (
                                   <>
-                                    <span className="font-semibold text-foreground">{format(dateRange.from, "MMM dd, yyyy")}</span>
+                                    <span className="font-semibold text-foreground">
+                                      {format(dateRange.from, "MMM dd, yyyy")}
+                                    </span>
                                     <span className="text-muted-foreground mx-1.5">to</span>
-                                    <span className="font-semibold text-foreground">{format(dateRange.to, "MMM dd, yyyy")}</span>
+                                    <span className="font-semibold text-foreground">
+                                      {format(dateRange.to, "MMM dd, yyyy")}
+                                    </span>
                                   </>
                                 ) : (
                                   <>
-                                    <span className="font-semibold text-foreground">{format(dateRange.from, "MMM dd, yyyy")}</span>
-                                    <span className="text-muted-foreground ml-1.5">(Select end date)</span>
+                                    <span className="font-semibold text-foreground">
+                                      {format(dateRange.from, "MMM dd, yyyy")}
+                                    </span>
+                                    <span className="text-muted-foreground ml-1.5">
+                                      (Select end date)
+                                    </span>
                                   </>
                                 )
                               ) : (
@@ -601,7 +616,10 @@ export function CouponCodePage() {
                           <ChevronDown size={16} className="text-muted-foreground shrink-0 ml-2" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent align="start" className="w-auto p-4 bg-card border-border shadow-xl rounded-xl">
+                      <PopoverContent
+                        align="start"
+                        className="w-auto p-4 bg-card border-border shadow-xl rounded-xl"
+                      >
                         {/* Selected status header inside popover */}
                         <div className="flex items-center justify-between pb-3 mb-2 border-b border-border text-xs">
                           <div className="flex items-center gap-1.5">

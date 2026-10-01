@@ -22,7 +22,13 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { Switch } from "@/components/ui/switch";
-import { getPromos, savePromos, type Promo, type PromoStatus, type Activation } from "@/lib/promo-codes-data";
+import {
+  getPromos,
+  savePromos,
+  type Promo,
+  type PromoStatus,
+  type Activation,
+} from "@/lib/promo-codes-data";
 import { usePublisherType } from "@/hooks/use-publisher-type";
 
 export const Route = createFileRoute("/publisher/promo-codes/")({
@@ -189,7 +195,11 @@ function PromoCodesPage() {
         {isLibraryOnly && (
           <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-xs font-medium text-amber-800 dark:text-amber-300 flex items-center gap-2.5">
             <AlertCircle size={16} className="shrink-0 text-amber-600 dark:text-amber-400" />
-            <span>Restricted Access: You are currently viewing as <strong>Library-Only Publisher</strong>. Storefront promo codes and retail promotions are restricted for library-only accounts.</span>
+            <span>
+              Restricted Access: You are currently viewing as{" "}
+              <strong>Library-Only Publisher</strong>. Storefront promo codes and retail promotions
+              are restricted for library-only accounts.
+            </span>
           </div>
         )}
         {/* Toolbar */}

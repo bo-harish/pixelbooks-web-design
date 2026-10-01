@@ -104,7 +104,8 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     status: "Enabled",
     bookCount: 16,
     code: "TEC-CAT",
-    description: "Computer science, programming frameworks, machine learning, and systems architecture.",
+    description:
+      "Computer science, programming frameworks, machine learning, and systems architecture.",
   },
   {
     id: "cat-6",
@@ -126,18 +127,26 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     status: "Enabled",
     bookCount: 22,
     code: "SCI-FAN",
-    description: "Futuristic explorations, space exploration, speculative science, and dystopian sagas.",
+    description:
+      "Futuristic explorations, space exploration, speculative science, and dystopian sagas.",
   },
   {
     id: "cat-8",
     name: "Academic & Educational",
     displayOrder: 8,
-    subcategories: ["Courseware", "Higher Education", "Competitive Exams", "Curriculum Guides", "Reference"],
+    subcategories: [
+      "Courseware",
+      "Higher Education",
+      "Competitive Exams",
+      "Curriculum Guides",
+      "Reference",
+    ],
     views: 38,
     status: "Enabled",
     bookCount: 42,
     code: "ACA-EDU",
-    description: "Core academic textbooks, educational syllabi, competitive exam modules, and study guides.",
+    description:
+      "Core academic textbooks, educational syllabi, competitive exam modules, and study guides.",
     enableExternalLink: true,
     externalLink: "https://in.pearson.com/",
   },
@@ -150,7 +159,8 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     status: "Enabled",
     bookCount: 18,
     code: "TRV-HIS",
-    description: "Historical chronicles, explorations, travel narratives, and archaeological studies.",
+    description:
+      "Historical chronicles, explorations, travel narratives, and archaeological studies.",
   },
   {
     id: "cat-10",
@@ -161,29 +171,43 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     status: "Enabled",
     bookCount: 15,
     code: "PHI-ETH",
-    description: "Philosophical inquiries, treatises on ethics, logic, epistemology, and moral philosophy.",
+    description:
+      "Philosophical inquiries, treatises on ethics, logic, epistemology, and moral philosophy.",
   },
   {
     id: "cat-11",
     name: "Science & Biology",
     displayOrder: 11,
-    subcategories: ["Physics", "Chemistry", "Molecular Biology", "Health Science", "Environmental Studies"],
+    subcategories: [
+      "Physics",
+      "Chemistry",
+      "Molecular Biology",
+      "Health Science",
+      "Environmental Studies",
+    ],
     views: 31,
     status: "Enabled",
     bookCount: 34,
     code: "SCI-BIO",
-    description: "Empirical sciences, life sciences, organic chemistry, physics textbooks, and ecology.",
+    description:
+      "Empirical sciences, life sciences, organic chemistry, physics textbooks, and ecology.",
   },
   {
     id: "cat-12",
     name: "Biography & Memoir",
     displayOrder: 12,
-    subcategories: ["Autobiography", "Historical Figures", "Literary Memoirs", "Leaders & Innovators"],
+    subcategories: [
+      "Autobiography",
+      "Historical Figures",
+      "Literary Memoirs",
+      "Leaders & Innovators",
+    ],
     views: 14,
     status: "Enabled",
     bookCount: 19,
     code: "BIO-MEM",
-    description: "Inspiring biographies, personal journals, memoirs, and life stories of historical figures.",
+    description:
+      "Inspiring biographies, personal journals, memoirs, and life stories of historical figures.",
   },
   {
     id: "cat-13",
@@ -194,29 +218,42 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     status: "Enabled",
     bookCount: 25,
     code: "LAN-LIT",
-    description: "Linguistic studies, literary criticism, grammar treatises, and classical anthologies.",
+    description:
+      "Linguistic studies, literary criticism, grammar treatises, and classical anthologies.",
   },
   {
     id: "cat-14",
     name: "Commerce & Economics",
     displayOrder: 14,
-    subcategories: ["Microeconomics", "Business Management", "Financial Accounting", "Banking & Finance"],
+    subcategories: [
+      "Microeconomics",
+      "Business Management",
+      "Financial Accounting",
+      "Banking & Finance",
+    ],
     views: 17,
     status: "Enabled",
     bookCount: 20,
     code: "COM-ECO",
-    description: "Macroeconomics, financial accounting principles, commerce, and business strategy.",
+    description:
+      "Macroeconomics, financial accounting principles, commerce, and business strategy.",
   },
   {
     id: "cat-15",
     name: "Law & Governance",
     displayOrder: 15,
-    subcategories: ["Constitutional Law", "Public Administration", "International Relations", "Human Rights"],
+    subcategories: [
+      "Constitutional Law",
+      "Public Administration",
+      "International Relations",
+      "Human Rights",
+    ],
     views: 8,
     status: "Enabled",
     bookCount: 11,
     code: "LAW-GOV",
-    description: "Jurisprudence, constitutional rights, public policy, and administrative governance.",
+    description:
+      "Jurisprudence, constitutional rights, public policy, and administrative governance.",
   },
   {
     id: "cat-16",
@@ -227,7 +264,8 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     status: "Enabled",
     bookCount: 17,
     code: "CRM-THR",
-    description: "Suspense novels, crime investigations, psychological puzzles, and detective stories.",
+    description:
+      "Suspense novels, crime investigations, psychological puzzles, and detective stories.",
   },
   {
     id: "cat-17",
@@ -249,7 +287,8 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     status: "Enabled",
     bookCount: 14,
     code: "HLT-SCI",
-    description: "Medical science, physical fitness, nutrition, healthcare manuals, and well-being.",
+    description:
+      "Medical science, physical fitness, nutrition, healthcare manuals, and well-being.",
   },
   {
     id: "cat-19",
@@ -299,12 +338,18 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
     id: "cat-23",
     name: "Malayalam Literature & Fiction",
     displayOrder: 23,
-    subcategories: ["Classic Malayalam Novels", "Kerala Folklore", "Modern Poetry", "Malayalam Prose"],
+    subcategories: [
+      "Classic Malayalam Novels",
+      "Kerala Folklore",
+      "Modern Poetry",
+      "Malayalam Prose",
+    ],
     views: 33,
     status: "Enabled",
     bookCount: 26,
     code: "MAL-LIT",
-    description: "Rich literary heritage of Kerala, prominent Malayalam novelists, and regional poetry.",
+    description:
+      "Rich literary heritage of Kerala, prominent Malayalam novelists, and regional poetry.",
   },
 ];
 

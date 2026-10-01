@@ -13,7 +13,8 @@ export const Route = createFileRoute("/pb-web/genre")({
       { title: "Browse Genres — PixelBooks Web Site" },
       {
         name: "description",
-        content: "Discover eBooks across Academic, Literature, Science, Fiction, and Competition Exam genres on PixelBooks.",
+        content:
+          "Discover eBooks across Academic, Literature, Science, Fiction, and Competition Exam genres on PixelBooks.",
       },
     ],
   }),
@@ -54,22 +55,9 @@ const FILTER_CATEGORIES = [
   "Reference",
 ];
 
-const FILTER_LANGUAGES = [
-  "English",
-  "Malayalam",
-  "Hindi",
-  "Tamil",
-  "Sanskrit",
-  "Arabic",
-];
+const FILTER_LANGUAGES = ["English", "Malayalam", "Hindi", "Tamil", "Sanskrit", "Arabic"];
 
-const FILTER_PRICES = [
-  "Free",
-  "Under ₹199",
-  "₹200 to ₹499",
-  "₹500 to ₹999",
-  "₹1,000 & Above",
-];
+const FILTER_PRICES = ["Free", "Under ₹199", "₹200 to ₹499", "₹500 to ₹999", "₹1,000 & Above"];
 
 const FILTER_REVIEWS = [
   { rating: 4, label: "4★ & above" },
@@ -113,25 +101,25 @@ function PixelBooksWebsitePage() {
 
   const toggleAuthor = (author: string) => {
     setSelectedAuthors((prev) =>
-      prev.includes(author) ? prev.filter((a) => a !== author) : [...prev, author]
+      prev.includes(author) ? prev.filter((a) => a !== author) : [...prev, author],
     );
   };
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
     );
   };
 
   const toggleLanguage = (lang: string) => {
     setSelectedLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
     );
   };
 
   const togglePrice = (price: string) => {
     setSelectedPrices((prev) =>
-      prev.includes(price) ? prev.filter((p) => p !== price) : [...prev, price]
+      prev.includes(price) ? prev.filter((p) => p !== price) : [...prev, price],
     );
   };
 
@@ -188,17 +176,15 @@ function PixelBooksWebsitePage() {
           selectedCategories.some(
             (cat) =>
               item.toLowerCase().includes(cat.toLowerCase()) ||
-              cat.toLowerCase().includes(item.toLowerCase())
-          )
-        )
+              cat.toLowerCase().includes(item.toLowerCase()),
+          ),
+        ),
       );
     }
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      cols = cols.map((col) =>
-        col.filter((item) => item.toLowerCase().includes(q))
-      );
+      cols = cols.map((col) => col.filter((item) => item.toLowerCase().includes(q)));
     }
 
     return cols;
@@ -286,9 +272,15 @@ function PixelBooksWebsitePage() {
                     )}
                   </span>
                   {expandedSections.authors ? (
-                    <ChevronDown className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronDown
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronRight
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   )}
                 </button>
                 {expandedSections.authors && (
@@ -386,9 +378,15 @@ function PixelBooksWebsitePage() {
                     )}
                   </span>
                   {expandedSections.categories ? (
-                    <ChevronDown className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronDown
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronRight
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   )}
                 </button>
                 {expandedSections.categories && (
@@ -459,9 +457,15 @@ function PixelBooksWebsitePage() {
                     )}
                   </span>
                   {expandedSections.languages ? (
-                    <ChevronDown className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronDown
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronRight
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   )}
                 </button>
                 {expandedSections.languages && (
@@ -502,9 +506,15 @@ function PixelBooksWebsitePage() {
                     )}
                   </span>
                   {expandedSections.prices ? (
-                    <ChevronDown className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronDown
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronRight
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   )}
                 </button>
                 {expandedSections.prices && (
@@ -545,9 +555,15 @@ function PixelBooksWebsitePage() {
                     )}
                   </span>
                   {expandedSections.customerReview ? (
-                    <ChevronDown className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronDown
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]" strokeWidth={2.5} />
+                    <ChevronRight
+                      className="w-4 h-4 text-foreground/80 transition-transform group-hover:text-[#137365]"
+                      strokeWidth={2.5}
+                    />
                   )}
                 </button>
                 {expandedSections.customerReview && (
@@ -720,8 +736,8 @@ function PixelBooksWebsitePage() {
                     colIdx === 0
                       ? "lg:pr-5 xl:pr-7"
                       : colIdx === 3
-                      ? "lg:pl-5 xl:pl-7"
-                      : "lg:px-5 xl:px-7"
+                        ? "lg:pl-5 xl:pl-7"
+                        : "lg:px-5 xl:px-7"
                   }`}
                 >
                   {column.length === 0 ? (

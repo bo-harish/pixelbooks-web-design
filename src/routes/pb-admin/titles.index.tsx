@@ -36,20 +36,9 @@ export const Route = createFileRoute("/pb-admin/titles/")({
 });
 
 const STATUS_FILTERS: Array<"All" | Status> = ["All", "Published", "Unpublished", "Rejected"];
-const PUBLISHER_AUTHOR_FILTERS = [
-  "Publisher & Author",
-  "Publisher",
-  "Author",
-];
+const PUBLISHER_AUTHOR_FILTERS = ["Publisher & Author", "Publisher", "Author"];
 
-const LANGUAGE_FILTERS = [
-  "All Languages",
-  "English",
-  "Hindi",
-  "Tamil",
-  "Spanish",
-  "French",
-];
+const LANGUAGE_FILTERS = ["All Languages", "English", "Hindi", "Tamil", "Spanish", "French"];
 
 const GENRE_FILTERS = [
   "All Genre",
@@ -61,13 +50,7 @@ const GENRE_FILTERS = [
 
 const PAGE_SIZE = 8;
 
-function AuthorAvatar({
-  author,
-  size = "md",
-}: {
-  author: string;
-  size?: "sm" | "md" | "lg";
-}) {
+function AuthorAvatar({ author, size = "md" }: { author: string; size?: "sm" | "md" | "lg" }) {
   const initials = author
     .split(" ")
     .filter(Boolean)
@@ -132,8 +115,9 @@ function DropdownSelect<T extends string>({
         <span className="truncate">{value}</span>
         <ChevronDown
           size={16}
-          className={`shrink-0 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""
-            }`}
+          className={`shrink-0 text-muted-foreground transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
         />
       </button>
       {open && (
@@ -144,7 +128,10 @@ function DropdownSelect<T extends string>({
           {searchable && (
             <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
               <div className="relative flex items-center">
-                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <Search
+                  size={14}
+                  className="absolute left-2.5 text-muted-foreground pointer-events-none"
+                />
                 <input
                   type="text"
                   value={searchTerm}
@@ -171,10 +158,11 @@ function DropdownSelect<T extends string>({
                     setOpen(false);
                     setSearchTerm("");
                   }}
-                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${opt === value
+                  className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${
+                    opt === value
                       ? "font-medium text-foreground bg-secondary/50"
                       : "text-muted-foreground"
-                    }`}
+                  }`}
                 >
                   <span className="truncate">{opt}</span>
                 </button>
@@ -278,7 +266,10 @@ function TitlesCataloguePage() {
   }, [totalPages, currentPage]);
 
   return (
-    <AppShell title="Titles Catalogue" subtitle="Manage every eBook across the PixelBooks platform.">
+    <AppShell
+      title="Titles Catalogue"
+      subtitle="Manage every eBook across the PixelBooks platform."
+    >
       <div className="space-y-6 p-4 md:p-8">
         {/* Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center">
@@ -534,7 +525,9 @@ function TitlesCataloguePage() {
                     style={{ background: b.cover }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-                    <span className="relative z-10 text-[11px] font-extrabold tracking-wider">{b.initials}</span>
+                    <span className="relative z-10 text-[11px] font-extrabold tracking-wider">
+                      {b.initials}
+                    </span>
                   </div>
                   <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -623,10 +616,10 @@ function TitlesCataloguePage() {
                         style={
                           n === currentPage
                             ? {
-                              backgroundColor: "var(--brand)",
-                              color: "var(--brand-contrast)",
-                              borderColor: "transparent",
-                            }
+                                backgroundColor: "var(--brand)",
+                                color: "var(--brand-contrast)",
+                                borderColor: "transparent",
+                              }
                             : undefined
                         }
                       >

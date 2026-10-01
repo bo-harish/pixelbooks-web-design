@@ -25,12 +25,14 @@ export const Route = createFileRoute("/publisher/settings")({
       { title: "Publisher Settings — PixelBooks" },
       {
         name: "description",
-        content: "Configure publisher color themes, workspace preferences, password, and institutional policies.",
+        content:
+          "Configure publisher color themes, workspace preferences, password, and institutional policies.",
       },
       { property: "og:title", content: "Publisher Settings — PixelBooks" },
       {
         property: "og:description",
-        content: "Configure publisher color themes, workspace preferences, password, and institutional policies.",
+        content:
+          "Configure publisher color themes, workspace preferences, password, and institutional policies.",
       },
     ],
   }),
@@ -54,8 +56,9 @@ function Toggle({
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-none"
-      style={{ backgroundColor: checked ? "var(--brand)" : "hsl(var(--muted))" }}
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-none ${
+        checked ? "bg-[var(--brand)]" : "bg-[#D1D5DB] dark:bg-[#374151]"
+      }`}
     >
       <span
         className={`pointer-events-none inline-block h-[18px] w-[18px] transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${
@@ -117,7 +120,9 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
             </span>
             <div>
               <h2 className="text-sm font-bold text-foreground">Change Password</h2>
-              <p className="text-[11px] text-muted-foreground">Update your publisher account credentials</p>
+              <p className="text-[11px] text-muted-foreground">
+                Update your publisher account credentials
+              </p>
             </div>
           </div>
           <button
@@ -302,7 +307,8 @@ function PublisherSettingsPage() {
           <div className="p-5 sm:p-6 bg-secondary/20">
             <h2 className="text-base font-bold text-foreground">Preferences & Security</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Configure system alerts, security credentials, and review institutional publisher terms.
+              Configure system alerts, security credentials, and review institutional publisher
+              terms.
             </p>
           </div>
 
@@ -318,7 +324,8 @@ function PublisherSettingsPage() {
               <div>
                 <p className="text-sm font-bold text-foreground">Push Notifications</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Receive browser notifications for eBook sales, royalty payouts, and reader reviews.
+                  Receive browser notifications for eBook sales, royalty payouts, and reader
+                  reviews.
                 </p>
               </div>
             </div>
@@ -344,9 +351,12 @@ function PublisherSettingsPage() {
                 <SunMoon size={18} />
               </span>
               <div>
-                <p className="text-sm font-bold text-foreground">Autofill Metadata While Uploading eBook</p>
+                <p className="text-sm font-bold text-foreground">
+                  Autofill Metadata While Uploading eBook
+                </p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Automatically extract and prefill title metadata fields when uploading eBook files.
+                  Automatically extract and prefill title metadata fields when uploading eBook
+                  files.
                 </p>
               </div>
             </div>
@@ -432,7 +442,8 @@ function PublisherSettingsPage() {
               <div>
                 <p className="text-sm font-bold text-foreground">Terms and Conditions</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Institutional digital publishing agreements, royalties, and content licensing rules.
+                  Institutional digital publishing agreements, royalties, and content licensing
+                  rules.
                 </p>
               </div>
             </div>
@@ -477,8 +488,9 @@ function PublisherSettingsPage() {
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground max-w-2xl">
-                  Choose from 10 curated color themes to personalize your Publisher portal. The active theme
-                  updates sidebar accents, interactive buttons, status badges, and chart highlights in real-time.
+                  Choose from 10 curated color themes to personalize your Publisher portal. The
+                  active theme updates sidebar accents, interactive buttons, status badges, and
+                  chart highlights in real-time.
                 </p>
               </div>
             </div>
@@ -490,9 +502,7 @@ function PublisherSettingsPage() {
                   className="h-3.5 w-3.5 rounded-full ring-2 ring-card shadow-2xs"
                   style={{ backgroundColor: currentTheme.primaryColor }}
                 />
-                <span className="text-xs font-semibold text-foreground">
-                  {currentTheme.name}
-                </span>
+                <span className="text-xs font-semibold text-foreground">{currentTheme.name}</span>
                 {isDefault && (
                   <span className="rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                     Default
@@ -537,7 +547,9 @@ function PublisherSettingsPage() {
               <div>
                 <p className="text-xs font-bold text-foreground">
                   Active Theme: {currentTheme.name}{" "}
-                  <span className="font-normal text-muted-foreground">— {currentTheme.description}</span>
+                  <span className="font-normal text-muted-foreground">
+                    — {currentTheme.description}
+                  </span>
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   <span
@@ -618,9 +630,7 @@ function PublisherSettingsPage() {
                         <Check size={12} strokeWidth={3} />
                       </span>
                     ) : (
-                      <span
-                        className="rounded-md px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-muted-foreground bg-secondary/80 border border-border/50"
-                      >
+                      <span className="rounded-md px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-muted-foreground bg-secondary/80 border border-border/50">
                         {theme.tag}
                       </span>
                     )}
@@ -667,9 +677,7 @@ function PublisherSettingsPage() {
       </div>
 
       {/* ─── MODALS ─────────────────────────────────────────────────────────── */}
-      {passwordModalOpen && (
-        <ChangePasswordModal onClose={() => setPasswordModalOpen(false)} />
-      )}
+      {passwordModalOpen && <ChangePasswordModal onClose={() => setPasswordModalOpen(false)} />}
 
       {privacyModalOpen && (
         <DocumentModal
@@ -681,20 +689,21 @@ function PublisherSettingsPage() {
           <div className="space-y-3">
             <h3 className="font-bold text-foreground text-sm">1. Information Collection & Usage</h3>
             <p>
-              PixelBooks collects and processes publisher organization metadata, author profiles, and catalogue
-              identifiers exclusively for digital rights management, catalogue indexing, and royalty settlement.
+              PixelBooks collects and processes publisher organization metadata, author profiles,
+              and catalogue identifiers exclusively for digital rights management, catalogue
+              indexing, and royalty settlement.
             </p>
 
             <h3 className="font-bold text-foreground text-sm">2. Content Protection</h3>
             <p>
-              Uploaded manuscript files (ePUB, PDF) are stored in secure encrypted vaults with watermarked DRM
-              protection. No unauthorized scraping or extraction is permitted.
+              Uploaded manuscript files (ePUB, PDF) are stored in secure encrypted vaults with
+              watermarked DRM protection. No unauthorized scraping or extraction is permitted.
             </p>
 
             <h3 className="font-bold text-foreground text-sm">3. Financial Records</h3>
             <p>
-              Bank account numbers and IFSC identifiers entered into the Bank Accounts module are encrypted at rest
-              using AES-256 and used solely for automated royalty disbursements.
+              Bank account numbers and IFSC identifiers entered into the Bank Accounts module are
+              encrypted at rest using AES-256 and used solely for automated royalty disbursements.
             </p>
           </div>
         </DocumentModal>
@@ -710,20 +719,21 @@ function PublisherSettingsPage() {
           <div className="space-y-3">
             <h3 className="font-bold text-foreground text-sm">1. Distribution License</h3>
             <p>
-              By uploading titles to the PixelBooks platform, the publisher grants a non-exclusive institutional
-              license to distribute digital editions to authorized libraries and academic users.
+              By uploading titles to the PixelBooks platform, the publisher grants a non-exclusive
+              institutional license to distribute digital editions to authorized libraries and
+              academic users.
             </p>
 
             <h3 className="font-bold text-foreground text-sm">2. Royalties & Settlements</h3>
             <p>
-              Royalties are calculated based on agreed contractual margins per title. TDS deductions are made in
-              accordance with prevailing statutory taxation schedules.
+              Royalties are calculated based on agreed contractual margins per title. TDS deductions
+              are made in accordance with prevailing statutory taxation schedules.
             </p>
 
             <h3 className="font-bold text-foreground text-sm">3. Warranties</h3>
             <p>
-              The publisher warrants that all submitted content is original or fully licensed, and does not infringe
-              upon third-party intellectual property or copyright agreements.
+              The publisher warrants that all submitted content is original or fully licensed, and
+              does not infringe upon third-party intellectual property or copyright agreements.
             </p>
           </div>
         </DocumentModal>

@@ -1,9 +1,5 @@
 export type PromoStatus =
-  | "Pending for Admin Approval"
-  | "Approved"
-  | "Rejected"
-  | "Disabled"
-  | "Expired";
+  "Pending for Admin Approval" | "Approved" | "Rejected" | "Disabled" | "Expired";
 
 export type Activation = "Available" | "Not available";
 

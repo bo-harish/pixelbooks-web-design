@@ -31,7 +31,8 @@ export const Route = createFileRoute("/author/profile")({
       { title: "Author Profile — PixelBooks" },
       {
         name: "description",
-        content: "Manage your public author profile, biography, royalty share, and published title statistics.",
+        content:
+          "Manage your public author profile, biography, royalty share, and published title statistics.",
       },
     ],
   }),
@@ -184,9 +185,7 @@ function AuthorProfilePage() {
                     <Feather size={12} /> Verified Author
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
-                  {bio}
-                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">{bio}</p>
               </div>
             </div>
 
@@ -250,13 +249,11 @@ function AuthorProfilePage() {
                 value={authorName}
                 onChange={setAuthorName}
               />
-              <Field
-                label="Pen Name / Credit Display"
-                value={penName}
-                onChange={setPenName}
-              />
+              <Field label="Pen Name / Credit Display" value={penName} onChange={setPenName} />
               <div className="md:col-span-2 space-y-2">
-                <label className="text-sm font-medium text-foreground">Primary Writing Genres</label>
+                <label className="text-sm font-medium text-foreground">
+                  Primary Writing Genres
+                </label>
                 <input
                   value={genres}
                   onChange={(e) => setGenres(e.target.value)}
@@ -287,7 +284,9 @@ function AuthorProfilePage() {
                 <span className="text-xs font-medium text-muted-foreground">Published Titles</span>
               </div>
               <p className="text-xl font-extrabold text-foreground tracking-tight">12 eBooks</p>
-              <p className="text-[11px] text-muted-foreground mt-1">Live across Storefront & Libraries</p>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Live across Storefront & Libraries
+              </p>
             </div>
 
             <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs">
@@ -295,10 +294,14 @@ function AuthorProfilePage() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--sidebar-highlight)] text-[var(--brand)]">
                   <BookOpen size={18} />
                 </span>
-                <span className="text-xs font-medium text-muted-foreground">Lifetime Copies Borrowed/Sold</span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Lifetime Copies Borrowed/Sold
+                </span>
               </div>
               <p className="text-xl font-extrabold text-foreground tracking-tight">14,820 Copies</p>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1">+1,240 this month</p>
+              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1">
+                +1,240 this month
+              </p>
             </div>
 
             <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 shadow-2xs">
@@ -306,7 +309,9 @@ function AuthorProfilePage() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600">
                   <Star size={18} className="fill-amber-400" />
                 </span>
-                <span className="text-xs font-medium text-muted-foreground">Average Reader Rating</span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Average Reader Rating
+                </span>
               </div>
               <p className="text-xl font-extrabold text-foreground tracking-tight">4.8 / 5.0</p>
               <p className="text-[11px] text-muted-foreground mt-1">Based on 320 Reader Reviews</p>
@@ -331,11 +336,15 @@ function AuthorProfilePage() {
 
               <div className="grid grid-cols-2 gap-4 rounded-lg bg-secondary/30 p-4 text-xs">
                 <div>
-                  <span className="text-muted-foreground font-medium block mb-0.5">Account Holder</span>
+                  <span className="text-muted-foreground font-medium block mb-0.5">
+                    Account Holder
+                  </span>
                   <span className="font-semibold text-foreground">Dr. K. Raghavan</span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground font-medium block mb-0.5">Account Number</span>
+                  <span className="text-muted-foreground font-medium block mb-0.5">
+                    Account Number
+                  </span>
                   <span className="font-semibold text-foreground font-mono">•••• 4812</span>
                 </div>
                 <div>
@@ -368,8 +377,12 @@ function AuthorProfilePage() {
 
               <div className="rounded-lg border border-border/70 bg-secondary/30 p-4 space-y-2">
                 <div className="flex items-baseline justify-between">
-                  <span className="text-xs font-medium text-muted-foreground">Author Royalty Share</span>
-                  <span className="text-2xl font-extrabold text-foreground tracking-tight">70%</span>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Author Royalty Share
+                  </span>
+                  <span className="text-2xl font-extrabold text-foreground tracking-tight">
+                    70%
+                  </span>
                 </div>
                 <div className="w-full bg-border/60 rounded-full h-2 overflow-hidden">
                   <div className="bg-emerald-500 h-full rounded-full" style={{ width: "70%" }} />
@@ -424,16 +437,8 @@ function AuthorProfilePage() {
                 )
               }
             />
-            <Field
-              label="Personal Website / Portfolio"
-              value={website}
-              onChange={setWebsite}
-            />
-            <Field
-              label="Academic Reference ID"
-              disabled
-              value="ORCID 0000-0002-1825-0097"
-            />
+            <Field label="Personal Website / Portfolio" value={website} onChange={setWebsite} />
+            <Field label="Academic Reference ID" disabled value="ORCID 0000-0002-1825-0097" />
           </div>
         </SectionCard>
 
@@ -548,7 +553,8 @@ function OtpModal({
         <div className="space-y-2">
           <h2 className="text-2xl font-extrabold text-foreground tracking-tight">Enter OTP</h2>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
-            Verification code sent to email <span className="font-medium text-foreground">{email}</span> and mobile{" "}
+            Verification code sent to email{" "}
+            <span className="font-medium text-foreground">{email}</span> and mobile{" "}
             <span className="font-medium text-foreground">{phone}</span>
           </p>
         </div>

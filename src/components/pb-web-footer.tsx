@@ -7,7 +7,11 @@ export function PbWebFooter() {
       <div className="mx-auto max-w-[1600px] flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Left: Brand & Copyright */}
         <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center transition-opacity hover:opacity-85" title="PixelBooks - Workspace Selector">
+          <Link
+            to="/"
+            className="flex items-center transition-opacity hover:opacity-85"
+            title="PixelBooks - Workspace Selector"
+          >
             <img
               src="/logo.png"
               alt="PixelBooks"

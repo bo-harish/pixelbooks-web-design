@@ -20,12 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/library-admin/banners")({
@@ -75,7 +70,9 @@ export function LibraryAdminBannersPage() {
   const [viewMode, setViewMode] = useState<"list" | "create">("list");
   const [banners, setBanners] = useState<LibraryBannerItem[]>(INITIAL_BANNERS);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive">("All Status");
+  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive">(
+    "All Status",
+  );
 
   // Editing state
   const [editingBanner, setEditingBanner] = useState<LibraryBannerItem | null>(null);
@@ -120,7 +117,7 @@ export function LibraryAdminBannersPage() {
           return { ...item, enabled: next };
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -174,8 +171,8 @@ export function LibraryAdminBannersPage() {
                 webCover: webCoverUploaded || b.webCover,
                 mobileCover: mobileCoverUploaded || b.mobileCover,
               }
-            : b
-        )
+            : b,
+        ),
       );
       toast.success(`Image Banner "${titleInput}" updated successfully!`);
     } else {
@@ -238,13 +235,18 @@ export function LibraryAdminBannersPage() {
                     <span>{statusFilter}</span>
                     <ChevronDown size={16} className="text-muted-foreground shrink-0" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[140px] bg-card border-border shadow-md">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-[140px] bg-card border-border shadow-md"
+                  >
                     {(["All Status", "Active", "Inactive"] as const).map((st) => (
                       <DropdownMenuItem
                         key={st}
                         onClick={() => setStatusFilter(st)}
                         className={`cursor-pointer font-medium text-xs ${
-                          statusFilter === st ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]" : ""
+                          statusFilter === st
+                            ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
+                            : ""
                         }`}
                       >
                         {st}
@@ -273,7 +275,9 @@ export function LibraryAdminBannersPage() {
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">From Date</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">To Date</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Enable/Disable</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Remove</th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                        Remove
+                      </th>
                       <th className="px-6 py-4 w-10 font-semibold"></th>
                     </tr>
                   </thead>
@@ -320,7 +324,10 @@ export function LibraryAdminBannersPage() {
                           </td>
 
                           {/* Status Switch Toggle Column */}
-                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <div className="flex items-center">
                               <Switch
                                 checked={item.enabled}
@@ -331,7 +338,10 @@ export function LibraryAdminBannersPage() {
                           </td>
 
                           {/* Remove Trash Button Column */}
-                          <td className="px-6 py-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 text-center whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <button
                               onClick={() => setDeletingBanner(item)}
                               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
@@ -406,9 +416,7 @@ export function LibraryAdminBannersPage() {
               >
                 <ArrowLeft size={16} />
               </button>
-              <span className="text-sm font-normal text-foreground">
-                Back to Image Banner
-              </span>
+              <span className="text-sm font-normal text-foreground">Back to Image Banner</span>
             </div>
 
             {/* Main Form Wrapper */}
@@ -434,7 +442,8 @@ export function LibraryAdminBannersPage() {
                   {/* Start Date - End Date (From Date - To Date) */}
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Start Date - End Date <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                      Start Date - End Date{" "}
+                      <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                     </label>
                     <div className="flex items-center gap-2 w-full">
                       <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">
@@ -480,7 +489,11 @@ export function LibraryAdminBannersPage() {
                     </div>
                     <label className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
                       <UploadCloud size={14} className="text-[var(--brand)]" />
-                      <span>{webCoverUploaded ? "Change Image Banner for Web" : "Choose Image Banner for Web"}</span>
+                      <span>
+                        {webCoverUploaded
+                          ? "Change Image Banner for Web"
+                          : "Choose Image Banner for Web"}
+                      </span>
                       <input
                         type="file"
                         accept="image/*"
@@ -516,7 +529,11 @@ export function LibraryAdminBannersPage() {
                     </div>
                     <label className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
                       <UploadCloud size={14} className="text-[var(--brand)]" />
-                      <span>{mobileCoverUploaded ? "Change Image Banner for Mobile" : "Choose Image Banner for Mobile"}</span>
+                      <span>
+                        {mobileCoverUploaded
+                          ? "Change Image Banner for Mobile"
+                          : "Choose Image Banner for Mobile"}
+                      </span>
                       <input
                         type="file"
                         accept="image/*"
@@ -559,7 +576,10 @@ export function LibraryAdminBannersPage() {
       </div>
 
       {/* Delete Confirmation Modal */}
-      <Dialog open={deletingBanner !== null} onOpenChange={(open) => !open && setDeletingBanner(null)}>
+      <Dialog
+        open={deletingBanner !== null}
+        onOpenChange={(open) => !open && setDeletingBanner(null)}
+      >
         <DialogContent className="max-w-sm bg-card border-border">
           <div className="text-center space-y-2 mb-4 pt-2">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-950/40 text-rose-600">
@@ -570,8 +590,8 @@ export function LibraryAdminBannersPage() {
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
               Are you sure you want to remove{" "}
-              <span className="font-semibold text-foreground">"{deletingBanner?.title}"</span>?
-              This banner will be deleted permanently.
+              <span className="font-semibold text-foreground">"{deletingBanner?.title}"</span>? This
+              banner will be deleted permanently.
             </DialogDescription>
           </div>
 

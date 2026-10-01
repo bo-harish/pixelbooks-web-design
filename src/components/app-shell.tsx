@@ -1,6 +1,8 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
+  Video,
+  Headphones,
   BookMarked,
   FileUp,
   Library,
@@ -57,18 +59,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { NotificationsPopover } from "@/components/notifications-popover";
-import { getHeaderProfile, getProfileRoute, getSettingsRoute } from "@/components/headers/get-header-profile";
+import {
+  getHeaderProfile,
+  getProfileRoute,
+  getSettingsRoute,
+} from "@/components/headers/get-header-profile";
 import { toast } from "sonner";
 import { usePublisherType, type PublisherUserType } from "@/hooks/use-publisher-type";
 import { useLibraryAdminType, type LibraryAdminUserType } from "@/hooks/use-library-admin-type";
-
 
 type NavItem = {
   label: string;
@@ -104,7 +104,10 @@ export function getRoleTheme(pathname: string) {
       name: "Library Admin",
     };
   }
-  if (pathname.startsWith("/author") || (typeof window !== "undefined" && window.location.search.includes("role=author"))) {
+  if (
+    pathname.startsWith("/author") ||
+    (typeof window !== "undefined" && window.location.search.includes("role=author"))
+  ) {
     return {
       color: "oklch(0.62 0.15 155)", // emerald green
       bgLight: "color-mix(in oklab, oklch(0.62 0.15 155) 14%, transparent)",
@@ -145,7 +148,7 @@ function isActivePath(
   pathname: string,
   to: string,
   currentSearch?: unknown,
-  itemSearch?: Record<string, string>
+  itemSearch?: Record<string, string>,
 ) {
   const normPath = normalizePath(pathname);
   const normTo = normalizePath(to);
@@ -153,7 +156,12 @@ function isActivePath(
   let pathMatches = false;
   if (normTo === "/") {
     pathMatches = normPath === "/";
-  } else if (normTo === "/library-admin" || normTo === "/publisher" || normTo === "/author" || normTo === "/pb-admin") {
+  } else if (
+    normTo === "/library-admin" ||
+    normTo === "/publisher" ||
+    normTo === "/author" ||
+    normTo === "/pb-admin"
+  ) {
     pathMatches = normPath === normTo;
   } else {
     pathMatches = normPath === normTo || normPath.startsWith(`${normTo}/`);
@@ -209,16 +217,14 @@ function getSections(
   adminMode?: "retail" | "library",
   hideRetailBookStore?: boolean,
   publisherUserType?: PublisherUserType,
-  libraryAdminUserType?: LibraryAdminUserType
+  libraryAdminUserType?: LibraryAdminUserType,
 ): NavSection[] {
   if (pathname.startsWith("/pb-admin")) {
     if (adminMode === "library" || pathname.startsWith("/pb-admin-lib")) {
       return [
         {
           heading: "Main",
-          items: [
-            { label: "Dashboard", icon: LayoutDashboard, to: "/pb-admin-lib" },
-          ],
+          items: [{ label: "Dashboard", icon: LayoutDashboard, to: "/pb-admin-lib" }],
         },
         {
           heading: "Manage Library",
@@ -235,9 +241,7 @@ function getSections(
     return [
       {
         heading: "Main",
-        items: [
-          { label: "Dashboard", icon: LayoutDashboard, to: "/pb-admin" },
-        ],
+        items: [{ label: "Dashboard", icon: LayoutDashboard, to: "/pb-admin" }],
       },
       {
         heading: "Reports",
@@ -343,8 +347,17 @@ function getSections(
             [
               { label: "Catalogue", icon: BookMarked, to: "/library-admin/catalogue" },
               { label: "Manage Borrowings", icon: FileEdit, to: "/library-admin/manage-ebooks" },
-              !hideRetailBookStore && !isStandardAdmin && { label: "Book Store", icon: Store, to: "/library-admin/book-store" },
-              !isStandardAdmin && { label: "Banners", icon: ImageIcon, to: "/library-admin/banners" },
+              !hideRetailBookStore &&
+                !isStandardAdmin && {
+                  label: "Book Store",
+                  icon: Store,
+                  to: "/library-admin/book-store",
+                },
+              !isStandardAdmin && {
+                label: "Banners",
+                icon: ImageIcon,
+                to: "/library-admin/banners",
+              },
             ] as (NavItem | false)[]
           ).filter(Boolean) as NavItem[],
         },
@@ -371,8 +384,10 @@ function getSections(
     ).filter(Boolean) as NavSection[];
   }
 
-
-  if (pathname.startsWith("/author") || (typeof window !== "undefined" && window.location.search.includes("role=author"))) {
+  if (
+    pathname.startsWith("/author") ||
+    (typeof window !== "undefined" && window.location.search.includes("role=author"))
+  ) {
     return [
       {
         heading: "Main",
@@ -408,13 +423,39 @@ function getSections(
       heading: "Main",
       items: (
         [
-          !isLibraryOnlyPublisher && { label: "Dashboard", icon: LayoutDashboard, to: "/publisher" },
+          !isLibraryOnlyPublisher && {
+            label: "Dashboard",
+            icon: LayoutDashboard,
+            to: "/publisher",
+          },
           { label: "eBook Catalogue", icon: BookMarked, to: "/publisher/catalogue" },
+          isLibraryOnlyPublisher && {
+            label: "Video Library",
+            icon: Video,
+            to: "/publisher/video-library",
+          },
+          isLibraryOnlyPublisher && {
+            label: "Audio Library",
+            icon: Headphones,
+            to: "/publisher/audio-library",
+          },
           { label: "Categories", icon: FolderTree, to: "/publisher/categories" },
-          isLibraryOnlyPublisher && { label: "Link Sources", icon: Network, to: "/publisher/link-sources" },
+          isLibraryOnlyPublisher && {
+            label: "Link Sources",
+            icon: Network,
+            to: "/publisher/link-sources",
+          },
           { label: "Catalogue Import", icon: FileUp, to: "/publisher/catalogue-import" },
-          !isLibraryOnlyPublisher && { label: "eBook Bundles", icon: Library, to: "/publisher/bundles" },
-          !isLibraryOnlyPublisher && { label: "Promo Codes", icon: TicketPercent, to: "/publisher/promo-codes" },
+          !isLibraryOnlyPublisher && {
+            label: "eBook Bundles",
+            icon: Library,
+            to: "/publisher/bundles",
+          },
+          !isLibraryOnlyPublisher && {
+            label: "Promo Codes",
+            icon: TicketPercent,
+            to: "/publisher/promo-codes",
+          },
         ] as (NavItem | false)[]
       ).filter(Boolean) as NavItem[],
     },
@@ -435,7 +476,6 @@ function getSections(
     },
   ].filter(Boolean) as NavSection[];
 }
-
 
 function Logo({ className = "h-7 w-7" }: { className?: string }) {
   return (
@@ -478,7 +518,8 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
   const { pathname } = useLocation();
   const [publisherUserType] = usePublisherType();
   const [libraryAdminUserType] = useLibraryAdminType();
-  const isCustomBranded = pathname.startsWith("/library-admin") || pathname.startsWith("/publisher");
+  const isCustomBranded =
+    pathname.startsWith("/library-admin") || pathname.startsWith("/publisher");
   const isCompletePublisher =
     pathname.startsWith("/publisher") && publisherUserType === "Complete Publisher";
   const isCompleteLibraryAdmin =
@@ -504,7 +545,11 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
       <div
         className={[
           "flex items-center gap-3 pt-4 pb-4",
-          collapsed ? "justify-center px-2" : isCompletePublisher ? "justify-center px-3.5" : "px-3.5",
+          collapsed
+            ? "justify-center px-2"
+            : isCompletePublisher
+              ? "justify-center px-3.5"
+              : "px-3.5",
         ].join(" ")}
       >
         {collapsed ? (
@@ -514,7 +559,11 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
             className="flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
             title="Return to Main Index"
           >
-            <img src={collapsedLogoSrc} alt={expandedLogoAlt} className="h-10 w-10 object-contain" />
+            <img
+              src={collapsedLogoSrc}
+              alt={expandedLogoAlt}
+              className="h-10 w-10 object-contain"
+            />
           </Link>
         ) : (
           <Link
@@ -581,7 +630,8 @@ function NavRow({
   const Icon = item.icon;
   const roleTheme = getRoleTheme(pathname);
   const hasSubItems = Boolean(item.subItems && item.subItems.length > 0);
-  const isChildActive = hasSubItems && item.subItems!.some((sub) => isActivePath(pathname, sub.to, search, sub.search));
+  const isChildActive =
+    hasSubItems && item.subItems!.some((sub) => isActivePath(pathname, sub.to, search, sub.search));
   const isParentOrChildActive = active || isChildActive;
 
   const [expanded, setExpanded] = useState<boolean>(isParentOrChildActive);
@@ -624,9 +674,9 @@ function NavRow({
           style={
             isParentOrChildActive
               ? {
-                backgroundColor: "var(--sidebar-highlight)",
-                boxShadow: "0 6px 20px -12px var(--brand-glow)",
-              }
+                  backgroundColor: "var(--sidebar-highlight)",
+                  boxShadow: "0 6px 20px -12px var(--brand-glow)",
+                }
               : undefined
           }
         >
@@ -639,7 +689,11 @@ function NavRow({
           <Icon
             size={19}
             strokeWidth={isParentOrChildActive ? 2.25 : 1.9}
-            className={isParentOrChildActive ? "" : "text-muted-foreground group-hover:text-sidebar-foreground"}
+            className={
+              isParentOrChildActive
+                ? ""
+                : "text-muted-foreground group-hover:text-sidebar-foreground"
+            }
             style={isParentOrChildActive ? { color: "var(--sidebar-highlight-icon)" } : undefined}
           />
           {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
@@ -687,8 +741,8 @@ function NavRow({
                   style={
                     subActive
                       ? {
-                        boxShadow: "0 6px 20px -12px var(--brand-glow)",
-                      }
+                          boxShadow: "0 6px 20px -12px var(--brand-glow)",
+                        }
                       : undefined
                   }
                 >
@@ -736,14 +790,23 @@ function SidebarBody({ collapsed, onNavigate }: { collapsed: boolean; onNavigate
   const hideBookStore = useHideRetailBookStore();
   const [publisherType] = usePublisherType();
   const [libraryAdminType] = useLibraryAdminType();
-  const currentSections = getSections(pathname, adminMode, hideBookStore, publisherType, libraryAdminType);
-
+  const currentSections = getSections(
+    pathname,
+    adminMode,
+    hideBookStore,
+    publisherType,
+    libraryAdminType,
+  );
 
   const handleModeSwitch = (newMode: "retail" | "library") => {
     setAdminMode(newMode);
     if (newMode === "retail" && pathname.startsWith("/pb-admin-lib")) {
       navigate({ to: "/pb-admin" });
-    } else if (newMode === "library" && !pathname.startsWith("/pb-admin-lib") && pathname.startsWith("/pb-admin")) {
+    } else if (
+      newMode === "library" &&
+      !pathname.startsWith("/pb-admin-lib") &&
+      pathname.startsWith("/pb-admin")
+    ) {
       navigate({ to: "/pb-admin-lib" });
     }
   };
@@ -824,7 +887,9 @@ function ProfileDropdown() {
   const headerProfile = getHeaderProfile(pathname);
   const isLibraryAdmin = pathname.startsWith("/library-admin");
   const isPBAdmin = pathname.startsWith("/pb-admin");
-  const isAuthor = pathname.startsWith("/author") || (typeof window !== "undefined" && window.location.search.includes("role=author"));
+  const isAuthor =
+    pathname.startsWith("/author") ||
+    (typeof window !== "undefined" && window.location.search.includes("role=author"));
   const [publisherType] = usePublisherType();
   const [libraryAdminType] = useLibraryAdminType();
 
@@ -953,13 +1018,17 @@ function ProfileDropdown() {
                   Confirm Log Out
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                  Logged in as <span className="font-semibold text-foreground">{headerProfile.name}</span> ({headerProfile.role})
+                  Logged in as{" "}
+                  <span className="font-semibold text-foreground">{headerProfile.name}</span> (
+                  {headerProfile.role})
                 </DialogDescription>
               </div>
             </div>
 
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Are you sure you want to log out of your <span className="font-medium text-foreground">{headerProfile.role}</span> account? You will need to sign in again to access your workspace.
+              Are you sure you want to log out of your{" "}
+              <span className="font-medium text-foreground">{headerProfile.role}</span> account? You
+              will need to sign in again to access your workspace.
             </p>
 
             {/* Action Buttons */}
@@ -1148,11 +1217,11 @@ export function AppShell({
               </SheetTrigger>
             </Sheet>
             <div className="flex items-center gap-3 min-w-0">
-              {pageIcon && (
-                <div className="shrink-0">{pageIcon}</div>
-              )}
+              {pageIcon && <div className="shrink-0">{pageIcon}</div>}
               <div className="min-w-0">
-                <h1 className="truncate text-xl font-semibold tracking-tight md:text-2xl">{title}</h1>
+                <h1 className="truncate text-xl font-semibold tracking-tight md:text-2xl">
+                  {title}
+                </h1>
                 {subtitle && (
                   <p className="mt-0.5 hidden truncate text-sm text-muted-foreground sm:block">
                     {subtitle}

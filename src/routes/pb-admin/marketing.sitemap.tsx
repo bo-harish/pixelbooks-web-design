@@ -35,7 +35,8 @@ export const Route = createFileRoute("/pb-admin/marketing/sitemap")({
       { title: "Sitemap Management — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage search engine XML sitemap URLs, priorities, crawl frequencies, and index status.",
+        content:
+          "Manage search engine XML sitemap URLs, priorities, crawl frequencies, and index status.",
       },
     ],
   }),
@@ -193,7 +194,7 @@ export function SitemapPage() {
     if (!searchQuery.trim()) return entries;
     const q = searchQuery.toLowerCase().trim();
     return entries.filter(
-      (item) => item.url.toLowerCase().includes(q) || item.category.toLowerCase().includes(q)
+      (item) => item.url.toLowerCase().includes(q) || item.category.toLowerCase().includes(q),
     );
   }, [entries, searchQuery]);
 
@@ -215,14 +216,14 @@ export function SitemapPage() {
           return { ...item, status: nextState };
         }
         return item;
-      })
+      }),
     );
   };
 
   // Change priority
   const handleChangePriority = (id: string, newPriority: string) => {
     setEntries((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, priority: newPriority } : item))
+      prev.map((item) => (item.id === id ? { ...item, priority: newPriority } : item)),
     );
     toast.success(`Priority updated to ${newPriority}`);
   };
@@ -230,7 +231,7 @@ export function SitemapPage() {
   // Change frequency
   const handleChangeFrequency = (id: string, newFreq: SitemapEntry["changeFrequency"]) => {
     setEntries((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, changeFrequency: newFreq } : item))
+      prev.map((item) => (item.id === id ? { ...item, changeFrequency: newFreq } : item)),
     );
     toast.success(`Change frequency updated to ${newFreq}`);
   };
@@ -289,7 +290,9 @@ export function SitemapPage() {
                   <th className="px-6 py-4 whitespace-nowrap font-semibold">Category</th>
                   <th className="px-6 py-4 whitespace-nowrap font-semibold">Priority</th>
                   <th className="px-6 py-4 whitespace-nowrap font-semibold">Change Frequency</th>
-                  <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Enable/Disable</th>
+                  <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                    Enable/Disable
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
@@ -307,10 +310,7 @@ export function SitemapPage() {
                   </tr>
                 ) : (
                   paginatedEntries.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="transition-colors hover:bg-muted/20"
-                    >
+                    <tr key={item.id} className="transition-colors hover:bg-muted/20">
                       {/* URL Column */}
                       <td className="px-6 py-4 font-normal text-foreground max-w-[450px]">
                         <div className="flex items-center gap-2">
@@ -398,10 +398,11 @@ export function SitemapPage() {
                   key={pageNum}
                   type="button"
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg font-semibold transition-colors cursor-pointer ${isActive
-                    ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] border border-[var(--brand)]/30 font-bold"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg font-semibold transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] border border-[var(--brand)]/30 font-bold"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
                 >
                   {pageNum}
                 </button>

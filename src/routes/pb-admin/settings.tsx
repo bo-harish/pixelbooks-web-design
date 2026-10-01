@@ -35,12 +35,14 @@ export const Route = createFileRoute("/pb-admin/settings")({
       { title: "Super Admin Settings — PixelBooks" },
       {
         name: "description",
-        content: "Configure Super Admin workspace preferences, color themes, password security, and platform policies.",
+        content:
+          "Configure Super Admin workspace preferences, color themes, password security, and platform policies.",
       },
       { property: "og:title", content: "Super Admin Settings — PixelBooks" },
       {
         property: "og:description",
-        content: "Configure Super Admin workspace preferences, color themes, password security, and platform policies.",
+        content:
+          "Configure Super Admin workspace preferences, color themes, password security, and platform policies.",
       },
     ],
   }),
@@ -68,8 +70,9 @@ function Toggle({
       style={{ backgroundColor: checked ? "var(--brand)" : "hsl(var(--muted))" }}
     >
       <span
-        className={`pointer-events-none inline-block h-[18px] w-[18px] transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${checked ? "translate-x-5" : "translate-x-0.5"
-          }`}
+        className={`pointer-events-none inline-block h-[18px] w-[18px] transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ${
+          checked ? "translate-x-5" : "translate-x-0.5"
+        }`}
       />
     </button>
   );
@@ -126,7 +129,9 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
             </span>
             <div>
               <h2 className="text-sm font-bold text-foreground">Change Password</h2>
-              <p className="text-[11px] text-muted-foreground">Update your Super Admin account credentials</p>
+              <p className="text-[11px] text-muted-foreground">
+                Update your Super Admin account credentials
+              </p>
             </div>
           </div>
           <button
@@ -306,7 +311,6 @@ function SetCommissionRatesModal({
   const [bulkRate, setBulkRate] = useState("");
   const [isSubmittingBulk, setIsSubmittingBulk] = useState(false);
 
-
   const handleSaveDefaults = (e: React.FormEvent) => {
     e.preventDefault();
     const pNum = parseFloat(pubDefaultRate);
@@ -326,7 +330,7 @@ function SetCommissionRatesModal({
       setIsSavingDefaults(false);
       onSaveDefaults(pubDefaultRate, authDefaultRate);
       toast.success(
-        `Default commission rates saved for upcoming registrations: Publishers ${pNum}%, Authors ${aNum}%!`
+        `Default commission rates saved for upcoming registrations: Publishers ${pNum}%, Authors ${aNum}%!`,
       );
       onClose();
     }, 350);
@@ -351,10 +355,12 @@ function SetCommissionRatesModal({
         bulkUserType === "All"
           ? "All Accounts"
           : bulkUserType === "Publisher"
-          ? "All Publishers"
-          : "All Authors";
+            ? "All Publishers"
+            : "All Authors";
       const scopeLabel = bulkScope ? ` (${bulkScope})` : "";
-      toast.success(`Successfully applied ${rateNum}% commission rate to ${targetLabel}${scopeLabel}!`);
+      toast.success(
+        `Successfully applied ${rateNum}% commission rate to ${targetLabel}${scopeLabel}!`,
+      );
       onClose();
     }, 400);
   };
@@ -371,8 +377,7 @@ function SetCommissionRatesModal({
         <div
           className="h-1 w-full shrink-0"
           style={{
-            background:
-              "linear-gradient(90deg, #6366f1 0%, var(--brand) 50%, #10b981 100%)",
+            background: "linear-gradient(90deg, #6366f1 0%, var(--brand) 50%, #10b981 100%)",
           }}
         />
 
@@ -458,9 +463,13 @@ function SetCommissionRatesModal({
               <div className="flex items-start gap-3 rounded-xl border border-[var(--brand)]/20 bg-[var(--sidebar-highlight)]/40 p-3.5 text-xs text-muted-foreground">
                 <Info size={16} className="shrink-0 text-[var(--brand)] mt-0.5" />
                 <div className="space-y-0.5">
-                  <p className="font-semibold text-foreground text-xs">Standard Registration Defaults</p>
+                  <p className="font-semibold text-foreground text-xs">
+                    Standard Registration Defaults
+                  </p>
                   <p className="text-[11px] leading-relaxed text-muted-foreground">
-                    Define separate default commission percentages for new publishers and authors joining PixelBooks. Existing accounts and custom negotiated agreements will not be altered.
+                    Define separate default commission percentages for new publishers and authors
+                    joining PixelBooks. Existing accounts and custom negotiated agreements will not
+                    be altered.
                   </p>
                 </div>
               </div>
@@ -477,7 +486,9 @@ function SetCommissionRatesModal({
                         </div>
                         <div>
                           <h3 className="text-xs font-bold text-foreground">Publishers</h3>
-                          <p className="text-[10px] text-muted-foreground">Upcoming Registrations</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            Upcoming Registrations
+                          </p>
                         </div>
                       </div>
                       <span className="rounded-md bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
@@ -485,7 +496,8 @@ function SetCommissionRatesModal({
                       </span>
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-snug">
-                      Platform commission rate applied to book sales from newly onboarded publishing houses.
+                      Platform commission rate applied to book sales from newly onboarded publishing
+                      houses.
                     </p>
                   </div>
 
@@ -512,7 +524,9 @@ function SetCommissionRatesModal({
 
                     {/* Presets */}
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] font-medium text-muted-foreground mr-1">Presets:</span>
+                      <span className="text-[10px] font-medium text-muted-foreground mr-1">
+                        Presets:
+                      </span>
                       {["10", "12", "15", "18", "20"].map((preset) => (
                         <button
                           key={preset}
@@ -541,7 +555,9 @@ function SetCommissionRatesModal({
                         </div>
                         <div>
                           <h3 className="text-xs font-bold text-foreground">Authors</h3>
-                          <p className="text-[10px] text-muted-foreground">Upcoming Registrations</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            Upcoming Registrations
+                          </p>
                         </div>
                       </div>
                       <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
@@ -549,7 +565,8 @@ function SetCommissionRatesModal({
                       </span>
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-snug">
-                      Platform commission rate applied to book sales from newly onboarded independent authors.
+                      Platform commission rate applied to book sales from newly onboarded
+                      independent authors.
                     </p>
                   </div>
 
@@ -576,7 +593,9 @@ function SetCommissionRatesModal({
 
                     {/* Presets */}
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] font-medium text-muted-foreground mr-1">Presets:</span>
+                      <span className="text-[10px] font-medium text-muted-foreground mr-1">
+                        Presets:
+                      </span>
                       {["10", "12", "15", "18", "20"].map((preset) => (
                         <button
                           key={preset}
@@ -606,11 +625,15 @@ function SetCommissionRatesModal({
             <form id="form-bulk-update" onSubmit={handleBulkSubmit} className="space-y-4">
               {/* Alert Banner */}
               <div className="flex items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-3.5 text-xs text-muted-foreground">
-                <AlertTriangle size={16} className="shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+                <AlertTriangle
+                  size={16}
+                  className="shrink-0 text-amber-600 dark:text-amber-400 mt-0.5"
+                />
                 <div className="space-y-0.5">
                   <p className="font-semibold text-foreground text-xs">Mass Account Rate Update</p>
                   <p className="text-[11px] leading-relaxed text-muted-foreground">
-                    Apply a uniform commission percentage across publishers and authors currently active on the platform.
+                    Apply a uniform commission percentage across publishers and authors currently
+                    active on the platform.
                   </p>
                 </div>
               </div>
@@ -664,8 +687,16 @@ function SetCommissionRatesModal({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {[
                     { id: "", label: "All Rates", desc: "Overrides all accounts" },
-                    { id: "Default Rate", label: "Default Rates Only", desc: "Preserves custom contracts" },
-                    { id: "Other Rate", label: "Custom Overrides Only", desc: "Updates special contracts" },
+                    {
+                      id: "Default Rate",
+                      label: "Default Rates Only",
+                      desc: "Preserves custom contracts",
+                    },
+                    {
+                      id: "Other Rate",
+                      label: "Custom Overrides Only",
+                      desc: "Updates special contracts",
+                    },
                   ].map((item) => (
                     <button
                       key={item.id}
@@ -708,7 +739,9 @@ function SetCommissionRatesModal({
 
                 {/* Presets */}
                 <div className="flex items-center gap-1.5 pt-1">
-                  <span className="text-[10px] font-medium text-muted-foreground mr-1">Presets:</span>
+                  <span className="text-[10px] font-medium text-muted-foreground mr-1">
+                    Presets:
+                  </span>
                   {["10", "12", "15", "18", "20"].map((preset) => (
                     <button
                       key={preset}
@@ -724,8 +757,6 @@ function SetCommissionRatesModal({
                     </button>
                   ))}
                 </div>
-
-
               </div>
             </form>
           )}
@@ -845,7 +876,8 @@ function SuperAdminSettingsPage() {
               <div>
                 <p className="text-sm font-bold text-foreground">Push Notifications</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Receive real-time notifications for user registrations, order approvals, and platform alerts.
+                  Receive real-time notifications for user registrations, order approvals, and
+                  platform alerts.
                 </p>
               </div>
             </div>
@@ -873,7 +905,8 @@ function SuperAdminSettingsPage() {
               <div>
                 <p className="text-sm font-bold text-foreground">Account Password</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Update your Super Admin login password to keep platform administrative access secure.
+                  Update your Super Admin login password to keep platform administrative access
+                  secure.
                 </p>
               </div>
             </div>
@@ -907,7 +940,8 @@ function SuperAdminSettingsPage() {
                   </span>
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Configure default commission rates for upcoming publisher and author registrations, or apply bulk updates to active accounts.
+                  Configure default commission rates for upcoming publisher and author
+                  registrations, or apply bulk updates to active accounts.
                 </p>
                 <div className="flex flex-wrap items-center gap-2 mt-2.5">
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
@@ -946,7 +980,8 @@ function SuperAdminSettingsPage() {
               <div>
                 <p className="text-sm font-bold text-foreground">Privacy Policy</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Review platform data policies, institutional privacy safeguards, and user telemetry governance.
+                  Review platform data policies, institutional privacy safeguards, and user
+                  telemetry governance.
                 </p>
               </div>
             </div>
@@ -975,7 +1010,8 @@ function SuperAdminSettingsPage() {
               <div>
                 <p className="text-sm font-bold text-foreground">Terms and Conditions</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Institutional digital publishing agreements, licensing frameworks, and platform governance terms.
+                  Institutional digital publishing agreements, licensing frameworks, and platform
+                  governance terms.
                 </p>
               </div>
             </div>
@@ -1020,8 +1056,9 @@ function SuperAdminSettingsPage() {
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground max-w-2xl">
-                  Choose from 10 curated color themes to personalize your Super Admin workspace. The active theme
-                  updates sidebar accents, interactive buttons, status badges, and interface highlights in real-time.
+                  Choose from 10 curated color themes to personalize your Super Admin workspace. The
+                  active theme updates sidebar accents, interactive buttons, status badges, and
+                  interface highlights in real-time.
                 </p>
               </div>
             </div>
@@ -1033,9 +1070,7 @@ function SuperAdminSettingsPage() {
                   className="h-3.5 w-3.5 rounded-full ring-2 ring-card shadow-2xs"
                   style={{ backgroundColor: currentTheme.primaryColor }}
                 />
-                <span className="text-xs font-semibold text-foreground">
-                  {currentTheme.name}
-                </span>
+                <span className="text-xs font-semibold text-foreground">{currentTheme.name}</span>
                 {isDefault && (
                   <span className="rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                     Default
@@ -1080,7 +1115,9 @@ function SuperAdminSettingsPage() {
               <div>
                 <p className="text-xs font-bold text-foreground">
                   Active Theme: {currentTheme.name}{" "}
-                  <span className="font-normal text-muted-foreground">— {currentTheme.description}</span>
+                  <span className="font-normal text-muted-foreground">
+                    — {currentTheme.description}
+                  </span>
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   <span
@@ -1134,10 +1171,11 @@ function SuperAdminSettingsPage() {
                   type="button"
                   id={`btn-theme-${theme.id}`}
                   onClick={() => handleSelectTheme(theme.id, theme.name)}
-                  className={`group relative flex flex-col text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer ${isSelected
-                    ? "border-[var(--brand)] bg-card shadow-md ring-2 ring-[var(--brand)]/20"
-                    : "border-border bg-card/60 hover:bg-secondary/40 hover:border-border/80 hover:shadow-xs"
-                    }`}
+                  className={`group relative flex flex-col text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer ${
+                    isSelected
+                      ? "border-[var(--brand)] bg-card shadow-md ring-2 ring-[var(--brand)]/20"
+                      : "border-border bg-card/60 hover:bg-secondary/40 hover:border-border/80 hover:shadow-xs"
+                  }`}
                 >
                   {/* Top Row: Swatches & Selection Badge */}
                   <div className="flex items-center justify-between w-full mb-3">
@@ -1160,9 +1198,7 @@ function SuperAdminSettingsPage() {
                         <Check size={12} strokeWidth={3} />
                       </span>
                     ) : (
-                      <span
-                        className="rounded-md px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-muted-foreground bg-secondary/80 border border-border/50"
-                      >
+                      <span className="rounded-md px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-muted-foreground bg-secondary/80 border border-border/50">
                         {theme.tag}
                       </span>
                     )}
@@ -1209,9 +1245,7 @@ function SuperAdminSettingsPage() {
       </div>
 
       {/* ─── MODALS ─────────────────────────────────────────────────────────── */}
-      {passwordModalOpen && (
-        <ChangePasswordModal onClose={() => setPasswordModalOpen(false)} />
-      )}
+      {passwordModalOpen && <ChangePasswordModal onClose={() => setPasswordModalOpen(false)} />}
 
       {commissionRatesModalOpen && (
         <SetCommissionRatesModal
@@ -1232,20 +1266,22 @@ function SuperAdminSettingsPage() {
           <div className="space-y-3">
             <h3 className="font-bold text-foreground text-sm">1. Information Collection & Usage</h3>
             <p>
-              PixelBooks collects and processes platform organization metadata, user profiles, and catalogue
-              identifiers exclusively for digital rights management, catalogue indexing, and system operation.
+              PixelBooks collects and processes platform organization metadata, user profiles, and
+              catalogue identifiers exclusively for digital rights management, catalogue indexing,
+              and system operation.
             </p>
 
             <h3 className="font-bold text-foreground text-sm">2. Content Protection</h3>
             <p>
-              Uploaded manuscript files (ePUB, PDF) are stored in secure encrypted vaults with watermarked DRM
-              protection. No unauthorized scraping or extraction is permitted.
+              Uploaded manuscript files (ePUB, PDF) are stored in secure encrypted vaults with
+              watermarked DRM protection. No unauthorized scraping or extraction is permitted.
             </p>
 
             <h3 className="font-bold text-foreground text-sm">3. Administrative Auditing</h3>
             <p>
-              All super administrative actions, status approvals, commission adjustments, and role updates are
-              logged in immutable audit records to maintain full compliance and accountability.
+              All super administrative actions, status approvals, commission adjustments, and role
+              updates are logged in immutable audit records to maintain full compliance and
+              accountability.
             </p>
           </div>
         </DocumentModal>
@@ -1259,22 +1295,27 @@ function SuperAdminSettingsPage() {
           onClose={() => setTermsModalOpen(false)}
         >
           <div className="space-y-3">
-            <h3 className="font-bold text-foreground text-sm">1. Administrative Responsibilities</h3>
+            <h3 className="font-bold text-foreground text-sm">
+              1. Administrative Responsibilities
+            </h3>
             <p>
-              Super Administrators hold fiduciary responsibility over platform access, role delegations, institutional
-              licenses, and content review standards across all PixelBooks portals.
+              Super Administrators hold fiduciary responsibility over platform access, role
+              delegations, institutional licenses, and content review standards across all
+              PixelBooks portals.
             </p>
 
             <h3 className="font-bold text-foreground text-sm">2. Royalties & Settlements</h3>
             <p>
-              Royalties are calculated based on agreed contractual margins per title. TDS deductions are made in
-              accordance with prevailing statutory taxation schedules.
+              Royalties are calculated based on agreed contractual margins per title. TDS deductions
+              are made in accordance with prevailing statutory taxation schedules.
             </p>
 
-            <h3 className="font-bold text-foreground text-sm">3. Warranties & Platform Integrity</h3>
+            <h3 className="font-bold text-foreground text-sm">
+              3. Warranties & Platform Integrity
+            </h3>
             <p>
-              Administrative privileges must be utilized exclusively in adherence to statutory data protection
-              laws and PixelBooks cybersecurity standards.
+              Administrative privileges must be utilized exclusively in adherence to statutory data
+              protection laws and PixelBooks cybersecurity standards.
             </p>
           </div>
         </DocumentModal>

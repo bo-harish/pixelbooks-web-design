@@ -131,9 +131,7 @@ function PBAdminLibraryOrderDetailPage() {
   const { id } = Route.useParams();
   const order = mockOrderDetails[id] || defaultOrderDetail;
 
-  const [additionalDiscount, setAdditionalDiscount] = useState<number>(
-    order.additionalDiscount
-  );
+  const [additionalDiscount, setAdditionalDiscount] = useState<number>(order.additionalDiscount);
 
   // Modal States
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
@@ -394,12 +392,8 @@ function PBAdminLibraryOrderDetailPage() {
                     <td className="py-4 pr-4 pl-2 font-mono text-sm font-semibold text-foreground">
                       #Inv08978
                     </td>
-                    <td className="py-4 px-4 text-sm text-foreground">
-                      04 Aug 2026
-                    </td>
-                    <td className="py-4 px-4 text-sm font-medium text-foreground">
-                      UPI
-                    </td>
+                    <td className="py-4 px-4 text-sm text-foreground">04 Aug 2026</td>
+                    <td className="py-4 px-4 text-sm font-medium text-foreground">UPI</td>
                     <td className="py-4 pl-4 pr-2 text-right font-bold text-foreground">
                       {order.totalPrice || "₹9,345.00"}
                     </td>

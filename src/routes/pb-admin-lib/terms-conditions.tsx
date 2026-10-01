@@ -10,10 +10,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import {
-  initialTermsConditions,
-  type TermsConditionItem,
-} from "@/lib/terms-conditions-data";
+import { initialTermsConditions, type TermsConditionItem } from "@/lib/terms-conditions-data";
 
 export const Route = createFileRoute("/pb-admin-lib/terms-conditions")({
   component: TermsConditionsListPage,
@@ -27,26 +24,17 @@ function TermsConditionsListPage() {
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
 
-  const roleOptions = [
-    "All Roles",
-    "Publisher",
-    "Customer",
-    "Author",
-    "Library",
-    "Library User",
-  ];
+  const roleOptions = ["All Roles", "Publisher", "Customer", "Author", "Library", "Library User"];
 
   const statusOptions = ["All Statuses", "Active", "Inactive"];
 
   const filteredTerms = useMemo(() => {
     return termsList.filter((item) => {
       // Role filter match
-      const matchesRole =
-        selectedRole === "All Roles" || item.role === selectedRole;
+      const matchesRole = selectedRole === "All Roles" || item.role === selectedRole;
 
       // Status filter match
-      const matchesStatus =
-        selectedStatus === "All Statuses" || item.status === selectedStatus;
+      const matchesStatus = selectedStatus === "All Statuses" || item.status === selectedStatus;
 
       return matchesRole && matchesStatus;
     });
@@ -67,9 +55,7 @@ function TermsConditionsListPage() {
           >
             <ArrowLeft size={16} />
           </Link>
-          <span className="text-sm font-semibold text-foreground">
-            Back to Settings
-          </span>
+          <span className="text-sm font-semibold text-foreground">Back to Settings</span>
         </div>
 
         {/* Filter & Action Toolbar */}

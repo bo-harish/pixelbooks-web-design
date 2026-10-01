@@ -12,17 +12,14 @@ import {
   ChevronDown,
   AlertCircle,
   GripVertical,
+  BookOpen,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { usePublisherType } from "@/hooks/use-publisher-type";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import {
-  MASTER_CATEGORIES,
-  type SubcategoryItem,
-  getSubcategoryName,
-} from "@/lib/categories-data";
+import { MASTER_CATEGORIES, type SubcategoryItem, getSubcategoryName } from "@/lib/categories-data";
 
 export const Route = createFileRoute("/publisher/categories")({
   head: () => ({
@@ -44,6 +41,7 @@ export interface CategoryItem {
   name: string;
   subcategories: SubcategoryItem[];
   views: number;
+  bookCount?: number;
   status: "Enabled" | "Disabled";
   displayOrder: number;
   isCustom?: boolean;
@@ -57,6 +55,7 @@ const INITIAL_CATEGORIES: CategoryItem[] = MASTER_CATEGORIES.slice(0, 10).map((m
   name: m.name,
   subcategories: [...m.subcategories],
   views: m.views,
+  bookCount: m.bookCount ?? 0,
   status: m.status,
   displayOrder: m.displayOrder ?? idx + 1,
 }));
@@ -66,7 +65,7 @@ const PREFERRED_SUBCATEGORY_CATEGORY_NAMES = ["drama", "fantasy fiction"];
 
 function getMasterSubcategoriesForCategory(category: CategoryItem): SubcategoryItem[] {
   const masterMatch = MASTER_CATEGORIES.find(
-    (m) => m.id === category.id || m.name.toLowerCase() === category.name.toLowerCase()
+    (m) => m.id === category.id || m.name.toLowerCase() === category.name.toLowerCase(),
   );
 
   if (masterMatch?.subcategories && masterMatch.subcategories.length > 0) {
@@ -94,7 +93,7 @@ function ensureAtLeastTwoCategoriesWithSubcategories(items: CategoryItem[]): Cat
   }
 
   let categoriesWithSubs = normalized.filter(
-    (item) => (item.subcategories?.length ?? 0) > 0
+    (item) => (item.subcategories?.length ?? 0) > 0,
   ).length;
   if (categoriesWithSubs >= 2) return normalized;
 
@@ -120,7 +119,8 @@ function ManageLibraryCategoryPage() {
   const isCompletePublisher = publisherType === "Complete Publisher";
   const isAuthor =
     typeof window !== "undefined" &&
-    (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
+    (window.location.pathname.startsWith("/author") ||
+      window.location.search.includes("role=author"));
 
   useEffect(() => {
     if (isAuthor) {
@@ -139,15 +139,23 @@ function ManageLibraryCategoryPage() {
         if (stored) {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            return ensureAtLeastTwoCategoriesWithSubcategories(parsed.map((item: any, idx: number) => ({
-              id: item.id || `cat-${idx + 1}`,
-              name: item.name || "Untitled Category",
-              subcategories: Array.isArray(item.subcategories) ? item.subcategories : [],
-              views: typeof item.views === "number" ? item.views : 0,
-              status: item.status === "Disabled" ? "Disabled" : "Enabled",
-              displayOrder: typeof item.displayOrder === "number" ? item.displayOrder : idx + 1,
-              isCustom: Boolean(item.isCustom),
-            })));
+            return ensureAtLeastTwoCategoriesWithSubcategories(
+              parsed.map((item: any, idx: number) => {
+                const masterMatch = MASTER_CATEGORIES.find(
+                  (m) => m.id === item.id || m.name.toLowerCase() === (item.name || "").toLowerCase(),
+                );
+                return {
+                  id: item.id || `cat-${idx + 1}`,
+                  name: item.name || "Untitled Category",
+                  subcategories: Array.isArray(item.subcategories) ? item.subcategories : [],
+                  views: typeof item.views === "number" ? item.views : (masterMatch?.views ?? 0),
+                  bookCount: typeof item.bookCount === "number" ? item.bookCount : (masterMatch?.bookCount ?? 0),
+                  status: item.status === "Disabled" ? "Disabled" : "Enabled",
+                  displayOrder: typeof item.displayOrder === "number" ? item.displayOrder : idx + 1,
+                  isCustom: Boolean(item.isCustom),
+                };
+              }),
+            );
           }
         }
       } catch (e) {
@@ -163,7 +171,7 @@ function ManageLibraryCategoryPage() {
       try {
         localStorage.setItem(LIBRARY_CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
         window.dispatchEvent(
-          new CustomEvent("pixelbooks_library_categories_updated", { detail: categories })
+          new CustomEvent("pixelbooks_library_categories_updated", { detail: categories }),
         );
       } catch (e) {
         console.error("Error saving categories to localStorage", e);
@@ -210,10 +218,7 @@ function ManageLibraryCategoryPage() {
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(e.target as Node)
-      ) {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(e.target as Node)) {
         setIsCategoryDropdownOpen(false);
       }
     };
@@ -233,20 +238,14 @@ function ManageLibraryCategoryPage() {
   const filteredMasterOptions = useMemo(() => {
     const q = categorySearchTerm.toLowerCase().trim();
     if (!q) return allSystemCategories;
-    return allSystemCategories.filter((cat) =>
-      cat.name.toLowerCase().includes(q)
-    );
+    return allSystemCategories.filter((cat) => cat.name.toLowerCase().includes(q));
   }, [allSystemCategories, categorySearchTerm]);
 
   // Existing System Categories - categories already added in the library show at the bottom of the list
   const sortedMasterOptions = useMemo(() => {
     return [...filteredMasterOptions].sort((a, b) => {
-      const aInLib = categories.some(
-        (c) => c.name.toLowerCase() === a.name.toLowerCase()
-      );
-      const bInLib = categories.some(
-        (c) => c.name.toLowerCase() === b.name.toLowerCase()
-      );
+      const aInLib = categories.some((c) => c.name.toLowerCase() === a.name.toLowerCase());
+      const bInLib = categories.some((c) => c.name.toLowerCase() === b.name.toLowerCase());
       if (aInLib !== bInLib) {
         return aInLib ? 1 : -1; // Categories not in library first (top), in library last (bottom)
       }
@@ -269,7 +268,7 @@ function ManageLibraryCategoryPage() {
         const query = searchQuery.toLowerCase();
         const matchesName = (cat.name || "").toLowerCase().includes(query);
         const matchesSubcat = (cat.subcategories || []).some((sub) =>
-          getSubcategoryName(sub).toLowerCase().includes(query)
+          getSubcategoryName(sub).toLowerCase().includes(query),
         );
         if (!matchesName && !matchesSubcat) return false;
       }
@@ -365,7 +364,7 @@ function ManageLibraryCategoryPage() {
           return { ...c, status: nextStatus };
         }
         return c;
-      })
+      }),
     );
   };
 
@@ -415,7 +414,7 @@ function ManageLibraryCategoryPage() {
 
   const handleSelectMasterCategory = (cat: (typeof MASTER_CATEGORIES)[number]) => {
     const isAlreadyInLibrary = categories.some(
-      (c) => c.name.toLowerCase() === cat.name.toLowerCase()
+      (c) => c.name.toLowerCase() === cat.name.toLowerCase(),
     );
     if (isAlreadyInLibrary) {
       toast.error(`Category "${cat.name}" already exists in your library.`);
@@ -434,7 +433,6 @@ function ManageLibraryCategoryPage() {
     } else {
       setFormSubcategories([]);
     }
-
   };
 
   const handleAddSubcategory = () => {
@@ -443,7 +441,7 @@ function ManageLibraryCategoryPage() {
     setErrorMessage("");
     if (
       formSubcategories.some(
-        (sub) => getSubcategoryName(sub).toLowerCase() === trimmed.toLowerCase()
+        (sub) => getSubcategoryName(sub).toLowerCase() === trimmed.toLowerCase(),
       )
     ) {
       toast.error("Subcategory already exists.");
@@ -479,9 +477,7 @@ function ManageLibraryCategoryPage() {
     setErrorMessage("");
     if (
       formSubcategories.some(
-        (sub, i) =>
-          i !== index &&
-          getSubcategoryName(sub).toLowerCase() === trimmed.toLowerCase()
+        (sub, i) => i !== index && getSubcategoryName(sub).toLowerCase() === trimmed.toLowerCase(),
       )
     ) {
       toast.error("Subcategory already exists.");
@@ -489,9 +485,7 @@ function ManageLibraryCategoryPage() {
       return;
     }
 
-    setFormSubcategories((prev) =>
-      prev.map((sub, i) => (i === index ? trimmed : sub))
-    );
+    setFormSubcategories((prev) => prev.map((sub, i) => (i === index ? trimmed : sub)));
     setEditingSubcatIndex(null);
     setEditingSubcatText("");
   };
@@ -525,21 +519,21 @@ function ManageLibraryCategoryPage() {
         prev.map((c) =>
           c.id === editingCategory.id
             ? {
-              ...c,
-              name: lockedCategoryName,
-              subcategories: finalSubcategories,
-              status: formStatus,
-              displayOrder: finalDisplayOrder,
-            }
-            : c
-        )
+                ...c,
+                name: lockedCategoryName,
+                subcategories: finalSubcategories,
+                status: formStatus,
+                displayOrder: finalDisplayOrder,
+              }
+            : c,
+        ),
       );
       toast.success(`Category "${lockedCategoryName}" updated successfully`);
       setIsModalOpen(false);
     } else {
       // Add Mode: Single Category
       const isDuplicate = categories.some(
-        (c) => c.name.toLowerCase() === trimmedName.toLowerCase()
+        (c) => c.name.toLowerCase() === trimmedName.toLowerCase(),
       );
       if (isDuplicate) {
         toast.error("Category already exists.");
@@ -552,7 +546,7 @@ function ManageLibraryCategoryPage() {
       const finalDisplayOrder = isNaN(parsedOrder) || parsedOrder < 1 ? maxOrder + 1 : parsedOrder;
 
       const masterCat = MASTER_CATEGORIES.find(
-        (m) => m.name.toLowerCase() === trimmedName.toLowerCase()
+        (m) => m.name.toLowerCase() === trimmedName.toLowerCase(),
       );
 
       const newCat: CategoryItem = {
@@ -560,6 +554,7 @@ function ManageLibraryCategoryPage() {
         name: trimmedName,
         subcategories: finalSubcategories,
         views: masterCat ? masterCat.views : 0,
+        bookCount: masterCat ? masterCat.bookCount : 0,
         status: formStatus,
         displayOrder: finalDisplayOrder,
         isCustom: !masterCat,
@@ -582,7 +577,6 @@ function ManageLibraryCategoryPage() {
       subtitle="Overview, subcategories, display order, and status control for book categories"
     >
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-
         {/* Search & Filter Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Search Box */}
@@ -639,6 +633,7 @@ function ManageLibraryCategoryPage() {
                   <th className="py-4 pl-6 pr-4 font-semibold text-center w-28">Display Order</th>
                   <th className="py-4 pr-4 font-semibold min-w-[180px]">Category Name</th>
                   <th className="py-4 pr-4 font-semibold">Subcategories</th>
+                  <th className="py-4 pr-4 font-semibold text-center w-28">Books</th>
                   <th className="py-4 pr-4 font-semibold text-center w-24">Views</th>
                   {showStatusColumn && (
                     <th className="py-4 pr-4 font-semibold text-center w-28">Status</th>
@@ -648,7 +643,10 @@ function ManageLibraryCategoryPage() {
               <tbody className="divide-y divide-border/60">
                 {paginatedCategories.length === 0 ? (
                   <tr>
-                    <td colSpan={showStatusColumn ? 5 : 4} className="py-12 text-center text-xs text-muted-foreground">
+                    <td
+                      colSpan={showStatusColumn ? 6 : 5}
+                      className="py-12 text-center text-xs text-muted-foreground"
+                    >
                       No categories found matching your search criteria.
                     </td>
                   </tr>
@@ -666,11 +664,13 @@ function ManageLibraryCategoryPage() {
                         onDragLeave={(e) => handleDragLeave(e, item.id)}
                         onDrop={(e) => handleDrop(e, item.id)}
                         onDragEnd={handleDragEnd}
-                        className={`group border-b border-border/60 transition-all last:border-0 hover:bg-secondary/50 ${isDragging ? "opacity-35 bg-secondary/60 scale-[0.99]" : ""
-                          } ${isDragOver
+                        className={`group border-b border-border/60 transition-all last:border-0 hover:bg-secondary/50 ${
+                          isDragging ? "opacity-35 bg-secondary/60 scale-[0.99]" : ""
+                        } ${
+                          isDragOver
                             ? "border-t-2 border-t-[var(--brand)] bg-[var(--brand)]/10"
                             : ""
-                          }`}
+                        }`}
                       >
                         {/* Display Order Column with Drag Handle */}
                         <td className="py-4 pl-6 pr-4 text-center align-top select-none">
@@ -729,6 +729,14 @@ function ManageLibraryCategoryPage() {
                           </div>
                         </td>
 
+                        {/* Books Count Column */}
+                        <td className="py-4 pr-4 text-center align-top">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/60 px-2.5 py-0.5 text-xs font-semibold text-foreground">
+                            <BookOpen size={12} className="text-muted-foreground" />
+                            <span>{item.bookCount ?? 0}</span>
+                          </span>
+                        </td>
+
                         {/* Views Column */}
                         <td className="py-4 pr-4 text-center font-medium text-foreground align-top">
                           {item.views}
@@ -755,12 +763,9 @@ function ManageLibraryCategoryPage() {
           {/* Table Footer / Pagination */}
           <div className="flex flex-col gap-3 border-t border-border px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground font-medium">
-              Showing{" "}
-              {paginatedCategories.length > 0
-                ? (currentPage - 1) * itemsPerPage + 1
-                : 0}{" "}
-              to {Math.min(currentPage * itemsPerPage, simulatedTotalBase)} of{" "}
-              {simulatedTotalBase} entries
+              Showing {paginatedCategories.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
+              {Math.min(currentPage * itemsPerPage, simulatedTotalBase)} of {simulatedTotalBase}{" "}
+              entries
             </p>
 
             <div className="flex items-center gap-1.5">
@@ -783,21 +788,20 @@ function ManageLibraryCategoryPage() {
               </button>
 
               {/* Page numbers */}
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => i + 1).map(
-                (pg) => (
-                  <button
-                    key={pg}
-                    type="button"
-                    onClick={() => setCurrentPage(pg)}
-                    className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${pg === currentPage
-                        ? "bg-[var(--brand)] text-white shadow-2xs"
-                        : "border border-border bg-card text-foreground hover:bg-secondary"
-                      }`}
-                  >
-                    {pg}
-                  </button>
-                )
-              )}
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => i + 1).map((pg) => (
+                <button
+                  key={pg}
+                  type="button"
+                  onClick={() => setCurrentPage(pg)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
+                    pg === currentPage
+                      ? "bg-[var(--brand)] text-white shadow-2xs"
+                      : "border border-border bg-card text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {pg}
+                </button>
+              ))}
 
               <button
                 type="button"
@@ -819,7 +823,6 @@ function ManageLibraryCategoryPage() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Add / Edit Category Modal */}
@@ -849,9 +852,9 @@ function ManageLibraryCategoryPage() {
             <form onSubmit={handleSaveCategory} className="space-y-5">
               {isCompletePublisher && (
                 <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-3 text-xs text-foreground">
-                  <span className="font-semibold">Note:</span>{" "}
-                  Please review the category/subcategory name carefully before adding. Once added, the category
-                  cannot be edited or deleted. Any changes must be requested through the System
+                  <span className="font-semibold">Note:</span> Please review the
+                  category/subcategory name carefully before adding. Once added, the category cannot
+                  be edited or deleted. Any changes must be requested through the System
                   Administrator.
                 </div>
               )}
@@ -865,7 +868,11 @@ function ManageLibraryCategoryPage() {
 
               {editingCategory ? (
                 /* Edit Mode: Category Name with optional Display Order for library-only publisher */
-                <div className={showStatusColumn ? "grid grid-cols-1 sm:grid-cols-3 gap-4" : "space-y-1.5"}>
+                <div
+                  className={
+                    showStatusColumn ? "grid grid-cols-1 sm:grid-cols-3 gap-4" : "space-y-1.5"
+                  }
+                >
                   <div className={showStatusColumn ? "sm:col-span-2" : ""}>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Category Name <span className="text-destructive">*</span>
@@ -907,8 +914,15 @@ function ManageLibraryCategoryPage() {
                 </div>
               ) : (
                 /* Add Mode: Single Category Name with System Categories Dropdown */
-                <div className={showStatusColumn ? "grid grid-cols-1 sm:grid-cols-3 gap-4" : "space-y-1.5"}>
-                  <div className={showStatusColumn ? "sm:col-span-2 space-y-1.5" : "space-y-1.5"} ref={categoryDropdownRef}>
+                <div
+                  className={
+                    showStatusColumn ? "grid grid-cols-1 sm:grid-cols-3 gap-4" : "space-y-1.5"
+                  }
+                >
+                  <div
+                    className={showStatusColumn ? "sm:col-span-2 space-y-1.5" : "space-y-1.5"}
+                    ref={categoryDropdownRef}
+                  >
                     <div className="flex items-center justify-between">
                       <label className="block text-xs font-semibold text-foreground">
                         Category Name <span className="text-destructive">*</span>
@@ -1010,13 +1024,13 @@ function ManageLibraryCategoryPage() {
                                 const isSelected =
                                   formName.toLowerCase() === cat.name.toLowerCase();
                                 const isAlreadyInLibrary = categories.some(
-                                  (c) => c.name.toLowerCase() === cat.name.toLowerCase()
+                                  (c) => c.name.toLowerCase() === cat.name.toLowerCase(),
                                 );
 
                                 const prevCat = index > 0 ? sortedMasterOptions[index - 1] : null;
                                 const prevInLib = prevCat
                                   ? categories.some(
-                                      (c) => c.name.toLowerCase() === prevCat.name.toLowerCase()
+                                      (c) => c.name.toLowerCase() === prevCat.name.toLowerCase(),
                                     )
                                   : false;
                                 const showAlreadyInLibraryHeader =
@@ -1033,8 +1047,8 @@ function ManageLibraryCategoryPage() {
                                               categories.filter((c) =>
                                                 allSystemCategories.some(
                                                   (m) =>
-                                                    m.name.toLowerCase() === c.name.toLowerCase()
-                                                )
+                                                    m.name.toLowerCase() === c.name.toLowerCase(),
+                                                ),
                                               ).length
                                             }
                                           </span>
@@ -1052,8 +1066,8 @@ function ManageLibraryCategoryPage() {
                                         isSelected
                                           ? "bg-[var(--sidebar-highlight)]/70 font-semibold text-[var(--brand)]"
                                           : isAlreadyInLibrary
-                                          ? "opacity-60 text-muted-foreground bg-muted/20 cursor-not-allowed"
-                                          : "text-foreground"
+                                            ? "opacity-60 text-muted-foreground bg-muted/20 cursor-not-allowed"
+                                            : "text-foreground"
                                       }`}
                                     >
                                       <div className="flex items-center gap-2.5 min-w-0">
@@ -1109,174 +1123,176 @@ function ManageLibraryCategoryPage() {
               )}
 
               {/* Subcategories Section (Optional) */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-xs font-semibold text-foreground">
-                      Subcategories <span className="text-[11px] font-normal text-muted-foreground">(Optional)</span>
-                    </label>
-                    {editingCategory && (
-                      <span className="text-[11px] text-muted-foreground">Existing entries are read-only in edit mode</span>
-                    )}
-                    
-                  </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-foreground">
+                    Subcategories{" "}
+                    <span className="text-[11px] font-normal text-muted-foreground">
+                      (Optional)
+                    </span>
+                  </label>
+                  {editingCategory && (
+                    <span className="text-[11px] text-muted-foreground">
+                      Existing entries are read-only in edit mode
+                    </span>
+                  )}
+                </div>
 
-                  {/* Add new subcategory card */}
-                  <div className="rounded-xl border border-border bg-secondary/20 p-3.5 space-y-2.5">
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        placeholder="Subcategory name"
-                        value={newSubcatInput}
-                        onChange={(e) => {
-                          setNewSubcatInput(e.target.value);
-                          setErrorMessage("");
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            handleAddSubcategory();
-                          }
-                        }}
-                        className="h-10 flex-1 rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddSubcategory}
-                        className="h-10 px-4 rounded-lg bg-[var(--brand)] text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5"
-                      >
-                        <Plus size={14} />
-                        <span>Add</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Editable Subcategories List */}
-                  {formSubcategories.length > 0 ? (
-                    <div className="flex flex-col gap-2 rounded-xl border border-border bg-secondary/30 p-3 max-h-60 overflow-y-auto">
-                      {formSubcategories.map((sub, idx) => {
-                        const subName = getSubcategoryName(sub);
-                        const isEditing = editingSubcatIndex === idx;
-
-                        if (editingCategory) {
-                          return (
-                            <div
-                              key={idx}
-                              className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-foreground flex items-center cursor-not-allowed"
-                              title="Subcategory is read-only in edit mode"
-                            >
-                              <span className="truncate">{subName}</span>
-                            </div>
-                          );
+                {/* Add new subcategory card */}
+                <div className="rounded-xl border border-border bg-secondary/20 p-3.5 space-y-2.5">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Subcategory name"
+                      value={newSubcatInput}
+                      onChange={(e) => {
+                        setNewSubcatInput(e.target.value);
+                        setErrorMessage("");
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddSubcategory();
                         }
+                      }}
+                      className="h-10 flex-1 rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddSubcategory}
+                      className="h-10 px-4 rounded-lg bg-[var(--brand)] text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5"
+                    >
+                      <Plus size={14} />
+                      <span>Add</span>
+                    </button>
+                  </div>
+                </div>
 
-                        if (isEditing && !isCompletePublisher && !editingCategory) {
-                          return (
-                            <div
-                              key={idx}
-                              className="rounded-lg border border-[var(--brand)]/40 bg-card p-3 space-y-2.5 shadow-xs animate-in fade-in-50"
-                            >
-                              <div className="flex items-center gap-2">
-                                <input
-                                  type="text"
-                                  value={editingSubcatText}
-                                  onChange={(e) => setEditingSubcatText(e.target.value)}
-                                  placeholder="Subcategory name"
-                                  className="h-8 flex-1 rounded-md border border-border bg-white dark:bg-card px-2.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
-                                  autoFocus
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                      e.preventDefault();
-                                      handleSaveSubcategoryEdit(idx);
-                                    } else if (e.key === "Escape") {
-                                      setEditingSubcatIndex(null);
-                                    }
-                                  }}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => handleSaveSubcategoryEdit(idx)}
-                                  className="flex h-8 px-3 items-center gap-1 rounded-md bg-[var(--brand)] text-white text-xs font-semibold hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shrink-0"
-                                  title="Save Subcategory"
-                                >
-                                  <Check size={14} />
-                                  <span>Save</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setEditingSubcatIndex(null)}
-                                  className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
-                                  title="Cancel"
-                                >
-                                  <X size={14} />
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        }
+                {/* Editable Subcategories List */}
+                {formSubcategories.length > 0 ? (
+                  <div className="flex flex-col gap-2 rounded-xl border border-border bg-secondary/30 p-3 max-h-60 overflow-y-auto">
+                    {formSubcategories.map((sub, idx) => {
+                      const subName = getSubcategoryName(sub);
+                      const isEditing = editingSubcatIndex === idx;
 
+                      if (editingCategory) {
                         return (
                           <div
                             key={idx}
-                            className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 shadow-2xs transition-colors hover:border-border/80"
+                            className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-foreground flex items-center cursor-not-allowed"
+                            title="Subcategory is read-only in edit mode"
                           >
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                              {isCompletePublisher || editingCategory ? (
-                                <span className="text-xs font-medium text-foreground text-left truncate">
-                                  {subName}
-                                </span>
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={() => handleStartSubcategoryEdit(idx)}
-                                  className="text-xs font-medium text-foreground text-left truncate hover:text-[var(--brand)] transition-colors cursor-pointer"
-                                  title="Click to edit subcategory"
-                                >
-                                  {subName}
-                                </button>
-                              )}
-                            </div>
-
-                            {!isCompletePublisher && !editingCategory && (
-                              <div className="flex items-center gap-1 shrink-0">
-                                <button
-                                  type="button"
-                                  onClick={() => handleStartSubcategoryEdit(idx)}
-                                  className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-[var(--brand)] transition-colors cursor-pointer"
-                                  title="Edit Subcategory"
-                                >
-                                  <Pencil size={13} />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemoveSubcategory(idx)}
-                                  className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
-                                  title="Delete Subcategory"
-                                >
-                                  <Trash2 size={13} />
-                                </button>
-                              </div>
-                            )}
+                            <span className="truncate">{subName}</span>
                           </div>
                         );
-                      })}
-                    </div>
-                  ) : editingCategory ? (
-                    <div className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-muted-foreground italic flex items-center cursor-not-allowed">
-                      No subcategories added.
-                    </div>
-                  ) : (
-                    <p className="text-xs text-muted-foreground italic px-1">
-                      No subcategories added yet. (Subcategories are optional).
-                    </p>
-                  )}
-                </div>
+                      }
+
+                      if (isEditing && !isCompletePublisher && !editingCategory) {
+                        return (
+                          <div
+                            key={idx}
+                            className="rounded-lg border border-[var(--brand)]/40 bg-card p-3 space-y-2.5 shadow-xs animate-in fade-in-50"
+                          >
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                value={editingSubcatText}
+                                onChange={(e) => setEditingSubcatText(e.target.value)}
+                                placeholder="Subcategory name"
+                                className="h-8 flex-1 rounded-md border border-border bg-white dark:bg-card px-2.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
+                                autoFocus
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    handleSaveSubcategoryEdit(idx);
+                                  } else if (e.key === "Escape") {
+                                    setEditingSubcatIndex(null);
+                                  }
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleSaveSubcategoryEdit(idx)}
+                                className="flex h-8 px-3 items-center gap-1 rounded-md bg-[var(--brand)] text-white text-xs font-semibold hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shrink-0"
+                                title="Save Subcategory"
+                              >
+                                <Check size={14} />
+                                <span>Save</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingSubcatIndex(null)}
+                                className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
+                                title="Cancel"
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 shadow-2xs transition-colors hover:border-border/80"
+                        >
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            {isCompletePublisher || editingCategory ? (
+                              <span className="text-xs font-medium text-foreground text-left truncate">
+                                {subName}
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleStartSubcategoryEdit(idx)}
+                                className="text-xs font-medium text-foreground text-left truncate hover:text-[var(--brand)] transition-colors cursor-pointer"
+                                title="Click to edit subcategory"
+                              >
+                                {subName}
+                              </button>
+                            )}
+                          </div>
+
+                          {!isCompletePublisher && !editingCategory && (
+                            <div className="flex items-center gap-1 shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => handleStartSubcategoryEdit(idx)}
+                                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-[var(--brand)] transition-colors cursor-pointer"
+                                title="Edit Subcategory"
+                              >
+                                <Pencil size={13} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveSubcategory(idx)}
+                                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
+                                title="Delete Subcategory"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : editingCategory ? (
+                  <div className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-muted-foreground italic flex items-center cursor-not-allowed">
+                    No subcategories added.
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic px-1">
+                    No subcategories added yet. (Subcategories are optional).
+                  </p>
+                )}
+              </div>
 
               {editingCategory && showStatusColumn && (
                 <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground">
-                      Status
-                    </label>
+                    <label className="block text-xs font-semibold text-foreground">Status</label>
                     <p className="text-[11.5px] text-muted-foreground mt-0.5">
                       {formStatus === "Enabled"
                         ? "This category will be active and visible in your library."
@@ -1285,18 +1301,17 @@ function ManageLibraryCategoryPage() {
                   </div>
                   <div className="flex items-center gap-2.5 shrink-0">
                     <span
-                      className={`text-xs font-semibold ${formStatus === "Enabled"
+                      className={`text-xs font-semibold ${
+                        formStatus === "Enabled"
                           ? "text-emerald-600 dark:text-emerald-400"
                           : "text-muted-foreground"
-                        }`}
+                      }`}
                     >
                       {formStatus}
                     </span>
                     <Switch
                       checked={formStatus === "Enabled"}
-                      onCheckedChange={(checked) =>
-                        setFormStatus(checked ? "Enabled" : "Disabled")
-                      }
+                      onCheckedChange={(checked) => setFormStatus(checked ? "Enabled" : "Disabled")}
                     />
                   </div>
                 </div>
@@ -1305,9 +1320,7 @@ function ManageLibraryCategoryPage() {
               {!editingCategory && showStatusColumn && (
                 <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground">
-                      Status
-                    </label>
+                    <label className="block text-xs font-semibold text-foreground">Status</label>
                     <p className="text-[11.5px] text-muted-foreground mt-0.5">
                       {formStatus === "Enabled"
                         ? "This category will be active and visible in your library."
@@ -1316,18 +1329,17 @@ function ManageLibraryCategoryPage() {
                   </div>
                   <div className="flex items-center gap-2.5 shrink-0">
                     <span
-                      className={`text-xs font-semibold ${formStatus === "Enabled"
+                      className={`text-xs font-semibold ${
+                        formStatus === "Enabled"
                           ? "text-emerald-600 dark:text-emerald-400"
                           : "text-muted-foreground"
-                        }`}
+                      }`}
                     >
                       {formStatus}
                     </span>
                     <Switch
                       checked={formStatus === "Enabled"}
-                      onCheckedChange={(checked) =>
-                        setFormStatus(checked ? "Enabled" : "Disabled")
-                      }
+                      onCheckedChange={(checked) => setFormStatus(checked ? "Enabled" : "Disabled")}
                     />
                   </div>
                 </div>

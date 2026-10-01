@@ -29,7 +29,8 @@ export const Route = createFileRoute("/pb-admin/merge-authors")({
       { title: "Merge Authors — PixelBooks Admin" },
       {
         name: "description",
-        content: "Merge duplicate author profiles into a single target author profile in PixelBooks Admin.",
+        content:
+          "Merge duplicate author profiles into a single target author profile in PixelBooks Admin.",
       },
     ],
   }),
@@ -61,7 +62,8 @@ const AUTHOR_LIST: AuthorItem[] = [
     id: "auth-3",
     name: "Reshma Mukundan",
     email: null,
-    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=250",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=250",
     publishedTitlesCount: 26,
   },
   {
@@ -116,7 +118,8 @@ const AUTHOR_LIST: AuthorItem[] = [
     id: "auth-12",
     name: "Jane Austen",
     email: "j.austen@literature.org",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
     publishedTitlesCount: 6,
   },
 ];
@@ -159,13 +162,14 @@ function MergeAuthorsPage() {
   const toggleDuplicateSelection = (authorId: string) => {
     if (authorId === selectedTarget) {
       toast.error("Invalid Selection", {
-        description: "An author cannot be selected as both duplicate source and target destination.",
+        description:
+          "An author cannot be selected as both duplicate source and target destination.",
       });
       return;
     }
 
     setSelectedDuplicates((prev) =>
-      prev.includes(authorId) ? prev.filter((id) => id !== authorId) : [...prev, authorId]
+      prev.includes(authorId) ? prev.filter((id) => id !== authorId) : [...prev, authorId],
     );
   };
 
@@ -203,15 +207,21 @@ function MergeAuthorsPage() {
   const selectedDuplicateAuthors = AUTHOR_LIST.filter((a) => selectedDuplicates.includes(a.id));
 
   // Compute combined titles count after merge
-  const duplicateTitlesSum = selectedDuplicateAuthors.reduce((acc, a) => acc + a.publishedTitlesCount, 0);
-  const totalTitlesAfterMerge = (selectedTargetAuthor?.publishedTitlesCount || 0) + duplicateTitlesSum;
+  const duplicateTitlesSum = selectedDuplicateAuthors.reduce(
+    (acc, a) => acc + a.publishedTitlesCount,
+    0,
+  );
+  const totalTitlesAfterMerge =
+    (selectedTargetAuthor?.publishedTitlesCount || 0) + duplicateTitlesSum;
 
   const canMerge = selectedDuplicates.length > 0 && selectedTarget !== null;
 
   return (
-    <AppShell title="Merge Authors" subtitle="Search duplicate authors and merge them into a primary target author profile.">
+    <AppShell
+      title="Merge Authors"
+      subtitle="Search duplicate authors and merge them into a primary target author profile."
+    >
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-
         {/* Step-by-Step UX Guide Header */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card shadow-2xs">
@@ -220,7 +230,9 @@ function MergeAuthorsPage() {
             </span>
             <div className="flex flex-col">
               <span className="text-xs font-bold text-foreground">Select Duplicate Profiles</span>
-              <span className="text-xs text-muted-foreground">Choose one or more duplicate authors on the left list</span>
+              <span className="text-xs text-muted-foreground">
+                Choose one or more duplicate authors on the left list
+              </span>
             </div>
           </div>
 
@@ -230,17 +242,17 @@ function MergeAuthorsPage() {
             </span>
             <div className="flex flex-col">
               <span className="text-xs font-bold text-foreground">Select Target Destination</span>
-              <span className="text-xs text-muted-foreground">Pick the primary target author profile on the right list</span>
+              <span className="text-xs text-muted-foreground">
+                Pick the primary target author profile on the right list
+              </span>
             </div>
           </div>
         </div>
 
         {/* Main Card Container */}
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-xs">
-
           {/* Two Column Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-
             {/* Left Column: Search Duplicate Authors */}
             <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between">
@@ -329,12 +341,13 @@ function MergeAuthorsPage() {
                       <div
                         key={author.id}
                         onClick={() => toggleDuplicateSelection(author.id)}
-                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${isSelected
-                          ? "border-[var(--brand)] bg-[var(--sidebar-highlight)] shadow-2xs"
-                          : isTarget
-                            ? "border-amber-300/60 bg-amber-500/5 opacity-50 cursor-not-allowed"
-                            : "border-transparent bg-muted/20 hover:bg-muted/40"
-                          }`}
+                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
+                          isSelected
+                            ? "border-[var(--brand)] bg-[var(--sidebar-highlight)] shadow-2xs"
+                            : isTarget
+                              ? "border-amber-300/60 bg-amber-500/5 opacity-50 cursor-not-allowed"
+                              : "border-transparent bg-muted/20 hover:bg-muted/40"
+                        }`}
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           {author.avatarUrl ? (
@@ -349,7 +362,9 @@ function MergeAuthorsPage() {
                             </div>
                           )}
                           <div className="flex flex-col min-w-0">
-                            <span className={`text-xs sm:text-sm font-semibold truncate ${isSelected ? "text-[var(--brand)]" : "text-foreground"}`}>
+                            <span
+                              className={`text-xs sm:text-sm font-semibold truncate ${isSelected ? "text-[var(--brand)]" : "text-foreground"}`}
+                            >
                               {author.name}
                             </span>
                             <span className="text-[11px] text-muted-foreground flex items-center gap-1">
@@ -430,12 +445,13 @@ function MergeAuthorsPage() {
                       <div
                         key={author.id}
                         onClick={() => handleSelectTarget(author.id)}
-                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${isSelected
-                          ? "border-emerald-500 bg-emerald-500/10 shadow-2xs"
-                          : isDuplicate
-                            ? "border-amber-300/60 bg-amber-500/5 opacity-50 cursor-not-allowed"
-                            : "border-transparent bg-muted/20 hover:bg-muted/40"
-                          }`}
+                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
+                          isSelected
+                            ? "border-emerald-500 bg-emerald-500/10 shadow-2xs"
+                            : isDuplicate
+                              ? "border-amber-300/60 bg-amber-500/5 opacity-50 cursor-not-allowed"
+                              : "border-transparent bg-muted/20 hover:bg-muted/40"
+                        }`}
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           {author.avatarUrl ? (
@@ -450,7 +466,9 @@ function MergeAuthorsPage() {
                             </div>
                           )}
                           <div className="flex flex-col min-w-0">
-                            <span className={`text-xs sm:text-sm font-semibold truncate ${isSelected ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}>
+                            <span
+                              className={`text-xs sm:text-sm font-semibold truncate ${isSelected ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}
+                            >
                               {author.name}
                             </span>
                             <span className="text-[11px] text-muted-foreground flex items-center gap-1">
@@ -482,7 +500,6 @@ function MergeAuthorsPage() {
                 )}
               </div>
             </div>
-
           </div>
 
           {/* Live Preview Transfer Callout Banner */}
@@ -529,7 +546,9 @@ function MergeAuthorsPage() {
                         <Feather size={11} />
                       </div>
                       <span className="font-semibold text-foreground">{author.name}</span>
-                      <span className="text-[11px] text-muted-foreground">({author.publishedTitlesCount} titles)</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        ({author.publishedTitlesCount} titles)
+                      </span>
                       <button
                         type="button"
                         onClick={() => toggleDuplicateSelection(author.id)}
@@ -546,7 +565,10 @@ function MergeAuthorsPage() {
           ) : (
             <div className="mb-6 p-3.5 rounded-xl border border-border bg-muted/20 flex items-center gap-2.5 text-xs text-muted-foreground">
               <Info size={16} className="text-muted-foreground/70 shrink-0" />
-              <span>Select at least 1 duplicate author on the left and 1 target author on the right to enable merge.</span>
+              <span>
+                Select at least 1 duplicate author on the left and 1 target author on the right to
+                enable merge.
+              </span>
             </div>
           )}
 
@@ -586,7 +608,8 @@ function MergeAuthorsPage() {
                 Confirm Author Merge
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-                This operation will merge the selected duplicate author profiles into the target profile. This action cannot be undone.
+                This operation will merge the selected duplicate author profiles into the target
+                profile. This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
 
@@ -597,9 +620,14 @@ function MergeAuthorsPage() {
                 </span>
                 <div className="space-y-1">
                   {selectedDuplicateAuthors.map((a) => (
-                    <div key={a.id} className="font-semibold text-foreground flex items-center justify-between">
+                    <div
+                      key={a.id}
+                      className="font-semibold text-foreground flex items-center justify-between"
+                    >
                       <span className="truncate">• {a.name}</span>
-                      <span className="text-[11px] text-muted-foreground shrink-0">{a.publishedTitlesCount} titles</span>
+                      <span className="text-[11px] text-muted-foreground shrink-0">
+                        {a.publishedTitlesCount} titles
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -642,7 +670,6 @@ function MergeAuthorsPage() {
             </div>
           </DialogContent>
         </Dialog>
-
       </div>
     </AppShell>
   );

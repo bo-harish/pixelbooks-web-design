@@ -45,7 +45,8 @@ export const Route = createFileRoute("/pb-admin/marketing/schema-meta")({
       { title: "Schema & Meta — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage search engine schemas and SEO metadata for titles and bundles in PixelBooks.",
+        content:
+          "Manage search engine schemas and SEO metadata for titles and bundles in PixelBooks.",
       },
     ],
   }),
@@ -97,7 +98,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Not Done",
     schemaStatus: "Not Done",
     metaTitle: "John M Upton - Author Profile & Books | PixelBooks",
-    metaDescription: "Discover works, publications, and literary contributions by John M Upton on PixelBooks.",
+    metaDescription:
+      "Discover works, publications, and literary contributions by John M Upton on PixelBooks.",
     keywords: "John M Upton, books, literature, PixelBooks",
     canonicalUrl: "https://pixelbooks.com/titles/john-m-upton",
     robots: "index, follow",
@@ -106,7 +108,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
   {
     id: "sm-2",
     type: "Title",
-    title: "Cassell's History of England, Vol. 3 (of 8) / From the Great Rebellion to the Fall of Marlborough.",
+    title:
+      "Cassell's History of England, Vol. 3 (of 8) / From the Great Rebellion to the Fall of Marlborough.",
     author: "Anonymous",
     publisher: "Cassell & Company",
     initials: "CHE",
@@ -114,7 +117,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Not Done",
     schemaStatus: "Not Done",
     metaTitle: "Cassell's History of England, Vol. 3 | PixelBooks",
-    metaDescription: "Read Cassell's History of England, Vol. 3 covering the Great Rebellion to the Fall of Marlborough.",
+    metaDescription:
+      "Read Cassell's History of England, Vol. 3 covering the Great Rebellion to the Fall of Marlborough.",
     keywords: "Cassell, History of England, Marlborough, Great Rebellion",
     canonicalUrl: "https://pixelbooks.com/titles/cassells-history-england-vol-3",
     robots: "index, follow",
@@ -131,7 +135,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Not Done",
     schemaStatus: "Not Done",
     metaTitle: "Correction Officer Exam Study Guide & eBook | PixelBooks",
-    metaDescription: "Comprehensive preparation material and practice tests for Correction Officer certification exams.",
+    metaDescription:
+      "Comprehensive preparation material and practice tests for Correction Officer certification exams.",
     keywords: "Correction Officer, exam prep, study guide, law enforcement",
     canonicalUrl: "https://pixelbooks.com/titles/correction-officer",
     robots: "index, follow",
@@ -148,7 +153,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Not Done",
     schemaStatus: "Not Done",
     metaTitle: "The Principles of Duality - Mathematical Foundations | PixelBooks",
-    metaDescription: "An in-depth exploration of duality theory in algebra, logic, and modern mathematical physics.",
+    metaDescription:
+      "An in-depth exploration of duality theory in algebra, logic, and modern mathematical physics.",
     keywords: "Duality, Mathematics, Algebra, Quantum Logic",
     canonicalUrl: "https://pixelbooks.com/titles/principles-of-duality",
     robots: "index, follow",
@@ -157,7 +163,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
   {
     id: "sm-5",
     type: "Title",
-    title: "Cassell's History of England, Vol. 3 (of 8) / From the Great Rebellion to the Fall of Marlborough.",
+    title:
+      "Cassell's History of England, Vol. 3 (of 8) / From the Great Rebellion to the Fall of Marlborough.",
     author: "Anonymous",
     publisher: "Cassell & Company",
     initials: "CHE",
@@ -233,7 +240,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Updated on : 23 Jul 2026",
     schemaStatus: "Not Done",
     metaTitle: "Indemnity - Principles of Contract & Liability Law | PixelBooks",
-    metaDescription: "Comprehensive legal reference manual analyzing indemnity clauses, insurance liabilities, and court precedents.",
+    metaDescription:
+      "Comprehensive legal reference manual analyzing indemnity clauses, insurance liabilities, and court precedents.",
     keywords: "Indemnity law, legal contracts, liability, PixelBooks",
     canonicalUrl: "https://pixelbooks.com/titles/indemnity",
     robots: "index, follow",
@@ -267,7 +275,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Updated on : 20 Jul 2026",
     schemaStatus: "Updated on : 20 Jul 2026",
     metaTitle: "NEP 2020 - Policy Formulation In Education | PixelBooks",
-    metaDescription: "Analysis of the National Education Policy 2020 reforms and implementation strategies.",
+    metaDescription:
+      "Analysis of the National Education Policy 2020 reforms and implementation strategies.",
     keywords: "NEP 2020, Education policy, India, reforms",
     canonicalUrl: "https://pixelbooks.com/titles/nep-2020-policy",
     robots: "index, follow",
@@ -284,7 +293,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Not Done",
     schemaStatus: "Not Done",
     metaTitle: "A Complete History of Music for Schools | PixelBooks",
-    metaDescription: "Comprehensive music theory and historical curriculum guide for academic study.",
+    metaDescription:
+      "Comprehensive music theory and historical curriculum guide for academic study.",
     keywords: "Music history, Baltzell, musicology",
     canonicalUrl: "https://pixelbooks.com/titles/complete-history-music",
     robots: "index, follow",
@@ -302,7 +312,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Not Done",
     schemaStatus: "Not Done",
     metaTitle: "Essential Civil Services Prep Bundle | PixelBooks",
-    metaDescription: "Complete study suite including general studies, aptitude, and past paper analysis for civil services.",
+    metaDescription:
+      "Complete study suite including general studies, aptitude, and past paper analysis for civil services.",
     keywords: "Civil services bundle, IAS prep, UPSC books",
     canonicalUrl: "https://pixelbooks.com/bundles/essential-civil-services",
     robots: "index, follow",
@@ -319,7 +330,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Updated on : 22 Jul 2026",
     schemaStatus: "Not Done",
     metaTitle: "Complete History & Heritage Series (8 Volumes) | PixelBooks",
-    metaDescription: "The definitive 8-volume historical encyclopedia set detailing British and European historical milestones.",
+    metaDescription:
+      "The definitive 8-volume historical encyclopedia set detailing British and European historical milestones.",
     keywords: "History bundle, Cassell collection, encyclopedia",
     canonicalUrl: "https://pixelbooks.com/bundles/history-heritage-series",
     robots: "index, follow",
@@ -336,7 +348,8 @@ const INITIAL_ITEMS: SchemaMetaItem[] = [
     metaStatus: "Not Done",
     schemaStatus: "Updated on : 19 Jul 2026",
     metaTitle: "Academic Reference Master Collection 2026 | PixelBooks",
-    metaDescription: "Curated bundle of higher education mathematics, physics, and science reference textbooks.",
+    metaDescription:
+      "Curated bundle of higher education mathematics, physics, and science reference textbooks.",
     keywords: "Academic reference bundle, science textbooks, mathematics",
     canonicalUrl: "https://pixelbooks.com/bundles/academic-reference-master",
     robots: "index, follow",
@@ -421,15 +434,15 @@ export function SchemaMetaPage() {
     setMetaTitleInput(item.metaTitle || `${item.title} | PixelBooks`);
     setMetaDescInput(
       item.metaDescription ||
-      `Read or download ${item.title} by ${item.author || "PixelBooks Publishing"} on PixelBooks.`
+        `Read or download ${item.title} by ${item.author || "PixelBooks Publishing"} on PixelBooks.`,
     );
     setMetaKeywordsInput(item.keywords || `${item.title}, PixelBooks, ebook, digital reading`);
     setCanonicalUrlInput(
       item.canonicalUrl ||
-      `https://pixelbooks.com/${item.type === "Title" ? "titles" : "bundles"}/${item.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "")}`
+        `https://pixelbooks.com/${item.type === "Title" ? "titles" : "bundles"}/${item.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "")}`,
     );
     setRobotsInput(item.robots || "index, follow");
   };
@@ -447,16 +460,16 @@ export function SchemaMetaPage() {
       prev.map((i) =>
         i.id === editingMetaItem.id
           ? {
-            ...i,
-            metaStatus: nowStr,
-            metaTitle: metaTitleInput,
-            metaDescription: metaDescInput,
-            keywords: metaKeywordsInput,
-            canonicalUrl: canonicalUrlInput,
-            robots: robotsInput,
-          }
-          : i
-      )
+              ...i,
+              metaStatus: nowStr,
+              metaTitle: metaTitleInput,
+              metaDescription: metaDescInput,
+              keywords: metaKeywordsInput,
+              canonicalUrl: canonicalUrlInput,
+              robots: robotsInput,
+            }
+          : i,
+      ),
     );
 
     toast.success(`Meta data updated for "${editingMetaItem.title}"`);
@@ -478,13 +491,13 @@ export function SchemaMetaPage() {
       setMetaDescInput(
         `Read or download ${editingMetaItem.title} by ${
           editingMetaItem.author || "PixelBooks Publishing"
-        }. Discover ratings, chapters, and instant digital reading on PixelBooks.`
+        }. Discover ratings, chapters, and instant digital reading on PixelBooks.`,
       );
       setMetaKeywordsInput(
-        `${editingMetaItem.title}, ${editingMetaItem.author}, PixelBooks, ebook, digital reading, ${editingMetaItem.publisher}`
+        `${editingMetaItem.title}, ${editingMetaItem.author}, PixelBooks, ebook, digital reading, ${editingMetaItem.publisher}`,
       );
       setCanonicalUrlInput(
-        `https://pixelbooks.com/${editingMetaItem.type === "Title" ? "titles" : "bundles"}/${cleanSlug}`
+        `https://pixelbooks.com/${editingMetaItem.type === "Title" ? "titles" : "bundles"}/${cleanSlug}`,
       );
       setRobotsInput("index, follow");
 
@@ -549,7 +562,9 @@ export function SchemaMetaPage() {
         "@id": `https://pixelbooks.com/${editingSchemaItem.type === "Title" ? "titles" : "bundles"}/${editingSchemaItem.id}#schema`,
         name: editingSchemaItem.title,
         headline: editingSchemaItem.metaTitle || `${editingSchemaItem.title} - Digital Edition`,
-        description: editingSchemaItem.metaDescription || `Read or download ${editingSchemaItem.title} on PixelBooks digital store.`,
+        description:
+          editingSchemaItem.metaDescription ||
+          `Read or download ${editingSchemaItem.title} on PixelBooks digital store.`,
         author: {
           "@type": "Person",
           name: editingSchemaItem.author,
@@ -628,12 +643,12 @@ export function SchemaMetaPage() {
       prev.map((i) =>
         i.id === editingSchemaItem.id
           ? {
-            ...i,
-            schemaStatus: nowStr,
-            schemaJson: schemaJsonInput,
-          }
-          : i
-      )
+              ...i,
+              schemaStatus: nowStr,
+              schemaJson: schemaJsonInput,
+            }
+          : i,
+      ),
     );
 
     toast.success(`Schema markup updated for "${editingSchemaItem.title}"`);
@@ -693,7 +708,9 @@ export function SchemaMetaPage() {
                   <th className="px-6 py-4 font-semibold">Title</th>
                   <th className="px-6 py-4 whitespace-nowrap font-semibold">Meta Status</th>
                   <th className="px-6 py-4 whitespace-nowrap font-semibold">Schema Status</th>
-                  <th className="px-6 py-4 text-center whitespace-nowrap min-w-[300px] font-semibold">SEO Actions</th>
+                  <th className="px-6 py-4 text-center whitespace-nowrap min-w-[300px] font-semibold">
+                    SEO Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
@@ -741,7 +758,9 @@ export function SchemaMetaPage() {
                                   <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
                                     <Feather size={9} />
                                   </span>
-                                  <span className="text-[11px] font-medium text-foreground">{item.author}</span>
+                                  <span className="text-[11px] font-medium text-foreground">
+                                    {item.author}
+                                  </span>
                                 </div>
 
                                 {/* Publisher Chip */}
@@ -749,7 +768,9 @@ export function SchemaMetaPage() {
                                   <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
                                     <Building2 size={9} />
                                   </span>
-                                  <span className="text-[11px] font-medium text-foreground">{item.publisher}</span>
+                                  <span className="text-[11px] font-medium text-foreground">
+                                    {item.publisher}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -759,7 +780,9 @@ export function SchemaMetaPage() {
                         {/* Meta Status Column */}
                         <td className="px-6 py-4 whitespace-nowrap">
                           {isMetaNotDone ? (
-                            <span className="text-red-500/90 dark:text-red-400 text-sm font-medium">Action Required</span>
+                            <span className="text-red-500/90 dark:text-red-400 text-sm font-medium">
+                              Action Required
+                            </span>
                           ) : (
                             <span className="text-muted-foreground text-xs font-normal">
                               {item.metaStatus}
@@ -770,7 +793,9 @@ export function SchemaMetaPage() {
                         {/* Schema Status Column */}
                         <td className="px-6 py-4 whitespace-nowrap">
                           {isSchemaNotDone ? (
-                            <span className="text-red-500/90 dark:text-red-400 text-sm font-medium">Action Required</span>
+                            <span className="text-red-500/90 dark:text-red-400 text-sm font-medium">
+                              Action Required
+                            </span>
                           ) : (
                             <span className="text-muted-foreground text-xs font-normal">
                               {item.schemaStatus}
@@ -832,10 +857,11 @@ export function SchemaMetaPage() {
                   key={pageNum}
                   type="button"
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${isActive
-                    ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold border border-[var(--brand)]/30"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold border border-[var(--brand)]/30"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
                 >
                   {pageNum}
                 </button>
@@ -864,7 +890,8 @@ export function SchemaMetaPage() {
               Edit SEO Meta Tags
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Configure search engine metadata for <span className="font-semibold text-foreground">"{editingMetaItem?.title}"</span>.
+              Configure search engine metadata for{" "}
+              <span className="font-semibold text-foreground">"{editingMetaItem?.title}"</span>.
             </DialogDescription>
           </DialogHeader>
 
@@ -897,7 +924,9 @@ export function SchemaMetaPage() {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-xs font-semibold text-foreground">Meta Title</label>
-                <span className={`text-[11px] ${metaTitleInput.length > 60 ? "text-amber-600 font-medium" : "text-muted-foreground"}`}>
+                <span
+                  className={`text-[11px] ${metaTitleInput.length > 60 ? "text-amber-600 font-medium" : "text-muted-foreground"}`}
+                >
                   {metaTitleInput.length}/60 chars
                 </span>
               </div>
@@ -914,7 +943,9 @@ export function SchemaMetaPage() {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-xs font-semibold text-foreground">Meta Description</label>
-                <span className={`text-[11px] ${metaDescInput.length > 160 ? "text-amber-600 font-medium" : "text-muted-foreground"}`}>
+                <span
+                  className={`text-[11px] ${metaDescInput.length > 160 ? "text-amber-600 font-medium" : "text-muted-foreground"}`}
+                >
                   {metaDescInput.length}/160 chars
                 </span>
               </div>
@@ -1008,7 +1039,10 @@ export function SchemaMetaPage() {
       </Dialog>
 
       {/* Edit Schema Modal */}
-      <Dialog open={!!editingSchemaItem} onOpenChange={(open) => !open && setEditingSchemaItem(null)}>
+      <Dialog
+        open={!!editingSchemaItem}
+        onOpenChange={(open) => !open && setEditingSchemaItem(null)}
+      >
         <DialogContent className="sm:max-w-[700px] bg-card border-border">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-lg font-bold text-foreground">
@@ -1016,7 +1050,8 @@ export function SchemaMetaPage() {
               Edit JSON-LD Schema Markup
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Configure Schema.org structured data for <span className="font-semibold text-foreground">"{editingSchemaItem?.title}"</span>.
+              Configure Schema.org structured data for{" "}
+              <span className="font-semibold text-foreground">"{editingSchemaItem?.title}"</span>.
             </DialogDescription>
           </DialogHeader>
 
@@ -1049,7 +1084,8 @@ export function SchemaMetaPage() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  JSON-LD Code (<code className="text-[11px] text-muted-foreground">application/ld+json</code>)
+                  JSON-LD Code (
+                  <code className="text-[11px] text-muted-foreground">application/ld+json</code>)
                 </span>
                 <button
                   onClick={handleCopySchemaJson}
@@ -1081,7 +1117,8 @@ export function SchemaMetaPage() {
             <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-muted/40 p-2.5 rounded-md border border-border">
               <AlertCircle size={14} className="text-blue-500 shrink-0" />
               <span>
-                Schema markup is validated against Schema.org specifications before saving to avoid indexing warnings in Google Search Console.
+                Schema markup is validated against Schema.org specifications before saving to avoid
+                indexing warnings in Google Search Console.
               </span>
             </div>
           </div>

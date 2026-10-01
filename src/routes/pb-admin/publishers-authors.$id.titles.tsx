@@ -454,8 +454,7 @@ function PublisherAuthorTitlesPage() {
         book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
         book.category.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesStatus =
-        statusFilter === "All Status" || book.status === statusFilter;
+      const matchesStatus = statusFilter === "All Status" || book.status === statusFilter;
 
       return matchesQuery && matchesStatus;
     });
@@ -526,14 +525,11 @@ function PublisherAuthorTitlesPage() {
           </div>
         </div>
 
-
-
         {/* Section Header: Recent Purchases / All eBooks */}
         <div className="space-y-4 pt-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2.5">
               <h2 className="text-lg font-extrabold text-foreground">All eBooks</h2>
-
             </div>
           </div>
 
@@ -542,7 +538,10 @@ function PublisherAuthorTitlesPage() {
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               {/* Search Box */}
               <div className="relative flex-1 max-w-xl">
-                <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Search
+                  size={16}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
                 <input
                   type="text"
                   placeholder="Search by title, ISBN, author..."
@@ -561,13 +560,19 @@ function PublisherAuthorTitlesPage() {
                       <ChevronDown size={15} className="text-muted-foreground shrink-0" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-40 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1 text-sm">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-40 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1 text-sm"
+                  >
                     {["All Status", "Published", "Draft", "Archived"].map((st) => (
                       <DropdownMenuItem
                         key={st}
                         onClick={() => handleStatusFilterChange(st)}
-                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${st === statusFilter ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
-                          }`}
+                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
+                          st === statusFilter
+                            ? "font-semibold text-foreground bg-secondary/50"
+                            : "text-muted-foreground"
+                        }`}
                       >
                         {st}
                       </DropdownMenuItem>
@@ -588,7 +593,10 @@ function PublisherAuthorTitlesPage() {
                       <ChevronDown size={14} />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1 text-sm">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-48 overflow-hidden rounded-lg border border-border bg-card shadow-lg py-1 text-sm"
+                  >
                     <DropdownMenuItem
                       onClick={() => handleExport("PDF")}
                       className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer"
@@ -628,7 +636,10 @@ function PublisherAuthorTitlesPage() {
                 <tbody className="divide-y divide-border">
                   {paginatedTitles.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-muted-foreground text-xs font-medium">
+                      <td
+                        colSpan={8}
+                        className="py-12 text-center text-muted-foreground text-xs font-medium"
+                      >
                         No eBooks found matching your search or filters.
                       </td>
                     </tr>
@@ -636,7 +647,9 @@ function PublisherAuthorTitlesPage() {
                     paginatedTitles.map((book) => (
                       <tr
                         key={book.id}
-                        onClick={() => navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: book.id } })}
+                        onClick={() =>
+                          navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: book.id } })
+                        }
                         className="group cursor-pointer transition-colors hover:bg-secondary/50"
                       >
                         {/* Title & Cover Thumbnail */}
@@ -661,10 +674,14 @@ function PublisherAuthorTitlesPage() {
                         </td>
 
                         {/* ISBN */}
-                        <td className="py-4 px-4 text-muted-foreground font-mono text-xs">{book.isbn}</td>
+                        <td className="py-4 px-4 text-muted-foreground font-mono text-xs">
+                          {book.isbn}
+                        </td>
 
                         {/* Author */}
-                        <td className="py-4 px-4 font-semibold text-foreground text-xs">{book.author}</td>
+                        <td className="py-4 px-4 font-semibold text-foreground text-xs">
+                          {book.author}
+                        </td>
 
                         {/* DOP */}
                         <td className="py-4 px-4 text-muted-foreground text-xs">{book.dop}</td>
@@ -677,7 +694,9 @@ function PublisherAuthorTitlesPage() {
                         </td>
 
                         {/* Sale Price */}
-                        <td className="py-4 px-4 font-bold text-foreground text-xs">{book.price}</td>
+                        <td className="py-4 px-4 font-bold text-foreground text-xs">
+                          {book.price}
+                        </td>
 
                         {/* Status */}
                         <td className="py-4 px-4">
@@ -689,7 +708,10 @@ function PublisherAuthorTitlesPage() {
 
                         {/* Chevron */}
                         <td className="py-4 px-4 pr-6 text-right text-muted-foreground group-hover:text-foreground">
-                          <ChevronRight size={18} className="inline transition-transform group-hover:translate-x-0.5" />
+                          <ChevronRight
+                            size={18}
+                            className="inline transition-transform group-hover:translate-x-0.5"
+                          />
                         </td>
                       </tr>
                     ))
@@ -720,10 +742,11 @@ function PublisherAuthorTitlesPage() {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`flex h-8 w-8 items-center justify-center rounded-md text-xs font-semibold transition-colors cursor-pointer ${currentPage === page
-                      ? "bg-[var(--brand)] text-white shadow-2xs"
-                      : "border border-border bg-card text-foreground hover:bg-secondary"
-                      }`}
+                    className={`flex h-8 w-8 items-center justify-center rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                      currentPage === page
+                        ? "bg-[var(--brand)] text-white shadow-2xs"
+                        : "border border-border bg-card text-foreground hover:bg-secondary"
+                    }`}
                   >
                     {page}
                   </button>

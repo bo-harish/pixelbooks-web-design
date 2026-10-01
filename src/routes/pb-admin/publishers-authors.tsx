@@ -26,7 +26,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { BookCover } from "@/components/ui/book-cover";
 import { getBooksForAccount, type PublisherAuthorBook } from "@/lib/publisher-author-books-data";
@@ -347,7 +353,7 @@ function ManagePublisherAuthor() {
         b.category.toLowerCase().includes(q) ||
         b.author.toLowerCase().includes(q) ||
         b.publisher.toLowerCase().includes(q) ||
-        b.language.toLowerCase().includes(q)
+        b.language.toLowerCase().includes(q),
     );
   }, [accountBooks, bookSearchQuery]);
 
@@ -392,16 +398,37 @@ function ManagePublisherAuthor() {
   const pendingCount = accounts.filter((a) => a.status === "Pending").length;
 
   // Segmented metrics by role
-  const publisherAccounts = useMemo(() => accounts.filter((a) => a.type === "Publisher"), [accounts]);
+  const publisherAccounts = useMemo(
+    () => accounts.filter((a) => a.type === "Publisher"),
+    [accounts],
+  );
   const authorAccounts = useMemo(() => accounts.filter((a) => a.type === "Author"), [accounts]);
 
-  const publisherApprovedCount = useMemo(() => publisherAccounts.filter((a) => a.status === "Approved").length, [publisherAccounts]);
-  const publisherPendingCount = useMemo(() => publisherAccounts.filter((a) => a.status === "Pending").length, [publisherAccounts]);
-  const publisherTotalTitles = useMemo(() => publisherAccounts.reduce((acc, curr) => acc + curr.activeTitles, 0), [publisherAccounts]);
+  const publisherApprovedCount = useMemo(
+    () => publisherAccounts.filter((a) => a.status === "Approved").length,
+    [publisherAccounts],
+  );
+  const publisherPendingCount = useMemo(
+    () => publisherAccounts.filter((a) => a.status === "Pending").length,
+    [publisherAccounts],
+  );
+  const publisherTotalTitles = useMemo(
+    () => publisherAccounts.reduce((acc, curr) => acc + curr.activeTitles, 0),
+    [publisherAccounts],
+  );
 
-  const authorApprovedCount = useMemo(() => authorAccounts.filter((a) => a.status === "Approved").length, [authorAccounts]);
-  const authorPendingCount = useMemo(() => authorAccounts.filter((a) => a.status === "Pending").length, [authorAccounts]);
-  const authorTotalTitles = useMemo(() => authorAccounts.reduce((acc, curr) => acc + curr.activeTitles, 0), [authorAccounts]);
+  const authorApprovedCount = useMemo(
+    () => authorAccounts.filter((a) => a.status === "Approved").length,
+    [authorAccounts],
+  );
+  const authorPendingCount = useMemo(
+    () => authorAccounts.filter((a) => a.status === "Pending").length,
+    [authorAccounts],
+  );
+  const authorTotalTitles = useMemo(
+    () => authorAccounts.reduce((acc, curr) => acc + curr.activeTitles, 0),
+    [authorAccounts],
+  );
 
   const handleOpenAccount = (item: AccountItem) => {
     navigate({ to: "/pb-admin/publishers-authors/$id", params: { id: item.id } });
@@ -410,32 +437,42 @@ function ManagePublisherAuthor() {
   const handleSaveStatus = () => {
     if (!selectedAccount) return;
     setAccounts((prev) =>
-      prev.map((acc) => (acc.id === selectedAccount.id ? { ...acc, status: editStatus } : acc))
+      prev.map((acc) => (acc.id === selectedAccount.id ? { ...acc, status: editStatus } : acc)),
     );
     toast.success(`Updated status for "${selectedAccount.name}" to ${editStatus}`);
     setSelectedAccount(null);
   };
 
   const handleExportCSV = () => {
-    const roleSlug = roleFilter === "Publisher" ? "publishers" : roleFilter === "Author" ? "authors" : "publishers_authors";
+    const roleSlug =
+      roleFilter === "Publisher"
+        ? "publishers"
+        : roleFilter === "Author"
+          ? "authors"
+          : "publishers_authors";
     const csvContent =
       "data:text/csv;charset=utf-8," +
       ["Name,Type,Active Titles,Phone,State,Country,Status,Joined Date"]
         .concat(
           filteredAccounts.map(
             (a) =>
-              `"${a.name}","${a.type}",${a.activeTitles},"${a.phone}","${a.state}","${a.country}","${a.status}","${a.joinedDate}"`
-          )
+              `"${a.name}","${a.type}",${a.activeTitles},"${a.phone}","${a.state}","${a.country}","${a.status}","${a.joinedDate}"`,
+          ),
         )
         .join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${roleSlug}_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      "download",
+      `${roleSlug}_export_${new Date().toISOString().slice(0, 10)}.csv`,
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success(`Exported ${filteredAccounts.length} ${roleFilter === "Publisher & Author" ? "account" : roleFilter.toLowerCase()}s to CSV`);
+    toast.success(
+      `Exported ${filteredAccounts.length} ${roleFilter === "Publisher & Author" ? "account" : roleFilter.toLowerCase()}s to CSV`,
+    );
   };
 
   // Helper for initials
@@ -452,21 +489,18 @@ function ManagePublisherAuthor() {
     roleFilter === "Publisher"
       ? "Manage Publishers"
       : roleFilter === "Author"
-      ? "Manage Authors"
-      : "Manage Publishers & Authors";
+        ? "Manage Authors"
+        : "Manage Publishers & Authors";
 
   const pageSubtitle =
     roleFilter === "Publisher"
       ? "Overview and status management for registered Publishers."
       : roleFilter === "Author"
-      ? "Overview and status management for registered Authors."
-      : "Overview and status management for registered Publishers and Authors.";
+        ? "Overview and status management for registered Authors."
+        : "Overview and status management for registered Publishers and Authors.";
 
   return (
-    <AppShell
-      title={pageTitle}
-      subtitle={pageSubtitle}
-    >
+    <AppShell title={pageTitle} subtitle={pageSubtitle}>
       <div className="space-y-6 p-4 md:p-8">
         {/* Metric Cards */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -563,7 +597,13 @@ function ManagePublisherAuthor() {
               <Search size={16} className="mr-2.5 text-muted-foreground shrink-0" />
               <input
                 type="text"
-                placeholder={roleFilter === "Publisher" ? "Search publishers..." : roleFilter === "Author" ? "Search authors..." : "Search..."}
+                placeholder={
+                  roleFilter === "Publisher"
+                    ? "Search publishers..."
+                    : roleFilter === "Author"
+                      ? "Search authors..."
+                      : "Search..."
+                }
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -630,7 +670,13 @@ function ManagePublisherAuthor() {
                       <div className="flex flex-col items-center justify-center gap-2">
                         <Users size={32} className="text-muted-foreground/50" />
                         <p className="font-medium text-foreground">
-                          No {roleFilter === "Publisher" ? "publishers" : roleFilter === "Author" ? "authors" : "accounts"} found
+                          No{" "}
+                          {roleFilter === "Publisher"
+                            ? "publishers"
+                            : roleFilter === "Author"
+                              ? "authors"
+                              : "accounts"}{" "}
+                          found
                         </p>
                         <p className="text-xs text-muted-foreground">
                           Try adjusting your search query or filter criteria.
@@ -648,7 +694,11 @@ function ManagePublisherAuthor() {
                       {/* Name + Role */}
                       <td className="py-4 px-4 md:px-6">
                         <div className="flex items-center gap-3">
-                          <EntityAvatar name={item.name} type={item.type} avatarBg={item.avatarBg} />
+                          <EntityAvatar
+                            name={item.name}
+                            type={item.type}
+                            avatarBg={item.avatarBg}
+                          />
                           <div>
                             <p className="font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
                               {item.name}
@@ -696,7 +746,9 @@ function ManagePublisherAuthor() {
                       </td>
 
                       {/* Phone */}
-                      <td className="py-4 px-4 text-muted-foreground font-mono text-xs">{item.phone}</td>
+                      <td className="py-4 px-4 text-muted-foreground font-mono text-xs">
+                        {item.phone}
+                      </td>
 
                       {/* State */}
                       <td className="py-4 px-4 text-foreground">{item.state}</td>
@@ -742,8 +794,10 @@ function ManagePublisherAuthor() {
           {/* Table Footer & Pagination */}
           <div className="flex flex-col gap-4 border-t border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs font-medium text-muted-foreground">
-              Showing <span className="font-semibold text-foreground">{paginatedAccounts.length}</span> from{" "}
-              <span className="font-semibold text-foreground">{filteredAccounts.length}</span> results
+              Showing{" "}
+              <span className="font-semibold text-foreground">{paginatedAccounts.length}</span> from{" "}
+              <span className="font-semibold text-foreground">{filteredAccounts.length}</span>{" "}
+              results
             </p>
 
             <div className="flex items-center gap-1 text-xs">
@@ -925,7 +979,8 @@ function ManagePublisherAuthor() {
                               </span>
                             ) : (
                               <span>
-                                Publisher: <strong className="text-foreground">{book.publisher}</strong>
+                                Publisher:{" "}
+                                <strong className="text-foreground">{book.publisher}</strong>
                               </span>
                             )}
                             <span>• {book.language}</span>

@@ -54,7 +54,8 @@ const extraDefaults: BundleExtra = {
   pages: 240,
   viewers: "120K",
   mrp: 1999,
-  summary: "A curated collection of reference materials and educational books for bulk store setup.",
+  summary:
+    "A curated collection of reference materials and educational books for bulk store setup.",
   tags: ["#Reference", "#Education", "#CuratedCollection"],
   seoTitle: "eBook Bundle — PixelBooks Admin",
   seoKeywords: "ebook bundle, reference guide, curated collection, pixelbooks",
@@ -111,8 +112,7 @@ const extras: Record<string, BundleExtra> = {
     pages: 510,
     viewers: "340K",
     mrp: 950,
-    summary:
-      "Essential academic and higher education bundle compiled by Cengage & Pearson.",
+    summary: "Essential academic and higher education bundle compiled by Cengage & Pearson.",
     tags: ["#Academic", "#Cengage", "#Pearson"],
     seoTitle: "Test Bund — PixelBooks Admin",
     seoKeywords: "cengage, pearson, academic pack, test bund",
@@ -314,12 +314,10 @@ export function AdminBundleDetailPage() {
     return 499;
   };
 
-  const totalOriginalBookPrice = matchedBooks.reduce(
-    (sum, b) => sum + getBookPrice(b),
-    0,
-  );
+  const totalOriginalBookPrice = matchedBooks.reduce((sum, b) => sum + getBookPrice(b), 0);
   const savings = Math.max(0, totalOriginalBookPrice - bundle.pricing);
-  const savingsPercent = totalOriginalBookPrice > 0 ? Math.round((savings / totalOriginalBookPrice) * 100) : 0;
+  const savingsPercent =
+    totalOriginalBookPrice > 0 ? Math.round((savings / totalOriginalBookPrice) * 100) : 0;
 
   const handleApprove = () => {
     updateBundleStatus(bundle.id, "Published");
@@ -334,7 +332,10 @@ export function AdminBundleDetailPage() {
   };
 
   return (
-    <AppShell title="Bundle Details" subtitle="View and manage eBook bundle details and approval status.">
+    <AppShell
+      title="Bundle Details"
+      subtitle="View and manage eBook bundle details and approval status."
+    >
       <div className="space-y-6 p-4 md:p-8 pb-24">
         {/* Back button */}
         <div className="mb-6 flex items-center gap-3">
@@ -390,7 +391,9 @@ export function AdminBundleDetailPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">Price</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">
+                          Price
+                        </span>
                         <Tag size={14} />
                       </div>
                       <p className="text-lg font-bold text-foreground">
@@ -400,7 +403,9 @@ export function AdminBundleDetailPage() {
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">Size (in MB)</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">
+                          Size (in MB)
+                        </span>
                         <HardDrive size={14} />
                       </div>
                       <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>
@@ -408,14 +413,20 @@ export function AdminBundleDetailPage() {
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">eBooks</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">
+                          eBooks
+                        </span>
                         <BookOpen size={14} />
                       </div>
-                      <p className="text-lg font-bold text-foreground">{matchedBooks.length || bundle.bookCount}</p>
+                      <p className="text-lg font-bold text-foreground">
+                        {matchedBooks.length || bundle.bookCount}
+                      </p>
                     </div>
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Status
+                      </span>
                       <div className="flex items-center">
                         <StatusPill status={bundle.status} />
                       </div>
@@ -432,12 +443,16 @@ export function AdminBundleDetailPage() {
                     <span className="h-3 w-px bg-border" />
                     <span className="inline-flex items-center gap-1.5 font-medium">
                       <Globe size={13} className="text-muted-foreground" />
-                      <span>Language: <strong className="text-foreground">English</strong></span>
+                      <span>
+                        Language: <strong className="text-foreground">English</strong>
+                      </span>
                     </span>
                     <span className="h-3 w-px bg-border" />
                     <span className="inline-flex items-center gap-1.5 font-medium">
                       <Users size={13} className="text-muted-foreground" />
-                      <span>Viewers: <strong className="text-foreground">{extra.viewers}</strong></span>
+                      <span>
+                        Viewers: <strong className="text-foreground">{extra.viewers}</strong>
+                      </span>
                     </span>
                   </div>
 
@@ -484,7 +499,9 @@ export function AdminBundleDetailPage() {
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-border/80 bg-secondary/30 px-5 py-3.5 text-sm">
               <div className="flex items-baseline gap-2">
-                <span className="text-muted-foreground font-medium">Total Original eBooks Value:</span>
+                <span className="text-muted-foreground font-medium">
+                  Total Original eBooks Value:
+                </span>
                 <span className="text-base font-bold text-foreground">
                   ₹{totalOriginalBookPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                 </span>
@@ -496,7 +513,8 @@ export function AdminBundleDetailPage() {
                 </span>
                 {savings > 0 && (
                   <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                    Discount ₹{savings.toLocaleString("en-IN", { minimumFractionDigits: 2 })} ({savingsPercent}%)
+                    Discount ₹{savings.toLocaleString("en-IN", { minimumFractionDigits: 2 })} (
+                    {savingsPercent}%)
                   </span>
                 )}
               </div>

@@ -20,7 +20,7 @@ export type PublisherColorTheme = {
   tag: string;
   description: string;
   primaryColor: string; // Preview hex/swatch
-  accentColor: string;  // Secondary preview swatch
+  accentColor: string; // Secondary preview swatch
   light: PublisherThemeModeTokens;
   dark: PublisherThemeModeTokens;
 };
@@ -204,7 +204,8 @@ export const PUBLISHER_THEMES: PublisherColorTheme[] = [
     id: "amethyst-purple",
     name: "Amethyst Purple",
     tag: "Creative",
-    description: "Luxurious violet and orchid tones that highlight fine arts, design, and literature.",
+    description:
+      "Luxurious violet and orchid tones that highlight fine arts, design, and literature.",
     primaryColor: "#7e22ce",
     accentColor: "#a855f7",
     light: {
@@ -340,7 +341,8 @@ export const PUBLISHER_THEMES: PublisherColorTheme[] = [
     id: "sunset-coral",
     name: "Sunset Coral",
     tag: "Dynamic",
-    description: "Warm terracotta, burnt sienna, and vibrant coral for engaging interactive presses.",
+    description:
+      "Warm terracotta, burnt sienna, and vibrant coral for engaging interactive presses.",
     primaryColor: "#c2410c",
     accentColor: "#f97316",
     light: {

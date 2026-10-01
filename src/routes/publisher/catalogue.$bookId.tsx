@@ -105,13 +105,7 @@ function getExtra(id: string): BookExtra {
 /*  Shared UI pieces                                                    */
 /* ------------------------------------------------------------------ */
 
-function AuthorAvatar({
-  author,
-  size = "md",
-}: {
-  author: string;
-  size?: "sm" | "md" | "lg";
-}) {
+function AuthorAvatar({ author, size = "md" }: { author: string; size?: "sm" | "md" | "lg" }) {
   const initials = author
     .split(" ")
     .filter(Boolean)
@@ -216,8 +210,9 @@ function StatusSelectPill({
           e.stopPropagation();
           if (!readOnly) setOpen((o) => !o);
         }}
-        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
-          }`}
+        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${
+          readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
+        }`}
       >
         <CurrentIcon size={15} className="shrink-0" />
         <span>{cfg.label}</span>
@@ -248,8 +243,9 @@ function StatusSelectPill({
                   key={st}
                   type="button"
                   onClick={(e) => handleItemClick(st, e)}
-                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
-                    } ${itemCfg.textColor}`}
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
+                    isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
+                  } ${itemCfg.textColor}`}
                 >
                   <ItemIcon size={16} className="shrink-0" />
                   <span>{itemCfg.label}</span>
@@ -275,10 +271,11 @@ function StatusSelectPill({
           >
             <div className="flex items-center gap-3">
               <div
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${pendingStatus === "Published"
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                  pendingStatus === "Published"
                     ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                     : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
-                  }`}
+                }`}
               >
                 {pendingStatus === "Published" ? (
                   <CheckCircle2 size={22} />
@@ -288,7 +285,9 @@ function StatusSelectPill({
               </div>
               <div>
                 <h3 className="text-base font-bold text-foreground">
-                  {pendingStatus === "Published" ? "Confirm Publish eBook" : "Confirm Unpublish eBook"}
+                  {pendingStatus === "Published"
+                    ? "Confirm Publish eBook"
+                    : "Confirm Unpublish eBook"}
                 </h3>
                 <p className="text-xs text-muted-foreground">Confirmation required</p>
               </div>
@@ -315,8 +314,9 @@ function StatusSelectPill({
                   setPendingStatus(null);
                   onChange?.(target);
                 }}
-                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
-                  }`}
+                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${
+                  pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
+                }`}
               >
                 {pendingStatus === "Published" ? "Confirm & Publish" : "Confirm & Unpublish"}
               </button>
@@ -432,8 +432,11 @@ function LibraryMultiSelectDropdown({
     <div className="relative w-full" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
-          }`}
+        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
+          isOpen
+            ? "border-[var(--brand)] ring-1 ring-[var(--brand)]"
+            : "border-border hover:bg-secondary/30"
+        }`}
       >
         <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
           {selectedNames.length === 0 ? (
@@ -488,7 +491,10 @@ function LibraryMultiSelectDropdown({
         <div className="absolute left-0 right-0 top-full z-40 mt-2 max-h-80 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
           <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
             <div className="relative flex items-center">
-              <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+              <Search
+                size={14}
+                className="absolute left-3 text-muted-foreground pointer-events-none"
+              />
               <input
                 type="text"
                 value={searchTerm}
@@ -535,8 +541,9 @@ function LibraryMultiSelectDropdown({
                 return (
                   <div
                     key={lib.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
-                      }`}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${
+                      isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
+                    }`}
                   >
                     <div
                       className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer pr-2"
@@ -545,7 +552,7 @@ function LibraryMultiSelectDropdown({
                       <input
                         type="checkbox"
                         checked={isSelected}
-                        onChange={() => { }}
+                        onChange={() => {}}
                         className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
                       />
                       <div className="min-w-0">
@@ -571,7 +578,9 @@ function LibraryMultiSelectDropdown({
                           type="number"
                           min="1"
                           value={copies}
-                          onChange={(e) => updateCopies(lib.name, parseInt(e.target.value, 10) || 1)}
+                          onChange={(e) =>
+                            updateCopies(lib.name, parseInt(e.target.value, 10) || 1)
+                          }
                           className="w-12 h-6 text-center text-xs font-bold text-foreground bg-transparent outline-none"
                         />
                         <span className="text-[10px] text-muted-foreground pr-1">copies</span>
@@ -617,7 +626,9 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
 
   const handleConfirmSave = () => {
     setIsConfirmOpen(false);
-    toast.success(`Library store allocations updated (${totalCopies} copies across ${selectedLibraries.length} libraries)`);
+    toast.success(
+      `Library store allocations updated (${totalCopies} copies across ${selectedLibraries.length} libraries)`,
+    );
   };
 
   const updateCopies = (libName: string, copies: number) => {
@@ -644,7 +655,8 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
               Library Allocation & License Copies
             </h2>
             <p className="text-xs text-muted-foreground font-medium mt-0.5">
-              Select authorized institutional libraries and allocate the number of license copies for each library.
+              Select authorized institutional libraries and allocate the number of license copies
+              for each library.
             </p>
           </div>
         </div>
@@ -671,10 +683,7 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
             </span>
           </div>
 
-          <LibraryMultiSelectDropdown
-            allocations={allocations}
-            onChange={setAllocations}
-          />
+          <LibraryMultiSelectDropdown allocations={allocations} onChange={setAllocations} />
         </div>
 
         {/* Selected Libraries Copies Breakdown Table */}
@@ -685,7 +694,8 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
                 <span>Allocated Libraries License Breakdown</span>
               </h3>
               <span className="text-xs font-semibold text-muted-foreground">
-                Total: <strong className="text-foreground font-extrabold">{totalCopies} copies</strong>
+                Total:{" "}
+                <strong className="text-foreground font-extrabold">{totalCopies} copies</strong>
               </span>
             </div>
 
@@ -695,14 +705,19 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
                 const copies = allocations[libName];
 
                 return (
-                  <div key={libName} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+                  <div
+                    key={libName}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3"
+                  >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground">
                         <Building2 size={16} />
                       </div>
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-foreground truncate">{libName}</p>
-                        <p className="text-[11px] text-muted-foreground">{libInfo?.city ?? "Institutional Library"}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {libInfo?.city ?? "Institutional Library"}
+                        </p>
                       </div>
                     </div>
 
@@ -714,10 +729,11 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
                             key={preset}
                             type="button"
                             onClick={() => updateCopies(libName, preset)}
-                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${copies === preset
+                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${
+                              copies === preset
                                 ? "bg-[var(--brand)] text-white border-[var(--brand)]"
                                 : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
-                              }`}
+                            }`}
                           >
                             {preset}
                           </button>
@@ -740,7 +756,9 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
                           onChange={(e) => updateCopies(libName, parseInt(e.target.value, 10) || 1)}
                           className="w-14 h-7 text-center text-xs font-extrabold text-foreground outline-none bg-transparent"
                         />
-                        <span className="text-xs text-muted-foreground font-medium pr-1">copies</span>
+                        <span className="text-xs text-muted-foreground font-medium pr-1">
+                          copies
+                        </span>
                         <button
                           type="button"
                           onClick={() => updateCopies(libName, copies + 5)}
@@ -767,7 +785,9 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
           </div>
         ) : (
           <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
-            <span>⚠️ Please select at least one library and allocate license copies to proceed.</span>
+            <span>
+              ⚠️ Please select at least one library and allocate license copies to proceed.
+            </span>
           </p>
         )}
 
@@ -796,7 +816,8 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
               <span>Confirm Library Allocations</span>
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground pt-1 leading-relaxed">
-              Are you sure you want to update the library store allocations and license copy distribution for this title?
+              Are you sure you want to update the library store allocations and license copy
+              distribution for this title?
             </DialogDescription>
           </DialogHeader>
 
@@ -809,7 +830,9 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
               {selectedLibraries.map((libName) => (
                 <div key={libName} className="flex justify-between text-muted-foreground">
                   <span className="truncate pr-2">{libName}</span>
-                  <span className="font-bold text-foreground shrink-0">{allocations[libName]} copies</span>
+                  <span className="font-bold text-foreground shrink-0">
+                    {allocations[libName]} copies
+                  </span>
                 </div>
               ))}
             </div>
@@ -945,7 +968,9 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
           <div className="px-6 py-5 flex flex-col justify-between flex-1">
             <div className="space-y-2.5 text-xs sm:text-sm">
               <div className="flex justify-between items-center py-0.5">
-                <span className="text-muted-foreground font-medium">Renewal Percentage (Excl.GST):</span>
+                <span className="text-muted-foreground font-medium">
+                  Renewal Percentage (Excl.GST):
+                </span>
                 <span className="font-bold text-foreground">3%</span>
               </div>
               <div className="flex justify-between items-center py-0.5">
@@ -967,7 +992,9 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
             </div>
 
             <div className="pt-4 border-t border-border mt-4">
-              <p className="text-xs font-semibold text-muted-foreground">Selling Price including GST:</p>
+              <p className="text-xs font-semibold text-muted-foreground">
+                Selling Price including GST:
+              </p>
               <p className="mt-1 text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
                 ₹943.95
               </p>
@@ -992,10 +1019,11 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
                       key={plan.id}
                       type="button"
                       onClick={() => setSelectedPlanId(plan.id)}
-                      className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all cursor-pointer ${isSelected
+                      className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all cursor-pointer ${
+                        isSelected
                           ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
                           : "border-border bg-card hover:bg-secondary/40"
-                        }`}
+                      }`}
                     >
                       <span className="text-sm font-extrabold text-foreground">{plan.price}</span>
                       <span className="text-[10px] font-medium italic text-muted-foreground mt-0.5">
@@ -1010,10 +1038,11 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
                     key={plan.id}
                     type="button"
                     onClick={() => setSelectedPlanId(plan.id)}
-                    className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all cursor-pointer ${isSelected
+                    className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all cursor-pointer ${
+                      isSelected
                         ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
                         : "border-border bg-card hover:bg-secondary/40"
-                      }`}
+                    }`}
                   >
                     <span className="text-[11px] font-bold text-foreground whitespace-nowrap">
                       {plan.duration}
@@ -1052,7 +1081,8 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm font-medium text-foreground leading-relaxed mt-1">
-                  I hereby confirm that the eBook includes a print version and therefore is subject to the GST rate of 5%
+                  I hereby confirm that the eBook includes a print version and therefore is subject
+                  to the GST rate of 5%
                 </p>
               </div>
             </div>
@@ -1155,7 +1185,8 @@ function EBookDetailPage() {
   const [licenseCount, setLicenseCount] = useState<number>(book?.licenseCount ?? 50);
   const [isEditingLicenses, setIsEditingLicenses] = useState(false);
   const [licenseInput, setLicenseInput] = useState(licenseCount.toString());
-  const initialStatus: Status = (isLibraryOnly && book?.status === "Rejected") ? "Draft" : (book?.status ?? "Published");
+  const initialStatus: Status =
+    isLibraryOnly && book?.status === "Rejected" ? "Draft" : (book?.status ?? "Published");
   const [currentStatus, setCurrentStatus] = useState<Status>(initialStatus);
 
   if (!book) {
@@ -1208,7 +1239,9 @@ function EBookDetailPage() {
               style={{ background: book.cover }}
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-              <span className="relative z-10 text-lg font-extrabold tracking-wider">{book.initials}</span>
+              <span className="relative z-10 text-lg font-extrabold tracking-wider">
+                {book.initials}
+              </span>
             </div>
 
             {/* Info Container */}
@@ -1241,12 +1274,16 @@ function EBookDetailPage() {
               </div>
 
               {/* Stats & Key Metrics Strip (Compatible Grid) */}
-              <div className={`grid grid-cols-2 ${!isLibraryOnly ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3 pt-1`}>
+              <div
+                className={`grid grid-cols-2 ${!isLibraryOnly ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3 pt-1`}
+              >
                 {/* 1. Price */}
                 {!isLibraryOnly && (
                   <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                     <div className="flex items-center justify-between text-muted-foreground">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Price</span>
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Price
+                      </span>
                       <Tag size={14} className="text-muted-foreground/80" />
                     </div>
                     <p className="text-lg font-bold text-foreground">
@@ -1258,7 +1295,9 @@ function EBookDetailPage() {
                 {/* 2. Readers */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Readers</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Readers
+                    </span>
                     <Users size={14} className="text-muted-foreground/80" />
                   </div>
                   <p className="text-lg font-bold text-foreground">{extra.viewers}</p>
@@ -1267,11 +1306,15 @@ function EBookDetailPage() {
                 {/* 3. Published Date */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Published On</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Published On
+                    </span>
                     <Calendar size={14} className="text-muted-foreground/80" />
                   </div>
                   <p className="text-lg font-bold text-foreground">
-                    {extra.dateOfPublication && extra.dateOfPublication !== "—" ? extra.dateOfPublication : (book.dop ?? "06 Jan 2026")}
+                    {extra.dateOfPublication && extra.dateOfPublication !== "—"
+                      ? extra.dateOfPublication
+                      : (book.dop ?? "06 Jan 2026")}
                   </p>
                 </div>
               </div>
@@ -1286,16 +1329,22 @@ function EBookDetailPage() {
                 <span className="h-3 w-px bg-border" />
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <Globe size={13} className="text-muted-foreground" />
-                  <span>Language: <strong className="text-foreground">{extra.language}</strong></span>
+                  <span>
+                    Language: <strong className="text-foreground">{extra.language}</strong>
+                  </span>
                 </span>
                 <span className="h-3 w-px bg-border" />
                 <span className="inline-flex items-center gap-1.5 font-medium">
-                  <span>File Type: <strong className="text-foreground uppercase">{book.format}</strong></span>
+                  <span>
+                    File Type: <strong className="text-foreground uppercase">{book.format}</strong>
+                  </span>
                 </span>
                 <span className="h-3 w-px bg-border" />
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <HardDrive size={13} className="text-muted-foreground" />
-                  <span>eBook Size: <strong className="text-foreground">{extra.sizeMB} MB</strong></span>
+                  <span>
+                    eBook Size: <strong className="text-foreground">{extra.sizeMB} MB</strong>
+                  </span>
                 </span>
               </div>
 
@@ -1419,7 +1468,8 @@ function EBookDetailPage() {
               </button>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Update the total number of library license copies available for <span className="font-semibold text-foreground">"{book.title}"</span>.
+              Update the total number of library license copies available for{" "}
+              <span className="font-semibold text-foreground">"{book.title}"</span>.
             </p>
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-foreground">No. of copies</label>

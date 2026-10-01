@@ -376,7 +376,7 @@ export const DEFAULT_BOOK_LIBRARY_ALLOCATIONS: Record<string, Record<string, num
     "Central University Digital Library": 60,
     "City Academic Library System": 40,
   },
-  "meditations": {
+  meditations: {
     "Delhi Public Library": 50,
     "National Science & Tech Consortium": 50,
   },

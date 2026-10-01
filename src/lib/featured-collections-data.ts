@@ -520,7 +520,7 @@ export function updateCollectionBooks(collectionId: string, bookIds: string[]) {
   // Also update collection bookCount in collections list
   const collections = getStoredCollections();
   const updated = collections.map((c) =>
-    c.id === collectionId ? { ...c, bookCount: bookIds.length } : c
+    c.id === collectionId ? { ...c, bookCount: bookIds.length } : c,
   );
   saveStoredCollections(updated);
 }

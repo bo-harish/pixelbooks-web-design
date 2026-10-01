@@ -54,7 +54,10 @@ export function ProfilePictureAdjustModal({
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0); // in degrees: 0, 90, 180, 270
   const [cropShape, setCropShape] = useState<"circle" | "round-square">(initialCropShape);
-  const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number; height: number } | null>(null);
+  const [imageNaturalSize, setImageNaturalSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const dragStartRef = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);

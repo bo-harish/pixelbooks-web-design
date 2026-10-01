@@ -678,12 +678,15 @@ function LibraryAdminUsersPage() {
                       <ChevronDown size={16} className="text-muted-foreground" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5 space-y-1">
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5 space-y-1"
+                  >
                     <DropdownMenuItem
                       onClick={() => setEditUserType("Student")}
                       className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
-                        editUserType === "Student" 
-                          ? "bg-secondary font-semibold text-foreground" 
+                        editUserType === "Student"
+                          ? "bg-secondary font-semibold text-foreground"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
@@ -692,8 +695,8 @@ function LibraryAdminUsersPage() {
                     <DropdownMenuItem
                       onClick={() => setEditUserType("Staff")}
                       className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
-                        editUserType === "Staff" 
-                          ? "bg-secondary font-semibold text-foreground" 
+                        editUserType === "Staff"
+                          ? "bg-secondary font-semibold text-foreground"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
@@ -712,7 +715,9 @@ function LibraryAdminUsersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Name */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Name<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Name<span className="text-red-500">*</span>
+                      </span>
                       <input
                         type="text"
                         value={editName}
@@ -724,7 +729,9 @@ function LibraryAdminUsersPage() {
 
                     {/* University / Institute */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">University / Institute<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        University / Institute<span className="text-red-500">*</span>
+                      </span>
                       <input
                         type="text"
                         value={editUniv}
@@ -739,7 +746,9 @@ function LibraryAdminUsersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {/* Student ID */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Student ID<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Student ID<span className="text-red-500">*</span>
+                      </span>
                       <input
                         type="text"
                         value={editStudentId}
@@ -750,7 +759,9 @@ function LibraryAdminUsersPage() {
 
                     {/* Enrollment ID */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Enrollment ID<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Enrollment ID<span className="text-red-500">*</span>
+                      </span>
                       <input
                         type="text"
                         value={editEnrollmentId}
@@ -762,7 +773,9 @@ function LibraryAdminUsersPage() {
 
                     {/* Enrollment Date */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Enrollment Date</span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Enrollment Date
+                      </span>
                       <div className="relative">
                         <input
                           type="text"
@@ -782,7 +795,9 @@ function LibraryAdminUsersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Course Selection */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Course<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Course<span className="text-red-500">*</span>
+                      </span>
                       <div className="relative">
                         <select
                           value={editCourse}
@@ -804,7 +819,9 @@ function LibraryAdminUsersPage() {
 
                     {/* Batch Selection */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Batch<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Batch<span className="text-red-500">*</span>
+                      </span>
                       <div className="relative">
                         <select
                           value={editBatch}
@@ -830,7 +847,9 @@ function LibraryAdminUsersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Name */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Name<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Name<span className="text-red-500">*</span>
+                      </span>
                       <input
                         type="text"
                         value={editName}
@@ -842,7 +861,9 @@ function LibraryAdminUsersPage() {
 
                     {/* University / Institute */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">University / Institute<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        University / Institute<span className="text-red-500">*</span>
+                      </span>
                       <input
                         type="text"
                         value={editUniv}
@@ -857,7 +878,9 @@ function LibraryAdminUsersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Department */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Department<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Department<span className="text-red-500">*</span>
+                      </span>
                       <div className="relative">
                         <select
                           value={editCourse}
@@ -887,7 +910,9 @@ function LibraryAdminUsersPage() {
 
                     {/* Staff ID */}
                     <div>
-                      <span className="mb-1.5 block text-sm font-medium text-foreground">Staff ID<span className="text-red-500">*</span></span>
+                      <span className="mb-1.5 block text-sm font-medium text-foreground">
+                        Staff ID<span className="text-red-500">*</span>
+                      </span>
                       <input
                         type="text"
                         value={editStudentId}
@@ -942,7 +967,9 @@ function LibraryAdminUsersPage() {
 
                 {/* Phone Number */}
                 <div>
-                  <span className="mb-1.5 block text-sm font-medium text-foreground">Phone Number</span>
+                  <span className="mb-1.5 block text-sm font-medium text-foreground">
+                    Phone Number
+                  </span>
                   <input
                     type="tel"
                     value={editPhone}
@@ -1304,7 +1331,9 @@ function LibraryAdminUsersPage() {
               </div>
 
               <div>
-                <span className="mb-1.5 block text-sm font-medium text-foreground">Email Address</span>
+                <span className="mb-1.5 block text-sm font-medium text-foreground">
+                  Email Address
+                </span>
                 <input
                   type="email"
                   placeholder="e.g. john.doe@university.edu"
@@ -1319,17 +1348,23 @@ function LibraryAdminUsersPage() {
                 <span className="mb-1.5 block text-sm font-medium text-foreground">User Type</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button type="button" className="flex h-14 w-full items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors hover:bg-secondary/40 focus:border-[var(--brand)] shadow-sm">
+                    <button
+                      type="button"
+                      className="flex h-14 w-full items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors hover:bg-secondary/40 focus:border-[var(--brand)] shadow-sm"
+                    >
                       <UserTypeBadge type={addUserType} />
                       <ChevronDown size={16} className="text-muted-foreground" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5 space-y-1">
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[224px] bg-card border border-border rounded-xl shadow-lg z-50 p-1.5 space-y-1"
+                  >
                     <DropdownMenuItem
                       onClick={() => setAddUserType("Student")}
                       className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
-                        addUserType === "Student" 
-                          ? "bg-secondary font-semibold text-foreground" 
+                        addUserType === "Student"
+                          ? "bg-secondary font-semibold text-foreground"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
@@ -1338,8 +1373,8 @@ function LibraryAdminUsersPage() {
                     <DropdownMenuItem
                       onClick={() => setAddUserType("Staff")}
                       className={`flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer rounded-lg ${
-                        addUserType === "Staff" 
-                          ? "bg-secondary font-semibold text-foreground" 
+                        addUserType === "Staff"
+                          ? "bg-secondary font-semibold text-foreground"
                           : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                       }`}
                     >
@@ -1363,7 +1398,10 @@ function LibraryAdminUsersPage() {
                       </option>
                     ))}
                   </select>
-                  <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <ChevronDown
+                    size={16}
+                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
                 </div>
               </div>
 

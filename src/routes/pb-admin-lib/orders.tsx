@@ -129,8 +129,7 @@ function PBAdminLibraryOrdersPage() {
       const matchesSearch =
         o.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
         o.libraryName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus =
-        statusFilter === "All" || o.status === statusFilter;
+      const matchesStatus = statusFilter === "All" || o.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   }, [orders, searchTerm, statusFilter]);
@@ -227,7 +226,9 @@ function PBAdminLibraryOrdersPage() {
                   filteredOrders.map((order) => (
                     <tr
                       key={order.id}
-                      onClick={() => navigate({ to: "/pb-admin-lib/orders/$id", params: { id: order.id } })}
+                      onClick={() =>
+                        navigate({ to: "/pb-admin-lib/orders/$id", params: { id: order.id } })
+                      }
                       className="group border-b border-border/60 transition-colors last:border-0 cursor-pointer hover:bg-secondary/50"
                     >
                       {/* Library Cell: Icon + Name */}
@@ -264,8 +265,8 @@ function PBAdminLibraryOrdersPage() {
                             order.status === "Approved"
                               ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                               : order.status === "Pending"
-                              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
-                              : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                                : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
                           }`}
                         >
                           {order.status === "Approved" ? (

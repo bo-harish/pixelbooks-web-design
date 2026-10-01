@@ -160,7 +160,14 @@ function PbWebSupportPage() {
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const prefix = userRole === "Publisher" ? "PB" : userRole === "Author" ? "ATH" : userRole === "Institutional Admin" ? "LIB" : "CS";
+      const prefix =
+        userRole === "Publisher"
+          ? "PB"
+          : userRole === "Author"
+            ? "ATH"
+            : userRole === "Institutional Admin"
+              ? "LIB"
+              : "CS";
       const newTicketId = `${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
 
       setIsSubmitting(false);
@@ -194,12 +201,13 @@ function PbWebSupportPage() {
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8">
         {/* Navigation Breadcrumb & Header */}
         <div className="space-y-1 pb-4 border-b border-border/60">
-
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
             Need Help? We’re Here for You!
           </h1>
           <p className="text-sm text-muted-foreground">
-            We’re committed to making your experience smooth and hassle-free. Whether you have a question, run into an issue, or need assistance, our dedicated support team is always ready to help.
+            We’re committed to making your experience smooth and hassle-free. Whether you have a
+            question, run into an issue, or need assistance, our dedicated support team is always
+            ready to help.
           </p>
         </div>
 
@@ -230,7 +238,8 @@ function PbWebSupportPage() {
                   </h3>
                 </div>
                 <p className="text-xs sm:text-[12.5px] text-slate-600 leading-relaxed">
-                  Unit 403, 4th Floor, Tower B, World Trade Center, Infopark Phase I, Kakkanad, Kochi, Kerala - 682042
+                  Unit 403, 4th Floor, Tower B, World Trade Center, Infopark Phase I, Kakkanad,
+                  Kochi, Kerala - 682042
                 </p>
               </div>
             </div>
@@ -244,12 +253,17 @@ function PbWebSupportPage() {
                 className="inline-flex items-center gap-1.5 font-semibold text-pbgreen-dark hover:text-[#0e5b50] transition-colors"
               >
                 <span>View on Map</span>
-                <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight
+                  size={13}
+                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </a>
               <button
                 type="button"
                 onClick={() => {
-                  navigator.clipboard.writeText("Unit 403, 4th Floor, Tower B, World Trade Center, Infopark Phase I, Kochi, Kerala - 682042");
+                  navigator.clipboard.writeText(
+                    "Unit 403, 4th Floor, Tower B, World Trade Center, Infopark Phase I, Kochi, Kerala - 682042",
+                  );
                   toast.success("Office address copied to clipboard!");
                 }}
                 className="inline-flex items-center gap-1 text-xs text-pbgreen-dark hover:text-[#0e5b50] py-1 px-2 rounded-md hover:bg-white/70 transition-colors cursor-pointer"
@@ -289,7 +303,8 @@ function PbWebSupportPage() {
                   </a>
                 </div>
                 <p className="text-xs sm:text-[12.5px] text-slate-600 leading-relaxed">
-                  Available Monday – Sunday, 9:00 AM – 6:00 PM IST for immediate customer, author & publisher help.
+                  Available Monday – Sunday, 9:00 AM – 6:00 PM IST for immediate customer, author &
+                  publisher help.
                 </p>
               </div>
             </div>
@@ -301,7 +316,10 @@ function PbWebSupportPage() {
                 className="inline-flex items-center gap-1.5 font-semibold text-pbgreen-dark hover:text-[#0e5b50] transition-colors"
               >
                 <span>Call Support Desk</span>
-                <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight
+                  size={13}
+                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </a>
               <button
                 type="button"
@@ -345,7 +363,8 @@ function PbWebSupportPage() {
                   </a>
                 </div>
                 <p className="text-xs sm:text-[12.5px] text-slate-600 leading-relaxed">
-                  Priority desk for account issues, license queries, author royalties, and order receipts.
+                  Priority desk for account issues, license queries, author royalties, and order
+                  receipts.
                 </p>
               </div>
             </div>
@@ -357,7 +376,10 @@ function PbWebSupportPage() {
                 className="inline-flex items-center gap-1.5 font-semibold text-pbgreen-dark hover:text-[#0e5b50] transition-colors"
               >
                 <span>Compose Email</span>
-                <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight
+                  size={13}
+                  className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </a>
               <button
                 type="button"
@@ -388,7 +410,8 @@ function PbWebSupportPage() {
                   Submit Support Request
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Select your role and provide details below to open a ticket with our dedicated desk.
+                  Select your role and provide details below to open a ticket with our dedicated
+                  desk.
                 </p>
               </div>
             </div>
@@ -440,28 +463,31 @@ function PbWebSupportPage() {
                     key={role.id}
                     type="button"
                     onClick={() => handleRoleChange(role.id)}
-                    className={`group relative flex flex-col items-start gap-2.5 rounded-xl p-3 text-left transition-all duration-200 cursor-pointer bg-white ${isSelected
-                      ? "border-2 border-[#137365] ring-2 ring-[#137365]/10 shadow-sm -translate-y-0.5"
-                      : "border border-border/80 hover:border-slate-300 shadow-2xs hover:shadow-xs hover:-translate-y-0.5"
-                      }`}
+                    className={`group relative flex flex-col items-start gap-2.5 rounded-xl p-3 text-left transition-all duration-200 cursor-pointer bg-white ${
+                      isSelected
+                        ? "border-2 border-[#137365] ring-2 ring-[#137365]/10 shadow-sm -translate-y-0.5"
+                        : "border border-border/80 hover:border-slate-300 shadow-2xs hover:shadow-xs hover:-translate-y-0.5"
+                    }`}
                   >
                     {/* Top Row: Icon on left, Radio Checkmark on right */}
                     <div className="flex items-center justify-between w-full">
                       <div
-                        className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors ${isSelected
-                          ? "bg-emerald-50 border-emerald-200 text-[#137365]"
-                          : "bg-slate-50 border-slate-200/70 text-slate-400 group-hover:text-slate-600"
-                          }`}
+                        className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors ${
+                          isSelected
+                            ? "bg-emerald-50 border-emerald-200 text-[#137365]"
+                            : "bg-slate-50 border-slate-200/70 text-slate-400 group-hover:text-slate-600"
+                        }`}
                       >
                         <Icon size={16} className="stroke-[2.2]" />
                       </div>
 
                       {/* Radio Checkmark Circle */}
                       <div
-                        className={`flex h-4.5 w-4.5 items-center justify-center rounded-full transition-all duration-200 ${isSelected
-                          ? "bg-[#137365] text-white shadow-2xs scale-100"
-                          : "border border-slate-300 group-hover:border-slate-400 bg-white"
-                          }`}
+                        className={`flex h-4.5 w-4.5 items-center justify-center rounded-full transition-all duration-200 ${
+                          isSelected
+                            ? "bg-[#137365] text-white shadow-2xs scale-100"
+                            : "border border-slate-300 group-hover:border-slate-400 bg-white"
+                        }`}
                       >
                         {isSelected && <Check size={11} className="stroke-[3]" />}
                       </div>
@@ -470,8 +496,11 @@ function PbWebSupportPage() {
                     {/* Text */}
                     <div className="space-y-0.5">
                       <p
-                        className={`text-[12px] leading-tight transition-colors ${isSelected ? "font-bold text-[#137365]" : "font-semibold text-foreground/90 group-hover:text-foreground"
-                          }`}
+                        className={`text-[12px] leading-tight transition-colors ${
+                          isSelected
+                            ? "font-bold text-[#137365]"
+                            : "font-semibold text-foreground/90 group-hover:text-foreground"
+                        }`}
                       >
                         {role.label}
                       </p>
@@ -514,7 +543,8 @@ function PbWebSupportPage() {
               {/* Email */}
               <div>
                 <label className="block text-sm font-bold text-foreground mb-2">
-                  Email Address / Phone Number <span className="text-red-500 font-bold ml-0.5">*</span>
+                  Email Address / Phone Number{" "}
+                  <span className="text-red-500 font-bold ml-0.5">*</span>
                 </label>
                 <input
                   type="text"
@@ -577,7 +607,8 @@ function PbWebSupportPage() {
               {/* Reference ID (Optional) */}
               <div>
                 <label className="block text-sm font-bold text-foreground mb-2">
-                  Reference ID <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                  Reference ID{" "}
+                  <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                 </label>
                 <input
                   type="text"
@@ -597,7 +628,8 @@ function PbWebSupportPage() {
               {/* Book Title (Optional) */}
               <div>
                 <label className="block text-sm font-bold text-foreground mb-2">
-                  Book Title or ISBN <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                  Book Title or ISBN{" "}
+                  <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                 </label>
                 <input
                   type="text"
@@ -636,7 +668,8 @@ function PbWebSupportPage() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-sm font-bold text-foreground">
-                  Message / Detailed Description <span className="text-red-500 font-bold ml-0.5">*</span>
+                  Message / Detailed Description{" "}
+                  <span className="text-red-500 font-bold ml-0.5">*</span>
                 </label>
                 <span className="text-xs text-muted-foreground font-normal">
                   {message.length} characters
@@ -655,7 +688,10 @@ function PbWebSupportPage() {
             {/* File Attachment Dropzone */}
             <div>
               <label className="block text-sm font-bold text-foreground mb-2">
-                Attachments <span className="text-xs text-muted-foreground font-normal">(Screenshots, spreadsheets, receipts, or logs)</span>
+                Attachments{" "}
+                <span className="text-xs text-muted-foreground font-normal">
+                  (Screenshots, spreadsheets, receipts, or logs)
+                </span>
               </label>
               <div className="rounded-xl border border-dashed border-input bg-white p-4 transition-colors hover:border-[var(--brand)] hover:bg-emerald-50/20">
                 {attachment ? (
@@ -714,7 +750,8 @@ function PbWebSupportPage() {
             {/* Form Action Controls (matching screenshot bottom bar) */}
             <div className="flex items-center justify-between rounded-2xl border border-border bg-white p-4 shadow-xs mt-8">
               <div className="text-xs text-muted-foreground">
-                Routing: <span className="font-semibold text-foreground">{userRole} Support Desk</span>
+                Routing:{" "}
+                <span className="font-semibold text-foreground">{userRole} Support Desk</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <button

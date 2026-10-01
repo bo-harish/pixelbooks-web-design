@@ -10,10 +10,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import {
-  initialPrivacyPolicies,
-  type PrivacyPolicyItem,
-} from "@/lib/privacy-policy-data";
+import { initialPrivacyPolicies, type PrivacyPolicyItem } from "@/lib/privacy-policy-data";
 
 export const Route = createFileRoute("/pb-admin-lib/privacy-policy")({
   component: PrivacyPolicyListPage,
@@ -27,26 +24,17 @@ function PrivacyPolicyListPage() {
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
 
-  const roleOptions = [
-    "All Roles",
-    "Publisher",
-    "Customer",
-    "Author",
-    "Library",
-    "Library User",
-  ];
+  const roleOptions = ["All Roles", "Publisher", "Customer", "Author", "Library", "Library User"];
 
   const statusOptions = ["All Statuses", "Active", "Inactive"];
 
   const filteredPolicies = useMemo(() => {
     return policies.filter((item) => {
       // Role filter match
-      const matchesRole =
-        selectedRole === "All Roles" || item.role === selectedRole;
+      const matchesRole = selectedRole === "All Roles" || item.role === selectedRole;
 
       // Status filter match
-      const matchesStatus =
-        selectedStatus === "All Statuses" || item.status === selectedStatus;
+      const matchesStatus = selectedStatus === "All Statuses" || item.status === selectedStatus;
 
       return matchesRole && matchesStatus;
     });
@@ -67,15 +55,12 @@ function PrivacyPolicyListPage() {
           >
             <ArrowLeft size={16} />
           </Link>
-          <span className="text-sm font-semibold text-foreground">
-            Back to Settings
-          </span>
+          <span className="text-sm font-semibold text-foreground">Back to Settings</span>
         </div>
 
         {/* Filter & Action Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 md:flex-row md:flex-nowrap md:items-center md:justify-between shadow-2xs">
           <div className="flex flex-wrap items-center gap-3">
-
             {/* Role Filter Dropdown */}
             <div className="relative">
               <button

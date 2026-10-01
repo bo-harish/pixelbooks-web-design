@@ -40,7 +40,8 @@ export const Route = createFileRoute("/pb-admin/quizzes-rewards")({
       { title: "Quiz & Rewards — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage educational quizzes, reward points schedules, and gamified reader challenges.",
+        content:
+          "Manage educational quizzes, reward points schedules, and gamified reader challenges.",
       },
     ],
   }),
@@ -124,7 +125,9 @@ export function QuizzesRewardsPage() {
   const [viewMode, setViewMode] = useState<"list" | "create">("list");
   const [quizzes, setQuizzes] = useState<QuizItem[]>(INITIAL_QUIZZES);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive" | "Expired">("All Status");
+  const [statusFilter, setStatusFilter] = useState<
+    "All Status" | "Active" | "Inactive" | "Expired"
+  >("All Status");
 
   // Active editing item (null = creating new quiz)
   const [editingQuiz, setEditingQuiz] = useState<QuizItem | null>(null);
@@ -147,7 +150,12 @@ export function QuizzesRewardsPage() {
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
   const [questionTextInput, setQuestionTextInput] = useState("");
-  const [optionInputs, setOptionInputs] = useState<string[]>(["Option 1", "Option 2", "Option 3", "Option 4"]);
+  const [optionInputs, setOptionInputs] = useState<string[]>([
+    "Option 1",
+    "Option 2",
+    "Option 3",
+    "Option 4",
+  ]);
   const [selectedCorrectOption, setSelectedCorrectOption] = useState<number>(0);
 
   const handleDateRangeSelect = (range: DateRange | undefined) => {
@@ -176,10 +184,7 @@ export function QuizzesRewardsPage() {
       // Search filter
       if (!searchQuery.trim()) return true;
       const term = searchQuery.toLowerCase().trim();
-      return (
-        q.quizName.toLowerCase().includes(term) ||
-        q.quizType.toLowerCase().includes(term)
-      );
+      return q.quizName.toLowerCase().includes(term) || q.quizType.toLowerCase().includes(term);
     });
   }, [quizzes, searchQuery, statusFilter]);
 
@@ -193,7 +198,7 @@ export function QuizzesRewardsPage() {
           return { ...item, status: next };
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -237,13 +242,13 @@ export function QuizzesRewardsPage() {
       item.questions && item.questions.length > 0
         ? [...item.questions]
         : [
-          {
-            id: "q-1",
-            questionText: "2+2",
-            options: ["2", "4", "6", "8"],
-            correctOptionIndex: 1,
-          },
-        ]
+            {
+              id: "q-1",
+              questionText: "2+2",
+              options: ["2", "4", "6", "8"],
+              correctOptionIndex: 1,
+            },
+          ],
     );
     setViewMode("create");
   };
@@ -276,17 +281,17 @@ export function QuizzesRewardsPage() {
         prev.map((q) =>
           q.id === editingQuiz.id
             ? {
-              ...q,
-              quizName: quizNameInput,
-              quizType: quizTypeInput !== "Choose Quiz Type" ? quizTypeInput : "General",
-              duration: `${formatMonthDay(startDateInput)} - ${formatMonthDay(endDateInput)}`,
-              startDate: startDateInput,
-              endDate: endDateInput,
-              rewardPoints: pts,
-              questions: [...questions],
-            }
-            : q
-        )
+                ...q,
+                quizName: quizNameInput,
+                quizType: quizTypeInput !== "Choose Quiz Type" ? quizTypeInput : "General",
+                duration: `${formatMonthDay(startDateInput)} - ${formatMonthDay(endDateInput)}`,
+                startDate: startDateInput,
+                endDate: endDateInput,
+                rewardPoints: pts,
+                questions: [...questions],
+              }
+            : q,
+        ),
       );
       toast.success(`Quiz "${quizNameInput}" updated successfully!`);
     } else {
@@ -325,7 +330,7 @@ export function QuizzesRewardsPage() {
     setOptionInputs(
       q.options && q.options.length === 4
         ? [...q.options]
-        : ["Option 1", "Option 2", "Option 3", "Option 4"]
+        : ["Option 1", "Option 2", "Option 3", "Option 4"],
     );
     setSelectedCorrectOption(q.correctOptionIndex ?? 0);
     setIsQuestionModalOpen(true);
@@ -342,13 +347,13 @@ export function QuizzesRewardsPage() {
         prev.map((q) =>
           q.id === editingQuestionId
             ? {
-              ...q,
-              questionText: questionTextInput,
-              options: [...optionInputs],
-              correctOptionIndex: selectedCorrectOption,
-            }
-            : q
-        )
+                ...q,
+                questionText: questionTextInput,
+                options: [...optionInputs],
+                correctOptionIndex: selectedCorrectOption,
+              }
+            : q,
+        ),
       );
       toast.success("Question updated successfully!");
     } else {
@@ -377,12 +382,7 @@ export function QuizzesRewardsPage() {
     toast.success("Question removed.");
   };
 
-  const pageTitle =
-    viewMode === "create"
-      ? editingQuiz
-        ? "Edit Quiz"
-        : "Edit Quiz"
-      : "Quiz";
+  const pageTitle = viewMode === "create" ? (editingQuiz ? "Edit Quiz" : "Edit Quiz") : "Quiz";
 
   const pageSubtitle =
     viewMode === "create"
@@ -439,7 +439,9 @@ export function QuizzesRewardsPage() {
                       <th className="px-6 py-4 min-w-[200px] font-semibold">Quiz Name</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Quiz Duration</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Enable/Disable</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Delete</th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                        Delete
+                      </th>
                       <th className="px-6 py-4 w-10 font-semibold"></th>
                     </tr>
                   </thead>
@@ -474,7 +476,10 @@ export function QuizzesRewardsPage() {
                           </td>
 
                           {/* Status Switch Toggle Column */}
-                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Switch
                               checked={item.status}
                               onCheckedChange={() => handleToggleStatus(item.id)}
@@ -483,7 +488,10 @@ export function QuizzesRewardsPage() {
                           </td>
 
                           {/* Delete Trash Icon Column */}
-                          <td className="px-6 py-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 text-center whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <button
                               onClick={() => handleDeleteQuiz(item.id, item.quizName)}
                               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
@@ -558,9 +566,7 @@ export function QuizzesRewardsPage() {
               >
                 <ArrowLeft size={16} />
               </button>
-              <span className="text-sm font-normal text-foreground">
-                Back to Quiz
-              </span>
+              <span className="text-sm font-normal text-foreground">Back to Quiz</span>
             </div>
 
             {/* Main Form Wrapper */}
@@ -635,13 +641,19 @@ export function QuizzesRewardsPage() {
                               {dateRange?.from ? (
                                 dateRange.to ? (
                                   <>
-                                    <span className="font-semibold text-foreground">{format(dateRange.from, "dd MMM yyyy")}</span>
+                                    <span className="font-semibold text-foreground">
+                                      {format(dateRange.from, "dd MMM yyyy")}
+                                    </span>
                                     <span className="text-muted-foreground mx-1.5">-</span>
-                                    <span className="font-semibold text-foreground">{format(dateRange.to, "dd MMM yyyy")}</span>
+                                    <span className="font-semibold text-foreground">
+                                      {format(dateRange.to, "dd MMM yyyy")}
+                                    </span>
                                   </>
                                 ) : (
                                   <>
-                                    <span className="font-semibold text-foreground">{format(dateRange.from, "dd MMM yyyy")}</span>
+                                    <span className="font-semibold text-foreground">
+                                      {format(dateRange.from, "dd MMM yyyy")}
+                                    </span>
                                   </>
                                 )
                               ) : (
@@ -652,7 +664,10 @@ export function QuizzesRewardsPage() {
                           <CalendarDays size={18} className="text-muted-foreground shrink-0 ml-2" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent align="start" className="w-auto p-4 bg-card border-border shadow-xl rounded-xl">
+                      <PopoverContent
+                        align="start"
+                        className="w-auto p-4 bg-card border-border shadow-xl rounded-xl"
+                      >
                         {/* Selected status header inside popover */}
                         <div className="flex items-center justify-between pb-3 mb-2 border-b border-border text-xs">
                           <div className="flex items-center gap-1.5">
@@ -736,9 +751,7 @@ export function QuizzesRewardsPage() {
 
               {/* Quiz Questions Section & Table - Separate Card / Table matching screenshot 1 */}
               <div className="space-y-3 w-full">
-                <h3 className="text-base font-extrabold text-foreground">
-                  Quiz Questions
-                </h3>
+                <h3 className="text-base font-extrabold text-foreground">Quiz Questions</h3>
 
                 <div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs w-full">
                   <div className="overflow-x-auto w-full">
@@ -747,7 +760,9 @@ export function QuizzesRewardsPage() {
                         <tr className="border-b border-border text-left text-xs font-semibold text-muted-foreground">
                           <th className="px-6 py-4 font-semibold">Question Preview</th>
                           <th className="px-6 py-4 whitespace-nowrap font-semibold">Update</th>
-                          <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Action</th>
+                          <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                            Action
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/60">
@@ -845,7 +860,6 @@ export function QuizzesRewardsPage() {
                   </p>
                 </div>
               </div>
-
             </div>
           </DialogHeader>
 
@@ -886,10 +900,11 @@ export function QuizzesRewardsPage() {
                   return (
                     <div
                       key={index}
-                      className={`flex items-center gap-3 rounded-xl border p-2.5 transition-all shadow-2xs ${isSelected
-                        ? "border-[var(--brand)]/60 bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]/20"
-                        : "border-border/80 bg-card hover:border-border"
-                        }`}
+                      className={`flex items-center gap-3 rounded-xl border p-2.5 transition-all shadow-2xs ${
+                        isSelected
+                          ? "border-[var(--brand)]/60 bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]/20"
+                          : "border-border/80 bg-card hover:border-border"
+                      }`}
                     >
                       {/* Radio button selector */}
                       <label className="flex items-center justify-center cursor-pointer shrink-0 ml-1">
@@ -905,10 +920,11 @@ export function QuizzesRewardsPage() {
 
                       {/* Option letter pill */}
                       <span
-                        className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-extrabold shrink-0 transition-colors ${isSelected
-                          ? "bg-[var(--brand)] text-white shadow-2xs"
-                          : "bg-muted text-muted-foreground"
-                          }`}
+                        className={`flex h-7 w-7 items-center justify-center rounded-lg text-xs font-extrabold shrink-0 transition-colors ${
+                          isSelected
+                            ? "bg-[var(--brand)] text-white shadow-2xs"
+                            : "bg-muted text-muted-foreground"
+                        }`}
                       >
                         {optionLetters[index]}
                       </span>

@@ -750,7 +750,7 @@ export const BOOKS_BY_ACCOUNT: Record<string, PublisherAuthorBook[]> = {
 export function getBooksForAccount(
   accountId: string,
   accountName?: string,
-  accountType?: string
+  accountType?: string,
 ): PublisherAuthorBook[] {
   // Check exact account ID match
   if (BOOKS_BY_ACCOUNT[accountId]) {

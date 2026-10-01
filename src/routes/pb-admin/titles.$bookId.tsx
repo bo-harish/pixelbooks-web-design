@@ -139,13 +139,7 @@ function StatusStamp({ status }: { status: Status }) {
   );
 }
 
-function AuthorAvatar({
-  author,
-  size = "md",
-}: {
-  author: string;
-  size?: "sm" | "md" | "lg";
-}) {
+function AuthorAvatar({ author, size = "md" }: { author: string; size?: "sm" | "md" | "lg" }) {
   const initials = author
     .split(" ")
     .filter(Boolean)
@@ -289,8 +283,7 @@ function LibraryMultiSelectDropdown({
   };
 
   const isAllSelected =
-    filteredLibraries.length > 0 &&
-    filteredLibraries.every((lib) => selected.includes(lib.name));
+    filteredLibraries.length > 0 && filteredLibraries.every((lib) => selected.includes(lib.name));
 
   const handleSelectAll = () => {
     if (isAllSelected) {
@@ -307,8 +300,11 @@ function LibraryMultiSelectDropdown({
       {/* Trigger Area */}
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
-          }`}
+        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
+          isOpen
+            ? "border-[var(--brand)] ring-1 ring-[var(--brand)]"
+            : "border-border hover:bg-secondary/30"
+        }`}
       >
         <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
           {selected.length === 0 ? (
@@ -362,7 +358,10 @@ function LibraryMultiSelectDropdown({
           {/* Search Box Header */}
           <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
             <div className="relative flex items-center">
-              <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+              <Search
+                size={14}
+                className="absolute left-3 text-muted-foreground pointer-events-none"
+              />
               <input
                 type="text"
                 value={searchTerm}
@@ -409,8 +408,11 @@ function LibraryMultiSelectDropdown({
                 return (
                   <label
                     key={lib.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
-                      }`}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${
+                      checked
+                        ? "bg-[var(--brand)]/5 font-semibold text-foreground"
+                        : "text-foreground"
+                    }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <input
@@ -462,7 +464,8 @@ function LibraryStoreAllocationCard() {
               Library Allocation
             </h2>
             <p className="text-xs text-muted-foreground font-medium mt-0.5">
-              Configure authorized libraries where this eBook title will be available in digital catalogues.
+              Configure authorized libraries where this eBook title will be available in digital
+              catalogues.
             </p>
           </div>
         </div>
@@ -636,7 +639,9 @@ function EBookDetailPage() {
                     <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
                       <Building2 size={9} />
                     </span>
-                    <span className="text-[11px] font-medium text-foreground">{book.publisher ?? "PixelBooks Press"}</span>
+                    <span className="text-[11px] font-medium text-foreground">
+                      {book.publisher ?? "PixelBooks Press"}
+                    </span>
                   </div>
 
                   {/* Category Pill */}
@@ -651,7 +656,9 @@ function EBookDetailPage() {
                 {/* 1. Price */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Price</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Price
+                    </span>
                     <Tag size={14} className="text-muted-foreground/80" />
                   </div>
                   <p className="text-lg font-bold text-foreground">
@@ -662,7 +669,9 @@ function EBookDetailPage() {
                 {/* 2. Readers */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Readers</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Readers
+                    </span>
                     <Users size={14} className="text-muted-foreground/80" />
                   </div>
                   <p className="text-lg font-bold text-foreground">{extra.viewers}</p>
@@ -671,11 +680,15 @@ function EBookDetailPage() {
                 {/* 3. Published On */}
                 <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                   <div className="flex items-center justify-between text-muted-foreground">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Published On</span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Published On
+                    </span>
                     <Calendar size={14} className="text-muted-foreground/80" />
                   </div>
                   <p className="text-lg font-bold text-foreground">
-                    {extra.dateOfPublication && extra.dateOfPublication !== "—" ? extra.dateOfPublication : (book.dop ?? "06 Jan 2026")}
+                    {extra.dateOfPublication && extra.dateOfPublication !== "—"
+                      ? extra.dateOfPublication
+                      : (book.dop ?? "06 Jan 2026")}
                   </p>
                 </div>
               </div>
@@ -690,16 +703,22 @@ function EBookDetailPage() {
                 <span className="h-3 w-px bg-border" />
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <Globe size={13} className="text-muted-foreground" />
-                  <span>Language: <strong className="text-foreground">{extra.language}</strong></span>
+                  <span>
+                    Language: <strong className="text-foreground">{extra.language}</strong>
+                  </span>
                 </span>
                 <span className="h-3 w-px bg-border" />
                 <span className="inline-flex items-center gap-1.5 font-medium">
-                  <span>File Type: <strong className="text-foreground uppercase">{book.format}</strong></span>
+                  <span>
+                    File Type: <strong className="text-foreground uppercase">{book.format}</strong>
+                  </span>
                 </span>
                 <span className="h-3 w-px bg-border" />
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <HardDrive size={13} className="text-muted-foreground" />
-                  <span>eBook Size: <strong className="text-foreground">{extra.sizeMB} MB</strong></span>
+                  <span>
+                    eBook Size: <strong className="text-foreground">{extra.sizeMB} MB</strong>
+                  </span>
                 </span>
               </div>
 

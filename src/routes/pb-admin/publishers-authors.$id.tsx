@@ -148,10 +148,7 @@ const MOCK_ACCOUNTS_MAP: Record<string, AccountDetails> = {
     lastPaymentDate: "28 Jul 2026",
     totalPublished: 14,
     allowWithoutApproval: true,
-    autoApproveLibraries: [
-      "Central Public Library (CPL)",
-      "National Academic Library (NAL)",
-    ],
+    autoApproveLibraries: ["Central Public Library (CPL)", "National Academic Library (NAL)"],
   },
   "pa-1": {
     id: "pa-1",
@@ -275,7 +272,7 @@ function LibraryMultiSelectDropdown({
     if (!searchTerm.trim()) return ALL_LIBRARIES;
     const q = searchTerm.toLowerCase();
     return ALL_LIBRARIES.filter(
-      (lib) => lib.name.toLowerCase().includes(q) || lib.city.toLowerCase().includes(q)
+      (lib) => lib.name.toLowerCase().includes(q) || lib.city.toLowerCase().includes(q),
     );
   }, [searchTerm]);
 
@@ -302,8 +299,11 @@ function LibraryMultiSelectDropdown({
       {/* Trigger Area */}
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen ? "border-[var(--brand)] ring-1 ring-[var(--brand)]" : "border-border hover:bg-secondary/30"
-          }`}
+        className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
+          isOpen
+            ? "border-[var(--brand)] ring-1 ring-[var(--brand)]"
+            : "border-border hover:bg-secondary/30"
+        }`}
       >
         <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
           {selected.length === 0 ? (
@@ -357,7 +357,10 @@ function LibraryMultiSelectDropdown({
           {/* Search Box Header */}
           <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
             <div className="relative flex items-center">
-              <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+              <Search
+                size={14}
+                className="absolute left-3 text-muted-foreground pointer-events-none"
+              />
               <input
                 type="text"
                 value={searchTerm}
@@ -405,7 +408,9 @@ function LibraryMultiSelectDropdown({
                   <label
                     key={lib.id}
                     className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors cursor-pointer hover:bg-secondary/60 ${
-                      checked ? "bg-[var(--brand)]/5 font-semibold text-foreground" : "text-foreground"
+                      checked
+                        ? "bg-[var(--brand)]/5 font-semibold text-foreground"
+                        : "text-foreground"
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -464,10 +469,10 @@ function PublisherAuthorDetailPage() {
 
   // Permissions Draft State & Confirmation Dialog
   const [draftAllowWithoutApproval, setDraftAllowWithoutApproval] = useState<boolean>(
-    !!initialData.allowWithoutApproval
+    !!initialData.allowWithoutApproval,
   );
   const [draftAutoApproveLibraries, setDraftAutoApproveLibraries] = useState<string[]>(
-    initialData.autoApproveLibraries || []
+    initialData.autoApproveLibraries || [],
   );
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
 
@@ -495,7 +500,10 @@ function PublisherAuthorDetailPage() {
   const [startDate, setStartDate] = useState("2026-07-01");
   const [endDate, setEndDate] = useState("2026-07-31");
 
-  const isTitlesActive = useMatch({ from: "/pb-admin/publishers-authors/$id/titles", shouldThrow: false });
+  const isTitlesActive = useMatch({
+    from: "/pb-admin/publishers-authors/$id/titles",
+    shouldThrow: false,
+  });
   if (isTitlesActive) {
     return <Outlet />;
   }
@@ -517,7 +525,6 @@ function PublisherAuthorDetailPage() {
       setEndDate("2026-07-31");
     }
   };
-
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(account.profileUrl);
@@ -554,9 +561,7 @@ function PublisherAuthorDetailPage() {
           >
             <ArrowLeft size={16} />
           </Link>
-          <span className="text-sm font-normal text-foreground">
-            Back to Publisher / Author
-          </span>
+          <span className="text-sm font-normal text-foreground">Back to Publisher / Author</span>
         </div>
 
         {/* Top Profile Banner Card */}
@@ -566,10 +571,11 @@ function PublisherAuthorDetailPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               {/* Circular Soft Avatar matching role colors */}
               <div
-                className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-2xs border ${account.type === "Publisher"
-                  ? "bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border-indigo-500/20"
-                  : "bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-500/20"
-                  }`}
+                className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full shadow-2xs border ${
+                  account.type === "Publisher"
+                    ? "bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border-indigo-500/20"
+                    : "bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-500/20"
+                }`}
               >
                 {account.type === "Publisher" ? <Building2 size={28} /> : <Feather size={28} />}
               </div>
@@ -589,12 +595,13 @@ function PublisherAuthorDetailPage() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
-                        className={`ml-1 flex h-7 items-center justify-between gap-1.5 rounded-full px-3 text-[11px] font-bold shadow-2xs transition-all outline-none cursor-pointer border ${account.status === "Approved"
-                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
-                          : account.status === "Rejected"
-                            ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
-                            : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
-                          }`}
+                        className={`ml-1 flex h-7 items-center justify-between gap-1.5 rounded-full px-3 text-[11px] font-bold shadow-2xs transition-all outline-none cursor-pointer border ${
+                          account.status === "Approved"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+                            : account.status === "Rejected"
+                              ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
+                              : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
+                        }`}
                       >
                         <div className="flex items-center gap-1">
                           {account.status === "Approved" && <CheckCircle2 size={12} />}
@@ -643,7 +650,9 @@ function PublisherAuthorDetailPage() {
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <MapPin size={13} className="text-muted-foreground/80" />
-                    <span>{account.city}, {account.state}</span>
+                    <span>
+                      {account.city}, {account.state}
+                    </span>
                   </span>
                 </div>
 
@@ -653,13 +662,17 @@ function PublisherAuthorDetailPage() {
                     <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-2.5 py-0.5">
                       <ShieldCheck size={12} className="text-muted-foreground" />
                       <span className="text-muted-foreground font-medium">GST:</span>
-                      <span className="font-bold text-foreground font-mono text-[11px]">{account.gstNumber}</span>
+                      <span className="font-bold text-foreground font-mono text-[11px]">
+                        {account.gstNumber}
+                      </span>
                     </div>
 
                     <div className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/30 px-2.5 py-0.5">
                       <CreditCard size={12} className="text-muted-foreground" />
                       <span className="text-muted-foreground font-medium">PAN:</span>
-                      <span className="font-bold text-foreground font-mono text-[11px]">{account.panCard}</span>
+                      <span className="font-bold text-foreground font-mono text-[11px]">
+                        {account.panCard}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -667,7 +680,9 @@ function PublisherAuthorDetailPage() {
                 {/* Profile URL on a dedicated new line (hidden when auto-approval is enabled) */}
                 {!draftAllowWithoutApproval && (
                   <div className="flex flex-wrap items-center gap-2 text-xs pt-0.5">
-                    <span className="text-muted-foreground font-medium text-[11.5px]">Profile URL:</span>
+                    <span className="text-muted-foreground font-medium text-[11.5px]">
+                      Profile URL:
+                    </span>
                     <div className="flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 shadow-2xs">
                       <a
                         href={account.profileUrl}
@@ -682,7 +697,11 @@ function PublisherAuthorDetailPage() {
                         className="inline-flex h-4 w-4 items-center justify-center rounded-md text-muted-foreground hover:text-foreground cursor-pointer"
                         title="Copy Profile URL"
                       >
-                        {copied ? <Check size={11} className="text-emerald-500" /> : <Copy size={11} />}
+                        {copied ? (
+                          <Check size={11} className="text-emerald-500" />
+                        ) : (
+                          <Copy size={11} />
+                        )}
                       </button>
                       <a
                         href={account.profileUrl}
@@ -729,7 +748,9 @@ function PublisherAuthorDetailPage() {
         </div>
 
         {/* Information Cards Grid */}
-        <div className={`grid grid-cols-1 gap-4 ${draftAllowWithoutApproval ? "md:grid-cols-2" : "lg:grid-cols-3"}`}>
+        <div
+          className={`grid grid-cols-1 gap-4 ${draftAllowWithoutApproval ? "md:grid-cols-2" : "lg:grid-cols-3"}`}
+        >
           {/* Bank Details Card (hidden when auto-approval is enabled) */}
           {!draftAllowWithoutApproval && (
             <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs hover:shadow-md transition-shadow flex flex-col justify-between">
@@ -740,8 +761,12 @@ function PublisherAuthorDetailPage() {
                     <Landmark size={22} />
                   </span>
                   <div>
-                    <h2 className="text-sm font-extrabold text-foreground leading-tight">Bank Details</h2>
-                    <p className="text-xs text-muted-foreground font-medium mt-0.5">Primary Bank Account</p>
+                    <h2 className="text-sm font-extrabold text-foreground leading-tight">
+                      Bank Details
+                    </h2>
+                    <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                      Primary Bank Account
+                    </p>
                   </div>
                 </div>
 
@@ -751,14 +776,18 @@ function PublisherAuthorDetailPage() {
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                       Bank Name & Branch
                     </span>
-                    <span className="text-sm font-extrabold text-foreground mt-0.5 block">{account.bankName}</span>
+                    <span className="text-sm font-extrabold text-foreground mt-0.5 block">
+                      {account.bankName}
+                    </span>
                   </div>
 
                   <div className="border-t border-border/50 pt-3">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                       Account Holder Name
                     </span>
-                    <span className="text-sm font-extrabold text-foreground mt-0.5 block">{account.accountHolderName}</span>
+                    <span className="text-sm font-extrabold text-foreground mt-0.5 block">
+                      {account.accountHolderName}
+                    </span>
                   </div>
 
                   <div className="border-t border-border/50 pt-3 grid grid-cols-2 gap-3">
@@ -793,8 +822,12 @@ function PublisherAuthorDetailPage() {
                   <MapPin size={22} />
                 </span>
                 <div>
-                  <h2 className="text-sm font-extrabold text-foreground leading-tight">Registered Address</h2>
-                  <p className="text-xs text-muted-foreground font-medium mt-0.5">{account.city}, {account.state}</p>
+                  <h2 className="text-sm font-extrabold text-foreground leading-tight">
+                    Registered Address
+                  </h2>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                    {account.city}, {account.state}
+                  </p>
                 </div>
               </div>
 
@@ -805,7 +838,8 @@ function PublisherAuthorDetailPage() {
                     Street Address
                   </span>
                   <span className="text-sm font-extrabold text-foreground mt-0.5 block">
-                    {account.addressLine1} {account.addressLine2 !== "-" ? `, ${account.addressLine2}` : ""}
+                    {account.addressLine1}{" "}
+                    {account.addressLine2 !== "-" ? `, ${account.addressLine2}` : ""}
                   </span>
                 </div>
 
@@ -814,19 +848,25 @@ function PublisherAuthorDetailPage() {
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                       City
                     </span>
-                    <span className="text-xs font-extrabold text-foreground mt-0.5 block">{account.city}</span>
+                    <span className="text-xs font-extrabold text-foreground mt-0.5 block">
+                      {account.city}
+                    </span>
                   </div>
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                       State
                     </span>
-                    <span className="text-xs font-extrabold text-foreground mt-0.5 block">{account.state}</span>
+                    <span className="text-xs font-extrabold text-foreground mt-0.5 block">
+                      {account.state}
+                    </span>
                   </div>
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                       Pincode
                     </span>
-                    <span className="text-xs font-extrabold font-mono text-foreground mt-0.5 block">{account.pincode}</span>
+                    <span className="text-xs font-extrabold font-mono text-foreground mt-0.5 block">
+                      {account.pincode}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -842,8 +882,12 @@ function PublisherAuthorDetailPage() {
                   <Mail size={22} />
                 </span>
                 <div>
-                  <h2 className="text-sm font-extrabold text-foreground leading-tight">Contact Information</h2>
-                  <p className="text-xs text-muted-foreground font-medium mt-0.5">Primary Representative</p>
+                  <h2 className="text-sm font-extrabold text-foreground leading-tight">
+                    Contact Information
+                  </h2>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                    Primary Representative
+                  </p>
                 </div>
               </div>
 
@@ -865,7 +909,9 @@ function PublisherAuthorDetailPage() {
                   <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                     Phone Number
                   </span>
-                  <span className="text-sm font-extrabold font-mono text-foreground mt-0.5 block">{account.phone}</span>
+                  <span className="text-sm font-extrabold font-mono text-foreground mt-0.5 block">
+                    {account.phone}
+                  </span>
                 </div>
               </div>
             </div>
@@ -885,7 +931,8 @@ function PublisherAuthorDetailPage() {
                     Publishing Approvals & Permissions
                   </h2>
                   <p className="text-xs text-muted-foreground font-medium mt-0.5">
-                    Configure direct publishing rules and library auto-approval settings for this publisher.
+                    Configure direct publishing rules and library auto-approval settings for this
+                    publisher.
                   </p>
                 </div>
               </div>
@@ -916,7 +963,10 @@ function PublisherAuthorDetailPage() {
                     Allow Publisher to Publish Books Without Approval
                   </span>
                   <p className="text-xs text-muted-foreground">
-                    When enabled, books uploaded by this publisher will automatically bypass manual Super Admin verification and will be available exclusively to the selected libraries below. These books will not be available to any other libraries or in the retail store.
+                    When enabled, books uploaded by this publisher will automatically bypass manual
+                    Super Admin verification and will be available exclusively to the selected
+                    libraries below. These books will not be available to any other libraries or in
+                    the retail store.
                   </p>
                 </div>
               </label>
@@ -941,7 +991,9 @@ function PublisherAuthorDetailPage() {
 
                   {draftAutoApproveLibraries.length === 0 && (
                     <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1">
-                      <span>⚠️ Please select at least one library for auto-approval to take effect.</span>
+                      <span>
+                        ⚠️ Please select at least one library for auto-approval to take effect.
+                      </span>
                     </p>
                   )}
                 </div>
@@ -977,7 +1029,8 @@ function PublisherAuthorDetailPage() {
                 <span>Confirm Publishing Permissions</span>
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground mt-1">
-                Are you sure you want to save these publishing approval settings for <strong>{account.name}</strong>?
+                Are you sure you want to save these publishing approval settings for{" "}
+                <strong>{account.name}</strong>?
               </DialogDescription>
             </DialogHeader>
 
@@ -1067,9 +1120,12 @@ function PublisherAuthorDetailPage() {
                       </span>
                     </div>
                     <div className="flex flex-wrap items-baseline gap-3 mt-1">
-                      <span className="text-3xl font-extrabold text-foreground">{account.royaltyPayable}</span>
+                      <span className="text-3xl font-extrabold text-foreground">
+                        {account.royaltyPayable}
+                      </span>
                       <span className="text-xs text-muted-foreground">
-                        Last payment date: <strong className="text-foreground">{account.lastPaymentDate}</strong>
+                        Last payment date:{" "}
+                        <strong className="text-foreground">{account.lastPaymentDate}</strong>
                       </span>
                     </div>
                   </div>
@@ -1081,7 +1137,9 @@ function PublisherAuthorDetailPage() {
                   style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                 >
                   <CreditCard size={15} />
-                  <span>{account.type === "Publisher" ? "View Margin Report" : "View Royalty Report"}</span>
+                  <span>
+                    {account.type === "Publisher" ? "View Margin Report" : "View Royalty Report"}
+                  </span>
                 </Link>
               </div>
             </div>
@@ -1090,7 +1148,9 @@ function PublisherAuthorDetailPage() {
             <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 md:flex-row md:items-center md:justify-between shadow-2xs">
               <div>
                 <h3 className="text-sm font-bold text-foreground">Performance Overview</h3>
-                <p className="text-xs text-muted-foreground">Filter sales & publishing metrics by date range</p>
+                <p className="text-xs text-muted-foreground">
+                  Filter sales & publishing metrics by date range
+                </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -1111,8 +1171,11 @@ function PublisherAuthorDetailPage() {
                           key={opt}
                           type="button"
                           onClick={() => handlePresetSelect(opt)}
-                          className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${opt === presetFilter ? "font-bold text-[var(--brand)] bg-secondary/60" : "text-foreground"
-                            }`}
+                          className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
+                            opt === presetFilter
+                              ? "font-bold text-[var(--brand)] bg-secondary/60"
+                              : "text-foreground"
+                          }`}
                         >
                           {opt}
                         </button>
@@ -1169,8 +1232,12 @@ function PublisherAuthorDetailPage() {
                   </span>
                 </div>
                 <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{account.totalSales}</p>
-                  <span className="text-[11px] text-muted-foreground font-medium">Total revenue in period</span>
+                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
+                    {account.totalSales}
+                  </p>
+                  <span className="text-[11px] text-muted-foreground font-medium">
+                    Total revenue in period
+                  </span>
                 </div>
               </div>
 
@@ -1191,8 +1258,12 @@ function PublisherAuthorDetailPage() {
                   </span>
                 </div>
                 <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{account.totalPurchased}</p>
-                  <span className="text-[11px] text-muted-foreground font-medium">eBooks sold in period</span>
+                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
+                    {account.totalPurchased}
+                  </p>
+                  <span className="text-[11px] text-muted-foreground font-medium">
+                    eBooks sold in period
+                  </span>
                 </div>
               </div>
 
@@ -1213,8 +1284,12 @@ function PublisherAuthorDetailPage() {
                   </span>
                 </div>
                 <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{account.totalPublished}</p>
-                  <span className="text-[11px] text-muted-foreground font-medium">Active published titles</span>
+                  <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
+                    {account.totalPublished}
+                  </p>
+                  <span className="text-[11px] text-muted-foreground font-medium">
+                    Active published titles
+                  </span>
                 </div>
               </div>
             </div>
@@ -1236,7 +1311,10 @@ function PublisherAuthorDetailPage() {
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand)] hover:underline transition-all group shrink-0"
                   >
                     <span>View All eBooks</span>
-                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight
+                      size={14}
+                      className="transition-transform group-hover:translate-x-0.5"
+                    />
                   </Link>
                 </div>
               </div>
@@ -1260,7 +1338,12 @@ function PublisherAuthorDetailPage() {
                       {MOCK_TITLES.map((book) => (
                         <tr
                           key={book.id}
-                          onClick={() => navigate({ to: "/pb-admin/titles/$bookId", params: { bookId: book.id } })}
+                          onClick={() =>
+                            navigate({
+                              to: "/pb-admin/titles/$bookId",
+                              params: { bookId: book.id },
+                            })
+                          }
                           className="group cursor-pointer transition-colors hover:bg-secondary/50"
                         >
                           {/* Title + Cover Thumbnail matching Section 6 of Style Guide */}
@@ -1288,10 +1371,14 @@ function PublisherAuthorDetailPage() {
                           </td>
 
                           {/* ISBN */}
-                          <td className="py-4 px-4 text-muted-foreground font-mono text-xs">{book.isbn}</td>
+                          <td className="py-4 px-4 text-muted-foreground font-mono text-xs">
+                            {book.isbn}
+                          </td>
 
                           {/* Author */}
-                          <td className="py-4 px-4 font-semibold text-foreground text-xs">{book.author}</td>
+                          <td className="py-4 px-4 font-semibold text-foreground text-xs">
+                            {book.author}
+                          </td>
 
                           {/* DOP */}
                           <td className="py-4 px-4 text-muted-foreground text-xs">{book.dop}</td>
@@ -1304,7 +1391,9 @@ function PublisherAuthorDetailPage() {
                           </td>
 
                           {/* Sale Price */}
-                          <td className="py-4 px-4 font-bold text-foreground text-xs">{book.price}</td>
+                          <td className="py-4 px-4 font-bold text-foreground text-xs">
+                            {book.price}
+                          </td>
 
                           {/* Status */}
                           <td className="py-4 px-4">
@@ -1316,7 +1405,10 @@ function PublisherAuthorDetailPage() {
 
                           {/* Chevron */}
                           <td className="py-4 px-4 pr-6 text-right text-muted-foreground group-hover:text-foreground">
-                            <ChevronRight size={18} className="inline transition-transform group-hover:translate-x-0.5" />
+                            <ChevronRight
+                              size={18}
+                              className="inline transition-transform group-hover:translate-x-0.5"
+                            />
                           </td>
                         </tr>
                       ))}

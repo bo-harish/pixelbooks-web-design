@@ -75,13 +75,13 @@ export function LibraryAdminRequestsPage() {
   const handleCountChange = (id: string, newCount: number) => {
     if (newCount < 1) return;
 
-    setRequests((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, count: newCount } : r))
-    );
+    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, count: newCount } : r)));
 
     // Sync quantity to localStorage
     const storedQuantities = localStorage.getItem("pixelbooks_cart_quantities");
-    const quantities = storedQuantities ? JSON.parse(storedQuantities) : { req1: 1, req2: 2, req3: 1 };
+    const quantities = storedQuantities
+      ? JSON.parse(storedQuantities)
+      : { req1: 1, req2: 2, req3: 1 };
     quantities[id] = newCount;
     localStorage.setItem("pixelbooks_cart_quantities", JSON.stringify(quantities));
 
@@ -95,7 +95,9 @@ export function LibraryAdminRequestsPage() {
     localStorage.setItem("pixelbooks_cart_items", JSON.stringify(newCartItems));
 
     const storedQuantities = localStorage.getItem("pixelbooks_cart_quantities");
-    const quantities = storedQuantities ? JSON.parse(storedQuantities) : { req1: 1, req2: 2, req3: 1 };
+    const quantities = storedQuantities
+      ? JSON.parse(storedQuantities)
+      : { req1: 1, req2: 2, req3: 1 };
     quantities[item.id] = item.count;
     localStorage.setItem("pixelbooks_cart_quantities", JSON.stringify(quantities));
 
@@ -105,7 +107,9 @@ export function LibraryAdminRequestsPage() {
     // Notify header in AppShell
     window.dispatchEvent(new Event("pixelbooks_cart_updated"));
 
-    toast.success(`"${item.title}" (${item.count} ${item.count === 1 ? 'copy' : 'copies'}) added to cart successfully!`);
+    toast.success(
+      `"${item.title}" (${item.count} ${item.count === 1 ? "copy" : "copies"}) added to cart successfully!`,
+    );
   };
 
   return (
@@ -268,4 +272,3 @@ export function LibraryAdminRequestsPage() {
     </AppShell>
   );
 }
-

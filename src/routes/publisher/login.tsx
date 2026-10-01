@@ -21,7 +21,8 @@ export const Route = createFileRoute("/publisher/login")({
       { title: "Publisher Login — PixelBooks" },
       {
         name: "description",
-        content: "Institutional publisher and author portal login for content and royalty management.",
+        content:
+          "Institutional publisher and author portal login for content and royalty management.",
       },
     ],
   }),
@@ -94,7 +95,9 @@ function PublisherLoginPage() {
 
   const handleSendOtp = () => {
     if (!identifier.trim()) {
-      toast.error(`Please enter your ${selectedRole === "publisher" ? "Publisher Account Email or Phone" : "Author Email/Phone"}`);
+      toast.error(
+        `Please enter your ${selectedRole === "publisher" ? "Publisher Account Email or Phone" : "Author Email/Phone"}`,
+      );
       return;
     }
     setIsSubmitting(true);
@@ -121,7 +124,9 @@ function PublisherLoginPage() {
 
   const handlePasswordLogin = () => {
     if (!identifier.trim()) {
-      toast.error(`Please enter your ${selectedRole === "publisher" ? "Publisher ID / Email" : "Author ID / Email"}`);
+      toast.error(
+        `Please enter your ${selectedRole === "publisher" ? "Publisher ID / Email" : "Author ID / Email"}`,
+      );
       return;
     }
     if (!password.trim()) {
@@ -138,7 +143,9 @@ function PublisherLoginPage() {
 
   const handleForgotSubmit = () => {
     if (!forgotId.trim()) {
-      toast.error(`Please type your registered ${selectedRole === "publisher" ? "Publisher ID or Email" : "Author ID"}`);
+      toast.error(
+        `Please type your registered ${selectedRole === "publisher" ? "Publisher ID or Email" : "Author ID"}`,
+      );
       return;
     }
     setIsSubmitting(true);
@@ -172,7 +179,6 @@ function PublisherLoginPage() {
       {/* Main Container Card (Fixed position below header) */}
       <main className="w-full max-w-[540px] shrink-0">
         <div className="bg-card border border-border rounded-3xl p-5 sm:p-7 pt-4 sm:pt-5 shadow-xl relative overflow-hidden space-y-5">
-
           {/* VIEW 1: MAIN LOGIN SCREEN */}
           {viewMode === "login" && (
             <div className="space-y-5 animate-in fade-in duration-200">
@@ -243,7 +249,9 @@ function PublisherLoginPage() {
                     {/* ID / Email Field */}
                     <div className="space-y-1.5 text-left">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-200 block">
-                        {selectedRole === "publisher" ? "Publisher ID / Official Email" : "Author Account ID / Email"}
+                        {selectedRole === "publisher"
+                          ? "Publisher ID / Official Email"
+                          : "Author Account ID / Email"}
                         <span className="text-rose-500 ml-0.5">*</span>
                       </label>
                       <div className="relative">
@@ -254,7 +262,11 @@ function PublisherLoginPage() {
                           type="text"
                           value={identifier}
                           onChange={(e) => setIdentifier(e.target.value)}
-                          placeholder={selectedRole === "publisher" ? "publisher@vimala.edu.in" : "author@pixelbooksapp.com"}
+                          placeholder={
+                            selectedRole === "publisher"
+                              ? "publisher@vimala.edu.in"
+                              : "author@pixelbooksapp.com"
+                          }
                           className="w-full h-11 rounded-xl border border-slate-200 dark:border-border/80 bg-card pl-10 pr-4 text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition-all shadow-2xs"
                         />
                       </div>
@@ -321,7 +333,9 @@ function PublisherLoginPage() {
                         <div className="w-full border-t border-border/70" />
                       </div>
                       <div className="relative flex justify-center text-[11px]">
-                        <span className="bg-card px-2 text-muted-foreground font-medium">or continue with</span>
+                        <span className="bg-card px-2 text-muted-foreground font-medium">
+                          or continue with
+                        </span>
                       </div>
                     </div>
 
@@ -348,7 +362,8 @@ function PublisherLoginPage() {
                       <div className="space-y-3.5">
                         <div className="space-y-1.5 text-left">
                           <label className="text-xs font-bold text-slate-700 dark:text-slate-200 block">
-                            Registered Phone Number or Email<span className="text-rose-500 ml-0.5">*</span>
+                            Registered Phone Number or Email
+                            <span className="text-rose-500 ml-0.5">*</span>
                           </label>
                           <div className="relative">
                             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
@@ -386,7 +401,8 @@ function PublisherLoginPage() {
                             <KeyRound size={14} /> Enter 4-Digit OTP
                           </span>
                           <p className="text-[11px] text-muted-foreground">
-                            Sent to <span className="font-semibold text-foreground">{identifier}</span>
+                            Sent to{" "}
+                            <span className="font-semibold text-foreground">{identifier}</span>
                           </p>
                         </div>
 
@@ -441,7 +457,9 @@ function PublisherLoginPage() {
                         <div className="w-full border-t border-border/70" />
                       </div>
                       <div className="relative flex justify-center text-[11px]">
-                        <span className="bg-card px-2 text-muted-foreground font-medium">or continue with</span>
+                        <span className="bg-card px-2 text-muted-foreground font-medium">
+                          or continue with
+                        </span>
                       </div>
                     </div>
 
@@ -456,7 +474,8 @@ function PublisherLoginPage() {
                       className="w-full h-10 rounded-full border border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                     >
                       <Lock size={14} />
-                      Sign in with {selectedRole === "publisher" ? "Publisher ID" : "Author Account"} & Password
+                      Sign in with{" "}
+                      {selectedRole === "publisher" ? "Publisher ID" : "Author Account"} & Password
                     </button>
                   </div>
                 )}
@@ -491,7 +510,9 @@ function PublisherLoginPage() {
                   {/* Text Box with Label Above and Red Asterisk */}
                   <div className="space-y-1.5 text-left mt-6">
                     <label className="text-xs font-bold text-slate-700 dark:text-slate-200 block">
-                      {selectedRole === "publisher" ? "Publisher ID / Registered Email" : "Author Account ID"}
+                      {selectedRole === "publisher"
+                        ? "Publisher ID / Registered Email"
+                        : "Author Account ID"}
                       <span className="text-rose-500 ml-0.5">*</span>
                     </label>
                     <div className="relative">
@@ -499,7 +520,11 @@ function PublisherLoginPage() {
                         type="text"
                         value={forgotId}
                         onChange={(e) => setForgotId(e.target.value)}
-                        placeholder={selectedRole === "publisher" ? "publisher@vimala.edu.in" : "author@pixelbooksapp.com"}
+                        placeholder={
+                          selectedRole === "publisher"
+                            ? "publisher@vimala.edu.in"
+                            : "author@pixelbooksapp.com"
+                        }
                         className="w-full h-12 rounded-xl border border-slate-200 dark:border-border/80 bg-card px-4 text-sm font-medium text-foreground placeholder:text-muted-foreground/60 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition-all shadow-2xs"
                       />
                     </div>
@@ -530,7 +555,9 @@ function PublisherLoginPage() {
                   <div className="space-y-1">
                     <h3 className="text-base font-bold text-foreground">Reset Request Submitted</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      A 4-digit password reset OTP has been sent for ID <span className="font-semibold text-foreground">{forgotId}</span> to your registered credentials.
+                      A 4-digit password reset OTP has been sent for ID{" "}
+                      <span className="font-semibold text-foreground">{forgotId}</span> to your
+                      registered credentials.
                     </p>
                   </div>
 
@@ -557,7 +584,9 @@ function PublisherLoginPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      toast.success("Password reset verified! Please login with your new credentials.");
+                      toast.success(
+                        "Password reset verified! Please login with your new credentials.",
+                      );
                       setViewMode("login");
                     }}
                     className="w-full h-11 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs transition-all shadow-md cursor-pointer"

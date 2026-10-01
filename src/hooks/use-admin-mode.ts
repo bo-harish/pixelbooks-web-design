@@ -28,7 +28,10 @@ export function useAdminMode(): [AdminMode, (mode: AdminMode) => void] {
   useEffect(() => {
     const handleCustomEvent = (e: Event) => {
       const customEvent = e as CustomEvent<AdminMode>;
-      if (customEvent.detail && (customEvent.detail === "retail" || customEvent.detail === "library")) {
+      if (
+        customEvent.detail &&
+        (customEvent.detail === "retail" || customEvent.detail === "library")
+      ) {
         setModeState(customEvent.detail);
       }
     };

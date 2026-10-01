@@ -42,8 +42,7 @@ function EditTermsConditionsPage() {
   const navigate = useNavigate();
 
   // Find target item or fallback to default
-  const termsItem =
-    initialTermsConditions.find((p) => p.id === id) || initialTermsConditions[0];
+  const termsItem = initialTermsConditions.find((p) => p.id === id) || initialTermsConditions[0];
 
   const [selectedRole, setSelectedRole] = useState<PolicyRole>(termsItem.role);
   const [status, setStatus] = useState<PolicyStatus>(termsItem.status);
@@ -239,25 +238,23 @@ function EditTermsConditionsPage() {
                     className="absolute left-0 top-full z-20 mt-1 w-36 rounded-lg border border-border bg-card py-1 shadow-lg"
                     onMouseLeave={() => setHeadingDropdownOpen(false)}
                   >
-                    {["Heading 1", "Heading 2", "Heading 3", "Paragraph"].map(
-                      (h) => (
-                        <button
-                          key={h}
-                          type="button"
-                          onClick={() => {
-                            setSelectedHeading(h);
-                            setHeadingDropdownOpen(false);
-                          }}
-                          className={`block w-full px-3 py-1.5 text-left text-xs hover:bg-secondary ${
-                            selectedHeading === h
-                              ? "font-bold text-[var(--brand)]"
-                              : "text-foreground"
-                          }`}
-                        >
-                          {h}
-                        </button>
-                      )
-                    )}
+                    {["Heading 1", "Heading 2", "Heading 3", "Paragraph"].map((h) => (
+                      <button
+                        key={h}
+                        type="button"
+                        onClick={() => {
+                          setSelectedHeading(h);
+                          setHeadingDropdownOpen(false);
+                        }}
+                        className={`block w-full px-3 py-1.5 text-left text-xs hover:bg-secondary ${
+                          selectedHeading === h
+                            ? "font-bold text-[var(--brand)]"
+                            : "text-foreground"
+                        }`}
+                      >
+                        {h}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>

@@ -225,7 +225,10 @@ function RichTextEditor({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={4}
-        placeholder={placeholder || "Provide a comprehensive summary and key highlights for this eBook bundle..."}
+        placeholder={
+          placeholder ||
+          "Provide a comprehensive summary and key highlights for this eBook bundle..."
+        }
         className="w-full bg-transparent p-3.5 text-sm text-foreground outline-none resize-y placeholder:text-muted-foreground"
       />
     </div>
@@ -238,7 +241,7 @@ export function NewAdminBundlePage() {
   // Form State
   const [title, setTitle] = useState("");
   const [bundleSummary, setBundleSummary] = useState(
-    "A comprehensive curated bundle featuring key reference titles for higher education and policy studies."
+    "A comprehensive curated bundle featuring key reference titles for higher education and policy studies.",
   );
   const [pricing, setPricing] = useState("");
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
@@ -261,23 +264,20 @@ export function NewAdminBundlePage() {
     const q = query.trim().toLowerCase();
     return availableBooks.filter((b) => {
       const matchesQuery =
-        !q ||
-        b.title.toLowerCase().includes(q) ||
-        b.author.toLowerCase().includes(q);
-      const matchesCategory =
-        selectedCategory === "All" || b.category === selectedCategory;
+        !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q);
+      const matchesCategory = selectedCategory === "All" || b.category === selectedCategory;
       return matchesQuery && matchesCategory;
     });
   }, [query, selectedCategory]);
 
   const selectedBooks = useMemo(
     () => availableBooks.filter((b) => selectedIds.includes(b.id)),
-    [selectedIds]
+    [selectedIds],
   );
 
   const totalPrice = useMemo(
     () => selectedBooks.reduce((sum, b) => sum + b.price, 0),
-    [selectedBooks]
+    [selectedBooks],
   );
 
   const finalPrice = pricing !== "" ? parseFloat(pricing) : totalPrice;
@@ -288,9 +288,7 @@ export function NewAdminBundlePage() {
       : 0;
 
   const toggleSelect = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const selectAllFiltered = () => {
@@ -301,8 +299,6 @@ export function NewAdminBundlePage() {
   const clearSelection = () => {
     setSelectedIds([]);
   };
-
-
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -335,7 +331,10 @@ export function NewAdminBundlePage() {
   const isValid = title.trim().length > 0 && selectedIds.length > 0 && hasAvailability;
 
   return (
-    <AppShell title="Create eBook Bundle" subtitle="Configure bundle details, select included titles, and publish instantly.">
+    <AppShell
+      title="Create eBook Bundle"
+      subtitle="Configure bundle details, select included titles, and publish instantly."
+    >
       <div className="mx-auto max-w-7xl space-y-6 p-4 md:p-8">
         {/* Back Link & Top Bar Actions */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -370,7 +369,9 @@ export function NewAdminBundlePage() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {/* Title */}
             <div className="md:col-span-2">
-              <label className="mb-1.5 block text-xs font-medium text-foreground">Bundle Title *</label>
+              <label className="mb-1.5 block text-xs font-medium text-foreground">
+                Bundle Title *
+              </label>
               <input
                 type="text"
                 value={title}
@@ -393,17 +394,22 @@ export function NewAdminBundlePage() {
             {/* Pricing & Discounts */}
             <div className="space-y-2 md:col-span-2">
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-medium text-foreground">Bundle Price (₹) *</label>
+                <label className="block text-xs font-medium text-foreground">
+                  Bundle Price (₹) *
+                </label>
                 {totalPrice > 0 && (
                   <span className="text-xs text-muted-foreground">
-                    Sum of eBooks: <span className="font-semibold text-foreground">₹{totalPrice}</span>
+                    Sum of eBooks:{" "}
+                    <span className="font-semibold text-foreground">₹{totalPrice}</span>
                   </span>
                 )}
               </div>
 
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground">₹</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground">
+                    ₹
+                  </span>
                   <input
                     type="number"
                     value={pricing}
@@ -412,21 +418,25 @@ export function NewAdminBundlePage() {
                     className="h-11 w-full rounded-xl border border-border bg-card pl-8 pr-4 text-sm outline-none focus:border-[var(--brand)] font-semibold text-foreground"
                   />
                 </div>
-
-
               </div>
             </div>
 
             {/* Custom Cover Upload */}
             <div className="md:col-span-2">
-              <label className="mb-1.5 block text-xs font-medium text-foreground">Custom Cover Image (Optional)</label>
+              <label className="mb-1.5 block text-xs font-medium text-foreground">
+                Custom Cover Image (Optional)
+              </label>
               <div
                 onClick={() => fileInputRef.current?.click()}
                 className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-border bg-secondary/20 p-4 transition-colors hover:border-[var(--brand)] cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   {coverPreview ? (
-                    <img src={coverPreview} alt="Cover Preview" className="h-14 w-10 object-cover rounded-md shadow-xs border border-border" />
+                    <img
+                      src={coverPreview}
+                      alt="Cover Preview"
+                      className="h-14 w-10 object-cover rounded-md shadow-xs border border-border"
+                    />
                   ) : (
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground">
                       <Upload size={18} />
@@ -436,7 +446,9 @@ export function NewAdminBundlePage() {
                     <p className="text-xs font-semibold text-foreground">
                       {coverPreview ? "Change cover image" : "Click to upload bundle banner/cover"}
                     </p>
-                    <p className="text-[11px] text-muted-foreground">PNG, JPG or WEBP (Max 2MB). Auto-generates artwork if empty.</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      PNG, JPG or WEBP (Max 2MB). Auto-generates artwork if empty.
+                    </p>
                   </div>
                 </div>
                 {coverPreview && (
@@ -503,13 +515,18 @@ export function NewAdminBundlePage() {
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={handleAddTag}
-                    placeholder={tags.length === 0 ? "Type keyword and press Enter..." : "Add tag..."}
+                    placeholder={
+                      tags.length === 0 ? "Type keyword and press Enter..." : "Add tag..."
+                    }
                     className="flex-1 bg-transparent px-1 text-xs text-foreground outline-none min-w-[120px] placeholder:text-muted-foreground"
                   />
                 )}
               </div>
               <div className="flex items-center justify-between text-[11px] text-muted-foreground px-1 pt-0.5">
-                <span>Press <strong className="font-semibold text-foreground">Enter</strong> after each tag</span>
+                <span>
+                  Press <strong className="font-semibold text-foreground">Enter</strong> after each
+                  tag
+                </span>
                 <span>Maximum 3 keywords ({tags.length}/3)</span>
               </div>
             </div>
@@ -525,7 +542,9 @@ export function NewAdminBundlePage() {
               </span>
               <div>
                 <h2 className="text-base font-semibold text-foreground">Select Included eBooks</h2>
-                <p className="text-xs text-muted-foreground">Choose titles from the catalogue to include in this bundle</p>
+                <p className="text-xs text-muted-foreground">
+                  Choose titles from the catalogue to include in this bundle
+                </p>
               </div>
             </div>
 
@@ -556,7 +575,10 @@ export function NewAdminBundlePage() {
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             {/* Search input */}
             <div className="relative flex-1 md:max-w-md">
-              <Search size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Search
+                size={15}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
               <input
                 type="text"
                 value={query}
@@ -606,7 +628,9 @@ export function NewAdminBundlePage() {
                     style={{ background: b.cover }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
-                    <span className="relative z-10 font-extrabold tracking-wider">{b.initials}</span>
+                    <span className="relative z-10 font-extrabold tracking-wider">
+                      {b.initials}
+                    </span>
                   </div>
 
                   <div className="min-w-0 flex-1">
@@ -651,7 +675,9 @@ export function NewAdminBundlePage() {
               <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--sidebar-highlight)] text-[var(--brand)] font-bold text-xs">
                 3
               </span>
-              <h2 className="text-base font-semibold text-foreground">Live Bundle Preview & Finalize</h2>
+              <h2 className="text-base font-semibold text-foreground">
+                Live Bundle Preview & Finalize
+              </h2>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
               <Sparkles size={13} />
@@ -717,7 +743,9 @@ export function NewAdminBundlePage() {
                     </span>
                     {totalPrice > 0 && finalPrice < totalPrice && (
                       <>
-                        <span className="text-xs text-muted-foreground line-through">₹{totalPrice}</span>
+                        <span className="text-xs text-muted-foreground line-through">
+                          ₹{totalPrice}
+                        </span>
                         <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                           {discountPercent}% OFF
                         </span>
@@ -760,7 +788,9 @@ export function NewAdminBundlePage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-[11px] font-semibold text-muted-foreground">₹{b.price}</span>
+                          <span className="text-[11px] font-semibold text-muted-foreground">
+                            ₹{b.price}
+                          </span>
                           <button
                             type="button"
                             onClick={() => toggleSelect(b.id)}
@@ -799,7 +829,12 @@ export function NewAdminBundlePage() {
                   <div className="flex justify-between text-muted-foreground">
                     <span>Availability:</span>
                     <span className="font-semibold text-foreground">
-                      {[availability.library && "Library", availability.retailStore && "Retail Store"].filter(Boolean).join(", ") || "None"}
+                      {[
+                        availability.library && "Library",
+                        availability.retailStore && "Retail Store",
+                      ]
+                        .filter(Boolean)
+                        .join(", ") || "None"}
                     </span>
                   </div>
 
@@ -808,7 +843,10 @@ export function NewAdminBundlePage() {
                       <span>Tags:</span>
                       <div className="flex flex-wrap gap-1 justify-end">
                         {tags.map((t) => (
-                          <span key={t} className="bg-card px-2 py-0.5 rounded border border-border/50 font-medium text-foreground text-[10px]">
+                          <span
+                            key={t}
+                            className="bg-card px-2 py-0.5 rounded border border-border/50 font-medium text-foreground text-[10px]"
+                          >
                             {t}
                           </span>
                         ))}
@@ -818,7 +856,9 @@ export function NewAdminBundlePage() {
 
                   <div className="flex justify-between text-muted-foreground pt-1 border-t border-border/50">
                     <span>Included eBooks:</span>
-                    <span className="font-semibold text-foreground">{selectedBooks.length} Titles</span>
+                    <span className="font-semibold text-foreground">
+                      {selectedBooks.length} Titles
+                    </span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Combined List Sum:</span>

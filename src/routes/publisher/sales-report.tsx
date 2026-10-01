@@ -62,15 +62,7 @@ type SalesRow = {
   netSales: number;
 };
 
-const PRESETS = [
-  "MTD",
-  "QTD",
-  "YTD",
-  "Current FY",
-  "Last FY",
-  "Last 30 days",
-  "Custom",
-] as const;
+const PRESETS = ["MTD", "QTD", "YTD", "Current FY", "Last FY", "Last 30 days", "Custom"] as const;
 type Preset = (typeof PRESETS)[number];
 
 const VIEW_MODES = ["Detailed", "Consolidated"] as const;
@@ -138,9 +130,7 @@ function StatCard({
           {value}
         </p>
         {subtitle && (
-          <span className="text-[11px] font-medium text-muted-foreground">
-            {subtitle}
-          </span>
+          <span className="text-[11px] font-medium text-muted-foreground">{subtitle}</span>
         )}
       </div>
     </div>
@@ -257,7 +247,9 @@ function SalesReportPage() {
             </span>
             <div>
               <h3 className="text-sm font-bold text-foreground">Date Range & Period</h3>
-              <p className="text-xs text-muted-foreground">Select period to update summary metrics</p>
+              <p className="text-xs text-muted-foreground">
+                Select period to update summary metrics
+              </p>
             </div>
           </div>
 
@@ -279,8 +271,9 @@ function SalesReportPage() {
                       key={p}
                       type="button"
                       onClick={() => handlePresetSelect(p)}
-                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${p === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
-                        }`}
+                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
+                        p === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
+                      }`}
                     >
                       {p}
                     </button>
@@ -320,8 +313,18 @@ function SalesReportPage() {
 
         {/* Compact Stat cards */}
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <StatCard icon={Tag} label="Total Sales" value={formatINR(totalNet)} subtitle="Net Period Sales" />
-          <StatCard icon={BookMarked} label="Total Books Sold" value={String(totalBooks)} subtitle="Units Sold" />
+          <StatCard
+            icon={Tag}
+            label="Total Sales"
+            value={formatINR(totalNet)}
+            subtitle="Net Period Sales"
+          />
+          <StatCard
+            icon={BookMarked}
+            label="Total Books Sold"
+            value={String(totalBooks)}
+            subtitle="Units Sold"
+          />
         </div>
 
         {/* Filters & Export Card */}
@@ -618,10 +621,10 @@ function SalesReportPage() {
                         style={
                           n === currentPage
                             ? {
-                              backgroundColor: "var(--brand)",
-                              color: "var(--brand-contrast)",
-                              borderColor: "transparent",
-                            }
+                                backgroundColor: "var(--brand)",
+                                color: "var(--brand-contrast)",
+                                borderColor: "transparent",
+                              }
                             : undefined
                         }
                       >

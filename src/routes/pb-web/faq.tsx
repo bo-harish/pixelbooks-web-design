@@ -20,7 +20,8 @@ export const Route = createFileRoute("/pb-web/faq")({
       { title: "Frequently Asked Questions — PixelBooks" },
       {
         name: "description",
-        content: "Find answers to frequently asked questions about PixelBooks eBook reading, account setup, purchases, and device sync.",
+        content:
+          "Find answers to frequently asked questions about PixelBooks eBook reading, account setup, purchases, and device sync.",
       },
     ],
   }),
@@ -113,9 +114,7 @@ function PbWebFaqPage() {
   const [openIds, setOpenIds] = useState<string[]>(["what-is-pixelbooks"]);
 
   const toggleAccordion = (id: string) => {
-    setOpenIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+    setOpenIds((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
   };
 
   const filteredFaqs = useMemo(() => {
@@ -125,7 +124,7 @@ function PbWebFaqPage() {
       (item) =>
         item.question.toLowerCase().includes(q) ||
         item.answer.toLowerCase().includes(q) ||
-        (item.category && item.category.toLowerCase().includes(q))
+        (item.category && item.category.toLowerCase().includes(q)),
     );
   }, [searchQuery]);
 
@@ -147,7 +146,9 @@ function PbWebFaqPage() {
         <div className="rounded-xl border border-[#0e5b50] bg-gradient-to-r from-[#137365] to-[#0e5b50] px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-start sm:items-center gap-2.5 shadow-2xs text-white">
           <Info size={16} className="text-emerald-300 shrink-0 mt-0.5 sm:mt-0" />
           <p className="text-xs sm:text-[13px] leading-snug sm:leading-normal text-emerald-50/95">
-            <span className="font-bold text-white">Note:</span> These FAQs apply to both the PixelBooks mobile app and web version. Everything works the same; the only difference is how you access it—through the app or a browser.
+            <span className="font-bold text-white">Note:</span> These FAQs apply to both the
+            PixelBooks mobile app and web version. Everything works the same; the only difference is
+            how you access it—through the app or a browser.
           </p>
         </div>
 
@@ -180,9 +181,12 @@ function PbWebFaqPage() {
           {filteredFaqs.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-pbgreen-border bg-neutral-50/60 p-10 text-center space-y-3">
               <HelpCircle size={32} className="mx-auto text-muted-foreground/60" />
-              <div className="text-sm font-bold text-foreground">No questions found matching "{searchQuery}"</div>
+              <div className="text-sm font-bold text-foreground">
+                No questions found matching "{searchQuery}"
+              </div>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                Can't find what you're looking for? Reach out to our direct support team and we'll be glad to help.
+                Can't find what you're looking for? Reach out to our direct support team and we'll
+                be glad to help.
               </p>
               <div className="pt-2">
                 <Link
@@ -199,10 +203,11 @@ function PbWebFaqPage() {
               return (
                 <div
                   key={item.id}
-                  className={`rounded-2xl border transition-all duration-200 overflow-hidden ${isOpen
-                    ? "border-pbgreen-border bg-white ring-2 ring-pbgreen-light shadow-xs"
-                    : "border-pbgreen-border/70 bg-white hover:border-pbgreen-border hover:bg-neutral-50/40"
-                    }`}
+                  className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    isOpen
+                      ? "border-pbgreen-border bg-white ring-2 ring-pbgreen-light shadow-xs"
+                      : "border-pbgreen-border/70 bg-white hover:border-pbgreen-border hover:bg-neutral-50/40"
+                  }`}
                 >
                   <button
                     type="button"
@@ -210,8 +215,9 @@ function PbWebFaqPage() {
                     className="w-full flex items-center justify-between gap-4 p-4 sm:p-5 text-left cursor-pointer transition-colors"
                   >
                     <span
-                      className={`text-sm sm:text-[15px] font-semibold transition-colors ${isOpen ? "text-foreground font-bold" : "text-foreground"
-                        }`}
+                      className={`text-sm sm:text-[15px] font-semibold transition-colors ${
+                        isOpen ? "text-foreground font-bold" : "text-foreground"
+                      }`}
                     >
                       {item.question}
                     </span>

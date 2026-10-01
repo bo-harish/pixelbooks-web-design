@@ -37,7 +37,8 @@ export const Route = createFileRoute("/pb-admin/ad-banners/popup")({
       { title: "Pop Up Banner — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage pop-up promotional banners, announcements, and modal overlay campaigns in PixelBooks.",
+        content:
+          "Manage pop-up promotional banners, announcements, and modal overlay campaigns in PixelBooks.",
       },
     ],
   }),
@@ -119,7 +120,9 @@ export function PopUpBannerPage() {
   const [viewMode, setViewMode] = useState<"list" | "create">("list");
   const [banners, setBanners] = useState<PopUpBannerItem[]>(INITIAL_POPUP_BANNERS);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive">("All Status");
+  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive">(
+    "All Status",
+  );
 
   // Active editing item (null = creating new banner)
   const [editingBanner, setEditingBanner] = useState<PopUpBannerItem | null>(null);
@@ -161,7 +164,7 @@ export function PopUpBannerPage() {
           return { ...item, status: next };
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -217,19 +220,19 @@ export function PopUpBannerPage() {
         prev.map((b) =>
           b.id === editingBanner.id
             ? {
-              ...b,
-              title: derivedTitle,
-              duration: `${formatMonthDay(startDateInput)} – ${formatMonthDay(endDateInput)}`,
-              startDate: startDateInput,
-              endDate: endDateInput,
-              adsClient: selectedPublisher,
-              publisher: selectedPublisher !== "Choose Publisher" ? selectedPublisher : undefined,
-              author: selectedAuthor !== "Choose Author" ? selectedAuthor : undefined,
-              ebook: selectedEbook !== "Choose eBook" ? selectedEbook : undefined,
-              popupImage: popupImageUploaded || b.popupImage,
-            }
-            : b
-        )
+                ...b,
+                title: derivedTitle,
+                duration: `${formatMonthDay(startDateInput)} – ${formatMonthDay(endDateInput)}`,
+                startDate: startDateInput,
+                endDate: endDateInput,
+                adsClient: selectedPublisher,
+                publisher: selectedPublisher !== "Choose Publisher" ? selectedPublisher : undefined,
+                author: selectedAuthor !== "Choose Author" ? selectedAuthor : undefined,
+                ebook: selectedEbook !== "Choose eBook" ? selectedEbook : undefined,
+                popupImage: popupImageUploaded || b.popupImage,
+              }
+            : b,
+        ),
       );
       toast.success(`Pop Up Banner "${derivedTitle}" updated successfully!`);
     } else {
@@ -306,13 +309,19 @@ export function PopUpBannerPage() {
                     <span>{statusFilter}</span>
                     <ChevronDown size={16} className="text-muted-foreground shrink-0" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[140px] bg-card border-border shadow-md">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-[140px] bg-card border-border shadow-md"
+                  >
                     {(["All Status", "Active", "Inactive"] as const).map((st) => (
                       <DropdownMenuItem
                         key={st}
                         onClick={() => setStatusFilter(st)}
-                        className={`cursor-pointer font-medium text-xs ${statusFilter === st ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]" : ""
-                          }`}
+                        className={`cursor-pointer font-medium text-xs ${
+                          statusFilter === st
+                            ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
+                            : ""
+                        }`}
                       >
                         {st}
                       </DropdownMenuItem>
@@ -340,8 +349,12 @@ export function PopUpBannerPage() {
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Banner Duration</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Publisher</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Enable/Disable</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Remove</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Preview</th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                        Remove
+                      </th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                        Preview
+                      </th>
                       <th className="px-6 py-4 w-10 font-semibold"></th>
                     </tr>
                   </thead>
@@ -394,7 +407,10 @@ export function PopUpBannerPage() {
                           </td>
 
                           {/* Status Switch Toggle Column */}
-                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Switch
                               checked={item.status}
                               onCheckedChange={() => handleToggleStatus(item.id)}
@@ -403,7 +419,10 @@ export function PopUpBannerPage() {
                           </td>
 
                           {/* Remove Trash Button Column */}
-                          <td className="px-6 py-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 text-center whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <button
                               onClick={() => handleRemoveBanner(item.id, item.title)}
                               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
@@ -492,132 +511,131 @@ export function PopUpBannerPage() {
               >
                 <ArrowLeft size={16} />
               </button>
-              <span className="text-sm font-normal text-foreground">
-                Back to Pop Up Banner
-              </span>
+              <span className="text-sm font-normal text-foreground">Back to Pop Up Banner</span>
             </div>
 
             {/* Main Form Wrapper */}
             <form onSubmit={handleSaveBanner} className="space-y-6 w-full">
               {/* Card Container Box */}
               <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-2xs space-y-6 w-full">
-              {/* Form Section Title */}
+                {/* Form Section Title */}
 
-              {/* Form 2-Column Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                {/* Publisher */}
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">
-                    Publisher <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={selectedPublisher}
-                    onChange={(e) => setSelectedPublisher(e.target.value)}
-                    className="w-full h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[var(--brand)]"
-                  >
-                    {PUBLISHERS.map((p) => (
-                      <option key={p} value={p}>
-                        {p}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* eBook */}
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">
-                    eBook
-                  </label>
-                  <select
-                    value={selectedEbook}
-                    onChange={(e) => setSelectedEbook(e.target.value)}
-                    className="w-full h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[var(--brand)]"
-                  >
-                    {EBOOKS.map((b) => (
-                      <option key={b} value={b}>
-                        {b}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Author */}
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">
-                    Author
-                  </label>
-                  <select
-                    value={selectedAuthor}
-                    onChange={(e) => setSelectedAuthor(e.target.value)}
-                    className="w-full h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[var(--brand)]"
-                  >
-                    {AUTHORS.map((a) => (
-                      <option key={a} value={a}>
-                        {a}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Start Date - End Date */}
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">
-                    Start Date - End Date <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex items-center gap-2 w-full">
-                    <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">
-                      <input
-                        type="date"
-                        value={startDateInput}
-                        onChange={(e) => setStartDateInput(e.target.value)}
-                        className="w-full bg-transparent text-xs text-foreground outline-none cursor-pointer"
-                      />
-                    </label>
-                    <span className="text-muted-foreground text-xs font-medium">to</span>
-                    <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">
-                      <input
-                        type="date"
-                        value={endDateInput}
-                        onChange={(e) => setEndDateInput(e.target.value)}
-                        className="w-full bg-transparent text-xs text-foreground outline-none cursor-pointer"
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pop Up Image Upload Dropzone Box matching screenshot */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 w-full">
-                <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 flex flex-col items-center justify-center text-center space-y-3 w-full">
-                  <div className="h-14 w-14 rounded-xl bg-muted/80 flex items-center justify-center text-muted-foreground">
-                    <ImageIcon size={28} />
-                  </div>
+                {/* Form 2-Column Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                  {/* Publisher */}
                   <div>
-                    <p className="text-xs font-semibold text-foreground">
-                      Pop Up Image <span className="text-red-500">*</span>
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      1400x340 pixels (or 2x scale), less than 5 MB
-                    </p>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Publisher <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={selectedPublisher}
+                      onChange={(e) => setSelectedPublisher(e.target.value)}
+                      className="w-full h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[var(--brand)]"
+                    >
+                      {PUBLISHERS.map((p) => (
+                        <option key={p} value={p}>
+                          {p}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  <label className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
-                    <UploadCloud size={14} />
-                    <span>Choose Pop Up Banner for Web</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files?.[0]) {
-                          setPopupImageUploaded("linear-gradient(135deg, #0d5c58 0%, #15736d 100%)");
-                          toast.success("Pop Up Banner image selected!");
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
-              </div>
 
+                  {/* eBook */}
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      eBook
+                    </label>
+                    <select
+                      value={selectedEbook}
+                      onChange={(e) => setSelectedEbook(e.target.value)}
+                      className="w-full h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[var(--brand)]"
+                    >
+                      {EBOOKS.map((b) => (
+                        <option key={b} value={b}>
+                          {b}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Author */}
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Author
+                    </label>
+                    <select
+                      value={selectedAuthor}
+                      onChange={(e) => setSelectedAuthor(e.target.value)}
+                      className="w-full h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[var(--brand)]"
+                    >
+                      {AUTHORS.map((a) => (
+                        <option key={a} value={a}>
+                          {a}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Start Date - End Date */}
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Start Date - End Date <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex items-center gap-2 w-full">
+                      <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">
+                        <input
+                          type="date"
+                          value={startDateInput}
+                          onChange={(e) => setStartDateInput(e.target.value)}
+                          className="w-full bg-transparent text-xs text-foreground outline-none cursor-pointer"
+                        />
+                      </label>
+                      <span className="text-muted-foreground text-xs font-medium">to</span>
+                      <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3">
+                        <input
+                          type="date"
+                          value={endDateInput}
+                          onChange={(e) => setEndDateInput(e.target.value)}
+                          className="w-full bg-transparent text-xs text-foreground outline-none cursor-pointer"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pop Up Image Upload Dropzone Box matching screenshot */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 w-full">
+                  <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 flex flex-col items-center justify-center text-center space-y-3 w-full">
+                    <div className="h-14 w-14 rounded-xl bg-muted/80 flex items-center justify-center text-muted-foreground">
+                      <ImageIcon size={28} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-foreground">
+                        Pop Up Image <span className="text-red-500">*</span>
+                      </p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        1400x340 pixels (or 2x scale), less than 5 MB
+                      </p>
+                    </div>
+                    <label className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
+                      <UploadCloud size={14} />
+                      <span>Choose Pop Up Banner for Web</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            setPopupImageUploaded(
+                              "linear-gradient(135deg, #0d5c58 0%, #15736d 100%)",
+                            );
+                            toast.success("Pop Up Banner image selected!");
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
 
               {/* Form Action Buttons - Outside Card Box */}

@@ -150,8 +150,14 @@ function WorkspaceSelector() {
       <header className="mx-auto w-full max-w-7xl 2xl:max-w-[1500px] flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link to="/" id="landing-logo-link" className="flex items-center gap-3 shrink-0">
-            <img src="/logo-app-icon.png" alt="PixelBooks App Icon" className="h-9 w-9 object-contain" />
-            <span className="font-extrabold text-2xl tracking-tight text-foreground">PixelBooks</span>
+            <img
+              src="/logo-app-icon.png"
+              alt="PixelBooks App Icon"
+              className="h-9 w-9 object-contain"
+            />
+            <span className="font-extrabold text-2xl tracking-tight text-foreground">
+              PixelBooks
+            </span>
           </Link>
         </div>
         <div className="flex items-center gap-3">
@@ -186,9 +192,15 @@ function WorkspaceSelector() {
               id="link-pixelbooks-website"
               className="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card/75 px-5 py-2.5 text-sm font-semibold text-foreground shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--brand)]/50 hover:bg-card hover:text-[var(--brand)] hover:shadow-md cursor-pointer"
             >
-              <Globe size={16} className="text-[var(--brand)] transition-transform duration-200 group-hover:rotate-12" />
+              <Globe
+                size={16}
+                className="text-[var(--brand)] transition-transform duration-200 group-hover:rotate-12"
+              />
               <span>PixelBooks Website</span>
-              <ExternalLink size={13} className="text-muted-foreground transition-all duration-200 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <ExternalLink
+                size={13}
+                className="text-muted-foreground transition-all duration-200 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </Link>
           </div>
         </div>
@@ -358,17 +370,13 @@ function WorkspaceSelector() {
             );
           })}
         </div>
-
       </main>
 
       {/* Footer */}
       <footer className="mx-auto w-full max-w-7xl 2xl:max-w-[1500px] border-t border-border/60 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground/80">
         <div>© 2026 PixelBooks. All rights reserved.</div>
         <div className="flex items-center gap-4">
-          <Link
-            to="/pb-web/genre"
-            className="hover:text-foreground transition-colors"
-          >
+          <Link to="/pb-web/genre" className="hover:text-foreground transition-colors">
             PixelBooks Website
           </Link>
           <a href="#" className="hover:text-foreground transition-colors">
@@ -385,4 +393,3 @@ function WorkspaceSelector() {
     </div>
   );
 }
-

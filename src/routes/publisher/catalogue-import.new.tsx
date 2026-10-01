@@ -28,7 +28,10 @@ export const Route = createFileRoute("/publisher/catalogue-import/new")({
   head: () => ({
     meta: [
       { title: "New Catalogue Import — PixelBooks" },
-      { name: "description", content: "Bulk-upload eBook metadata spreadsheet and media files on a single page." },
+      {
+        name: "description",
+        content: "Bulk-upload eBook metadata spreadsheet and media files on a single page.",
+      },
     ],
   }),
   component: NewCatalogueImportPage,
@@ -43,7 +46,10 @@ function humanSize(n: number) {
 }
 
 function baseKey(name: string) {
-  return name.replace(/\.[^/.]+$/, "").toLowerCase().trim();
+  return name
+    .replace(/\.[^/.]+$/, "")
+    .toLowerCase()
+    .trim();
 }
 
 type UploadItem = { key: string; title: string; doc?: PickedFile; image?: PickedFile };
@@ -148,7 +154,7 @@ export function NewCatalogueImportPage() {
   const imagesCount = useMemo(() => files.filter((f) => f.kind === "image").length, [files]);
   const pairedCount = useMemo(
     () => uploadItems.filter((item) => item.doc && item.image).length,
-    [uploadItems]
+    [uploadItems],
   );
 
   const filteredFiles = useMemo(() => {
@@ -198,11 +204,14 @@ export function NewCatalogueImportPage() {
       uploadStage === "done"
         ? 100
         : Math.round(
-            (Object.values(progressMap).reduce((a, b) => a + b, 0) / (totalEbooks * 100)) * 100
+            (Object.values(progressMap).reduce((a, b) => a + b, 0) / (totalEbooks * 100)) * 100,
           ) || 0;
 
     return (
-      <AppShell title="Catalogue Import" subtitle="Uploading your eBook metadata and matching media files.">
+      <AppShell
+        title="Catalogue Import"
+        subtitle="Uploading your eBook metadata and matching media files."
+      >
         <div className="space-y-6 p-4 md:p-8">
           <div className="rounded-xl border border-border bg-card p-6 shadow-2xs space-y-6">
             <div className="flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -217,7 +226,9 @@ export function NewCatalogueImportPage() {
               <div className="flex items-center gap-3">
                 <div className="flex flex-col items-end">
                   <span className="text-xs font-semibold text-foreground">
-                    {uploadStage === "done" ? "Upload Completed" : `Uploading... ${overallProgress}%`}
+                    {uploadStage === "done"
+                      ? "Upload Completed"
+                      : `Uploading... ${overallProgress}%`}
                   </span>
                   <div className="mt-1 h-2 w-36 overflow-hidden rounded-full bg-secondary">
                     <div
@@ -367,7 +378,10 @@ export function NewCatalogueImportPage() {
   }
 
   return (
-    <AppShell title="Catalogue Import" subtitle="Bulk-upload your eBook metadata via spreadsheet and matching media files.">
+    <AppShell
+      title="Catalogue Import"
+      subtitle="Bulk-upload your eBook metadata via spreadsheet and matching media files."
+    >
       <div className="space-y-6 p-4 md:p-8">
         {/* Navigation & Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -385,17 +399,27 @@ export function NewCatalogueImportPage() {
           {/* Top Progress Stepper */}
           <div className="hidden md:flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-xs font-medium">
             <span className="flex items-center gap-1.5 text-[var(--brand)] font-semibold">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--sidebar-highlight)] text-[11px]">1</span>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--sidebar-highlight)] text-[11px]">
+                1
+              </span>
               Guidelines
             </span>
             <span className="text-muted-foreground">/</span>
-            <span className={`flex items-center gap-1.5 ${excel || files.length > 0 ? "text-[var(--brand)] font-semibold" : "text-muted-foreground"}`}>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[11px]">2</span>
+            <span
+              className={`flex items-center gap-1.5 ${excel || files.length > 0 ? "text-[var(--brand)] font-semibold" : "text-muted-foreground"}`}
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[11px]">
+                2
+              </span>
               Upload Files
             </span>
             <span className="text-muted-foreground">/</span>
-            <span className={`flex items-center gap-1.5 ${isValid ? "text-[var(--brand)] font-semibold" : "text-muted-foreground"}`}>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[11px]">3</span>
+            <span
+              className={`flex items-center gap-1.5 ${isValid ? "text-[var(--brand)] font-semibold" : "text-muted-foreground"}`}
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-secondary text-[11px]">
+                3
+              </span>
               Review & Submit
             </span>
           </div>
@@ -443,7 +467,9 @@ export function NewCatalogueImportPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => toast.success("Sample metadata Excel template (.xlsx) downloaded.")}
+                    onClick={() =>
+                      toast.success("Sample metadata Excel template (.xlsx) downloaded.")
+                    }
                     className="inline-flex h-9 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-xs transition-all hover:opacity-90 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
                     style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                   >
@@ -456,23 +482,39 @@ export function NewCatalogueImportPage() {
               {instructionsOpen && (
                 <div className="grid grid-cols-1 gap-3 pt-1 sm:grid-cols-2">
                   <InstructionStepCard number="1" title="Download Excel Template">
-                    <p>Click "Download Excel Template" to get the standard bulk metadata structure.</p>
-                    <p className="font-semibold text-foreground mt-1">Format: Excel Spreadsheet (.xlsx)</p>
+                    <p>
+                      Click "Download Excel Template" to get the standard bulk metadata structure.
+                    </p>
+                    <p className="font-semibold text-foreground mt-1">
+                      Format: Excel Spreadsheet (.xlsx)
+                    </p>
                   </InstructionStepCard>
 
                   <InstructionStepCard number="2" title="Prepare Media Files">
                     <p>Organize eBook documents and cover graphics before uploading.</p>
                     <div className="flex flex-wrap gap-1 mt-1.5">
-                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">.pdf</span>
-                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">.epub</span>
-                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">.jpg</span>
-                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">.png</span>
+                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
+                        .pdf
+                      </span>
+                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
+                        .epub
+                      </span>
+                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
+                        .jpg
+                      </span>
+                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
+                        .png
+                      </span>
                     </div>
                   </InstructionStepCard>
 
                   <InstructionStepCard number="3" title="Filename Naming Rule">
                     <p>
-                      Each document and its cover image <span className="font-semibold text-foreground">must have identical base file names</span> to auto-pair.
+                      Each document and its cover image{" "}
+                      <span className="font-semibold text-foreground">
+                        must have identical base file names
+                      </span>{" "}
+                      to auto-pair.
                     </p>
                     <p className="mt-1 font-mono text-[11px] text-[var(--brand)]">
                       e.g., book1.pdf ↔ book1.jpg
@@ -486,12 +528,16 @@ export function NewCatalogueImportPage() {
 
                   <InstructionStepCard number="5" title="Review & Submit">
                     <p>Check the pre-flight import summary checklist on the right.</p>
-                    <p className="mt-1">Click "Upload & Submit Catalogue Import" to send for review.</p>
+                    <p className="mt-1">
+                      Click "Upload & Submit Catalogue Import" to send for review.
+                    </p>
                   </InstructionStepCard>
 
                   <InstructionStepCard number="6" title="Approval Notification">
                     <p>Once submitted, files undergo system parsing and approval.</p>
-                    <p className="mt-1">You will receive an alert once books are live in catalogue.</p>
+                    <p className="mt-1">
+                      You will receive an alert once books are live in catalogue.
+                    </p>
                   </InstructionStepCard>
                 </div>
               )}
@@ -505,8 +551,12 @@ export function NewCatalogueImportPage() {
                     2
                   </span>
                   <div>
-                    <h2 className="text-base font-semibold text-foreground">Upload Metadata Spreadsheet</h2>
-                    <p className="text-xs text-muted-foreground">Select or drop your completed Excel (.xlsx) file</p>
+                    <h2 className="text-base font-semibold text-foreground">
+                      Upload Metadata Spreadsheet
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      Select or drop your completed Excel (.xlsx) file
+                    </p>
                   </div>
                 </div>
 
@@ -544,9 +594,13 @@ export function NewCatalogueImportPage() {
                     <FileSpreadsheet size={22} />
                   </div>
                   <p className="text-sm font-semibold text-foreground">
-                    {excel ? "Replace Metadata Excel Spreadsheet" : "Click to Browse or Drag & Drop Excel File"}
+                    {excel
+                      ? "Replace Metadata Excel Spreadsheet"
+                      : "Click to Browse or Drag & Drop Excel File"}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">Supports: Microsoft Excel (.xlsx)</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Supports: Microsoft Excel (.xlsx)
+                  </p>
                   <span className="mt-3 inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-foreground shadow-2xs">
                     Browse File
                   </span>
@@ -570,13 +624,18 @@ export function NewCatalogueImportPage() {
                         <FileSpreadsheet size={20} />
                       </div>
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-foreground" title={excel.name}>
+                        <p
+                          className="truncate text-sm font-semibold text-foreground"
+                          title={excel.name}
+                        >
                           {excel.name}
                         </p>
                         <p className="text-xs text-muted-foreground flex items-center gap-2">
                           <span>{humanSize(excel.size)}</span>
                           <span>•</span>
-                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">Valid Metadata File</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                            Valid Metadata File
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -611,13 +670,16 @@ export function NewCatalogueImportPage() {
                   </span>
                   <div>
                     <h2 className="text-base font-semibold text-foreground">Upload Media Files</h2>
-                    <p className="text-xs text-muted-foreground">Select eBooks (PDF, ePub) and matching cover images (JPG, PNG)</p>
+                    <p className="text-xs text-muted-foreground">
+                      Select eBooks (PDF, ePub) and matching cover images (JPG, PNG)
+                    </p>
                   </div>
                 </div>
 
                 {files.length > 0 && (
                   <span className="text-xs font-semibold text-[var(--brand)] bg-[var(--sidebar-highlight)] border border-[var(--brand)]/20 px-3 py-1 rounded-lg self-start sm:self-auto">
-                    {files.length} file{files.length !== 1 ? "s" : ""} selected ({pairedCount} paired)
+                    {files.length} file{files.length !== 1 ? "s" : ""} selected ({pairedCount}{" "}
+                    paired)
                   </span>
                 )}
               </div>
@@ -747,18 +809,27 @@ export function NewCatalogueImportPage() {
                                   )}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate text-xs font-semibold text-foreground" title={item.title}>
+                                  <p
+                                    className="truncate text-xs font-semibold text-foreground"
+                                    title={item.title}
+                                  >
                                     {item.title}
                                   </p>
                                   <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
                                     {item.doc ? (
-                                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">Doc attached</span>
+                                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                                        Doc attached
+                                      </span>
                                     ) : (
-                                      <span className="text-amber-500 font-medium">Missing doc</span>
+                                      <span className="text-amber-500 font-medium">
+                                        Missing doc
+                                      </span>
                                     )}
                                     <span>•</span>
                                     {item.image ? (
-                                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">Cover attached</span>
+                                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                                        Cover attached
+                                      </span>
                                     ) : (
                                       <span className="text-amber-500 font-medium">No cover</span>
                                     )}
@@ -789,13 +860,20 @@ export function NewCatalogueImportPage() {
                       </p>
                       <ul className="divide-y divide-border/60 max-h-60 overflow-y-auto">
                         {filteredFiles.map((f, i) => (
-                          <li key={i} className="flex items-center gap-3 px-3.5 py-2.5 hover:bg-secondary/20 transition-colors">
+                          <li
+                            key={i}
+                            className="flex items-center gap-3 px-3.5 py-2.5 hover:bg-secondary/20 transition-colors"
+                          >
                             <div
                               className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg"
                               style={{ backgroundColor: "var(--sidebar-highlight)" }}
                             >
                               {f.kind === "image" && f.previewUrl ? (
-                                <img src={f.previewUrl} alt={f.name} className="h-full w-full object-cover" />
+                                <img
+                                  src={f.previewUrl}
+                                  alt={f.name}
+                                  className="h-full w-full object-cover"
+                                />
                               ) : f.kind === "image" ? (
                                 <ImageIcon size={15} style={{ color: "var(--brand)" }} />
                               ) : (
@@ -803,9 +881,12 @@ export function NewCatalogueImportPage() {
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-xs font-medium text-foreground">{f.name}</p>
+                              <p className="truncate text-xs font-medium text-foreground">
+                                {f.name}
+                              </p>
                               <p className="text-[11px] text-muted-foreground">
-                                {f.kind === "image" ? "Cover image" : "eBook Document"} · {humanSize(f.size)}
+                                {f.kind === "image" ? "Cover image" : "eBook Document"} ·{" "}
+                                {humanSize(f.size)}
                               </p>
                             </div>
                             <button
@@ -883,7 +964,9 @@ export function NewCatalogueImportPage() {
                       ) : (
                         <div className="h-3.5 w-3.5 rounded-full border border-muted-foreground/40 shrink-0" />
                       )}
-                      <span className={excel ? "text-foreground font-medium" : "text-muted-foreground"}>
+                      <span
+                        className={excel ? "text-foreground font-medium" : "text-muted-foreground"}
+                      >
                         Excel Metadata File (.xlsx)
                       </span>
                     </div>
@@ -894,7 +977,11 @@ export function NewCatalogueImportPage() {
                       ) : (
                         <div className="h-3.5 w-3.5 rounded-full border border-muted-foreground/40 shrink-0" />
                       )}
-                      <span className={files.length > 0 ? "text-foreground font-medium" : "text-muted-foreground"}>
+                      <span
+                        className={
+                          files.length > 0 ? "text-foreground font-medium" : "text-muted-foreground"
+                        }
+                      >
                         Media Files Attached
                       </span>
                     </div>
@@ -905,7 +992,11 @@ export function NewCatalogueImportPage() {
                       ) : (
                         <div className="h-3.5 w-3.5 rounded-full border border-muted-foreground/40 shrink-0" />
                       )}
-                      <span className={pairedCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"}>
+                      <span
+                        className={
+                          pairedCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"
+                        }
+                      >
                         Filename Auto-Pairing ({pairedCount} paired)
                       </span>
                     </div>
@@ -945,7 +1036,10 @@ export function NewCatalogueImportPage() {
                   <span>File Naming Best Practices</span>
                 </div>
                 <p className="text-[11.5px] leading-relaxed text-muted-foreground">
-                  Keep document filenames concise without special characters. Ensure matching cover images use the exact same filename prefix (e.g., <code className="text-foreground font-medium">physics_vol1.pdf</code> and <code className="text-foreground font-medium">physics_vol1.jpg</code>).
+                  Keep document filenames concise without special characters. Ensure matching cover
+                  images use the exact same filename prefix (e.g.,{" "}
+                  <code className="text-foreground font-medium">physics_vol1.pdf</code> and{" "}
+                  <code className="text-foreground font-medium">physics_vol1.jpg</code>).
                 </p>
               </div>
             </div>
@@ -963,12 +1057,19 @@ export function NewCatalogueImportPage() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-foreground">Confirm Catalogue Import</h3>
-                <p className="text-xs text-muted-foreground">Ready to submit files for system verification</p>
+                <p className="text-xs text-muted-foreground">
+                  Ready to submit files for system verification
+                </p>
               </div>
             </div>
 
             <p className="text-xs leading-relaxed text-muted-foreground">
-              You are about to upload <span className="font-semibold text-foreground">{files.length} media file{files.length !== 1 ? "s" : ""}</span> and <span className="font-semibold text-foreground">1 metadata spreadsheet</span> ({excel?.name}) for admin approval.
+              You are about to upload{" "}
+              <span className="font-semibold text-foreground">
+                {files.length} media file{files.length !== 1 ? "s" : ""}
+              </span>{" "}
+              and <span className="font-semibold text-foreground">1 metadata spreadsheet</span> (
+              {excel?.name}) for admin approval.
             </p>
 
             <div className="rounded-xl border border-border bg-secondary/20 p-3 space-y-1 text-xs">
@@ -978,7 +1079,9 @@ export function NewCatalogueImportPage() {
               </div>
               <div className="flex justify-between text-muted-foreground">
                 <span>Fully Paired eBooks:</span>
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">{pairedCount}</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  {pairedCount}
+                </span>
               </div>
             </div>
 

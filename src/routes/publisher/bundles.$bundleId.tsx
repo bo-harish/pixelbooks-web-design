@@ -340,12 +340,10 @@ function EBookBundleDetailPage() {
     return 499;
   };
 
-  const totalOriginalBookPrice = matchedBooks.reduce(
-    (sum, b) => sum + getBookPrice(b),
-    0,
-  );
+  const totalOriginalBookPrice = matchedBooks.reduce((sum, b) => sum + getBookPrice(b), 0);
   const savings = Math.max(0, totalOriginalBookPrice - bundle.pricing);
-  const savingsPercent = totalOriginalBookPrice > 0 ? Math.round((savings / totalOriginalBookPrice) * 100) : 0;
+  const savingsPercent =
+    totalOriginalBookPrice > 0 ? Math.round((savings / totalOriginalBookPrice) * 100) : 0;
 
   const handleApprove = () => {
     updateBundleStatus(bundle.id, "Approved");
@@ -423,7 +421,9 @@ function EBookBundleDetailPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">Price</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">
+                          Price
+                        </span>
                         <Tag size={14} />
                       </div>
                       <p className="text-lg font-bold text-foreground">
@@ -433,7 +433,9 @@ function EBookBundleDetailPage() {
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">Size (in MB)</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">
+                          Size (in MB)
+                        </span>
                         <HardDrive size={14} />
                       </div>
                       <p className="text-lg font-bold text-foreground">{extra.sizeMB} MB</p>
@@ -441,14 +443,20 @@ function EBookBundleDetailPage() {
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
                       <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-[11px] font-semibold uppercase tracking-wider">eBooks</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider">
+                          eBooks
+                        </span>
                         <BookOpen size={14} />
                       </div>
-                      <p className="text-lg font-bold text-foreground">{matchedBooks.length || bundle.bookCount}</p>
+                      <p className="text-lg font-bold text-foreground">
+                        {matchedBooks.length || bundle.bookCount}
+                      </p>
                     </div>
 
                     <div className="rounded-xl border border-border/70 bg-secondary/30 p-3.5 flex flex-col justify-between transition-colors hover:bg-secondary/50 min-h-[76px]">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</span>
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Status
+                      </span>
                       <div className="flex items-center">
                         <StatusPill status={bundle.status} />
                       </div>
@@ -465,12 +473,16 @@ function EBookBundleDetailPage() {
                     <span className="h-3 w-px bg-border" />
                     <span className="inline-flex items-center gap-1.5 font-medium">
                       <Globe size={13} className="text-muted-foreground" />
-                      <span>Language: <strong className="text-foreground">English</strong></span>
+                      <span>
+                        Language: <strong className="text-foreground">English</strong>
+                      </span>
                     </span>
                     <span className="h-3 w-px bg-border" />
                     <span className="inline-flex items-center gap-1.5 font-medium">
                       <Users size={13} className="text-muted-foreground" />
-                      <span>Viewers: <strong className="text-foreground">{extra.viewers}</strong></span>
+                      <span>
+                        Viewers: <strong className="text-foreground">{extra.viewers}</strong>
+                      </span>
                     </span>
                   </div>
 
@@ -523,7 +535,9 @@ function EBookBundleDetailPage() {
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-border/80 bg-secondary/30 px-5 py-3.5 text-sm">
               <div className="flex items-baseline gap-2">
-                <span className="text-muted-foreground font-medium">Total Original eBooks Value:</span>
+                <span className="text-muted-foreground font-medium">
+                  Total Original eBooks Value:
+                </span>
                 <span className="text-base font-bold text-foreground">
                   ₹{totalOriginalBookPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                 </span>
@@ -535,7 +549,8 @@ function EBookBundleDetailPage() {
                 </span>
                 {savings > 0 && (
                   <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                    Save ₹{savings.toLocaleString("en-IN", { minimumFractionDigits: 2 })} ({savingsPercent}% OFF)
+                    Save ₹{savings.toLocaleString("en-IN", { minimumFractionDigits: 2 })} (
+                    {savingsPercent}% OFF)
                   </span>
                 )}
               </div>

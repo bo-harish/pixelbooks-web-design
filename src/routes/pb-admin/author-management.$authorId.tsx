@@ -85,9 +85,7 @@ function AuthorDetailPage() {
 
           {/* Main Update Author Card */}
           <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 md:p-10 shadow-xs">
-            <h2 className="text-2xl font-bold text-foreground mb-8">
-              Update Author
-            </h2>
+            <h2 className="text-2xl font-bold text-foreground mb-8">Update Author</h2>
 
             <form onSubmit={handleUpdateAuthorSubmit} className="space-y-8">
               {/* Author Image Section */}
@@ -145,9 +143,7 @@ function AuthorDetailPage() {
 
                 {/* Email Input */}
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-foreground block">
-                    Email
-                  </label>
+                  <label className="text-xs font-semibold text-foreground block">Email</label>
                   <input
                     type="email"
                     placeholder="Enter email"

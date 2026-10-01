@@ -531,9 +531,7 @@ function StatCard({
           {value}
         </p>
         {subtitle && (
-          <span className="text-[11px] font-medium text-muted-foreground">
-            {subtitle}
-          </span>
+          <span className="text-[11px] font-medium text-muted-foreground">{subtitle}</span>
         )}
       </div>
     </div>
@@ -545,7 +543,8 @@ const PAGE_SIZE = 8;
 function AdminMarginReportPage() {
   const [data, setData] = useState<RoyaltyRow[]>(initialReportData);
   const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState<(typeof filterTypeOptions)[number]>("Publishers & Authors");
+  const [typeFilter, setTypeFilter] =
+    useState<(typeof filterTypeOptions)[number]>("Publishers & Authors");
   const [typeFilterOpen, setTypeFilterOpen] = useState(false);
   const [presetFilter, setPresetFilter] = useState<(typeof presetOptions)[number]>("MTD");
   const [presetFilterOpen, setPresetFilterOpen] = useState(false);
@@ -596,7 +595,8 @@ function AdminMarginReportPage() {
 
   // Dedicated Add Payment Page View state
   const [activeAddPaymentEntity, setActiveAddPaymentEntity] = useState<RoyaltyRow | null>(null);
-  const [paymentHistories, setPaymentHistories] = useState<Record<string, PaymentHistoryRow[]>>(initialPaymentHistories);
+  const [paymentHistories, setPaymentHistories] =
+    useState<Record<string, PaymentHistoryRow[]>>(initialPaymentHistories);
 
   // Add Payment Form inputs
   const [formPaymentType, setFormPaymentType] = useState("Base Payment");
@@ -608,7 +608,10 @@ function AdminMarginReportPage() {
   // Selected Invoice Detail modal state
   const [selectedInvoice, setSelectedInvoice] = useState<LedgerRowItem | null>(null);
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
-  const [activeLedgerTxnDetail, setActiveLedgerTxnDetail] = useState<{ row: LedgerRowItem; entity: RoyaltyRow } | null>(null);
+  const [activeLedgerTxnDetail, setActiveLedgerTxnDetail] = useState<{
+    row: LedgerRowItem;
+    entity: RoyaltyRow;
+  } | null>(null);
 
   // Filtered data calculation for main page
   const filtered = useMemo(() => {
@@ -651,14 +654,20 @@ function AdminMarginReportPage() {
       prev.map((r) =>
         r.id === activeAddPaymentEntity.id
           ? { ...r, dueAmount: Math.max(0, r.dueAmount - amt) }
-          : r
-      )
+          : r,
+      ),
     );
 
     // Append new payment item to history for this entity
     const newHistoryRow: PaymentHistoryRow = {
       id: `ph-new-${Date.now()}`,
-      date: formTxnDate ? new Date(formTxnDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "22 Jul 2026",
+      date: formTxnDate
+        ? new Date(formTxnDate).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+        : "22 Jul 2026",
       type: activeAddPaymentEntity.type === "Publisher" ? "Margin Settlement" : formPaymentType,
       ref: refNo,
       amount: amt,
@@ -673,10 +682,12 @@ function AdminMarginReportPage() {
 
     // Update local active entity due amount
     setActiveAddPaymentEntity((prev) =>
-      prev ? { ...prev, dueAmount: Math.max(0, prev.dueAmount - amt) } : null
+      prev ? { ...prev, dueAmount: Math.max(0, prev.dueAmount - amt) } : null,
     );
 
-    toast.success(`Payment of ₹${amt.toLocaleString("en-IN")} recorded for ${activeAddPaymentEntity.name}!`);
+    toast.success(
+      `Payment of ₹${amt.toLocaleString("en-IN")} recorded for ${activeAddPaymentEntity.name}!`,
+    );
   };
 
   const handleOpenInvoiceDetail = (item: LedgerRowItem) => {
@@ -688,7 +699,7 @@ function AdminMarginReportPage() {
   if (activeLedgerTxnDetail) {
     const { row: txn, entity } = activeLedgerTxnDetail;
     const isPublisher = entity.type === "Publisher";
-    const totalMarginAmount = isPublisher ? 300000.0 : (entity.royaltyAmount || 1962.0);
+    const totalMarginAmount = isPublisher ? 300000.0 : entity.royaltyAmount || 1962.0;
 
     return (
       <AppShell
@@ -712,9 +723,7 @@ function AdminMarginReportPage() {
                 <h2 className="text-lg font-extrabold text-foreground tracking-tight">
                   Trans. Ref: {txn.ref}
                 </h2>
-                <p className="text-xs text-muted-foreground font-medium mt-0.5">
-                  {txn.date}
-                </p>
+                <p className="text-xs text-muted-foreground font-medium mt-0.5">{txn.date}</p>
               </div>
             </div>
 
@@ -742,7 +751,9 @@ function AdminMarginReportPage() {
                     <th className="py-4 pr-4 font-semibold">Unit Price</th>
                     <th className="py-4 pr-4 font-semibold">Qty</th>
                     <th className="py-4 pr-4 font-semibold">Net Amount</th>
-                    <th className="py-4 pr-6 font-semibold">{isPublisher ? "Margin Payable" : "Royalty Payable"}</th>
+                    <th className="py-4 pr-6 font-semibold">
+                      {isPublisher ? "Margin Payable" : "Royalty Payable"}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60">
@@ -768,18 +779,12 @@ function AdminMarginReportPage() {
                     <td className="py-4 pr-4 text-xs text-foreground font-medium whitespace-nowrap">
                       {txn.date}
                     </td>
-                    <td className="py-4 pr-4 text-xs text-muted-foreground font-medium">
-                      —
-                    </td>
-                    <td className="py-4 pr-4 text-xs text-foreground font-medium">
-                      Sale
-                    </td>
+                    <td className="py-4 pr-4 text-xs text-muted-foreground font-medium">—</td>
+                    <td className="py-4 pr-4 text-xs text-foreground font-medium">Sale</td>
                     <td className="py-4 pr-4 text-xs text-foreground font-medium whitespace-nowrap">
                       ₹5,250.00
                     </td>
-                    <td className="py-4 pr-4 text-xs text-foreground font-medium">
-                      500
-                    </td>
+                    <td className="py-4 pr-4 text-xs text-foreground font-medium">500</td>
                     <td className="py-4 pr-4 text-xs font-bold text-foreground whitespace-nowrap">
                       ₹2,625,000.00
                     </td>
@@ -793,9 +798,7 @@ function AdminMarginReportPage() {
 
             {/* Table Footer / Pagination */}
             <div className="flex flex-col gap-3 border-t border-border px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs text-muted-foreground font-medium">
-                Showing 1 from 1 results
-              </p>
+              <p className="text-xs text-muted-foreground font-medium">Showing 1 from 1 results</p>
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
                 <button type="button" disabled className="disabled:opacity-30 cursor-not-allowed">
                   «&nbsp;Previous
@@ -838,7 +841,10 @@ function AdminMarginReportPage() {
       );
     });
 
-    const totalMarginPayable = filteredSalesItems.reduce((acc, curr) => acc + curr.marginPayable, 0);
+    const totalMarginPayable = filteredSalesItems.reduce(
+      (acc, curr) => acc + curr.marginPayable,
+      0,
+    );
 
     return (
       <AppShell
@@ -857,7 +863,8 @@ function AdminMarginReportPage() {
               <ArrowLeft size={16} />
             </button>
             <span className="text-sm font-normal text-foreground">
-              Back to {activeSalesDetailsEntity.type === "Publisher" ? "Margin Report" : "Royalty Report"}
+              Back to{" "}
+              {activeSalesDetailsEntity.type === "Publisher" ? "Margin Report" : "Royalty Report"}
             </span>
           </div>
 
@@ -896,8 +903,11 @@ function AdminMarginReportPage() {
                           setSalesPresetFilter(opt);
                           setSalesPresetFilterOpen(false);
                         }}
-                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${opt === salesPresetFilter ? "font-bold text-brand bg-secondary/60" : "text-foreground"
-                          }`}
+                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
+                          opt === salesPresetFilter
+                            ? "font-bold text-brand bg-secondary/60"
+                            : "text-foreground"
+                        }`}
                       >
                         {opt}
                       </button>
@@ -989,9 +999,7 @@ function AdminMarginReportPage() {
                               <p className="font-bold text-foreground text-xs sm:text-sm uppercase tracking-tight">
                                 {item.title}
                               </p>
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                {item.genre}
-                              </p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{item.genre}</p>
                             </div>
                           </div>
                         </td>
@@ -1012,9 +1020,7 @@ function AdminMarginReportPage() {
                         </td>
 
                         {/* Qty */}
-                        <td className="py-4 pr-4 font-medium text-foreground">
-                          {item.qty}
-                        </td>
+                        <td className="py-4 pr-4 font-medium text-foreground">{item.qty}</td>
 
                         {/* Net Amount */}
                         <td className="py-4 pr-4 font-medium text-foreground whitespace-nowrap">
@@ -1023,7 +1029,8 @@ function AdminMarginReportPage() {
 
                         {/* Margin Payable */}
                         <td className="py-4 pr-6 font-extrabold text-foreground whitespace-nowrap">
-                          ₹{item.marginPayable.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                          ₹
+                          {item.marginPayable.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                         </td>
                       </tr>
                     ))
@@ -1160,7 +1167,9 @@ function AdminMarginReportPage() {
                 <p className="text-base font-bold text-foreground">{bank.holderName}</p>
                 <p className="text-xs text-muted-foreground font-mono">{bank.accountNumber}</p>
                 <p className="text-xs text-muted-foreground font-mono">{bank.ifsc}</p>
-                <p className="text-xs text-muted-foreground uppercase font-semibold">{bank.bankName}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold">
+                  {bank.bankName}
+                </p>
               </div>
             </div>
 
@@ -1176,7 +1185,10 @@ function AdminMarginReportPage() {
               <div>
                 <p className="text-xs font-medium text-muted-foreground">Due Amount</p>
                 <p className="text-3xl font-bold tracking-tight text-foreground mt-1">
-                  ₹{activeAddPaymentEntity.dueAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                  ₹
+                  {activeAddPaymentEntity.dueAmount.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                  })}
                 </p>
                 <p className="text-xs text-muted-foreground mt-2 font-mono">
                   (Base Amount - {baseAmount} + TDS - {tdsAmount})
@@ -1186,8 +1198,13 @@ function AdminMarginReportPage() {
           </div>
 
           {/* Add Payment Form Controls Row */}
-          <form onSubmit={handleSubmitAddPaymentForm} className="rounded-xl border border-border bg-card p-5 shadow-xs space-y-4">
-            <div className={`grid grid-cols-1 sm:grid-cols-2 ${isPublisher ? "md:grid-cols-4" : "md:grid-cols-5"} gap-4 items-start`}>
+          <form
+            onSubmit={handleSubmitAddPaymentForm}
+            className="rounded-xl border border-border bg-card p-5 shadow-xs space-y-4"
+          >
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 ${isPublisher ? "md:grid-cols-4" : "md:grid-cols-5"} gap-4 items-start`}
+            >
               {/* Payment Type - Only shown for Authors */}
               {!isPublisher && (
                 <div className="w-full">
@@ -1298,8 +1315,11 @@ function AdminMarginReportPage() {
                             setPresetFilter(p);
                             setPresetFilterOpen(false);
                           }}
-                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${p === presetFilter ? "font-semibold text-foreground" : "text-muted-foreground"
-                            }`}
+                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
+                            p === presetFilter
+                              ? "font-semibold text-foreground"
+                              : "text-muted-foreground"
+                          }`}
                         >
                           {p}
                         </button>
@@ -1350,7 +1370,9 @@ function AdminMarginReportPage() {
                     ) : (
                       historyRows.map((row) => (
                         <tr key={row.id} className="hover:bg-secondary/50 transition-colors">
-                          <td className="py-4 pl-6 pr-4 text-foreground whitespace-nowrap">{row.date}</td>
+                          <td className="py-4 pl-6 pr-4 text-foreground whitespace-nowrap">
+                            {row.date}
+                          </td>
                           <td className="py-4 pr-4 font-medium text-foreground">{row.type}</td>
                           <td className="py-4 pr-4 font-mono text-xs text-foreground font-semibold">
                             {row.ref}
@@ -1404,7 +1426,9 @@ function AdminMarginReportPage() {
 
     const openingBal = activeLedgerEntity.openingBalance ?? 0;
     const closingBal = activeLedgerEntity.dueAmount;
-    const tdsText = activeLedgerEntity.tdsBreakdown || `(${(closingBal * 0.95).toFixed(2)} + ${(closingBal * 0.05).toFixed(2)} TDS)`;
+    const tdsText =
+      activeLedgerEntity.tdsBreakdown ||
+      `(${(closingBal * 0.95).toFixed(2)} + ${(closingBal * 0.05).toFixed(2)} TDS)`;
 
     const isPublisherLedger = activeLedgerEntity.type === "Publisher";
     const ledgerTitle = isPublisherLedger ? "Margin Report - Ledger" : "Royalty Report - Ledger";
@@ -1484,8 +1508,11 @@ function AdminMarginReportPage() {
                             setDrCrFilter(opt);
                             setDrCrFilterOpen(false);
                           }}
-                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${opt === drCrFilter ? "font-semibold text-foreground" : "text-muted-foreground"
-                            }`}
+                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
+                            opt === drCrFilter
+                              ? "font-semibold text-foreground"
+                              : "text-muted-foreground"
+                          }`}
                         >
                           {opt}
                         </button>
@@ -1514,8 +1541,11 @@ function AdminMarginReportPage() {
                             setPresetFilter(opt);
                             setPresetFilterOpen(false);
                           }}
-                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${opt === presetFilter ? "font-semibold text-foreground" : "text-muted-foreground"
-                            }`}
+                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
+                            opt === presetFilter
+                              ? "font-semibold text-foreground"
+                              : "text-muted-foreground"
+                          }`}
                         >
                           {opt}
                         </button>
@@ -1638,7 +1668,9 @@ function AdminMarginReportPage() {
                       onClick={() => setActiveLedgerTxnDetail({ row, entity: activeLedgerEntity })}
                       className="border-b border-border/60 transition-colors last:border-0 hover:bg-secondary/50 cursor-pointer group"
                     >
-                      <td className="py-4 pl-6 pr-4 text-foreground whitespace-nowrap">{row.date}</td>
+                      <td className="py-4 pl-6 pr-4 text-foreground whitespace-nowrap">
+                        {row.date}
+                      </td>
                       <td className="py-4 pr-4 font-medium text-foreground">{row.type}</td>
                       <td className="py-4 pr-4">
                         <button
@@ -1717,9 +1749,7 @@ function AdminMarginReportPage() {
               <span className="text-base font-bold text-foreground">
                 ₹{closingBal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
               </span>
-              <span className="text-xs font-normal text-muted-foreground font-mono">
-                {tdsText}
-              </span>
+              <span className="text-xs font-normal text-muted-foreground font-mono">{tdsText}</span>
             </div>
           </div>
         </div>
@@ -1753,18 +1783,20 @@ function AdminMarginReportPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/60">
-                      {(selectedInvoice.items || [
-                        {
-                          title: "Monsoon Reads Collection Vol 1",
-                          saleDate: selectedInvoice.date,
-                          isbn: "978-3-16-148410-0",
-                          type: "Sale",
-                          unitPrice: 1198.95,
-                          qty: 1,
-                          netAmount: 1198.95,
-                          marginPayable: selectedInvoice.credit || 239.79,
-                        },
-                      ]).map((item, idx) => (
+                      {(
+                        selectedInvoice.items || [
+                          {
+                            title: "Monsoon Reads Collection Vol 1",
+                            saleDate: selectedInvoice.date,
+                            isbn: "978-3-16-148410-0",
+                            type: "Sale",
+                            unitPrice: 1198.95,
+                            qty: 1,
+                            netAmount: 1198.95,
+                            marginPayable: selectedInvoice.credit || 239.79,
+                          },
+                        ]
+                      ).map((item, idx) => (
                         <tr key={idx}>
                           <td className="py-3 px-4 font-medium text-foreground">{item.title}</td>
                           <td className="py-3 px-4 text-muted-foreground">{item.saleDate}</td>
@@ -1772,7 +1804,9 @@ function AdminMarginReportPage() {
                           <td className="py-3 px-4">{item.type}</td>
                           <td className="py-3 px-4 text-right">₹{item.unitPrice.toFixed(2)}</td>
                           <td className="py-3 px-4 text-center">{item.qty}</td>
-                          <td className="py-3 px-4 text-right font-medium">₹{item.netAmount.toFixed(2)}</td>
+                          <td className="py-3 px-4 text-right font-medium">
+                            ₹{item.netAmount.toFixed(2)}
+                          </td>
                           <td className="py-3 px-4 text-right font-bold text-foreground">
                             ₹{item.marginPayable.toFixed(2)}
                           </td>
@@ -1783,7 +1817,9 @@ function AdminMarginReportPage() {
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-border">
-                  <span className="text-xs font-semibold text-muted-foreground">Total Royalty Accrued</span>
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    Total Royalty Accrued
+                  </span>
                   <span className="text-sm font-bold text-foreground">
                     ₹{(selectedInvoice.credit || 0).toFixed(2)}
                   </span>
@@ -1798,7 +1834,10 @@ function AdminMarginReportPage() {
 
   // Render Main Margin/Royalty Report View
   return (
-    <AppShell title="Margin / Royalty Report" subtitle="Track sales, royalty and payments of publishers & authors.">
+    <AppShell
+      title="Margin / Royalty Report"
+      subtitle="Track sales, royalty and payments of publishers & authors."
+    >
       <div className="space-y-6 p-4 md:p-8">
         {/* Top Highlight Banner: Total Outstanding Payable (Due) Till Date */}
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 dark:bg-amber-950/40 dark:border-amber-700/50 p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1819,7 +1858,8 @@ function AdminMarginReportPage() {
                 ₹425,668.27
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Cumulative net unpaid balance across all publishers & authors. Unaffected by date range filters.
+                Cumulative net unpaid balance across all publishers & authors. Unaffected by date
+                range filters.
               </p>
             </div>
           </div>
@@ -1839,7 +1879,9 @@ function AdminMarginReportPage() {
             </span>
             <div>
               <h3 className="text-sm font-bold text-foreground">Report Filters & Date Range</h3>
-              <p className="text-xs text-muted-foreground">Select entity type and period to update summary metrics</p>
+              <p className="text-xs text-muted-foreground">
+                Select entity type and period to update summary metrics
+              </p>
             </div>
           </div>
 
@@ -1865,8 +1907,11 @@ function AdminMarginReportPage() {
                         setTypeFilterOpen(false);
                         setPage(1);
                       }}
-                      className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${opt === typeFilter ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
-                        }`}
+                      className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
+                        opt === typeFilter
+                          ? "font-semibold text-foreground bg-secondary/50"
+                          : "text-muted-foreground"
+                      }`}
                     >
                       {opt}
                     </button>
@@ -1892,8 +1937,11 @@ function AdminMarginReportPage() {
                       key={opt}
                       type="button"
                       onClick={() => handlePresetSelect(opt)}
-                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${opt === presetFilter ? "font-bold text-brand bg-secondary/60" : "text-foreground"
-                        }`}
+                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
+                        opt === presetFilter
+                          ? "font-bold text-brand bg-secondary/60"
+                          : "text-foreground"
+                      }`}
                     >
                       {opt}
                     </button>
@@ -1957,12 +2005,7 @@ function AdminMarginReportPage() {
             value="165"
             subtitle="Active Publishers"
           />
-          <StatCard
-            icon={Users}
-            label="Total Authors"
-            value="13"
-            subtitle="Active Authors"
-          />
+          <StatCard icon={Users} label="Total Authors" value="13" subtitle="Active Authors" />
         </div>
 
         {/* Toolbar Filters White Card Container */}
@@ -2066,7 +2109,9 @@ function AdminMarginReportPage() {
                         <div className="flex items-center gap-3">
                           {row.id === "r-nbt" ? (
                             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-600 font-bold p-0.5 overflow-hidden">
-                              <span className="text-[8px] font-black tracking-tighter text-rose-700 leading-none">nbt</span>
+                              <span className="text-[8px] font-black tracking-tighter text-rose-700 leading-none">
+                                nbt
+                              </span>
                             </div>
                           ) : (
                             <span
@@ -2080,7 +2125,9 @@ function AdminMarginReportPage() {
                             </span>
                           )}
                           <div>
-                            <p className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors">{row.name}</p>
+                            <p className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors">
+                              {row.name}
+                            </p>
                             <p className="text-xs text-muted-foreground">{row.type}</p>
                           </div>
                         </div>
@@ -2117,7 +2164,10 @@ function AdminMarginReportPage() {
                             handleOpenAddPaymentPage(row);
                           }}
                           className="h-9 px-4 rounded-lg text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
-                          style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+                          style={{
+                            backgroundColor: "var(--brand)",
+                            color: "var(--brand-contrast)",
+                          }}
                         >
                           Add Payment
                         </button>
@@ -2176,9 +2226,9 @@ function AdminMarginReportPage() {
                   style={
                     p === currentPage
                       ? {
-                        backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
-                        color: "var(--brand)",
-                      }
+                          backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
+                          color: "var(--brand)",
+                        }
                       : undefined
                   }
                 >

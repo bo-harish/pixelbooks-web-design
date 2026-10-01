@@ -30,7 +30,8 @@ export const Route = createFileRoute("/library-user/profile")({
       { title: "Student Profile — PixelBooks E-Library" },
       {
         name: "description",
-        content: "Manage student library patron details, reading history, digital reader preferences, and active borrowing limits.",
+        content:
+          "Manage student library patron details, reading history, digital reader preferences, and active borrowing limits.",
       },
     ],
   }),
@@ -127,9 +128,19 @@ function LibraryUserProfilePage() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 px-4 py-4 backdrop-blur md:px-8">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
           <div className="flex items-center gap-3 sm:gap-4">
-            <Link to="/" id="profile-logo-link" className="flex items-center gap-2.5 shrink-0 group">
-              <img src="/logo-app-icon.png" alt="PixelBooks App Icon" className="h-8 w-8 object-contain transition-transform group-hover:scale-105" />
-              <span className="font-extrabold text-xl tracking-tight text-foreground">PixelBooks</span>
+            <Link
+              to="/"
+              id="profile-logo-link"
+              className="flex items-center gap-2.5 shrink-0 group"
+            >
+              <img
+                src="/logo-app-icon.png"
+                alt="PixelBooks App Icon"
+                className="h-8 w-8 object-contain transition-transform group-hover:scale-105"
+              />
+              <span className="font-extrabold text-xl tracking-tight text-foreground">
+                PixelBooks
+              </span>
             </Link>
 
             <div className="h-5 w-px bg-border hidden sm:block" />
@@ -210,7 +221,9 @@ function LibraryUserProfilePage() {
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed flex items-center gap-1.5">
                   <Building size={13} className="text-muted-foreground shrink-0" />
-                  <span>{institution} · {department}</span>
+                  <span>
+                    {institution} · {department}
+                  </span>
                 </p>
               </div>
             </div>
@@ -222,21 +235,9 @@ function LibraryUserProfilePage() {
                 value={studentName}
                 onChange={setStudentName}
               />
-              <Field
-                label="Student Roll / Registration ID"
-                disabled
-                value={studentId}
-              />
-              <Field
-                label="Department"
-                disabled
-                value={department}
-              />
-              <Field
-                label="Academic Year & Semester"
-                disabled
-                value={yearSem}
-              />
+              <Field label="Student Roll / Registration ID" disabled value={studentId} />
+              <Field label="Department" disabled value={department} />
+              <Field label="Academic Year & Semester" disabled value={yearSem} />
             </div>
           </div>
         </SectionCard>
@@ -249,11 +250,16 @@ function LibraryUserProfilePage() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.15_155)]/15 text-[oklch(0.62_0.15_155)]">
                   <BookOpen size={18} />
                 </span>
-                <span className="text-xs font-medium text-muted-foreground">Currently Borrowed</span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Currently Borrowed
+                </span>
               </div>
               <p className="text-xl font-extrabold text-foreground tracking-tight">2 of 5 eBooks</p>
               <div className="w-full bg-secondary h-2 rounded-full mt-2 overflow-hidden">
-                <div className="bg-[oklch(0.62_0.15_155)] h-full rounded-full" style={{ width: "40%" }} />
+                <div
+                  className="bg-[oklch(0.62_0.15_155)] h-full rounded-full"
+                  style={{ width: "40%" }}
+                />
               </div>
             </div>
 
@@ -264,7 +270,9 @@ function LibraryUserProfilePage() {
                 </span>
                 <span className="text-xs font-medium text-muted-foreground">Reading History</span>
               </div>
-              <p className="text-xl font-extrabold text-foreground tracking-tight">24 eBooks Completed</p>
+              <p className="text-xl font-extrabold text-foreground tracking-tight">
+                24 eBooks Completed
+              </p>
               <p className="text-[11px] text-muted-foreground mt-1">Across 4 Academic Terms</p>
             </div>
 
@@ -275,7 +283,9 @@ function LibraryUserProfilePage() {
                 </span>
                 <span className="text-xs font-medium text-muted-foreground">Saved Bookmarks</span>
               </div>
-              <p className="text-xl font-extrabold text-foreground tracking-tight">8 Titles Saved</p>
+              <p className="text-xl font-extrabold text-foreground tracking-tight">
+                8 Titles Saved
+              </p>
               <p className="text-[11px] text-muted-foreground mt-1">In Personal Reading Shelf</p>
             </div>
           </div>
@@ -285,7 +295,9 @@ function LibraryUserProfilePage() {
         <SectionCard title="Digital Reader Preferences">
           <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Default Reader Background Theme</label>
+              <label className="text-sm font-medium text-foreground">
+                Default Reader Background Theme
+              </label>
               <div className="flex items-center gap-2">
                 {(["sepia", "light", "dark"] as const).map((t) => (
                   <button
@@ -328,8 +340,12 @@ function LibraryUserProfilePage() {
               <div className="flex items-center gap-3">
                 <Bell size={18} className="text-[oklch(0.62_0.15_155)]" />
                 <div>
-                  <h4 className="text-xs font-semibold text-foreground">Borrowing & Expiry Email Reminders</h4>
-                  <p className="text-[11px] text-muted-foreground">Receive notifications 3 days before book loan due dates</p>
+                  <h4 className="text-xs font-semibold text-foreground">
+                    Borrowing & Expiry Email Reminders
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Receive notifications 3 days before book loan due dates
+                  </p>
                 </div>
               </div>
               <button

@@ -98,7 +98,8 @@ export const Route = createFileRoute("/pb-admin/admin-users")({
       { title: "Manage Admin Users — PixelBooks Admin" },
       {
         name: "description",
-        content: "View and manage administrator accounts, role permissions, and access levels in PixelBooks Admin.",
+        content:
+          "View and manage administrator accounts, role permissions, and access levels in PixelBooks Admin.",
       },
     ],
   }),
@@ -106,7 +107,16 @@ export const Route = createFileRoute("/pb-admin/admin-users")({
 });
 
 type StatusValue = "All" | "Enabled" | "Disabled" | "Pending";
-type RoleFilterValue = "All Roles" | "All Access" | "Catalogue" | "People" | "Authors" | "Reports" | "Marketing" | "Banners" | "Quizzes & Rewards";
+type RoleFilterValue =
+  | "All Roles"
+  | "All Access"
+  | "Catalogue"
+  | "People"
+  | "Authors"
+  | "Reports"
+  | "Marketing"
+  | "Banners"
+  | "Quizzes & Rewards";
 
 interface PermissionSection {
   id: string;
@@ -197,9 +207,7 @@ const MENU_SECTIONS: PermissionSection[] = [
 
 const ALL_LEAF_IDS = [
   "all_access",
-  ...MENU_SECTIONS.flatMap((sec) =>
-    sec.subItems ? sec.subItems.map((s) => s.id) : [sec.id]
-  ),
+  ...MENU_SECTIONS.flatMap((sec) => (sec.subItems ? sec.subItems.map((s) => s.id) : [sec.id])),
 ];
 
 interface AdminUser {
@@ -295,7 +303,8 @@ const INITIAL_ADMIN_USERS: AdminUser[] = [
     joinedDate: "25 May 2026",
     status: "Enabled",
     permissions: ALL_LEAF_IDS,
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
   },
   {
     id: "admin-10",
@@ -311,10 +320,11 @@ const INITIAL_ADMIN_USERS: AdminUser[] = [
 function CustomCheckbox({ checked, className = "" }: { checked: boolean; className?: string }) {
   return (
     <div
-      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all ${checked
-        ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-xs"
-        : "border-border bg-card"
-        } ${className}`}
+      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all ${
+        checked
+          ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-xs"
+          : "border-border bg-card"
+      } ${className}`}
     >
       {checked && <Check className="h-3.5 w-3.5 stroke-[3]" />}
     </div>
@@ -343,18 +353,47 @@ function ManageAdminUsersPage() {
 
   const filteredAdmins = useMemo(() => {
     return adminUsers.filter((user) => {
-      if (statusFilter === "Enabled" && (user.status !== "Enabled" || user.invitationPending)) return false;
+      if (statusFilter === "Enabled" && (user.status !== "Enabled" || user.invitationPending))
+        return false;
       if (statusFilter === "Disabled" && user.status !== "Disabled") return false;
       if (statusFilter === "Pending" && !user.invitationPending) return false;
 
       const isAllAccess = ALL_LEAF_IDS.every((id) => user.permissions.includes(id));
       if (roleFilter === "All Access" && !isAllAccess) return false;
-      if (roleFilter === "Catalogue" && !user.permissions.some((p) => ["titles", "bundles", "categories"].includes(p))) return false;
-      if (roleFilter === "People" && !user.permissions.some((p) => ["publisher_author", "customers", "admin_users"].includes(p))) return false;
-      if (roleFilter === "Authors" && !user.permissions.some((p) => ["author_management", "merge_authors"].includes(p))) return false;
-      if (roleFilter === "Reports" && !user.permissions.some((p) => ["margin_royalty_report", "sales_report"].includes(p))) return false;
-      if (roleFilter === "Marketing" && !user.permissions.some((p) => ["marketing_schema_meta", "marketing_sitemap", "audit_log"].includes(p))) return false;
-      if (roleFilter === "Banners & Engagement" && !user.permissions.some((p) => ["image_banners", "popup_banners", "quizzes_rewards"].includes(p))) return false;
+      if (
+        roleFilter === "Catalogue" &&
+        !user.permissions.some((p) => ["titles", "bundles", "categories"].includes(p))
+      )
+        return false;
+      if (
+        roleFilter === "People" &&
+        !user.permissions.some((p) => ["publisher_author", "customers", "admin_users"].includes(p))
+      )
+        return false;
+      if (
+        roleFilter === "Authors" &&
+        !user.permissions.some((p) => ["author_management", "merge_authors"].includes(p))
+      )
+        return false;
+      if (
+        roleFilter === "Reports" &&
+        !user.permissions.some((p) => ["margin_royalty_report", "sales_report"].includes(p))
+      )
+        return false;
+      if (
+        roleFilter === "Marketing" &&
+        !user.permissions.some((p) =>
+          ["marketing_schema_meta", "marketing_sitemap", "audit_log"].includes(p),
+        )
+      )
+        return false;
+      if (
+        roleFilter === "Banners & Engagement" &&
+        !user.permissions.some((p) =>
+          ["image_banners", "popup_banners", "quizzes_rewards"].includes(p),
+        )
+      )
+        return false;
 
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -369,7 +408,8 @@ function ManageAdminUsersPage() {
 
   const stats = useMemo(() => {
     const total = simulatedTotalBase;
-    const superAdmins = adminUsers.filter((u) => ALL_LEAF_IDS.every((id) => u.permissions.includes(id))).length + 38;
+    const superAdmins =
+      adminUsers.filter((u) => ALL_LEAF_IDS.every((id) => u.permissions.includes(id))).length + 38;
     const pendingInvites = adminUsers.filter((u) => u.invitationPending).length + 2;
     const disabledCount = adminUsers.filter((u) => u.status === "Disabled").length + 6;
     return { total, superAdmins, pendingInvites, disabledCount };
@@ -394,7 +434,7 @@ function ManageAdminUsersPage() {
           return { ...u, status: nextStatus };
         }
         return u;
-      })
+      }),
     );
   };
 
@@ -445,7 +485,7 @@ function ManageAdminUsersPage() {
 
     if (currentlyChecked) {
       setSelectedPermissions((prev) =>
-        prev.filter((id) => !subIds.includes(id) && id !== "all_access")
+        prev.filter((id) => !subIds.includes(id) && id !== "all_access"),
       );
     } else {
       const newPerms = Array.from(new Set([...selectedPermissions, ...subIds]));
@@ -481,8 +521,8 @@ function ManageAdminUsersPage() {
         prev.map((u) =>
           u.id === selectedAdmin.id
             ? { ...u, permissions: selectedPermissions, email: modalEmail }
-            : u
-        )
+            : u,
+        ),
       );
       toast.success(`Privileges updated for ${selectedAdmin.name}`);
       setIsManageAccessOpen(false);
@@ -530,9 +570,11 @@ function ManageAdminUsersPage() {
           : "Pending";
 
   return (
-    <AppShell title="Manage Admin Users" subtitle="Grant and manage administrative panel access, permissions, and roles">
+    <AppShell
+      title="Manage Admin Users"
+      subtitle="Grant and manage administrative panel access, permissions, and roles"
+    >
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-
         {/* Summary Metrics Grid */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
@@ -551,8 +593,12 @@ function ManageAdminUsersPage() {
               </span>
             </div>
             <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.total}</span>
-              <span className="text-[11px] font-medium text-muted-foreground">Active team & admin accounts</span>
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
+                {stats.total}
+              </span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Active team & admin accounts
+              </span>
             </div>
           </div>
 
@@ -572,8 +618,12 @@ function ManageAdminUsersPage() {
               </span>
             </div>
             <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.superAdmins}</span>
-              <span className="text-[11px] font-medium text-muted-foreground">Unrestricted system access</span>
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
+                {stats.superAdmins}
+              </span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Unrestricted system access
+              </span>
             </div>
           </div>
 
@@ -593,8 +643,12 @@ function ManageAdminUsersPage() {
               </span>
             </div>
             <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.pendingInvites}</span>
-              <span className="text-[11px] font-medium text-muted-foreground">Awaiting user acceptance</span>
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
+                {stats.pendingInvites}
+              </span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Awaiting user acceptance
+              </span>
             </div>
           </div>
 
@@ -614,8 +668,12 @@ function ManageAdminUsersPage() {
               </span>
             </div>
             <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">{stats.disabledCount}</span>
-              <span className="text-[11px] font-medium text-muted-foreground">Access temporarily revoked</span>
+              <span className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
+                {stats.disabledCount}
+              </span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Access temporarily revoked
+              </span>
             </div>
           </div>
         </div>
@@ -685,14 +743,15 @@ function ManageAdminUsersPage() {
               <tbody className="divide-y divide-border">
                 {paginatedAdmins.length > 0 ? (
                   paginatedAdmins.map((user) => (
-                    <tr
-                      key={user.id}
-                      className="group transition-colors hover:bg-muted/30"
-                    >
+                    <tr key={user.id} className="group transition-colors hover:bg-muted/30">
                       {/* Admin User Column */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3.5">
-                          <AdminUserAvatar avatarUrl={user.avatarUrl} name={user.name} permissions={user.permissions} />
+                          <AdminUserAvatar
+                            avatarUrl={user.avatarUrl}
+                            name={user.name}
+                            permissions={user.permissions}
+                          />
                           <div className="flex flex-col min-w-0">
                             <span className="font-semibold text-foreground text-sm group-hover:text-[var(--brand)] transition-colors truncate">
                               {user.name}
@@ -736,7 +795,10 @@ function ManageAdminUsersPage() {
                           type="button"
                           onClick={(e) => handleOpenManageAccess(user, e)}
                           className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg px-4 text-xs font-semibold shadow-xs transition-opacity hover:opacity-90 cursor-pointer"
-                          style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+                          style={{
+                            backgroundColor: "var(--brand)",
+                            color: "var(--brand-contrast)",
+                          }}
                         >
                           <ShieldCheck size={14} />
                           <span>Manage Access</span>
@@ -750,7 +812,9 @@ function ManageAdminUsersPage() {
                       <div className="flex flex-col items-center justify-center gap-2">
                         <ShieldCheck size={32} className="text-muted-foreground/50" />
                         <p className="text-base font-medium">No admin users found</p>
-                        <p className="text-xs">Try adjusting your search query or filter options.</p>
+                        <p className="text-xs">
+                          Try adjusting your search query or filter options.
+                        </p>
                       </div>
                     </td>
                   </tr>
@@ -790,10 +854,11 @@ function ManageAdminUsersPage() {
                   key={pageNum}
                   type="button"
                   onClick={() => setCurrentPage(pageNum)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${isActive
-                    ? "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
                 >
                   {pageNum}
                 </button>
@@ -850,19 +915,21 @@ function ManageAdminUsersPage() {
                   className="h-11 w-full rounded-xl border border-border bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors focus:border-[var(--brand)]"
                 />
               </div>
-
               {/* All Access Main Bar */}
               <div
                 onClick={toggleAllAccess}
-                className={`flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer select-none ${isAllAccessChecked
-                  ? "border-purple-500/40 bg-purple-500/8 dark:bg-purple-500/15 shadow-2xs"
-                  : "border-border bg-card hover:bg-secondary/40"
-                  }`}
+                className={`flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer select-none ${
+                  isAllAccessChecked
+                    ? "border-purple-500/40 bg-purple-500/8 dark:bg-purple-500/15 shadow-2xs"
+                    : "border-border bg-card hover:bg-secondary/40"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <CustomCheckbox checked={isAllAccessChecked} />
                   <div className="flex flex-col">
-                    <span className={`text-sm font-bold ${isAllAccessChecked ? "text-purple-600 dark:text-purple-400" : "text-foreground"}`}>
+                    <span
+                      className={`text-sm font-bold ${isAllAccessChecked ? "text-purple-600 dark:text-purple-400" : "text-foreground"}`}
+                    >
                       All Access {isAllAccessChecked ? "(Super Admin)" : ""}
                     </span>
                     <span className="text-xs text-muted-foreground">
@@ -880,7 +947,8 @@ function ManageAdminUsersPage() {
                 >
                   {isAllAccessChecked ? <Crown size={18} /> : <UserCog size={18} />}
                 </span>
-              </div>              {/* Permissions Checkbox Grid (Full Left Sidebar Items) */}
+              </div>{" "}
+              {/* Permissions Checkbox Grid (Full Left Sidebar Items) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
                 {/* Left Column (Sections 0 to 3) */}
                 <div className="space-y-5">
@@ -911,7 +979,9 @@ function ManageAdminUsersPage() {
                                   className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
                                 >
                                   <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                  <span className={subChecked ? "text-foreground font-semibold" : ""}>
+                                  <span
+                                    className={subChecked ? "text-foreground font-semibold" : ""}
+                                  >
                                     {sub.label}
                                   </span>
                                 </div>
@@ -953,7 +1023,9 @@ function ManageAdminUsersPage() {
                                   className="flex items-center gap-2.5 text-xs font-medium text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors"
                                 >
                                   <CustomCheckbox checked={subChecked} className="h-4 w-4" />
-                                  <span className={subChecked ? "text-foreground font-semibold" : ""}>
+                                  <span
+                                    className={subChecked ? "text-foreground font-semibold" : ""}
+                                  >
                                     {sub.label}
                                   </span>
                                 </div>
@@ -966,7 +1038,6 @@ function ManageAdminUsersPage() {
                   })}
                 </div>
               </div>
-
               {/* Action Buttons */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
                 <button
@@ -991,7 +1062,6 @@ function ManageAdminUsersPage() {
             </form>
           </DialogContent>
         </Dialog>
-
       </div>
     </AppShell>
   );

@@ -1,11 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  ArrowLeft,
-  Upload,
-  ChevronDown,
-  Send,
-} from "lucide-react";
+import { ArrowLeft, Upload, ChevronDown, Send } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
 import {
@@ -99,7 +94,10 @@ function AddLibraryPage() {
                 <img src={logoPreview} alt="Library Logo" className="h-full w-full object-cover" />
               ) : (
                 <div className="flex flex-col items-center justify-center text-muted-foreground p-1 text-center">
-                  <Upload size={18} className="text-muted-foreground group-hover:text-[var(--brand)] transition-colors" />
+                  <Upload
+                    size={18}
+                    className="text-muted-foreground group-hover:text-[var(--brand)] transition-colors"
+                  />
                   <span className="text-[9px] font-semibold mt-0.5 leading-tight">Upload Logo</span>
                 </div>
               )}
@@ -117,7 +115,9 @@ function AddLibraryPage() {
                 {formData.name || "New Library Registration"}
               </h1>
               <p className="text-xs text-muted-foreground font-medium mt-0.5">
-                {formData.customId ? `ID: ${formData.customId}` : "Upload logo and fill details below"}
+                {formData.customId
+                  ? `ID: ${formData.customId}`
+                  : "Upload logo and fill details below"}
               </p>
             </div>
           </div>
@@ -157,7 +157,9 @@ function AddLibraryPage() {
                     onChange={(e) => handleInputChange("type", e.target.value)}
                     className="h-11 w-full appearance-none rounded-lg border border-border bg-card px-3.5 pr-10 text-sm font-medium text-foreground outline-none cursor-pointer focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]"
                   >
-                    <option value="" disabled>Select Library Type</option>
+                    <option value="" disabled>
+                      Select Library Type
+                    </option>
                     <option value="University">University</option>
                     <option value="Public Library">Public Library</option>
                     <option value="College Library">College Library</option>
@@ -241,7 +243,9 @@ function AddLibraryPage() {
                     onChange={(e) => handleInputChange("state", e.target.value)}
                     className="h-11 w-full appearance-none rounded-lg border border-border bg-card px-3.5 pr-10 text-sm font-medium text-foreground outline-none cursor-pointer focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]"
                   >
-                    <option value="" disabled>Select State</option>
+                    <option value="" disabled>
+                      Select State
+                    </option>
                     <option value="Kerala">Kerala</option>
                     <option value="Tamil Nadu">Tamil Nadu</option>
                     <option value="Karnataka">Karnataka</option>

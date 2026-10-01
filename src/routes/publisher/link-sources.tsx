@@ -152,7 +152,7 @@ function PublisherLinkSourcesPage() {
     setSelectedLibraries((prev) =>
       prev.includes(libraryName)
         ? prev.filter((name) => name !== libraryName)
-        : [...prev, libraryName]
+        : [...prev, libraryName],
     );
   };
 
@@ -214,8 +214,8 @@ function PublisherLinkSourcesPage() {
                 libraries: selectedLibraries,
                 status: isEnabled ? "Enabled" : "Disabled",
               }
-            : item
-        )
+            : item,
+        ),
       );
       toast.success("Link Source updated.");
       resetForm();
@@ -254,8 +254,8 @@ function PublisherLinkSourcesPage() {
       prev.map((item) =>
         item.id === id
           ? { ...item, status: item.status === "Enabled" ? "Disabled" : "Enabled" }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -317,10 +317,11 @@ function PublisherLinkSourcesPage() {
               <button
                 type="button"
                 onClick={() => setIsLibraryDropdownOpen((prev) => !prev)}
-                className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-lg border bg-white dark:bg-card px-3 py-2 text-left text-xs transition-colors ${isLibraryDropdownOpen
+                className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-lg border bg-white dark:bg-card px-3 py-2 text-left text-xs transition-colors ${
+                  isLibraryDropdownOpen
                     ? "border-[var(--brand)]"
                     : "border-border hover:border-border/80"
-                  }`}
+                }`}
               >
                 <div className="flex flex-wrap items-center gap-1.5">
                   {selectedLibraries.length === 0 ? (
@@ -382,7 +383,9 @@ function PublisherLinkSourcesPage() {
 
                   <div className="max-h-56 overflow-y-auto">
                     {filteredLibraries.length === 0 ? (
-                      <div className="px-3 py-3 text-xs text-muted-foreground">No libraries found.</div>
+                      <div className="px-3 py-3 text-xs text-muted-foreground">
+                        No libraries found.
+                      </div>
                     ) : (
                       filteredLibraries.map((lib) => {
                         const checked = selectedLibraries.includes(lib.name);
@@ -391,10 +394,11 @@ function PublisherLinkSourcesPage() {
                             key={lib.id}
                             type="button"
                             onClick={() => toggleLibrary(lib.name)}
-                            className={`flex w-full items-center justify-between px-3 py-2 text-left text-xs transition-colors ${checked
+                            className={`flex w-full items-center justify-between px-3 py-2 text-left text-xs transition-colors ${
+                              checked
                                 ? "bg-[var(--sidebar-highlight)]/70 text-[var(--brand)]"
                                 : "hover:bg-secondary/40 text-foreground"
-                              }`}
+                            }`}
                           >
                             <span className="min-w-0">
                               <span className="block truncate font-medium">{lib.name}</span>
@@ -470,14 +474,19 @@ function PublisherLinkSourcesPage() {
               <tbody className="divide-y divide-border/60">
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-10 px-4 text-center text-xs text-muted-foreground">
+                    <td
+                      colSpan={5}
+                      className="py-10 px-4 text-center text-xs text-muted-foreground"
+                    >
                       No link sources found.
                     </td>
                   </tr>
                 ) : (
                   filteredItems.map((item) => (
                     <tr key={item.id} className="hover:bg-secondary/40 transition-colors">
-                      <td className="py-3.5 px-4 font-semibold text-foreground">{item.categoryName}</td>
+                      <td className="py-3.5 px-4 font-semibold text-foreground">
+                        {item.categoryName}
+                      </td>
                       <td className="py-3.5 px-4">
                         <a
                           href={item.externalLink}

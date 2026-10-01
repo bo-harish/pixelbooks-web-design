@@ -23,7 +23,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-function CustomerAvatar({ avatarUrl, name, size = "md" }: { avatarUrl?: string; name: string; size?: "md" | "lg" }) {
+function CustomerAvatar({
+  avatarUrl,
+  name,
+  size = "md",
+}: {
+  avatarUrl?: string;
+  name: string;
+  size?: "md" | "lg";
+}) {
   if (avatarUrl) {
     const sizeClasses = size === "lg" ? "h-14 w-14" : "h-10 w-10";
     return (
@@ -62,7 +70,8 @@ export const Route = createFileRoute("/pb-admin/customers")({
       { title: "Manage Customer — PixelBooks Admin" },
       {
         name: "description",
-        content: "View and manage customer accounts, statuses, and purchase history in PixelBooks Admin.",
+        content:
+          "View and manage customer accounts, statuses, and purchase history in PixelBooks Admin.",
       },
     ],
   }),
@@ -126,7 +135,8 @@ const INITIAL_CUSTOMERS: Customer[] = [
     joinedDate: "13 Jul 2026",
     purchasedBooks: 19,
     status: "Enabled",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
     phone: "+91 98765 43213",
     location: "Delhi, India",
   },
@@ -265,7 +275,7 @@ function ManageCustomerPage() {
           return { ...c, status: nextStatus };
         }
         return c;
-      })
+      }),
     );
   };
 
@@ -283,7 +293,6 @@ function ManageCustomerPage() {
   return (
     <AppShell title="Manage Customer" subtitle="Overview and status control for customer accounts">
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-        
         {/* Search & Filter Toolbar (Bundle Style) */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Search Box */}
@@ -331,7 +340,9 @@ function ManageCustomerPage() {
                   <th className="py-4 px-6 w-[45%] font-semibold">Customer</th>
                   <th className="py-4 px-6 w-[22%] font-semibold">Joined Date</th>
                   <th className="py-4 px-6 w-[20%] text-center font-semibold">Purchased Books</th>
-                  <th className="py-4 px-6 w-[13%] text-right pr-8 font-semibold">Enable/Disable</th>
+                  <th className="py-4 px-6 w-[13%] text-right pr-8 font-semibold">
+                    Enable/Disable
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">

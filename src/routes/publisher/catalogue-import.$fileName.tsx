@@ -14,7 +14,10 @@ export const Route = createFileRoute("/publisher/catalogue-import/$fileName")({
   head: ({ params }) => ({
     meta: [
       { title: "Catalogue Import Summary — PixelBooks" },
-      { name: "description", content: "Review file validation results, upload errors, and import status." },
+      {
+        name: "description",
+        content: "Review file validation results, upload errors, and import status.",
+      },
     ],
   }),
   component: ImportDetailPage,

@@ -187,8 +187,7 @@ export function PBAdminCloneLibraryPage() {
     if (!sourceSearchQuery.trim()) return mockLibraries;
     const q = sourceSearchQuery.toLowerCase().trim();
     return mockLibraries.filter(
-      (l) =>
-        l.name.toLowerCase().includes(q) || l.location.toLowerCase().includes(q)
+      (l) => l.name.toLowerCase().includes(q) || l.location.toLowerCase().includes(q),
     );
   }, [sourceSearchQuery]);
 
@@ -196,8 +195,7 @@ export function PBAdminCloneLibraryPage() {
     if (!destinationSearchQuery.trim()) return mockLibraries;
     const q = destinationSearchQuery.toLowerCase().trim();
     return mockLibraries.filter(
-      (l) =>
-        l.name.toLowerCase().includes(q) || l.location.toLowerCase().includes(q)
+      (l) => l.name.toLowerCase().includes(q) || l.location.toLowerCase().includes(q),
     );
   }, [destinationSearchQuery]);
 
@@ -219,7 +217,7 @@ export function PBAdminCloneLibraryPage() {
     setClonedCount(count);
     setIsSuccessModalOpen(true);
     toast.success(
-      `Successfully cloned ${count} eBooks from "${selectedSourceLibrary?.name}" to "${selectedDestinationLibrary?.name}"!`
+      `Successfully cloned ${count} eBooks from "${selectedSourceLibrary?.name}" to "${selectedDestinationLibrary?.name}"!`,
     );
   };
 
@@ -229,7 +227,6 @@ export function PBAdminCloneLibraryPage() {
       subtitle="Select a source library to copy eBooks from, then choose a destination library to map them to."
     >
       <div className="space-y-6 p-4 sm:p-6 md:p-8">
-
         {/* Two-Column Cards Grid: Source Library & Destination Library */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1: Source Library */}
@@ -297,8 +294,9 @@ export function PBAdminCloneLibraryPage() {
                       )}
                       <ChevronDown
                         size={16}
-                        className={`text-muted-foreground group-hover:text-foreground transition-transform duration-200 ${sourceDropdownOpen ? "rotate-180" : ""
-                          }`}
+                        className={`text-muted-foreground group-hover:text-foreground transition-transform duration-200 ${
+                          sourceDropdownOpen ? "rotate-180" : ""
+                        }`}
                       />
                     </div>
                   </button>
@@ -311,7 +309,10 @@ export function PBAdminCloneLibraryPage() {
                     >
                       <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-1">
                         <div className="relative flex items-center">
-                          <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+                          <Search
+                            size={14}
+                            className="absolute left-3 text-muted-foreground pointer-events-none"
+                          />
                           <input
                             type="text"
                             value={sourceSearchQuery}
@@ -337,10 +338,11 @@ export function PBAdminCloneLibraryPage() {
                                 setSourceLibraryId(lib.id);
                                 setSourceDropdownOpen(false);
                               }}
-                              className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-xs transition-colors hover:bg-secondary/70 ${lib.id === sourceLibraryId
+                              className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-xs transition-colors hover:bg-secondary/70 ${
+                                lib.id === sourceLibraryId
                                   ? "font-bold text-[var(--brand)] bg-secondary/80"
                                   : "text-foreground"
-                                }`}
+                              }`}
                             >
                               <div className="flex items-center gap-3 truncate">
                                 <div
@@ -350,11 +352,16 @@ export function PBAdminCloneLibraryPage() {
                                 </div>
                                 <div className="truncate">
                                   <p className="font-bold leading-tight truncate">{lib.name}</p>
-                                  <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{lib.location}</p>
+                                  <p className="text-[10px] text-muted-foreground mt-0.5 truncate">
+                                    {lib.location}
+                                  </p>
                                 </div>
                               </div>
                               {lib.id === sourceLibraryId && (
-                                <CheckCircle2 size={16} className="text-[var(--brand)] shrink-0 ml-2" />
+                                <CheckCircle2
+                                  size={16}
+                                  className="text-[var(--brand)] shrink-0 ml-2"
+                                />
                               )}
                             </button>
                           ))
@@ -370,9 +377,16 @@ export function PBAdminCloneLibraryPage() {
             {selectedSourceLibrary && (
               <div className="p-3.5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 dark:bg-emerald-500/10 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <BookCheck size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <BookCheck
+                    size={16}
+                    className="text-emerald-600 dark:text-emerald-400 shrink-0"
+                  />
                   <span className="font-semibold text-foreground">
-                    Contains <strong className="text-emerald-600 dark:text-emerald-400">{selectedSourceLibrary.mappedEBooksCount} mapped eBooks</strong> ready to copy
+                    Contains{" "}
+                    <strong className="text-emerald-600 dark:text-emerald-400">
+                      {selectedSourceLibrary.mappedEBooksCount} mapped eBooks
+                    </strong>{" "}
+                    ready to copy
                   </span>
                 </div>
                 <span className="text-[11px] font-bold text-muted-foreground">Source Ready</span>
@@ -445,8 +459,9 @@ export function PBAdminCloneLibraryPage() {
                       )}
                       <ChevronDown
                         size={16}
-                        className={`text-muted-foreground group-hover:text-foreground transition-transform duration-200 ${destinationDropdownOpen ? "rotate-180" : ""
-                          }`}
+                        className={`text-muted-foreground group-hover:text-foreground transition-transform duration-200 ${
+                          destinationDropdownOpen ? "rotate-180" : ""
+                        }`}
                       />
                     </div>
                   </button>
@@ -459,7 +474,10 @@ export function PBAdminCloneLibraryPage() {
                     >
                       <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-1">
                         <div className="relative flex items-center">
-                          <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+                          <Search
+                            size={14}
+                            className="absolute left-3 text-muted-foreground pointer-events-none"
+                          />
                           <input
                             type="text"
                             value={destinationSearchQuery}
@@ -488,12 +506,13 @@ export function PBAdminCloneLibraryPage() {
                                   setDestinationLibraryId(lib.id);
                                   setDestinationDropdownOpen(false);
                                 }}
-                                className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-xs transition-colors ${isSame
+                                className={`flex w-full items-center justify-between px-3.5 py-2.5 text-left text-xs transition-colors ${
+                                  isSame
                                     ? "opacity-40 cursor-not-allowed bg-secondary/20"
                                     : lib.id === destinationLibraryId
                                       ? "font-bold text-[var(--brand)] bg-secondary/80"
                                       : "text-foreground hover:bg-secondary/70"
-                                  }`}
+                                }`}
                               >
                                 <div className="flex items-center gap-3 truncate">
                                   <div
@@ -511,7 +530,10 @@ export function PBAdminCloneLibraryPage() {
                                   </div>
                                 </div>
                                 {lib.id === destinationLibraryId && (
-                                  <CheckCircle2 size={16} className="text-[var(--brand)] shrink-0 ml-2" />
+                                  <CheckCircle2
+                                    size={16}
+                                    className="text-[var(--brand)] shrink-0 ml-2"
+                                  />
                                 )}
                               </button>
                             );
@@ -530,10 +552,15 @@ export function PBAdminCloneLibraryPage() {
                 <div className="flex items-center gap-2">
                   <Layers size={16} className="text-sky-600 dark:text-sky-400 shrink-0" />
                   <span className="font-semibold text-foreground">
-                    Currently has <strong className="text-sky-600 dark:text-sky-400">{selectedDestinationLibrary.mappedEBooksCount} mapped eBooks</strong>
+                    Currently has{" "}
+                    <strong className="text-sky-600 dark:text-sky-400">
+                      {selectedDestinationLibrary.mappedEBooksCount} mapped eBooks
+                    </strong>
                   </span>
                 </div>
-                <span className="text-[11px] font-bold text-muted-foreground">Destination Target</span>
+                <span className="text-[11px] font-bold text-muted-foreground">
+                  Destination Target
+                </span>
               </div>
             )}
           </div>
@@ -545,9 +572,14 @@ export function PBAdminCloneLibraryPage() {
             {selectedSourceLibrary && selectedDestinationLibrary ? (
               <span className="flex items-center gap-1.5 text-foreground">
                 <Sparkles size={14} className="text-emerald-500" />
-                Will copy <strong>{selectedSourceLibrary.mappedEBooksCount} eBooks</strong> from{" "}
-                <span className="font-bold text-[var(--brand)]">{selectedSourceLibrary.name}</span> to{" "}
-                <span className="font-bold text-[var(--brand)]">{selectedDestinationLibrary.name}</span>
+                Will copy <strong>
+                  {selectedSourceLibrary.mappedEBooksCount} eBooks
+                </strong> from{" "}
+                <span className="font-bold text-[var(--brand)]">{selectedSourceLibrary.name}</span>{" "}
+                to{" "}
+                <span className="font-bold text-[var(--brand)]">
+                  {selectedDestinationLibrary.name}
+                </span>
               </span>
             ) : (
               "Select source and destination libraries to begin cloning collection."
@@ -557,7 +589,9 @@ export function PBAdminCloneLibraryPage() {
           <button
             type="button"
             onClick={handleCloneLibrary}
-            disabled={!sourceLibraryId || !destinationLibraryId || sourceLibraryId === destinationLibraryId}
+            disabled={
+              !sourceLibraryId || !destinationLibraryId || sourceLibraryId === destinationLibraryId
+            }
             className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-6 text-sm font-bold text-white transition-opacity hover:opacity-90 cursor-pointer shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
             <Copy size={16} />
@@ -575,7 +609,9 @@ export function PBAdminCloneLibraryPage() {
                     <CheckCircle2 size={24} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-extrabold text-foreground">Library Cloned Successfully</h2>
+                    <h2 className="text-xl font-extrabold text-foreground">
+                      Library Cloned Successfully
+                    </h2>
                     <p className="text-xs text-muted-foreground font-medium mt-0.5">
                       Collection mapped from source to destination library.
                     </p>
@@ -596,11 +632,15 @@ export function PBAdminCloneLibraryPage() {
                 <div className="p-4 rounded-xl border border-border/60 bg-secondary/30 space-y-2 text-xs">
                   <div className="flex items-center justify-between font-semibold text-muted-foreground">
                     <span>Source Library:</span>
-                    <strong className="text-foreground font-bold">{selectedSourceLibrary?.name}</strong>
+                    <strong className="text-foreground font-bold">
+                      {selectedSourceLibrary?.name}
+                    </strong>
                   </div>
                   <div className="flex items-center justify-between font-semibold text-muted-foreground">
                     <span>Destination Library:</span>
-                    <strong className="text-foreground font-bold">{selectedDestinationLibrary?.name}</strong>
+                    <strong className="text-foreground font-bold">
+                      {selectedDestinationLibrary?.name}
+                    </strong>
                   </div>
                   <div className="flex items-center justify-between font-semibold text-muted-foreground border-t border-border/40 pt-2">
                     <span>Total eBooks Cloned:</span>
@@ -627,7 +667,9 @@ export function PBAdminCloneLibraryPage() {
                         />
                         <div className="truncate">
                           <p className="font-bold text-foreground truncate">{bk.title}</p>
-                          <p className="text-[11px] text-muted-foreground truncate">{bk.publisher} • {bk.genre}</p>
+                          <p className="text-[11px] text-muted-foreground truncate">
+                            {bk.publisher} • {bk.genre}
+                          </p>
                         </div>
                       </div>
                     ))}

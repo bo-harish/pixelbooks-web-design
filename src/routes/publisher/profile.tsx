@@ -211,9 +211,12 @@ function ProfilePage() {
                   </div>
 
                   <div className="flex-1 min-w-0 space-y-1.5">
-                    <h3 className="text-lg font-bold text-foreground truncate">{publisherName || "Publisher Profile"}</h3>
+                    <h3 className="text-lg font-bold text-foreground truncate">
+                      {publisherName || "Publisher Profile"}
+                    </h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Round logo for avatars, storefront badges &amp; invoices. PNG or JPEG, 512×512px.
+                      Round logo for avatars, storefront badges &amp; invoices. PNG or JPEG,
+                      512×512px.
                     </p>
                   </div>
                 </div>
@@ -226,7 +229,8 @@ function ProfilePage() {
                 <div className="flex-1 min-w-0 space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-semibold text-foreground">
-                      Horizontal Logo <span className="text-muted-foreground font-normal">(Optional)</span>
+                      Horizontal Logo{" "}
+                      <span className="text-muted-foreground font-normal">(Optional)</span>
                     </span>
                     {horizontalLogo && (
                       <button
@@ -258,7 +262,11 @@ function ProfilePage() {
                   >
                     {horizontalLogo ? (
                       <>
-                        <img src={horizontalLogo} alt="Horizontal Logo" className="h-full max-w-full object-contain py-1.5" />
+                        <img
+                          src={horizontalLogo}
+                          alt="Horizontal Logo"
+                          className="h-full max-w-full object-contain py-1.5"
+                        />
                         <span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/50 text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
                           <Upload size={13} /> Change Logo
                         </span>
@@ -272,7 +280,8 @@ function ProfilePage() {
                   </button>
 
                   <p className="text-[11px] text-muted-foreground">
-                    Displayed at the top-left of the screen header. Recommended: wide format (e.g. 280×64px), transparent PNG.
+                    Displayed at the top-left of the screen header. Recommended: wide format (e.g.
+                    280×64px), transparent PNG.
                   </p>
                 </div>
               </div>
@@ -288,14 +297,14 @@ function ProfilePage() {
                 </label>
 
                 <div className="flex flex-col sm:flex-row items-stretch gap-3">
-                  <div className="flex h-12 flex-1 items-center overflow-hidden rounded-xl border border-input bg-card shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
-                    <div className="h-full border-r border-input bg-secondary/50 px-3.5 text-xs font-medium text-muted-foreground flex items-center shrink-0">
+                  <div className="flex h-12 flex-1 items-center overflow-hidden rounded-xl border border-input bg-white shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
+                    <div className="h-full border-r border-input bg-slate-50 px-3.5 text-xs font-medium text-muted-foreground flex items-center shrink-0">
                       https://{profileBaseUrl}
                     </div>
                     <input
                       value={profileSlug}
                       onChange={(e) => setProfileSlug(e.target.value)}
-                      className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
+                      className="h-full min-w-0 flex-1 bg-white px-4 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
                       placeholder="your-publisher-name"
                     />
                   </div>
@@ -339,7 +348,7 @@ function ProfilePage() {
                     onChange={(e) => setAboutPublisher(e.target.value)}
                     rows={2}
                     placeholder="Add a short description about this publisher"
-                    className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground shadow-2xs transition-all focus:outline-none focus:ring-1 focus:ring-ring"
+                    className="w-full rounded-xl border border-input bg-white px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground shadow-2xs transition-all focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
               </div>
@@ -443,19 +452,27 @@ function ProfilePage() {
 
                   <div className="grid grid-cols-2 gap-4 rounded-lg bg-secondary/30 p-4 text-xs">
                     <div>
-                      <span className="text-muted-foreground font-medium block mb-0.5">Account Holder</span>
+                      <span className="text-muted-foreground font-medium block mb-0.5">
+                        Account Holder
+                      </span>
                       <span className="font-semibold text-foreground">PixelBooks</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground font-medium block mb-0.5">Account Number</span>
+                      <span className="text-muted-foreground font-medium block mb-0.5">
+                        Account Number
+                      </span>
                       <span className="font-semibold text-foreground font-mono">•••• 00430</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground font-medium block mb-0.5">IFSC Code</span>
+                      <span className="text-muted-foreground font-medium block mb-0.5">
+                        IFSC Code
+                      </span>
                       <span className="font-semibold text-foreground font-mono">ICIC0006267</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground font-medium block mb-0.5">Bank Name</span>
+                      <span className="text-muted-foreground font-medium block mb-0.5">
+                        Bank Name
+                      </span>
                       <span className="font-semibold text-foreground">ICICI Bank Ltd</span>
                     </div>
                   </div>
@@ -475,7 +492,9 @@ function ProfilePage() {
                         <Percent size={20} />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-foreground">Commission Details</h3>
+                        <h3 className="text-sm font-semibold text-foreground">
+                          Commission Details
+                        </h3>
                         <p className="text-xs text-muted-foreground">Revenue share percentage</p>
                       </div>
                     </div>
@@ -483,11 +502,18 @@ function ProfilePage() {
 
                   <div className="rounded-lg border border-border/70 bg-secondary/30 p-4 space-y-2">
                     <div className="flex items-baseline justify-between">
-                      <span className="text-xs font-medium text-muted-foreground">Publisher Revenue Share</span>
-                      <span className="text-2xl font-extrabold text-foreground tracking-tight">{commission}%</span>
+                      <span className="text-xs font-medium text-muted-foreground">
+                        Publisher Revenue Share
+                      </span>
+                      <span className="text-2xl font-extrabold text-foreground tracking-tight">
+                        {commission}%
+                      </span>
                     </div>
                     <div className="w-full bg-border/60 rounded-full h-2 overflow-hidden">
-                      <div className="bg-[var(--brand)] h-full rounded-full" style={{ width: `${commission}%` }} />
+                      <div
+                        className="bg-[var(--brand)] h-full rounded-full"
+                        style={{ width: `${commission}%` }}
+                      />
                     </div>
                   </div>
                 </div>

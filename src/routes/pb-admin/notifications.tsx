@@ -27,7 +27,10 @@ function AdminNotificationsPage() {
   const clearDate = (date: string) => setItems((prev) => prev.filter((n) => n.date !== date));
 
   return (
-    <AppShell title="Notifications" subtitle="Review platform alerts and system activity notifications.">
+    <AppShell
+      title="Notifications"
+      subtitle="Review platform alerts and system activity notifications."
+    >
       <div className="px-4 py-6 md:px-8 md:py-8">
         <div className="rounded-xl border border-border bg-card p-4 md:p-6 shadow-2xs">
           {groups.length === 0 && (

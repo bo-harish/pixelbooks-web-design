@@ -39,11 +39,7 @@ export const Route = createFileRoute("/pb-admin/bundles/")({
 });
 
 const STATUS_OPTIONS = ["All Status", "Published", "Unpublished", "Pending", "Rejected"] as const;
-const PUBLISHER_AUTHOR_OPTIONS = [
-  "Publisher & Author",
-  "Publisher",
-  "Author",
-] as const;
+const PUBLISHER_AUTHOR_OPTIONS = ["Publisher & Author", "Publisher", "Author"] as const;
 
 const PAGE_SIZE = 8;
 
@@ -123,7 +119,10 @@ function DropdownSelect<T extends string>({
           {searchable && (
             <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
               <div className="relative flex items-center">
-                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <Search
+                  size={14}
+                  className="absolute left-2.5 text-muted-foreground pointer-events-none"
+                />
                 <input
                   type="text"
                   value={searchTerm}
@@ -171,7 +170,8 @@ export function ManageBundlePage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<(typeof STATUS_OPTIONS)[number]>("All Status");
-  const [entityFilter, setEntityFilter] = useState<(typeof PUBLISHER_AUTHOR_OPTIONS)[number]>("Publisher & Author");
+  const [entityFilter, setEntityFilter] =
+    useState<(typeof PUBLISHER_AUTHOR_OPTIONS)[number]>("Publisher & Author");
   const [page, setPage] = useState(1);
 
   const [bundles] = useState<Bundle[]>(() => getBundles());
@@ -181,7 +181,8 @@ export function ManageBundlePage() {
     return bundles.filter((b) => {
       // Status Filter
       if (statusFilter !== "All Status") {
-        if (statusFilter === "Published" && b.status !== "Published" && b.status !== "Approved") return false;
+        if (statusFilter === "Published" && b.status !== "Published" && b.status !== "Approved")
+          return false;
         if (statusFilter !== "Published" && b.status !== statusFilter) return false;
       }
       // Entity Filter
@@ -217,7 +218,10 @@ export function ManageBundlePage() {
   }, [totalPages, currentPage]);
 
   return (
-    <AppShell title="Manage Bundle" subtitle="Manage every eBook bundle across the PixelBooks platform.">
+    <AppShell
+      title="Manage Bundle"
+      subtitle="Manage every eBook bundle across the PixelBooks platform."
+    >
       <div className="space-y-6 p-4 md:p-8">
         {/* Search & Filter Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center">
@@ -303,7 +307,9 @@ export function ManageBundlePage() {
                   pageItems.map((b) => (
                     <tr
                       key={b.id}
-                      onClick={() => navigate({ to: "/pb-admin/bundles/$bundleId", params: { bundleId: b.id } })}
+                      onClick={() =>
+                        navigate({ to: "/pb-admin/bundles/$bundleId", params: { bundleId: b.id } })
+                      }
                       className="group cursor-pointer transition-colors hover:bg-secondary/40"
                     >
                       {/* Bundle Name Column */}
@@ -371,7 +377,11 @@ export function ManageBundlePage() {
 
                       {/* Price Column */}
                       <td className="py-4 pr-4 align-middle font-semibold text-sm text-foreground">
-                        ₹{b.pricing.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ₹
+                        {b.pricing.toLocaleString("en-IN", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
 
                       {/* Action Arrow Column */}
@@ -392,8 +402,10 @@ export function ManageBundlePage() {
             <div className="flex items-center justify-between border-t border-border px-6 py-4">
               <p className="text-xs text-muted-foreground">
                 Showing <span className="font-medium text-foreground">{start + 1}</span> to{" "}
-                <span className="font-medium text-foreground">{Math.min(start + PAGE_SIZE, filtered.length)}</span> of{" "}
-                <span className="font-medium text-foreground">{filtered.length}</span> bundles
+                <span className="font-medium text-foreground">
+                  {Math.min(start + PAGE_SIZE, filtered.length)}
+                </span>{" "}
+                of <span className="font-medium text-foreground">{filtered.length}</span> bundles
               </p>
 
               <Pagination>
@@ -423,7 +435,7 @@ export function ManageBundlePage() {
                           {n}
                         </PaginationLink>
                       </PaginationItem>
-                    )
+                    ),
                   )}
 
                   <PaginationItem>

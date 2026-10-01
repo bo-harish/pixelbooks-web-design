@@ -11,7 +11,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { useLibraryAdminType } from "@/hooks/use-library-admin-type";
 
@@ -156,7 +165,11 @@ function RangeDropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[160px]">
         {options.map((opt) => (
-          <DropdownMenuItem key={opt} onClick={() => onSelect(opt)} className="text-xs font-medium cursor-pointer">
+          <DropdownMenuItem
+            key={opt}
+            onClick={() => onSelect(opt)}
+            className="text-xs font-medium cursor-pointer"
+          >
             {opt}
           </DropdownMenuItem>
         ))}
@@ -202,14 +215,19 @@ function StatCard({ stat }: { stat: Stat }) {
         </span>
         <span
           className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
-          style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+          style={{
+            backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+            color: "var(--brand)",
+          }}
         >
           <Icon size={15} />
         </span>
       </div>
 
       <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{stat.value}</p>
+        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
+          {stat.value}
+        </p>
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
           {stat.hasDropdown ? (
             <>
@@ -319,7 +337,6 @@ function DashboardContent() {
     ].filter(Boolean) as Stat[];
   }, [range, isStandardAdmin]);
 
-
   const dynamicChartConfig = useMemo(() => {
     switch (range) {
       case "7d":
@@ -417,7 +434,10 @@ function DashboardContent() {
         <div className="flex items-center gap-3.5">
           <span
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-            style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+            style={{
+              backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+              color: "var(--brand)",
+            }}
           >
             <Users size={22} />
           </span>
@@ -431,9 +451,7 @@ function DashboardContent() {
               <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                 14
               </p>
-              <p className="text-xs text-muted-foreground">
-                Registered library members.
-              </p>
+              <p className="text-xs text-muted-foreground">Registered library members.</p>
             </div>
           </div>
         </div>
@@ -462,7 +480,9 @@ function DashboardContent() {
       </div>
 
       {/* Stats Cards Grid */}
-      <section className={`grid grid-cols-1 gap-3 ${isStandardAdmin ? "sm:grid-cols-1 max-w-md" : "sm:grid-cols-3"}`}>
+      <section
+        className={`grid grid-cols-1 gap-3 ${isStandardAdmin ? "sm:grid-cols-1 max-w-md" : "sm:grid-cols-3"}`}
+      >
         {loading
           ? Array.from({ length: stats.length }).map((_, i) => <StatSkeleton key={i} />)
           : stats.map((s) => <StatCard key={s.label} stat={s} />)}
@@ -481,7 +501,10 @@ function DashboardContent() {
               <Skeleton className="h-full w-full" />
             ) : (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dynamicChartConfig.data} margin={{ top: 8, right: 6, left: -22, bottom: 0 }}>
+                <BarChart
+                  data={dynamicChartConfig.data}
+                  margin={{ top: 8, right: 6, left: -22, bottom: 0 }}
+                >
                   <CartesianGrid stroke="var(--border)" vertical={false} />
                   <XAxis
                     dataKey="label"
@@ -526,7 +549,9 @@ function DashboardContent() {
       <section className="rounded-xl border border-border bg-card p-4 md:p-6">
         <div className="mb-6">
           <h2 className="text-[1.35rem] font-semibold tracking-tight">Top 10 eBooks Borrowed</h2>
-          <p className="text-xs text-muted-foreground">Filtered by: {dynamicChartConfig.subtitle}</p>
+          <p className="text-xs text-muted-foreground">
+            Filtered by: {dynamicChartConfig.subtitle}
+          </p>
         </div>
 
         <div className="overflow-x-auto">
@@ -543,45 +568,47 @@ function DashboardContent() {
             <tbody className="divide-y divide-border/20">
               {loading
                 ? Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="border-b border-border/60 last:border-0">
-                    <td className="py-4 pr-4" colSpan={5}>
-                      <Skeleton className="h-10 w-full" />
-                    </td>
-                  </tr>
-                ))
+                    <tr key={i} className="border-b border-border/60 last:border-0">
+                      <td className="py-4 pr-4" colSpan={5}>
+                        <Skeleton className="h-10 w-full" />
+                      </td>
+                    </tr>
+                  ))
                 : dynamicTopBooks.map((book, index) => (
-                  <tr key={book.title} className="hover:bg-secondary/50 transition-colors">
-                    <td className="py-4 pr-3 pl-2 text-xs font-bold text-muted-foreground">{index + 1}</td>
-                    <td className="py-4 pr-4 pl-2">
-                      <div className="flex items-center gap-4">
-                        <div
-                          className="flex h-16 w-11 shrink-0 items-center justify-center rounded-[4px] shadow-sm text-[10px] font-bold text-white/90"
-                          style={{ background: book.cover }}
-                        >
-                          {book.initials}
+                    <tr key={book.title} className="hover:bg-secondary/50 transition-colors">
+                      <td className="py-4 pr-3 pl-2 text-xs font-bold text-muted-foreground">
+                        {index + 1}
+                      </td>
+                      <td className="py-4 pr-4 pl-2">
+                        <div className="flex items-center gap-4">
+                          <div
+                            className="flex h-16 w-11 shrink-0 items-center justify-center rounded-[4px] shadow-sm text-[10px] font-bold text-white/90"
+                            style={{ background: book.cover }}
+                          >
+                            {book.initials}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-foreground">{book.title}</p>
+                            <p className="text-xs text-muted-foreground">{book.publisher}</p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-foreground">{book.title}</p>
-                          <p className="text-xs text-muted-foreground">{book.publisher}</p>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="flex justify-center">
+                          <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
+                            <Star size={13} className="fill-amber-400 text-amber-400 shrink-0" />
+                            <span>{book.rating.toFixed(1)}</span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex justify-center">
-                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground shadow-2xs">
-                          <Star size={13} className="fill-amber-400 text-amber-400 shrink-0" />
-                          <span>{book.rating.toFixed(1)}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-center font-medium text-foreground">
-                      {book.copies}
-                    </td>
-                    <td className="py-4 px-4 text-center font-medium text-foreground">
-                      {book.borrowed}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-4 px-4 text-center font-medium text-foreground">
+                        {book.copies}
+                      </td>
+                      <td className="py-4 px-4 text-center font-medium text-foreground">
+                        {book.borrowed}
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>

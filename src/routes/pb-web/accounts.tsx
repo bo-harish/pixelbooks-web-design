@@ -339,10 +339,11 @@ function CustomCheckbox({
         e.stopPropagation();
         if (!disabled) onChange(!checked);
       }}
-      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 select-none ${checked
-        ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-2xs"
-        : "border-border/80 bg-white hover:border-[var(--brand)]/60"
-        } ${className}`}
+      className={`h-4.5 w-4.5 shrink-0 rounded-md border flex items-center justify-center transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 select-none ${
+        checked
+          ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-2xs"
+          : "border-border/80 bg-white hover:border-[var(--brand)]/60"
+      } ${className}`}
     >
       {checked && <Check className="h-3.5 w-3.5 stroke-[3] text-white" />}
     </button>
@@ -352,123 +353,128 @@ function CustomCheckbox({
 function PixelBooksAccountPage() {
   const navigate = useNavigate();
   const { tab: tabParam } = useSearch({ from: "/pb-web/accounts" });
-  const [activeTab, setActiveTab] = useState<AccountTab>(
-    (tabParam as AccountTab) ?? "profile"
-  );
+  const [activeTab, setActiveTab] = useState<AccountTab>((tabParam as AccountTab) ?? "profile");
   const [cartCount, setCartCount] = useState(2);
   const [unreadNotifications, setUnreadNotifications] = useState(3);
   const [isSaving, setIsSaving] = useState(false);
-  const [notifItems, setNotifItems] = useState<NotificationItem[]>(() =>
-    [
-      {
-        id: "rn1",
-        type: "approved" as const,
-        message: "📦 Your order #CS-4821 has been confirmed! 'NEET Courseware Biology Class-XII' is ready in your library.",
-        category: "Order Confirmed",
-        date: "Today",
-        time: "10:14 AM",
-        unread: true,
-      },
-      {
-        id: "rn2",
-        type: "approved" as const,
-        message: "🎉 PixelBooks has added 12 new Malayalam titles you might love. Explore the collection!",
-        category: "New Arrivals",
-        date: "Today",
-        time: "08:30 AM",
-        unread: true,
-      },
-      {
-        id: "rn3",
-        type: "approved" as const,
-        message: "⬇️ Your offline download for 'Foundation Mathematics JEE' is complete and ready to read.",
-        category: "Download Ready",
-        date: "Yesterday",
-        time: "06:55 PM",
-        unread: true,
-      },
-      {
-        id: "rn4",
-        type: "rejected" as const,
-        message: "⚠️ Your session on Desktop Chrome has been signed in from a new device. If this wasn't you, please secure your account.",
-        category: "Security Alert",
-        date: "Yesterday",
-        time: "02:11 PM",
-      },
-      {
-        id: "rn5",
-        type: "approved" as const,
-        message: "💸 A ₹150 cashback has been credited to your PixelBooks wallet from your last purchase.",
-        category: "Wallet Credit",
-        date: "24 Aug 2026",
-        time: "11:47 AM",
-      },
-      {
-        id: "rn6",
-        type: "approved" as const,
-        message: "📚 'കേരളത്തിലെ നാടൻപാട്ടുകൾ' has a new updated edition available. Tap to upgrade your copy.",
-        category: "Edition Update",
-        date: "24 Aug 2026",
-        time: "09:00 AM",
-      },
-      {
-        id: "rn7",
-        type: "approved" as const,
-        message: "🎁 You've unlocked the 'Voracious Reader' badge for completing 10 books this year!",
-        category: "Achievement",
-        date: "20 Aug 2026",
-        time: "03:45 PM",
-      },
-      {
-        id: "rn8",
-        type: "approved" as const,
-        message: "💳 Your PixelBooks wallet balance is ₹1,200. Use it on your next purchase for instant savings.",
-        category: "Wallet Update",
-        date: "20 Aug 2026",
-        time: "11:20 AM",
-      },
-      {
-        id: "rn9",
-        type: "rejected" as const,
-        message: "⚠️ Your eBook download for 'Theyyangal' failed due to a network interruption. Please try again.",
-        category: "Download Failed",
-        date: "15 Aug 2026",
-        time: "08:05 PM",
-      },
-      {
-        id: "rn10",
-        type: "approved" as const,
-        message: "📖 Your reading streak is now 21 days! Keep it up — you're on a roll.",
-        category: "Reading Streak",
-        date: "15 Aug 2026",
-        time: "07:00 AM",
-      },
-      {
-        id: "rn11",
-        type: "approved" as const,
-        message: "🏷️ Flash Sale! 30% off on all NEET & JEE prep books — today only. Shop now.",
-        category: "Promotion",
-        date: "10 Aug 2026",
-        time: "09:30 AM",
-      },
-      {
-        id: "rn12",
-        type: "approved" as const,
-        message: "📦 Your order #CS-4699 for 'Pennaazhangal' has been delivered successfully.",
-        category: "Order Delivered",
-        date: "05 Aug 2026",
-        time: "02:18 PM",
-      },
-      {
-        id: "rn13",
-        type: "approved" as const,
-        message: "🔔 A book from your Want to Read list — 'The Alchemist (Malayalam Translation)' — is now available on PixelBooks.",
-        category: "Wishlist Available",
-        date: "01 Aug 2026",
-        time: "10:00 AM",
-      },
-    ]
-  );
+  const [notifItems, setNotifItems] = useState<NotificationItem[]>(() => [
+    {
+      id: "rn1",
+      type: "approved" as const,
+      message:
+        "📦 Your order #CS-4821 has been confirmed! 'NEET Courseware Biology Class-XII' is ready in your library.",
+      category: "Order Confirmed",
+      date: "Today",
+      time: "10:14 AM",
+      unread: true,
+    },
+    {
+      id: "rn2",
+      type: "approved" as const,
+      message:
+        "🎉 PixelBooks has added 12 new Malayalam titles you might love. Explore the collection!",
+      category: "New Arrivals",
+      date: "Today",
+      time: "08:30 AM",
+      unread: true,
+    },
+    {
+      id: "rn3",
+      type: "approved" as const,
+      message:
+        "⬇️ Your offline download for 'Foundation Mathematics JEE' is complete and ready to read.",
+      category: "Download Ready",
+      date: "Yesterday",
+      time: "06:55 PM",
+      unread: true,
+    },
+    {
+      id: "rn4",
+      type: "rejected" as const,
+      message:
+        "⚠️ Your session on Desktop Chrome has been signed in from a new device. If this wasn't you, please secure your account.",
+      category: "Security Alert",
+      date: "Yesterday",
+      time: "02:11 PM",
+    },
+    {
+      id: "rn5",
+      type: "approved" as const,
+      message:
+        "💸 A ₹150 cashback has been credited to your PixelBooks wallet from your last purchase.",
+      category: "Wallet Credit",
+      date: "24 Aug 2026",
+      time: "11:47 AM",
+    },
+    {
+      id: "rn6",
+      type: "approved" as const,
+      message:
+        "📚 'കേരളത്തിലെ നാടൻപാട്ടുകൾ' has a new updated edition available. Tap to upgrade your copy.",
+      category: "Edition Update",
+      date: "24 Aug 2026",
+      time: "09:00 AM",
+    },
+    {
+      id: "rn7",
+      type: "approved" as const,
+      message: "🎁 You've unlocked the 'Voracious Reader' badge for completing 10 books this year!",
+      category: "Achievement",
+      date: "20 Aug 2026",
+      time: "03:45 PM",
+    },
+    {
+      id: "rn8",
+      type: "approved" as const,
+      message:
+        "💳 Your PixelBooks wallet balance is ₹1,200. Use it on your next purchase for instant savings.",
+      category: "Wallet Update",
+      date: "20 Aug 2026",
+      time: "11:20 AM",
+    },
+    {
+      id: "rn9",
+      type: "rejected" as const,
+      message:
+        "⚠️ Your eBook download for 'Theyyangal' failed due to a network interruption. Please try again.",
+      category: "Download Failed",
+      date: "15 Aug 2026",
+      time: "08:05 PM",
+    },
+    {
+      id: "rn10",
+      type: "approved" as const,
+      message: "📖 Your reading streak is now 21 days! Keep it up — you're on a roll.",
+      category: "Reading Streak",
+      date: "15 Aug 2026",
+      time: "07:00 AM",
+    },
+    {
+      id: "rn11",
+      type: "approved" as const,
+      message: "🏷️ Flash Sale! 30% off on all NEET & JEE prep books — today only. Shop now.",
+      category: "Promotion",
+      date: "10 Aug 2026",
+      time: "09:30 AM",
+    },
+    {
+      id: "rn12",
+      type: "approved" as const,
+      message: "📦 Your order #CS-4699 for 'Pennaazhangal' has been delivered successfully.",
+      category: "Order Delivered",
+      date: "05 Aug 2026",
+      time: "02:18 PM",
+    },
+    {
+      id: "rn13",
+      type: "approved" as const,
+      message:
+        "🔔 A book from your Want to Read list — 'The Alchemist (Malayalam Translation)' — is now available on PixelBooks.",
+      category: "Wishlist Available",
+      date: "01 Aug 2026",
+      time: "10:00 AM",
+    },
+  ]);
   const NOTIF_PAGE_SIZE = 4;
   const [notifPage, setNotifPage] = useState(1);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -484,7 +490,7 @@ function PixelBooksAccountPage() {
       (entries) => {
         if (entries[0].isIntersecting) loadMoreNotifs();
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -505,10 +511,13 @@ function PixelBooksAccountPage() {
     );
   });
 
-  const totalLibraryPages = Math.max(1, Math.ceil(filteredLibraryBooks.length / libraryItemsPerPage));
+  const totalLibraryPages = Math.max(
+    1,
+    Math.ceil(filteredLibraryBooks.length / libraryItemsPerPage),
+  );
   const paginatedLibraryBooks = filteredLibraryBooks.slice(
     (libraryCurrentPage - 1) * libraryItemsPerPage,
-    libraryCurrentPage * libraryItemsPerPage
+    libraryCurrentPage * libraryItemsPerPage,
   );
 
   // Share & Review State
@@ -539,7 +548,7 @@ function PixelBooksAccountPage() {
 
   const toggleGenre = (genre: string) => {
     setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre],
     );
   };
 
@@ -609,7 +618,8 @@ function PixelBooksAccountPage() {
     "lib-3": {
       rating: 5,
       headline: "Authentic Kerala folklore collection",
-      comment: "Linguistically rich and historically faithful. An invaluable addition to my digital library.",
+      comment:
+        "Linguistically rich and historically faithful. An invaluable addition to my digital library.",
       date: "Aug 20, 2026",
     },
   });
@@ -675,7 +685,9 @@ function PixelBooksAccountPage() {
   const [fullName, setFullName] = useState("Harish K");
   const [email, setEmail] = useState("harish@brandoptics.com");
   const [phone, setPhone] = useState("9387737551");
-  const [bio, setBio] = useState("Lifelong reader, STEM educator, and collector of regional folklore & literature.");
+  const [bio, setBio] = useState(
+    "Lifelong reader, STEM educator, and collector of regional folklore & literature.",
+  );
   const [userAvatar, setUserAvatar] = useState<string>("/images/harish-avatar.png");
 
   const {
@@ -705,7 +717,7 @@ function PixelBooksAccountPage() {
 
   const toggleLanguage = (lang: string) => {
     setPreferredLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
     );
   };
 
@@ -743,10 +755,7 @@ function PixelBooksAccountPage() {
       style={{ ["--brand" as any]: "#137365" }}
     >
       {/* Universal pb-web Top Header */}
-      <PbWebHeader
-        cartCount={cartCount}
-        unreadNotifications={unreadNotifications}
-      />
+      <PbWebHeader cartCount={cartCount} unreadNotifications={unreadNotifications} />
 
       {/* Main Account Dashboard Layout */}
       <main className="mx-auto w-full max-w-7xl 2xl:max-w-[1500px] px-4 sm:px-8 md:px-12 py-8 flex-1">
@@ -808,11 +817,17 @@ function PixelBooksAccountPage() {
               <div className="mt-5 w-full grid grid-cols-2 gap-2 border-t border-border/80 pt-4 text-center">
                 <div>
                   <div className="text-sm font-bold text-foreground">{userLibraryBooks.length}</div>
-                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Books</div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    Books
+                  </div>
                 </div>
                 <div className="border-l border-border/80">
-                  <div className="text-sm font-bold text-foreground">{userWishlistBooks.length}</div>
-                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Saved</div>
+                  <div className="text-sm font-bold text-foreground">
+                    {userWishlistBooks.length}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    Saved
+                  </div>
                 </div>
               </div>
             </div>
@@ -822,33 +837,41 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("profile")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "profile"
-                  ? "bg-[var(--brand)] text-white shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeTab === "profile"
+                    ? "bg-[var(--brand)] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <User size={18} />
                   <span>Profile & Addresses</span>
                 </div>
-                <ChevronRight size={16} className={activeTab === "profile" ? "opacity-100" : "opacity-40"} />
+                <ChevronRight
+                  size={16}
+                  className={activeTab === "profile" ? "opacity-100" : "opacity-40"}
+                />
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab("library")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "library"
-                  ? "bg-[var(--brand)] text-white shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeTab === "library"
+                    ? "bg-[var(--brand)] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <BookOpen size={18} />
                   <span>My Digital Library</span>
                 </div>
                 <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${activeTab === "library" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
-                    }`}
+                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                    activeTab === "library"
+                      ? "bg-white/20 text-white"
+                      : "bg-secondary text-foreground"
+                  }`}
                 >
                   {userLibraryBooks.length}
                 </span>
@@ -857,18 +880,22 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("wishlist")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "wishlist"
-                  ? "bg-[var(--brand)] text-white shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeTab === "wishlist"
+                    ? "bg-[var(--brand)] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <Bookmark size={18} />
                   <span>Want to Read</span>
                 </div>
                 <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${activeTab === "wishlist" ? "bg-white/20 text-white" : "bg-secondary text-foreground"
-                    }`}
+                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                    activeTab === "wishlist"
+                      ? "bg-white/20 text-white"
+                      : "bg-secondary text-foreground"
+                  }`}
                 >
                   {userWishlistBooks.length}
                 </span>
@@ -877,16 +904,20 @@ function PixelBooksAccountPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("orders")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "orders"
-                  ? "bg-[var(--brand)] text-white shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeTab === "orders"
+                    ? "bg-[var(--brand)] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <Receipt size={18} />
                   <span>Purchase History</span>
                 </div>
-                <ChevronRight size={16} className={activeTab === "orders" ? "opacity-100" : "opacity-40"} />
+                <ChevronRight
+                  size={16}
+                  className={activeTab === "orders" ? "opacity-100" : "opacity-40"}
+                />
               </button>
 
               <button
@@ -895,10 +926,11 @@ function PixelBooksAccountPage() {
                   setActiveTab("notifications");
                   setUnreadNotifications(0);
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "notifications"
-                  ? "bg-[var(--brand)] text-white shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeTab === "notifications"
+                    ? "bg-[var(--brand)] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <Bell size={18} />
@@ -909,23 +941,30 @@ function PixelBooksAccountPage() {
                     {unreadNotifications}
                   </span>
                 ) : (
-                  <ChevronRight size={16} className={activeTab === "notifications" ? "opacity-100" : "opacity-40"} />
+                  <ChevronRight
+                    size={16}
+                    className={activeTab === "notifications" ? "opacity-100" : "opacity-40"}
+                  />
                 )}
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab("settings")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${activeTab === "settings"
-                  ? "bg-[var(--brand)] text-white shadow-2xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  activeTab === "settings"
+                    ? "bg-[var(--brand)] text-white shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <Settings size={18} />
                   <span>Security & Settings</span>
                 </div>
-                <ChevronRight size={16} className={activeTab === "settings" ? "opacity-100" : "opacity-40"} />
+                <ChevronRight
+                  size={16}
+                  className={activeTab === "settings" ? "opacity-100" : "opacity-40"}
+                />
               </button>
 
               <div className="pt-2">
@@ -977,9 +1016,7 @@ function PixelBooksAccountPage() {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1.5">
-                          <label className="text-sm font-bold text-foreground">
-                            Phone Number
-                          </label>
+                          <label className="text-sm font-bold text-foreground">Phone Number</label>
                           <span className="text-[11px] font-normal text-muted-foreground">
                             (Phone or Email required)
                           </span>
@@ -987,10 +1024,13 @@ function PixelBooksAccountPage() {
                         <div className="flex items-center gap-2">
                           {phone.trim() ? (
                             <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
-                              <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
+                              <Check size={12} strokeWidth={2.5} className="text-[#30C047]" />{" "}
+                              Verified
                             </span>
                           ) : (
-                            <span className="text-[11px] text-muted-foreground font-medium">Optional if Email provided</span>
+                            <span className="text-[11px] text-muted-foreground font-medium">
+                              Optional if Email provided
+                            </span>
                           )}
                           <button
                             type="button"
@@ -1014,9 +1054,7 @@ function PixelBooksAccountPage() {
                     <div className="md:col-span-2">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1.5">
-                          <label className="text-sm font-bold text-foreground">
-                            Email ID
-                          </label>
+                          <label className="text-sm font-bold text-foreground">Email ID</label>
                           <span className="text-[11px] font-normal text-muted-foreground">
                             (Phone or Email required)
                           </span>
@@ -1024,10 +1062,13 @@ function PixelBooksAccountPage() {
                         <div className="flex items-center gap-2">
                           {email.trim() ? (
                             <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-pbgreen-dark">
-                              <Check size={12} strokeWidth={2.5} className="text-[#30C047]" /> Verified
+                              <Check size={12} strokeWidth={2.5} className="text-[#30C047]" />{" "}
+                              Verified
                             </span>
                           ) : (
-                            <span className="text-[11px] text-muted-foreground font-medium">Optional if Phone provided</span>
+                            <span className="text-[11px] text-muted-foreground font-medium">
+                              Optional if Phone provided
+                            </span>
                           )}
                           <button
                             type="button"
@@ -1079,7 +1120,8 @@ function PixelBooksAccountPage() {
                                 </span>
                               </div>
                               <p className="text-xs text-muted-foreground mt-1">
-                                Tailor your book recommendations, homepage feed, and curated collections
+                                Tailor your book recommendations, homepage feed, and curated
+                                collections
                               </p>
                             </div>
                           </div>
@@ -1120,7 +1162,10 @@ function PixelBooksAccountPage() {
                             </div>
                           ) : (
                             <div className="flex items-center justify-between py-2 text-xs text-muted-foreground italic">
-                              <span>No genres selected yet. Choose your preferred categories to customize recommendations.</span>
+                              <span>
+                                No genres selected yet. Choose your preferred categories to
+                                customize recommendations.
+                              </span>
                               <button
                                 type="button"
                                 onClick={() => setIsGenreModalOpen(true)}
@@ -1140,16 +1185,15 @@ function PixelBooksAccountPage() {
                 <div className="rounded-2xl border border-border bg-white p-6 shadow-xs">
                   <div className="pb-4 border-b border-border/70 mb-5">
                     <h3 className="text-base font-bold text-foreground">Address</h3>
-                    <p className="text-xs text-muted-foreground">
-                      Invoicing address
-                    </p>
+                    <p className="text-xs text-muted-foreground">Invoicing address</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Address 1 */}
                     <div>
                       <label className="block text-sm font-bold text-foreground mb-2">
-                        House / Flat / Door No. (Address 1) <span className="text-red-500 font-bold ml-0.5"></span>
+                        House / Flat / Door No. (Address 1){" "}
+                        <span className="text-red-500 font-bold ml-0.5"></span>
                       </label>
                       <input
                         type="text"
@@ -1232,7 +1276,8 @@ function PixelBooksAccountPage() {
                 {/* Form Action Controls (Clean bottom bar) */}
                 <div className="flex items-center justify-between rounded-2xl border border-border bg-white p-4 shadow-xs">
                   <div className="text-xs text-muted-foreground">
-                    Last modified: <span className="font-semibold text-foreground">Today at 12:45 PM</span>
+                    Last modified:{" "}
+                    <span className="font-semibold text-foreground">Today at 12:45 PM</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <button
@@ -1317,7 +1362,11 @@ function PixelBooksAccountPage() {
                     </div>
 
                     <div className="text-xs text-muted-foreground font-medium self-end sm:self-center">
-                      Showing <span className="font-semibold text-foreground">{filteredLibraryBooks.length}</span> {filteredLibraryBooks.length === 1 ? "book" : "books"}
+                      Showing{" "}
+                      <span className="font-semibold text-foreground">
+                        {filteredLibraryBooks.length}
+                      </span>{" "}
+                      {filteredLibraryBooks.length === 1 ? "book" : "books"}
                     </div>
                   </div>
 
@@ -1363,15 +1412,20 @@ function PixelBooksAccountPage() {
                                 {reviews[b.id] && (
                                   <div className="flex items-center justify-end mb-1">
                                     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.5 rounded">
-                                      <Star size={10} className="fill-amber-400 text-amber-400" /> {reviews[b.id].rating}.0
+                                      <Star size={10} className="fill-amber-400 text-amber-400" />{" "}
+                                      {reviews[b.id].rating}.0
                                     </span>
                                   </div>
                                 )}
                                 <h4 className="text-xs font-bold text-foreground line-clamp-2 mt-1.5 leading-tight">
                                   {b.title}
                                 </h4>
-                                <p className="text-[11px] text-muted-foreground mt-0.5 truncate">by {b.author}</p>
-                                <p className="text-[10px] text-muted-foreground/80 font-mono mt-0.5">ISBN: {b.isbn}</p>
+                                <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                                  by {b.author}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground/80 font-mono mt-0.5">
+                                  ISBN: {b.isbn}
+                                </p>
                               </div>
 
                               <div className="space-y-1.5 pt-2">
@@ -1399,7 +1453,9 @@ function PixelBooksAccountPage() {
                           {/* Review quote snippet if present */}
                           {reviews[b.id] && (
                             <div className="mt-2.5 pt-2 border-t border-border/50 text-[11px] text-muted-foreground bg-muted/40 p-2 rounded-lg">
-                              <span className="font-semibold text-foreground">"{reviews[b.id].headline}"</span>
+                              <span className="font-semibold text-foreground">
+                                "{reviews[b.id].headline}"
+                              </span>
                               <p className="line-clamp-1 italic mt-0.5 text-[10.5px]">
                                 {reviews[b.id].comment}
                               </p>
@@ -1437,7 +1493,11 @@ function PixelBooksAccountPage() {
                     <div className="flex flex-col gap-3 border-t border-border/70 pt-4 mt-6 sm:flex-row sm:items-center sm:justify-between">
                       <p className="text-xs text-muted-foreground font-medium">
                         Showing {(libraryCurrentPage - 1) * libraryItemsPerPage + 1} to{" "}
-                        {Math.min(libraryCurrentPage * libraryItemsPerPage, filteredLibraryBooks.length)} of {filteredLibraryBooks.length} books
+                        {Math.min(
+                          libraryCurrentPage * libraryItemsPerPage,
+                          filteredLibraryBooks.length,
+                        )}{" "}
+                        of {filteredLibraryBooks.length} books
                       </p>
 
                       <div className="flex items-center gap-1.5">
@@ -1465,10 +1525,11 @@ function PixelBooksAccountPage() {
                             key={pg}
                             type="button"
                             onClick={() => setLibraryCurrentPage(pg)}
-                            className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${pg === libraryCurrentPage
-                              ? "bg-[var(--brand)] text-white shadow-2xs"
-                              : "border border-border bg-white text-foreground hover:bg-neutral-50"
-                              }`}
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
+                              pg === libraryCurrentPage
+                                ? "bg-[var(--brand)] text-white shadow-2xs"
+                                : "border border-border bg-white text-foreground hover:bg-neutral-50"
+                            }`}
                           >
                             {pg}
                           </button>
@@ -1476,7 +1537,9 @@ function PixelBooksAccountPage() {
 
                         <button
                           type="button"
-                          onClick={() => setLibraryCurrentPage((p) => Math.min(totalLibraryPages, p + 1))}
+                          onClick={() =>
+                            setLibraryCurrentPage((p) => Math.min(totalLibraryPages, p + 1))
+                          }
                           disabled={libraryCurrentPage === totalLibraryPages}
                           className="flex h-8 px-2.5 items-center justify-center rounded-lg border border-border bg-white text-xs font-semibold text-foreground transition-colors hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                         >
@@ -1509,7 +1572,9 @@ function PixelBooksAccountPage() {
                         Books saved to your personal queue for future study or leisure
                       </p>
                     </div>
-                    <span className="text-xs text-muted-foreground">{userWishlistBooks.length} titles</span>
+                    <span className="text-xs text-muted-foreground">
+                      {userWishlistBooks.length} titles
+                    </span>
                   </div>
 
                   <div className="space-y-3">
@@ -1583,7 +1648,9 @@ function PixelBooksAccountPage() {
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/70">
                           <div className="space-y-1">
                             <div className="flex items-center gap-3">
-                              <span className="text-xs font-bold text-foreground font-mono">{ord.id}</span>
+                              <span className="text-xs font-bold text-foreground font-mono">
+                                {ord.id}
+                              </span>
                               <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border px-2 py-0.5 rounded-full">
                                 <CheckCircle2 size={11} className="text-[#30C047]" /> {ord.status}
                               </span>
@@ -1593,18 +1660,26 @@ function PixelBooksAccountPage() {
                               <span>•</span>
                               <span>{ord.paymentMethod}</span>
                               <span>•</span>
-                              <span>{ord.items.length} {ord.items.length === 1 ? "eBook" : "eBooks"}</span>
+                              <span>
+                                {ord.items.length} {ord.items.length === 1 ? "eBook" : "eBooks"}
+                              </span>
                             </div>
                           </div>
 
                           <div className="flex items-center justify-between sm:justify-end gap-4">
                             <div className="text-right">
-                              <span className="text-[10px] text-muted-foreground block">Order Total</span>
-                              <span className="text-sm font-extrabold text-foreground">{ord.total}</span>
+                              <span className="text-[10px] text-muted-foreground block">
+                                Order Total
+                              </span>
+                              <span className="text-sm font-extrabold text-foreground">
+                                {ord.total}
+                              </span>
                             </div>
                             <button
                               type="button"
-                              onClick={() => toast.success(`Downloading tax invoice for ${ord.id}...`)}
+                              onClick={() =>
+                                toast.success(`Downloading tax invoice for ${ord.id}...`)
+                              }
                               className="text-xs font-semibold text-[var(--brand)] hover:underline flex items-center gap-1 py-1.5 px-3 rounded-lg border border-border bg-white hover:bg-neutral-50 transition-colors cursor-pointer"
                             >
                               <Receipt size={13} /> Download Invoice
@@ -1637,13 +1712,18 @@ function PixelBooksAccountPage() {
                                     {item.title}
                                   </h4>
                                   <p className="text-xs text-muted-foreground truncate">
-                                    by <span className="font-medium text-foreground">{item.author}</span>
+                                    by{" "}
+                                    <span className="font-medium text-foreground">
+                                      {item.author}
+                                    </span>
                                   </p>
                                 </div>
                               </div>
 
                               <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-4 shrink-0">
-                                <span className="text-xs sm:text-sm font-bold text-foreground">{item.price}</span>
+                                <span className="text-xs sm:text-sm font-bold text-foreground">
+                                  {item.price}
+                                </span>
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -1685,27 +1765,36 @@ function PixelBooksAccountPage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border bg-white gap-4">
                       <div className="flex items-center gap-3.5">
                         <div
-                          className={`p-2.5 rounded-xl transition-colors ${pushNotificationsEnabled
-                            ? "bg-[var(--brand)]/10 text-[var(--brand)]"
-                            : "bg-muted text-muted-foreground"
-                            }`}
+                          className={`p-2.5 rounded-xl transition-colors ${
+                            pushNotificationsEnabled
+                              ? "bg-[var(--brand)]/10 text-[var(--brand)]"
+                              : "bg-muted text-muted-foreground"
+                          }`}
                         >
-                          {pushNotificationsEnabled ? <BellRing size={20} /> : <BellOff size={20} />}
+                          {pushNotificationsEnabled ? (
+                            <BellRing size={20} />
+                          ) : (
+                            <BellOff size={20} />
+                          )}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-foreground">Push notifications</span>
+                            <span className="text-xs font-bold text-foreground">
+                              Push notifications
+                            </span>
                             <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${pushNotificationsEnabled
-                                ? "text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border"
-                                : "text-muted-foreground bg-secondary"
-                                }`}
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                pushNotificationsEnabled
+                                  ? "text-pbgreen-dark bg-pbgreen-light border border-pbgreen-border"
+                                  : "text-muted-foreground bg-secondary"
+                              }`}
                             >
                               {pushNotificationsEnabled ? "On" : "Off"}
                             </span>
                           </div>
                           <div className="text-[11px] text-muted-foreground mt-0.5">
-                            Receive real-time desktop alerts for reader sync, order confirmations, and license deliveries
+                            Receive real-time desktop alerts for reader sync, order confirmations,
+                            and license deliveries
                           </div>
                         </div>
                       </div>
@@ -1728,12 +1817,16 @@ function PixelBooksAccountPage() {
                               toast.info("Push notifications turned off.");
                             }
                           }}
-                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-2 ${pushNotificationsEnabled ? "bg-[var(--brand)]" : "bg-muted-foreground/30"
-                            }`}
+                          className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-2 ${
+                            pushNotificationsEnabled
+                              ? "bg-[var(--brand)]"
+                              : "bg-muted-foreground/30"
+                          }`}
                         >
                           <span
-                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${pushNotificationsEnabled ? "translate-x-5" : "translate-x-0"
-                              }`}
+                            className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                              pushNotificationsEnabled ? "translate-x-5" : "translate-x-0"
+                            }`}
                           />
                         </button>
                       </div>
@@ -1750,7 +1843,8 @@ function PixelBooksAccountPage() {
                             Delete User Data
                           </div>
                           <div className="text-[11px] text-muted-foreground mt-0.5">
-                            Permanently wipe your recommendation profile, recent search history, and offline reader cache
+                            Permanently wipe your recommendation profile, recent search history, and
+                            offline reader cache
                           </div>
                         </div>
                       </div>
@@ -1778,10 +1872,11 @@ function PixelBooksAccountPage() {
                   <div className="space-y-4">
                     {/* Password Segment - Expands Inline */}
                     <div
-                      className={`rounded-xl border transition-all duration-200 bg-white ${isChangingPassword
-                        ? "border-[var(--brand)]/40 shadow-xs ring-2 ring-[var(--brand)]/5"
-                        : "border-border hover:border-border/80"
-                        }`}
+                      className={`rounded-xl border transition-all duration-200 bg-white ${
+                        isChangingPassword
+                          ? "border-[var(--brand)]/40 shadow-xs ring-2 ring-[var(--brand)]/5"
+                          : "border-border hover:border-border/80"
+                      }`}
                     >
                       {/* Segment Header */}
                       <div className="flex items-center justify-between p-4">
@@ -1806,10 +1901,11 @@ function PixelBooksAccountPage() {
                               setIsChangingPassword(true);
                             }
                           }}
-                          className={`inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border px-4 text-xs font-semibold transition-colors cursor-pointer shrink-0 ${isChangingPassword
-                            ? "border-border bg-secondary text-muted-foreground hover:text-foreground"
-                            : "border-border bg-white text-foreground hover:bg-neutral-50"
-                            }`}
+                          className={`inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border px-4 text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
+                            isChangingPassword
+                              ? "border-border bg-secondary text-muted-foreground hover:text-foreground"
+                              : "border-border bg-white text-foreground hover:bg-neutral-50"
+                          }`}
                         >
                           {isChangingPassword ? (
                             <>
@@ -1851,7 +1947,9 @@ function PixelBooksAccountPage() {
                                   onClick={() => setShowCurrentPassword((v) => !v)}
                                   className="absolute right-3 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                                   tabIndex={-1}
-                                  aria-label={showCurrentPassword ? "Hide password" : "Show password"}
+                                  aria-label={
+                                    showCurrentPassword ? "Hide password" : "Show password"
+                                  }
                                 >
                                   {showCurrentPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                                 </button>
@@ -1901,19 +1999,22 @@ function PixelBooksAccountPage() {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="Re-enter new password"
-                                    className={`h-10 w-full rounded-lg border bg-white pr-10 pl-3.5 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors ${confirmPassword && newPassword
-                                      ? confirmPassword === newPassword
-                                        ? "border-emerald-500 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500/30"
-                                        : "border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/30"
-                                      : "border-border focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]/30"
-                                      }`}
+                                    className={`h-10 w-full rounded-lg border bg-white pr-10 pl-3.5 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors ${
+                                      confirmPassword && newPassword
+                                        ? confirmPassword === newPassword
+                                          ? "border-emerald-500 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500/30"
+                                          : "border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/30"
+                                        : "border-border focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]/30"
+                                    }`}
                                   />
                                   <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword((v) => !v)}
                                     className="absolute right-3 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                                     tabIndex={-1}
-                                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                                    aria-label={
+                                      showConfirmPassword ? "Hide password" : "Show password"
+                                    }
                                   >
                                     {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                                   </button>
@@ -1924,25 +2025,33 @@ function PixelBooksAccountPage() {
                             {/* Password requirements helper */}
                             <div className="text-[11px] text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5">
                               <span
-                                className={`inline-flex items-center gap-1 transition-colors ${newPassword.length >= 8 ? "text-emerald-600 font-semibold" : ""
-                                  }`}
-                              >
-                                <Check
-                                  size={12}
-                                  className={newPassword.length >= 8 ? "text-emerald-600" : "text-muted-foreground/50"}
-                                />
-                                Minimum 8 characters
-                              </span>
-                              <span
-                                className={`inline-flex items-center gap-1 transition-colors ${confirmPassword && newPassword && newPassword === confirmPassword
-                                  ? "text-emerald-600 font-semibold"
-                                  : ""
-                                  }`}
+                                className={`inline-flex items-center gap-1 transition-colors ${
+                                  newPassword.length >= 8 ? "text-emerald-600 font-semibold" : ""
+                                }`}
                               >
                                 <Check
                                   size={12}
                                   className={
-                                    confirmPassword && newPassword && newPassword === confirmPassword
+                                    newPassword.length >= 8
+                                      ? "text-emerald-600"
+                                      : "text-muted-foreground/50"
+                                  }
+                                />
+                                Minimum 8 characters
+                              </span>
+                              <span
+                                className={`inline-flex items-center gap-1 transition-colors ${
+                                  confirmPassword && newPassword && newPassword === confirmPassword
+                                    ? "text-emerald-600 font-semibold"
+                                    : ""
+                                }`}
+                              >
+                                <Check
+                                  size={12}
+                                  className={
+                                    confirmPassword &&
+                                    newPassword &&
+                                    newPassword === confirmPassword
                                       ? "text-emerald-600"
                                       : "text-muted-foreground/50"
                                   }
@@ -1994,7 +2103,10 @@ function PixelBooksAccountPage() {
                     {notifItems.length > 0 && (
                       <button
                         type="button"
-                        onClick={() => { setNotifItems([]); setNotifPage(1); }}
+                        onClick={() => {
+                          setNotifItems([]);
+                          setNotifPage(1);
+                        }}
                         className="text-xs font-semibold text-muted-foreground hover:text-rose-600 transition-colors cursor-pointer"
                       >
                         Clear All
@@ -2008,64 +2120,88 @@ function PixelBooksAccountPage() {
                         <Bell size={22} className="text-muted-foreground" />
                       </div>
                       <p className="text-sm font-semibold text-foreground">You're all caught up!</p>
-                      <p className="text-xs text-muted-foreground mt-1">No new notifications at the moment.</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        No new notifications at the moment.
+                      </p>
                     </div>
-                  ) : (() => {
-                    const visibleItems = notifItems.slice(0, notifPage * NOTIF_PAGE_SIZE);
-                    const hasMore = visibleItems.length < notifItems.length;
-                    return (
-                      <div className="space-y-6">
-                        {groupByDate(visibleItems).map((group) => (
-                          <section key={group.date}>
-                            <div className="mb-2 flex items-center justify-between">
-                              <h4 className="text-[13px] font-semibold text-foreground">{group.date}</h4>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setNotifItems((prev) => prev.filter((n) => n.date !== group.date))
-                                }
-                                className="text-xs font-semibold hover:underline underline-offset-4 transition-colors cursor-pointer"
-                                style={{ color: "var(--brand)" }}
-                              >
-                                Clear
-                              </button>
-                            </div>
-                            <ul className="space-y-2">
-                              {group.items.map((n) => (
-                                <li key={n.id} className="rounded-xl border border-border/60 bg-secondary/40 px-4 py-3.5">
-                                  <div className="flex items-start gap-3">
-                                    <span
-                                      className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
-                                      style={{ backgroundColor: n.unread ? "var(--brand)" : "var(--border)" }}
-                                    />
-                                    <div className="min-w-0 flex-1">
-                                      <div className="flex items-start justify-between gap-4">
-                                        <p className="text-[13.5px] leading-snug text-foreground">{n.message}</p>
-                                        <span className="shrink-0 text-[11.5px] text-muted-foreground whitespace-nowrap">
-                                          {n.time}
-                                        </span>
+                  ) : (
+                    (() => {
+                      const visibleItems = notifItems.slice(0, notifPage * NOTIF_PAGE_SIZE);
+                      const hasMore = visibleItems.length < notifItems.length;
+                      return (
+                        <div className="space-y-6">
+                          {groupByDate(visibleItems).map((group) => (
+                            <section key={group.date}>
+                              <div className="mb-2 flex items-center justify-between">
+                                <h4 className="text-[13px] font-semibold text-foreground">
+                                  {group.date}
+                                </h4>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setNotifItems((prev) =>
+                                      prev.filter((n) => n.date !== group.date),
+                                    )
+                                  }
+                                  className="text-xs font-semibold hover:underline underline-offset-4 transition-colors cursor-pointer"
+                                  style={{ color: "var(--brand)" }}
+                                >
+                                  Clear
+                                </button>
+                              </div>
+                              <ul className="space-y-2">
+                                {group.items.map((n) => (
+                                  <li
+                                    key={n.id}
+                                    className="rounded-xl border border-border/60 bg-secondary/40 px-4 py-3.5"
+                                  >
+                                    <div className="flex items-start gap-3">
+                                      <span
+                                        className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
+                                        style={{
+                                          backgroundColor: n.unread
+                                            ? "var(--brand)"
+                                            : "var(--border)",
+                                        }}
+                                      />
+                                      <div className="min-w-0 flex-1">
+                                        <div className="flex items-start justify-between gap-4">
+                                          <p className="text-[13.5px] leading-snug text-foreground">
+                                            {n.message}
+                                          </p>
+                                          <span className="shrink-0 text-[11.5px] text-muted-foreground whitespace-nowrap">
+                                            {n.time}
+                                          </span>
+                                        </div>
+                                        <p className="mt-1 text-[11.5px] text-muted-foreground">
+                                          {n.category}
+                                        </p>
                                       </div>
-                                      <p className="mt-1 text-[11.5px] text-muted-foreground">{n.category}</p>
                                     </div>
-                                  </div>
-                                </li>
-                              ))}
-                            </ul>
-                          </section>
-                        ))}
+                                  </li>
+                                ))}
+                              </ul>
+                            </section>
+                          ))}
 
-                        {/* Scroll sentinel */}
-                        {hasMore ? (
-                          <div ref={sentinelRef} className="flex items-center justify-center py-4 gap-2 text-xs text-muted-foreground">
-                            <span className="h-3.5 w-3.5 rounded-full border-2 border-[var(--brand)] border-t-transparent animate-spin" />
-                            Loading more…
-                          </div>
-                        ) : (
-                          <p className="text-center text-xs text-muted-foreground py-4">You've seen all notifications.</p>
-                        )}
-                      </div>
-                    );
-                  })()}
+                          {/* Scroll sentinel */}
+                          {hasMore ? (
+                            <div
+                              ref={sentinelRef}
+                              className="flex items-center justify-center py-4 gap-2 text-xs text-muted-foreground"
+                            >
+                              <span className="h-3.5 w-3.5 rounded-full border-2 border-[var(--brand)] border-t-transparent animate-spin" />
+                              Loading more…
+                            </div>
+                          ) : (
+                            <p className="text-center text-xs text-muted-foreground py-4">
+                              You've seen all notifications.
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })()
+                  )}
                 </div>
               </div>
             )}
@@ -2145,9 +2281,9 @@ function PixelBooksAccountPage() {
                     onClick={() => {
                       window.open(
                         `https://api.whatsapp.com/send?text=${encodeURIComponent(
-                          `Check out "${selectedShareBook.title}" on PixelBooks: https://pixelbooks.com/book/${selectedShareBook.id}`
+                          `Check out "${selectedShareBook.title}" on PixelBooks: https://pixelbooks.com/book/${selectedShareBook.id}`,
                         )}`,
-                        "_blank"
+                        "_blank",
                       );
                     }}
                     className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-white hover:bg-neutral-50 text-xs font-medium text-foreground transition-all cursor-pointer"
@@ -2161,10 +2297,10 @@ function PixelBooksAccountPage() {
                     onClick={() => {
                       window.open(
                         `mailto:?subject=${encodeURIComponent(
-                          `Recommended Book: ${selectedShareBook.title}`
+                          `Recommended Book: ${selectedShareBook.title}`,
                         )}&body=${encodeURIComponent(
-                          `Hi,\n\nI recommend reading "${selectedShareBook.title}" by ${selectedShareBook.author} on PixelBooks.\n\nLink: https://pixelbooks.com/book/${selectedShareBook.id}`
-                        )}`
+                          `Hi,\n\nI recommend reading "${selectedShareBook.title}" by ${selectedShareBook.author} on PixelBooks.\n\nLink: https://pixelbooks.com/book/${selectedShareBook.id}`,
+                        )}`,
                       );
                     }}
                     className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-white hover:bg-neutral-50 text-xs font-medium text-foreground transition-all cursor-pointer"
@@ -2178,9 +2314,9 @@ function PixelBooksAccountPage() {
                     onClick={() => {
                       window.open(
                         `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                          `Currently reading "${selectedShareBook.title}" on @PixelBooks!`
+                          `Currently reading "${selectedShareBook.title}" on @PixelBooks!`,
                         )}&url=${encodeURIComponent(`https://pixelbooks.com/book/${selectedShareBook.id}`)}`,
-                        "_blank"
+                        "_blank",
                       );
                     }}
                     className="flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-border bg-white hover:bg-neutral-50 text-xs font-medium text-foreground transition-all cursor-pointer"
@@ -2203,7 +2339,8 @@ function PixelBooksAccountPage() {
               <Star size={18} className="text-amber-500 fill-amber-500" /> Write a Review
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Help other readers discover quality literature and courseware by sharing your verified feedback.
+              Help other readers discover quality literature and courseware by sharing your verified
+              feedback.
             </DialogDescription>
           </DialogHeader>
 
@@ -2247,16 +2384,16 @@ function PixelBooksAccountPage() {
                       >
                         <Star
                           size={22}
-                          className={`transition-colors ${(reviewHoverRating || reviewRating) >= star
-                            ? "fill-amber-400 text-amber-400"
-                            : "text-muted-foreground/30 hover:text-amber-300"
-                            }`}
+                          className={`transition-colors ${
+                            (reviewHoverRating || reviewRating) >= star
+                              ? "fill-amber-400 text-amber-400"
+                              : "text-muted-foreground/30 hover:text-amber-300"
+                          }`}
                         />
                       </button>
                     ))}
                   </div>
                   <span className="text-xs font-semibold text-foreground ml-2">
-
                     {reviewRating === 4 && "★★★★☆ Very Good"}
                     {reviewRating === 3 && "★★★☆☆ Average"}
                     {reviewRating === 2 && "★★☆☆☆ Below Average"}
@@ -2341,7 +2478,8 @@ function PixelBooksAccountPage() {
                 Choose The eBook Genre You Like
               </DialogTitle>
               <DialogDescription className="text-xs sm:text-sm text-muted-foreground max-w-xl">
-                Select your preferred book genres for curated recommendations, personalized homepage feed, and notification drops.
+                Select your preferred book genres for curated recommendations, personalized homepage
+                feed, and notification drops.
               </DialogDescription>
             </div>
 
@@ -2399,12 +2537,14 @@ function PixelBooksAccountPage() {
           {/* Scrollable Genre Chips Container with Generous Room */}
           <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8 max-h-[50vh]">
             {allRecommendationGenres.filter((g) =>
-              g.toLowerCase().includes(genreSearchQuery.toLowerCase().trim())
+              g.toLowerCase().includes(genreSearchQuery.toLowerCase().trim()),
             ).length === 0 ? (
               <div className="py-12 text-center text-muted-foreground">
                 <Search size={24} className="mx-auto mb-2 opacity-40" />
                 <p className="text-sm font-semibold text-foreground">No matching genres found</p>
-                <p className="text-xs mt-1">Try a different search term or clear your search query.</p>
+                <p className="text-xs mt-1">
+                  Try a different search term or clear your search query.
+                </p>
                 <button
                   type="button"
                   onClick={() => setGenreSearchQuery("")}
@@ -2416,9 +2556,7 @@ function PixelBooksAccountPage() {
             ) : (
               <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                 {allRecommendationGenres
-                  .filter((g) =>
-                    g.toLowerCase().includes(genreSearchQuery.toLowerCase().trim())
-                  )
+                  .filter((g) => g.toLowerCase().includes(genreSearchQuery.toLowerCase().trim()))
                   .map((genre) => {
                     const isSelected = selectedGenres.includes(genre);
                     return (
@@ -2426,18 +2564,24 @@ function PixelBooksAccountPage() {
                         key={genre}
                         type="button"
                         onClick={() => toggleGenre(genre)}
-                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none ${isSelected
-                          ? "bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border ring-2 ring-pbgreen/25 hover:bg-pbgreen-subtle shadow-xs translate-y-[-0.5px]"
-                          : "bg-white text-foreground/80 border border-border/90 hover:border-pbgreen-border hover:bg-pbgreen-light/40 hover:text-pbgreen-dark"
-                          }`}
+                        className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none ${
+                          isSelected
+                            ? "bg-pbgreen-light text-pbgreen-dark border border-pbgreen-border ring-2 ring-pbgreen/25 hover:bg-pbgreen-subtle shadow-xs translate-y-[-0.5px]"
+                            : "bg-white text-foreground/80 border border-border/90 hover:border-pbgreen-border hover:bg-pbgreen-light/40 hover:text-pbgreen-dark"
+                        }`}
                       >
                         <span
-                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors ${isSelected
-                            ? "bg-pbgreen text-white shadow-2xs"
-                            : "border border-border/80 text-transparent"
-                            }`}
+                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors ${
+                            isSelected
+                              ? "bg-pbgreen text-white shadow-2xs"
+                              : "border border-border/80 text-transparent"
+                          }`}
                         >
-                          <Check size={10} strokeWidth={3} className={isSelected ? "opacity-100" : "opacity-0"} />
+                          <Check
+                            size={10}
+                            strokeWidth={3}
+                            className={isSelected ? "opacity-100" : "opacity-0"}
+                          />
                         </span>
                         {genre}
                       </button>
@@ -2452,10 +2596,15 @@ function PixelBooksAccountPage() {
             <div className="text-xs text-muted-foreground">
               {selectedGenres.length > 0 ? (
                 <span>
-                  <strong className="font-semibold text-foreground">{selectedGenres.length} genres</strong> currently chosen for your profile.
+                  <strong className="font-semibold text-foreground">
+                    {selectedGenres.length} genres
+                  </strong>{" "}
+                  currently chosen for your profile.
                 </span>
               ) : (
-                <span className="italic">No genres selected yet (recommendations will show all categories).</span>
+                <span className="italic">
+                  No genres selected yet (recommendations will show all categories).
+                </span>
               )}
             </div>
 
@@ -2494,7 +2643,8 @@ function PixelBooksAccountPage() {
               <Trash2 size={18} /> Delete User Data
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Are you sure you want to wipe your local reading history and reset your recommendation preferences? This action cannot be undone.
+              Are you sure you want to wipe your local reading history and reset your recommendation
+              preferences? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
 

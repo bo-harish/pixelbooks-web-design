@@ -126,23 +126,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "PixelBooks UI Design" },
       {
         name: "description",
-        content:
-          "PixelBooks UI workspace.",
+        content: "PixelBooks UI workspace.",
       },
       { name: "author", content: "PixelBooks" },
       { property: "og:title", content: "PixelBooks UI Design" },
       {
         property: "og:description",
-        content:
-          "PixelBooks UI Design",
+        content: "PixelBooks UI Design",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "PixelBooks UI Design" },
       {
         name: "twitter:description",
-        content:
-          "PixelBooks UI Design",
+        content: "PixelBooks UI Design",
       },
     ],
     links: [

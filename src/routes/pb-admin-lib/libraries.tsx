@@ -150,8 +150,7 @@ function PBAdminLibrariesPage() {
         lib.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
         lib.contactEmail.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesStatus =
-        statusFilter === "All" || lib.status === statusFilter;
+      const matchesStatus = statusFilter === "All" || lib.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
@@ -328,7 +327,9 @@ function PBAdminLibrariesPage() {
                   filteredLibraries.map((lib) => (
                     <tr
                       key={lib.id}
-                      onClick={() => navigate({ to: "/pb-admin-lib/libraries/$id", params: { id: lib.id } })}
+                      onClick={() =>
+                        navigate({ to: "/pb-admin-lib/libraries/$id", params: { id: lib.id } })
+                      }
                       className="group border-b border-border/60 transition-colors last:border-0 cursor-pointer hover:bg-secondary/50"
                     >
                       {/* Library Cell: Blue Icon + Title + Total Users */}
@@ -355,8 +356,8 @@ function PBAdminLibrariesPage() {
                             lib.status === "Onboarded"
                               ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                               : lib.status === "Pending"
-                              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
-                              : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                                : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
                           }`}
                         >
                           {lib.status === "Onboarded" ? (

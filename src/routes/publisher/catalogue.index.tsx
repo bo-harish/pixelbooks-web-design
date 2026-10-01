@@ -31,16 +31,15 @@ export const Route = createFileRoute("/publisher/catalogue/")({
 });
 
 const LIB_ONLY_STATUS_FILTERS: Array<"All" | Status> = ["All", "Draft", "Published", "Unpublished"];
-const STANDARD_STATUS_FILTERS: Array<"All" | Status> = ["All", "Published", "Unpublished", "Rejected", "Draft"];
-
-const LANGUAGE_FILTERS = [
-  "All Languages",
-  "English",
-  "Hindi",
-  "Tamil",
-  "Spanish",
-  "French",
+const STANDARD_STATUS_FILTERS: Array<"All" | Status> = [
+  "All",
+  "Published",
+  "Unpublished",
+  "Rejected",
+  "Draft",
 ];
+
+const LANGUAGE_FILTERS = ["All Languages", "English", "Hindi", "Tamil", "Spanish", "French"];
 
 const GENRE_FILTERS = [
   "All Genre",
@@ -52,13 +51,7 @@ const GENRE_FILTERS = [
 
 const PAGE_SIZE = 8;
 
-function AuthorAvatar({
-  author,
-  size = "md",
-}: {
-  author: string;
-  size?: "sm" | "md" | "lg";
-}) {
+function AuthorAvatar({ author, size = "md" }: { author: string; size?: "sm" | "md" | "lg" }) {
   const initials = author
     .split(" ")
     .filter(Boolean)
@@ -135,7 +128,10 @@ function DropdownSelect<T extends string>({
           {searchable && (
             <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
               <div className="relative flex items-center">
-                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <Search
+                  size={14}
+                  className="absolute left-2.5 text-muted-foreground pointer-events-none"
+                />
                 <input
                   type="text"
                   value={searchTerm}
@@ -327,7 +323,9 @@ function StatusSelectPill({
               </div>
               <div>
                 <h3 className="text-base font-bold text-foreground">
-                  {pendingStatus === "Published" ? "Confirm Publish eBook" : "Confirm Unpublish eBook"}
+                  {pendingStatus === "Published"
+                    ? "Confirm Publish eBook"
+                    : "Confirm Unpublish eBook"}
                 </h3>
                 <p className="text-xs text-muted-foreground">Confirmation required</p>
               </div>
@@ -528,7 +526,9 @@ function CataloguePage() {
                   <th className="py-4 pl-6 pr-4 font-semibold">Title</th>
                   <th className="py-4 pr-4 font-semibold">ISBN</th>
                   <th className="py-4 pr-4 font-semibold">Status</th>
-                  <th className="py-4 pr-4 font-semibold">{isLibraryOnly ? "Copies" : "Pricing"}</th>
+                  <th className="py-4 pr-4 font-semibold">
+                    {isLibraryOnly ? "Copies" : "Pricing"}
+                  </th>
                   <th className="py-4 pr-6" />
                 </tr>
               </thead>
@@ -595,7 +595,9 @@ function CataloguePage() {
                     </td>
                     <td className="py-4 pr-4">
                       {isLibraryOnly ? (
-                        <span className="font-semibold text-foreground">{getBookTotalLibraryCopies(b)} copies</span>
+                        <span className="font-semibold text-foreground">
+                          {getBookTotalLibraryCopies(b)} copies
+                        </span>
                       ) : b.price === null ? (
                         <span className="font-medium text-foreground">Free</span>
                       ) : (
@@ -649,7 +651,9 @@ function CataloguePage() {
                     <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px]">
                       <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-1 shadow-2xs">
                         <AuthorAvatar author={b.author} size="sm" />
-                        <span className="text-[11.5px] font-semibold text-foreground">{b.author}</span>
+                        <span className="text-[11.5px] font-semibold text-foreground">
+                          {b.author}
+                        </span>
                       </div>
                       <span className="text-muted-foreground">{b.category}</span>
                     </div>

@@ -204,7 +204,11 @@ function DropdownPill({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[140px]">
         {options.map((opt) => (
-          <DropdownMenuItem key={opt} onClick={() => onSelect(opt)} className="text-xs font-medium cursor-pointer">
+          <DropdownMenuItem
+            key={opt}
+            onClick={() => onSelect(opt)}
+            className="text-xs font-medium cursor-pointer"
+          >
             {opt}
           </DropdownMenuItem>
         ))}
@@ -216,13 +220,7 @@ function DropdownPill({
 const RANGES = ["7d", "30d", "90d", "Yearly", "Till Date"] as const;
 type TimeRange = (typeof RANGES)[number];
 
-function RangePicker({
-  value,
-  onChange,
-}: {
-  value: TimeRange;
-  onChange: (r: TimeRange) => void;
-}) {
+function RangePicker({ value, onChange }: { value: TimeRange; onChange: (r: TimeRange) => void }) {
   return (
     <div
       role="group"
@@ -541,7 +539,10 @@ function PBAdminLibraryDashboard() {
                   </span>
                   <span
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)", color: "var(--brand)" }}
+                    style={{
+                      backgroundColor: "color-mix(in oklab, var(--brand) 10%, transparent)",
+                      color: "var(--brand)",
+                    }}
                   >
                     <Icon size={15} />
                   </span>
@@ -557,19 +558,21 @@ function PBAdminLibraryDashboard() {
                 {/* Footer: Subtext */}
                 <div className="mt-2 border-t border-border/40 pt-2 text-[11px]">
                   <div className="flex items-center gap-1 font-medium leading-snug">
-                    {stat.changePct ? (() => {
-                      const isUp = !stat.changePct.startsWith("-");
-                      const absVal = stat.changePct.replace(/^[+-]/, "");
-                      return (
-                        <span
-                          className="inline-flex items-center gap-0.5 font-semibold"
-                          style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
-                        >
-                          {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                          {absVal}
-                        </span>
-                      );
-                    })() : null}
+                    {stat.changePct
+                      ? (() => {
+                          const isUp = !stat.changePct.startsWith("-");
+                          const absVal = stat.changePct.replace(/^[+-]/, "");
+                          return (
+                            <span
+                              className="inline-flex items-center gap-0.5 font-semibold"
+                              style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
+                            >
+                              {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                              {absVal}
+                            </span>
+                          );
+                        })()
+                      : null}
                     <span className="text-muted-foreground">{stat.changeLabel}</span>
                   </div>
                 </div>
@@ -604,7 +607,10 @@ function PBAdminLibraryDashboard() {
             {/* Bar Chart Container */}
             <div className="h-[280px] w-full sm:h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dynamicChartConfig.data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <BarChart
+                  data={dynamicChartConfig.data}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
                   <CartesianGrid stroke="var(--border)" vertical={false} />
                   <XAxis
                     dataKey="month"

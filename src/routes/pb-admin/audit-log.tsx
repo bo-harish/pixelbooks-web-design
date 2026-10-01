@@ -30,7 +30,8 @@ export const Route = createFileRoute("/pb-admin/audit-log")({
       { title: "Audit Log — PixelBooks Admin" },
       {
         name: "description",
-        content: "Track system activity, user authentication events, and data modification audit logs in PixelBooks Admin.",
+        content:
+          "Track system activity, user authentication events, and data modification audit logs in PixelBooks Admin.",
       },
     ],
   }),
@@ -343,7 +344,7 @@ function AuditLogPage() {
 
   const toggleRowExpanded = (id: string) => {
     setExpandedLogIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -386,13 +387,7 @@ function AuditLogPage() {
         const matchesApp = item.app.toLowerCase().includes(query);
         const matchesModule = item.module.toLowerCase().includes(query);
         const matchesEvent = item.event.toLowerCase().includes(query);
-        if (
-          !matchesUser &&
-          !matchesMessage &&
-          !matchesApp &&
-          !matchesModule &&
-          !matchesEvent
-        ) {
+        if (!matchesUser && !matchesMessage && !matchesApp && !matchesModule && !matchesEvent) {
           return false;
         }
       }
@@ -479,9 +474,7 @@ function AuditLogPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {/* Date Range Picker */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground block">
-                  Date Range
-                </label>
+                <label className="text-xs font-semibold text-foreground block">Date Range</label>
                 <label className="relative flex h-11 items-center rounded-lg border border-border bg-card px-3 cursor-pointer transition-colors focus-within:border-[var(--brand)]">
                   <input
                     type="text"
@@ -499,9 +492,7 @@ function AuditLogPage() {
 
               {/* Application Dropdown */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground block">
-                  Application
-                </label>
+                <label className="text-xs font-semibold text-foreground block">Application</label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -512,7 +503,10 @@ function AuditLogPage() {
                       <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[200px] rounded-lg bg-card border-border shadow-lg py-1 z-50">
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[200px] rounded-lg bg-card border-border shadow-lg py-1 z-50"
+                  >
                     {APPLICATION_OPTIONS.map((opt) => (
                       <DropdownMenuItem
                         key={opt}
@@ -527,9 +521,7 @@ function AuditLogPage() {
                         }`}
                       >
                         <span>{opt}</span>
-                        {appFilter === opt && (
-                          <Check size={14} className="text-[var(--brand)]" />
-                        )}
+                        {appFilter === opt && <Check size={14} className="text-[var(--brand)]" />}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
@@ -538,9 +530,7 @@ function AuditLogPage() {
 
               {/* Module Dropdown */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground block">
-                  Module
-                </label>
+                <label className="text-xs font-semibold text-foreground block">Module</label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -551,7 +541,10 @@ function AuditLogPage() {
                       <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[200px] rounded-lg bg-card border-border shadow-lg py-1 z-50">
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[200px] rounded-lg bg-card border-border shadow-lg py-1 z-50"
+                  >
                     {MODULE_OPTIONS.map((opt) => (
                       <DropdownMenuItem
                         key={opt}
@@ -577,9 +570,7 @@ function AuditLogPage() {
 
               {/* Event Dropdown */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-foreground block">
-                  Event
-                </label>
+                <label className="text-xs font-semibold text-foreground block">Event</label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -590,7 +581,10 @@ function AuditLogPage() {
                       <ChevronDown size={15} className="shrink-0 text-muted-foreground" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[200px] rounded-lg bg-card border-border shadow-lg py-1 z-50">
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[200px] rounded-lg bg-card border-border shadow-lg py-1 z-50"
+                  >
                     {EVENT_OPTIONS.map((opt) => (
                       <DropdownMenuItem
                         key={opt}
@@ -605,9 +599,7 @@ function AuditLogPage() {
                         }`}
                       >
                         <span>{opt}</span>
-                        {eventFilter === opt && (
-                          <Check size={14} className="text-[var(--brand)]" />
-                        )}
+                        {eventFilter === opt && <Check size={14} className="text-[var(--brand)]" />}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
@@ -703,7 +695,10 @@ function AuditLogPage() {
                   paginatedLogs.map((entry) => {
                     const isExpanded = expandedLogIds.includes(entry.id);
                     return (
-                      <tr key={entry.id} className="group border-b border-border/60 last:border-b-0">
+                      <tr
+                        key={entry.id}
+                        className="group border-b border-border/60 last:border-b-0"
+                      >
                         <td colSpan={6} className="p-0">
                           {/* Parent Row */}
                           <div
@@ -757,11 +752,7 @@ function AuditLogPage() {
                                   className="p-1 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
                                   aria-label="Toggle audit log detail"
                                 >
-                                  {isExpanded ? (
-                                    <ChevronUp size={16} />
-                                  ) : (
-                                    <ChevronDown size={16} />
-                                  )}
+                                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </button>
                               </div>
                             </div>
@@ -875,25 +866,23 @@ function AuditLogPage() {
               Previous
             </button>
 
-            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map(
-              (pageNum) => {
-                const isActive = pageNum === currentPage;
-                return (
-                  <button
-                    key={pageNum}
-                    type="button"
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
-                      isActive
-                        ? "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              }
-            )}
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((pageNum) => {
+              const isActive = pageNum === currentPage;
+              return (
+                <button
+                  key={pageNum}
+                  type="button"
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
 
             <button
               type="button"

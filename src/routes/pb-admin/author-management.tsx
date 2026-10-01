@@ -1,14 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
-import {
-  Search,
-  ChevronsLeft,
-  ChevronsRight,
-  User,
-  Feather,
-  Pencil,
-  Edit,
-} from "lucide-react";
+import { Search, ChevronsLeft, ChevronsRight, User, Feather, Pencil, Edit } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import {
   Dialog,
@@ -29,7 +21,8 @@ export const Route = createFileRoute("/pb-admin/author-management")({
       { title: "Author Management — PixelBooks Admin" },
       {
         name: "description",
-        content: "View and manage authors, catalog contributions, and author profiles in PixelBooks Admin.",
+        content:
+          "View and manage authors, catalog contributions, and author profiles in PixelBooks Admin.",
       },
     ],
   }),
@@ -73,7 +66,8 @@ export const INITIAL_AUTHOR_DATA: AuthorItem[] = [
     id: "auth-3",
     name: "Reshma Mukundan",
     email: null,
-    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=250",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=250",
     publishedTitlesCount: 26,
     totalSales: "$38,900",
     joinedDate: "18 Aug 2023",
@@ -158,7 +152,8 @@ export const INITIAL_AUTHOR_DATA: AuthorItem[] = [
     id: "auth-12",
     name: "Jane Austen",
     email: "j.austen@literature.org",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
+    avatarUrl:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
     publishedTitlesCount: 6,
     totalSales: "$142,300",
     joinedDate: "10 Dec 2022",
@@ -237,8 +232,8 @@ function AuthorManagementPage() {
               email: editEmail.trim() ? editEmail.trim() : null,
               avatarUrl: editAvatarUrl,
             }
-          : a
-      )
+          : a,
+      ),
     );
 
     toast.success("Author updated successfully", {
@@ -249,9 +244,11 @@ function AuthorManagementPage() {
   };
 
   return (
-    <AppShell title="Author Management" subtitle="Overview and status control for registered author profiles">
+    <AppShell
+      title="Author Management"
+      subtitle="Overview and status control for registered author profiles"
+    >
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-
         {/* Toolbar Container */}
         <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
           <div className="relative w-full">
@@ -321,7 +318,10 @@ function AuthorManagementPage() {
                           type="button"
                           onClick={(e) => handleOpenEditPopup(author, e)}
                           className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg px-4 text-xs font-semibold shadow-xs transition-opacity hover:opacity-90 cursor-pointer"
-                          style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+                          style={{
+                            backgroundColor: "var(--brand)",
+                            color: "var(--brand-contrast)",
+                          }}
                         >
                           <Edit size={13} />
                           <span>Edit</span>
@@ -349,7 +349,10 @@ function AuthorManagementPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-2">
           <div className="text-xs sm:text-sm text-foreground font-normal">
             Showing <span className="font-semibold">{paginatedAuthors.length}</span> from{" "}
-            <span className="font-semibold">{searchQuery ? filteredAuthors.length : totalResults}</span> results
+            <span className="font-semibold">
+              {searchQuery ? filteredAuthors.length : totalResults}
+            </span>{" "}
+            results
           </div>
 
           <div className="flex items-center gap-1.5 self-center sm:self-auto">
@@ -461,9 +464,7 @@ function AuthorManagementPage() {
 
                 {/* Line 2: Email Input */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground block">
-                    Email
-                  </label>
+                  <label className="text-xs font-semibold text-foreground block">Email</label>
                   <input
                     type="email"
                     placeholder="Enter email"

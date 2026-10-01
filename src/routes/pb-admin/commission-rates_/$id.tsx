@@ -82,9 +82,7 @@ function CommissionRatesDetail() {
               >
                 <ArrowLeft size={16} />
               </Link>
-              <span className="text-sm font-normal text-foreground">
-                Back to Commission Rates
-              </span>
+              <span className="text-sm font-normal text-foreground">Back to Commission Rates</span>
             </div>
 
             {/* Profile & High-Visibility Commission Banner Hero Card */}
@@ -179,9 +177,7 @@ function CommissionRatesDetail() {
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--brand)]/10 text-[var(--brand)]">
                       <Percent size={16} />
                     </span>
-                    <h3 className="text-lg font-bold text-foreground">
-                      Commission Rate Settings
-                    </h3>
+                    <h3 className="text-lg font-bold text-foreground">Commission Rate Settings</h3>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
                     Set a custom percentage rate or revert to platform standard defaults.

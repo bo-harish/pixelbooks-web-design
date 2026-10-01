@@ -40,7 +40,8 @@ export const Route = createFileRoute("/pb-web/cart")({
       { title: "Shopping Cart — PixelBooks" },
       {
         name: "description",
-        content: "Review your selected eBooks, apply promotional coupons, and proceed to secure checkout on PixelBooks.",
+        content:
+          "Review your selected eBooks, apply promotional coupons, and proceed to secure checkout on PixelBooks.",
       },
     ],
   }),
@@ -225,9 +226,7 @@ function PixelBooksCartPage() {
   const handleApplyCoupon = (couponToApply?: Coupon) => {
     const coupon =
       couponToApply ||
-      AVAILABLE_COUPONS.find(
-        (c) => c.code.toLowerCase() === couponInput.trim().toLowerCase()
-      );
+      AVAILABLE_COUPONS.find((c) => c.code.toLowerCase() === couponInput.trim().toLowerCase());
 
     if (!coupon) {
       toast.error("Invalid coupon code", {
@@ -322,7 +321,8 @@ function PixelBooksCartPage() {
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Verified digital editions with instant cloud synchronization to your PixelBooks reader.
+                Verified digital editions with instant cloud synchronization to your PixelBooks
+                reader.
               </p>
             </div>
 
@@ -339,9 +339,10 @@ function PixelBooksCartPage() {
               <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                 <ShoppingBag size={36} />
               </div>
-              <h2 className="text-xl font-bold text-foreground">Your  cart is empty</h2>
+              <h2 className="text-xl font-bold text-foreground">Your cart is empty</h2>
               <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
-                Explore thousands of literature classics, academic courseware, poetry, and competitive exam books.
+                Explore thousands of literature classics, academic courseware, poetry, and
+                competitive exam books.
               </p>
               <div className="pt-3">
                 <Link
@@ -421,9 +422,7 @@ function PixelBooksCartPage() {
                               <span>•</span>
                               <span>{item.fileSize}</span>
                               <span>•</span>
-                              <span className="text-emerald-600 font-medium">
-                                {item.license}
-                              </span>
+                              <span className="text-emerald-600 font-medium">{item.license}</span>
                             </div>
                           </div>
                         </div>
@@ -551,32 +550,32 @@ function PixelBooksCartPage() {
                       return (
                         <div
                           key={cpn.code}
-                          className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${isApplied
-                            ? "border-[#137365] bg-pbgreen-light"
-                            : "border-border/80 bg-white hover:border-[#137365]/40"
-                            }`}
+                          className={`flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                            isApplied
+                              ? "border-[#137365] bg-pbgreen-light"
+                              : "border-border/80 bg-white hover:border-[#137365]/40"
+                          }`}
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-extrabold font-mono text-[#137365] bg-[#137365]/10 px-2 py-0.5 rounded">
                                 {cpn.code}
                               </span>
-                              <span className="text-xs font-bold text-foreground">
-                                {cpn.label}
-                              </span>
+                              <span className="text-xs font-bold text-foreground">{cpn.label}</span>
                             </div>
-                            <p className="text-[11px] text-muted-foreground">
-                              {cpn.description}
-                            </p>
+                            <p className="text-[11px] text-muted-foreground">{cpn.description}</p>
                           </div>
 
                           <button
                             type="button"
-                            onClick={() => (isApplied ? handleRemoveCoupon() : handleApplyCoupon(cpn))}
-                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ml-3 ${isApplied
-                              ? "text-rose-600 hover:bg-rose-50"
-                              : "text-[#137365] hover:bg-[#137365]/10 border border-[#137365]/30"
-                              }`}
+                            onClick={() =>
+                              isApplied ? handleRemoveCoupon() : handleApplyCoupon(cpn)
+                            }
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0 ml-3 ${
+                              isApplied
+                                ? "text-rose-600 hover:bg-rose-50"
+                                : "text-[#137365] hover:bg-[#137365]/10 border border-[#137365]/30"
+                            }`}
                           >
                             {isApplied ? "Remove" : "Apply"}
                           </button>
@@ -595,7 +594,6 @@ function PixelBooksCartPage() {
                         Recommended With Your Titles
                       </h3>
                     </div>
-
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -631,10 +629,11 @@ function PixelBooksCartPage() {
                             type="button"
                             disabled={isInCart}
                             onClick={() => handleAddRecommended(addon)}
-                            className={`inline-flex h-8 items-center justify-center rounded-lg px-3 text-xs font-semibold transition-colors shrink-0 ${isInCart
-                              ? "border border-border bg-secondary text-muted-foreground cursor-not-allowed"
-                              : "text-white shadow-2xs hover:opacity-90 cursor-pointer"
-                              }`}
+                            className={`inline-flex h-8 items-center justify-center rounded-lg px-3 text-xs font-semibold transition-colors shrink-0 ${
+                              isInCart
+                                ? "border border-border bg-secondary text-muted-foreground cursor-not-allowed"
+                                : "text-white shadow-2xs hover:opacity-90 cursor-pointer"
+                            }`}
                             style={!isInCart ? { backgroundColor: "#137365" } : undefined}
                           >
                             {isInCart ? "Added" : "+ Add"}
@@ -651,7 +650,6 @@ function PixelBooksCartPage() {
                 <div className="rounded-2xl border border-border bg-white p-6 shadow-sm space-y-5">
                   <div className="pb-4 border-b border-border/70 flex items-center justify-between">
                     <h3 className="text-base font-bold text-foreground">Order Info</h3>
-
                   </div>
 
                   {/* Price Breakdown */}
@@ -673,9 +671,7 @@ function PixelBooksCartPage() {
                     {couponDiscount > 0 && (
                       <div className="flex items-center justify-between text-[#137365] font-medium">
                         <span>Coupon Savings ({appliedCoupon?.code})</span>
-                        <span className="font-semibold">
-                          - ₹{couponDiscount.toFixed(2)}
-                        </span>
+                        <span className="font-semibold">- ₹{couponDiscount.toFixed(2)}</span>
                       </div>
                     )}
 
@@ -686,16 +682,12 @@ function PixelBooksCartPage() {
                           <Info size={12} className="text-muted-foreground" />
                         </span>
                       </div>
-                      <span className="font-semibold text-foreground">
-                        ₹{gstAmount.toFixed(2)}
-                      </span>
+                      <span className="font-semibold text-foreground">₹{gstAmount.toFixed(2)}</span>
                     </div>
 
                     <div className="flex items-center justify-between text-muted-foreground">
                       <span>Cloud Delivery & Digital Setup</span>
-                      <span className="font-bold text-[#137365] uppercase text-[10px]">
-                        FREE
-                      </span>
+                      <span className="font-bold text-[#137365] uppercase text-[10px]">FREE</span>
                     </div>
 
                     <div className="pt-3 border-t border-border flex items-baseline justify-between">
@@ -716,7 +708,8 @@ function PixelBooksCartPage() {
                     <div className="p-3 rounded-xl bg-pbgreen-light border border-pbgreen-border text-center">
                       <p className="text-xs font-bold text-pbgreen-dark flex items-center justify-center gap-1.5">
                         <Gift size={14} className="text-pbgreen" />
-                        Total Savings: ₹{(catalogDiscount + couponDiscount).toFixed(2)} on this order
+                        Total Savings: ₹{(catalogDiscount + couponDiscount).toFixed(2)} on this
+                        order
                       </p>
                     </div>
                   )}
@@ -791,7 +784,8 @@ function PixelBooksCartPage() {
               <div>
                 <h4 className="text-base font-bold text-foreground">Purchase Successful!</h4>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Tax invoice has been sent to <span className="font-semibold text-foreground">harish@brandoptics.com</span>
+                  Tax invoice has been sent to{" "}
+                  <span className="font-semibold text-foreground">harish@brandoptics.com</span>
                 </p>
               </div>
 
@@ -799,10 +793,16 @@ function PixelBooksCartPage() {
                 <div className="text-xs font-semibold text-foreground">Unlocked eBooks:</div>
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-2.5 text-xs text-foreground">
-                    <img src={item.cover} alt={item.title} className="h-10 w-8 rounded object-cover border border-border" />
+                    <img
+                      src={item.cover}
+                      alt={item.title}
+                      className="h-10 w-8 rounded object-cover border border-border"
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="font-bold truncate">{item.title}</div>
-                      <div className="text-[11px] text-muted-foreground">Lifetime Cloud License Active</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        Lifetime Cloud License Active
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -831,18 +831,23 @@ function PixelBooksCartPage() {
                 {/* UPI Option */}
                 <div
                   onClick={() => setPaymentMethod("upi")}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "upi"
-                    ? "border-[#137365] bg-pbgreen-light/40"
-                    : "border-border bg-white hover:bg-neutral-50"
-                    }`}
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                    paymentMethod === "upi"
+                      ? "border-[#137365] bg-pbgreen-light/40"
+                      : "border-border bg-white hover:bg-neutral-50"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-pbgreen-light text-[#137365]">
                       <Smartphone size={18} />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-foreground">UPI (GPay, PhonePe, Paytm)</div>
-                      <div className="text-[10.5px] text-muted-foreground">Instant zero-fee payment</div>
+                      <div className="text-xs font-bold text-foreground">
+                        UPI (GPay, PhonePe, Paytm)
+                      </div>
+                      <div className="text-[10.5px] text-muted-foreground">
+                        Instant zero-fee payment
+                      </div>
                     </div>
                   </div>
                   <input
@@ -856,10 +861,11 @@ function PixelBooksCartPage() {
                 {/* Credit / Debit Card Option */}
                 <div
                   onClick={() => setPaymentMethod("card")}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "card"
-                    ? "border-[#137365] bg-pbgreen-light/40"
-                    : "border-border bg-white hover:bg-neutral-50"
-                    }`}
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                    paymentMethod === "card"
+                      ? "border-[#137365] bg-pbgreen-light/40"
+                      : "border-border bg-white hover:bg-neutral-50"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600">
@@ -867,7 +873,9 @@ function PixelBooksCartPage() {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-foreground">Credit / Debit Card</div>
-                      <div className="text-[10.5px] text-muted-foreground">Visa, MasterCard, RuPay</div>
+                      <div className="text-[10.5px] text-muted-foreground">
+                        Visa, MasterCard, RuPay
+                      </div>
                     </div>
                   </div>
                   <input
@@ -881,10 +889,11 @@ function PixelBooksCartPage() {
                 {/* NetBanking Option */}
                 <div
                   onClick={() => setPaymentMethod("netbanking")}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === "netbanking"
-                    ? "border-[#137365] bg-pbgreen-light/40"
-                    : "border-border bg-white hover:bg-neutral-50"
-                    }`}
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                    paymentMethod === "netbanking"
+                      ? "border-[#137365] bg-pbgreen-light/40"
+                      : "border-border bg-white hover:bg-neutral-50"
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600">
@@ -892,7 +901,9 @@ function PixelBooksCartPage() {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-foreground">NetBanking</div>
-                      <div className="text-[10.5px] text-muted-foreground">All Indian Scheduled Banks</div>
+                      <div className="text-[10.5px] text-muted-foreground">
+                        All Indian Scheduled Banks
+                      </div>
                     </div>
                   </div>
                   <input
@@ -907,7 +918,9 @@ function PixelBooksCartPage() {
               {/* Order total preview */}
               <div className="p-3 rounded-xl bg-secondary/50 border border-border/80 flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Amount to Pay</span>
-                <span className="font-extrabold text-foreground text-sm">₹{finalTotal.toFixed(2)}</span>
+                <span className="font-extrabold text-foreground text-sm">
+                  ₹{finalTotal.toFixed(2)}
+                </span>
               </div>
 
               {/* Actions */}

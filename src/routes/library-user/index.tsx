@@ -78,16 +78,12 @@ function LibraryUserDashboard() {
     ];
 
     const activeLibraryCats = libraryCategories.filter(
-      (c) =>
-        c.enabled !== false &&
-        (c as any).status !== "Disabled"
+      (c) => c.enabled !== false && (c as any).status !== "Disabled",
     );
 
     activeLibraryCats.forEach((libCat) => {
       const isExt = Boolean(libCat.enableExternalLink && libCat.externalLink);
-      const matchIdx = items.findIndex(
-        (i) => i.name.toLowerCase() === libCat.name.toLowerCase()
-      );
+      const matchIdx = items.findIndex((i) => i.name.toLowerCase() === libCat.name.toLowerCase());
       if (matchIdx !== -1) {
         items[matchIdx] = {
           name: libCat.name,
@@ -107,9 +103,7 @@ function LibraryUserDashboard() {
   }, [libraryCategories]);
 
   const currentCategoryObj = useMemo(() => {
-    return libraryCategories.find(
-      (c) => c.name.toLowerCase() === activeCategory.toLowerCase()
-    );
+    return libraryCategories.find((c) => c.name.toLowerCase() === activeCategory.toLowerCase());
   }, [libraryCategories, activeCategory]);
 
   const activeCategorySubcategories = useMemo(() => {
@@ -238,9 +232,19 @@ function LibraryUserDashboard() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 px-4 py-4 backdrop-blur md:px-8">
         <div className="mx-auto max-w-7xl flex items-center justify-between">
           <div className="flex items-center gap-3 sm:gap-4">
-            <Link to="/" id="library-user-logo-link" className="flex items-center gap-2.5 shrink-0 group">
-              <img src="/logo-app-icon.png" alt="PixelBooks App Icon" className="h-8 w-8 object-contain transition-transform group-hover:scale-105" />
-              <span className="font-extrabold text-xl tracking-tight text-foreground">PixelBooks</span>
+            <Link
+              to="/"
+              id="library-user-logo-link"
+              className="flex items-center gap-2.5 shrink-0 group"
+            >
+              <img
+                src="/logo-app-icon.png"
+                alt="PixelBooks App Icon"
+                className="h-8 w-8 object-contain transition-transform group-hover:scale-105"
+              />
+              <span className="font-extrabold text-xl tracking-tight text-foreground">
+                PixelBooks
+              </span>
             </Link>
 
             <div className="h-5 w-px bg-border hidden sm:block" />
@@ -299,7 +303,9 @@ function LibraryUserDashboard() {
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[oklch(0.62_0.15_155)]/15 text-[oklch(0.62_0.15_155)] text-xs font-bold">
                 AR
               </div>
-              <span className="hidden text-xs font-semibold text-foreground md:inline">Ananya Roy</span>
+              <span className="hidden text-xs font-semibold text-foreground md:inline">
+                Ananya Roy
+              </span>
             </Link>
           </div>
         </div>
@@ -374,13 +380,16 @@ function LibraryUserDashboard() {
                       cat.isExternal
                         ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 font-semibold shadow-2xs"
                         : isActive
-                        ? "bg-[oklch(0.62_0.15_155)] border-[oklch(0.62_0.15_155)] text-white shadow-2xs"
-                        : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-border/80"
+                          ? "bg-[oklch(0.62_0.15_155)] border-[oklch(0.62_0.15_155)] text-white shadow-2xs"
+                          : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-border/80"
                     }`}
                   >
                     <span>{cat.name}</span>
                     {cat.isExternal && (
-                      <ExternalLink size={12} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+                      <ExternalLink
+                        size={12}
+                        className="shrink-0 text-emerald-600 dark:text-emerald-400"
+                      />
                     )}
                   </button>
                 );
@@ -421,7 +430,10 @@ function LibraryUserDashboard() {
                   >
                     <span>{subName}</span>
                     {subLink && (
-                      <ExternalLink size={11} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+                      <ExternalLink
+                        size={11}
+                        className="shrink-0 text-emerald-600 dark:text-emerald-400"
+                      />
                     )}
                   </button>
                 );

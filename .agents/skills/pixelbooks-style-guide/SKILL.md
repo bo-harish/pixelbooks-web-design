@@ -71,6 +71,7 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
    - Do NOT create external image files for book covers.
    - The standard book cover features a 3D left-edge spine shadow (`bg-gradient-to-r from-black/40 via-black/15 to-transparent`), glossy paper shimmer (`bg-gradient-to-tr from-black/30 via-transparent to-white/20`), an embedded green ribbon app icon emblem (`/logo-app-icon.png`), and initials badge (`initials`).
    - Supports standard size props: `xs`, `sm`, `md`, `lg`, and `xl`.
+
    ```tsx
    import { BookCover } from "@/components/ui/book-cover";
 
@@ -79,13 +80,15 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
      coverGradient="linear-gradient(135deg, #1e3a8a, #3b82f6)"
      title="A Beautiful Crime: A Novel"
      size="sm"
-   />
+   />;
    ```
 
    - **Bundle Cover Style (Layered Stack Effect)**:
      - For eBook Bundles, always pair the front `<BookCover />` with an offset back-card layer (`absolute -right-1.5 -top-1.5 opacity-40`) or overlapping rotated cards to visually indicate a multi-book collection while preserving the standard book cover branding.
      ```tsx
-     {/* 3D Bundle Book Stack Thumbnail */}
+     {
+       /* 3D Bundle Book Stack Thumbnail */
+     }
      <div className="relative h-16 w-12 shrink-0">
        {/* Offset Back-Card Layer */}
        <div
@@ -99,7 +102,7 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
          title={bundle.title}
          size="sm"
        />
-     </div>
+     </div>;
      ```
 
 5. **Filter Toolbars, Inputs, Dropdowns, and Calendar Controls (Sales Report Style)**:
@@ -136,12 +139,7 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
      ```tsx
      <div className="flex items-start gap-4">
        {/* Cover thumbnail */}
-       <BookCover
-         initials={b.initials}
-         coverGradient={b.coverGradient}
-         title={b.title}
-         size="sm"
-       />
+       <BookCover initials={b.initials} coverGradient={b.coverGradient} title={b.title} size="sm" />
 
        {/* Title & Entity Chips */}
        <div className="min-w-0 flex-1 space-y-1.5">
@@ -151,7 +149,10 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
          <div className="flex flex-wrap items-center gap-2 text-xs">
            {/* Author Chip */}
            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-2.5 py-0.5 shadow-2xs">
-             <span className="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full text-[8px] font-bold text-white" style={{ background: b.cover }}>
+             <span
+               className="flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full text-[8px] font-bold text-white"
+               style={{ background: b.cover }}
+             >
                {initials}
              </span>
              <span className="text-[11.5px] font-medium text-foreground">{b.author}</span>
@@ -184,7 +185,11 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
      <div className="sticky top-0 z-10 border-b border-border bg-card p-2.5">
        <div className="relative flex items-center">
          <Search size={15} className="pointer-events-none absolute left-3 text-muted-foreground" />
-         <input type="text" placeholder="Search..." className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-8 text-xs text-foreground outline-none focus:border-[var(--brand)]" />
+         <input
+           type="text"
+           placeholder="Search..."
+           className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-8 text-xs text-foreground outline-none focus:border-[var(--brand)]"
+         />
        </div>
      </div>
      ```
@@ -234,78 +239,79 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
      ```
 
 10. **Publisher / Author Profile Pic & Name Cell Layout (Publishers & Authors Style)**:
-   - Combine circular initials avatar with entity type icon and name:
-     ```tsx
-     <div className="flex items-center gap-3">
-       <div
-         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-2xs"
-         style={{ background: item.avatarBg }}
-       >
-         {getInitials(item.name)}
-       </div>
-       <div>
-         <p className="font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
-           {item.name}
-         </p>
-         <p className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-           {item.type === "Publisher" ? (
-             <Building2 size={11} className="inline text-muted-foreground/80" />
-           ) : (
-             <User size={11} className="inline text-muted-foreground/80" />
-           )}
-           <span>{item.type}</span>
-         </p>
-       </div>
-     </div>
-     ```
+
+- Combine circular initials avatar with entity type icon and name:
+  ```tsx
+  <div className="flex items-center gap-3">
+    <div
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-2xs"
+      style={{ background: item.avatarBg }}
+    >
+      {getInitials(item.name)}
+    </div>
+    <div>
+      <p className="font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
+        {item.name}
+      </p>
+      <p className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+        {item.type === "Publisher" ? (
+          <Building2 size={11} className="inline text-muted-foreground/80" />
+        ) : (
+          <User size={11} className="inline text-muted-foreground/80" />
+        )}
+        <span>{item.type}</span>
+      </p>
+    </div>
+  </div>
+  ```
 
 11. **Commission Rate Uniform Width Highlight Badge**:
-   - Uniform width badge (`w-[150px]`) displaying rate percentage and status tag (`Default` / `Custom`):
-     ```tsx
-     <div className="inline-flex items-center justify-between w-[150px] px-3.5 py-1.5 rounded-xl border border-border bg-card shadow-2xs group-hover:border-[var(--brand)]/40 transition-colors">
-       <span className="text-base font-extrabold text-foreground tracking-tight">
-         {item.rate}
-       </span>
-       {item.isCustom ? (
-         <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-           <Sparkles size={9} /> Custom
-         </span>
-       ) : (
-         <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-           Default
-         </span>
-       )}
-     </div>
-     ```
+
+- Uniform width badge (`w-[150px]`) displaying rate percentage and status tag (`Default` / `Custom`):
+  ```tsx
+  <div className="inline-flex items-center justify-between w-[150px] px-3.5 py-1.5 rounded-xl border border-border bg-card shadow-2xs group-hover:border-[var(--brand)]/40 transition-colors">
+    <span className="text-base font-extrabold text-foreground tracking-tight">{item.rate}</span>
+    {item.isCustom ? (
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+        <Sparkles size={9} /> Custom
+      </span>
+    ) : (
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+        Default
+      </span>
+    )}
+  </div>
+  ```
 
 12. **Dropdown Menu Filters (Redesigned Unified Toolbar)**
-   - All standard toolbar dropdown filters (Languages, Genre, Roles, Entities, Statuses) should be fully custom implementations using `DropdownSelect` instead of native standard browser `<select>` dropdowns. Dropdowns must be styled cohesively using `h-11`, `rounded-lg`, `bg-card`, `text-sm font-medium`, and optional embedded sticky search support (`searchable`). Selection highlights use clean background styling (`bg-secondary/50`) without tick mark icons:
-    ```tsx
-    function DropdownSelect<T extends string>({
-      value,
-      options,
-      onChange,
-      className = "min-w-[170px]",
-      searchable = false,
-      searchPlaceholder = "Search...",
-    }: {
-      value: T;
-      options: T[];
-      onChange: (v: T) => void;
-      className?: string;
-      searchable?: boolean;
-      searchPlaceholder?: string;
-    }) {
-      const [open, setOpen] = useState(false);
-      const [searchTerm, setSearchTerm] = useState("");
 
-      const filteredOptions = useMemo(() => {
-        if (!searchable || !searchTerm.trim()) return options;
-        const q = searchTerm.toLowerCase().trim();
-        return options.filter((opt) => opt.toLowerCase().includes(q));
-      }, [options, searchable, searchTerm]);
+-    All standard toolbar dropdown filters (Languages, Genre, Roles, Entities, Statuses) should be fully custom implementations using `DropdownSelect` instead of native standard browser `<select>` dropdowns. Dropdowns must be styled cohesively using `h-11`, `rounded-lg`, `bg-card`, `text-sm font-medium`, and optional embedded sticky search support (`searchable`). Selection highlights use clean background styling (`bg-secondary/50`) without tick mark icons:
+     ```tsx
+     function DropdownSelect<T extends string>({
+     value,
+     options,
+     onChange,
+     className = "min-w-[170px]",
+     searchable = false,
+     searchPlaceholder = "Search...",
+     }: {
+     value: T;
+     options: T[];
+     onChange: (v: T) => void;
+     className?: string;
+     searchable?: boolean;
+     searchPlaceholder?: string;
+     }) {
+     const [open, setOpen] = useState(false);
+     const [searchTerm, setSearchTerm] = useState("");
 
-      return (
+     const filteredOptions = useMemo(() => {
+     if (!searchable || !searchTerm.trim()) return options;
+     const q = searchTerm.toLowerCase().trim();
+     return options.filter((opt) => opt.toLowerCase().includes(q));
+     }, [options, searchable, searchTerm]);
+
+     return (
         <div className="relative">
           <button
             type="button"
@@ -372,22 +378,16 @@ This skill enforces visual consistency across all PixelBooks portals by ensuring
               </div>
             </div>
           )}
+
         </div>
       );
+
     }
+
     ```
 
-13. **Entity Avatars & Unique Role Icons System**:
-    - Every primary entity (Publisher, Author, Customer, Library Staff, Student, Admin User, Super Admin) across table listings, profile details, user detail screens, fallback avatars, and metric cards MUST use a unified circular avatar design (`rounded-full`) with a distinct Lucide icon and soft light background tint:
-      - **Publisher**: `<Building2 />` — Circular Light Indigo (`bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20`)
-      - **Author**: `<Feather />` (Quill Pen) — Circular Light Emerald (`bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20`)
-      - **Student**: `<GraduationCap />` — Circular Light Emerald (`bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400 border border-emerald-500/20`)
-      - **Library Staff**: `<UserCog />` — Circular Light Indigo (`bg-indigo-500/15 text-indigo-600 dark:bg-indigo-500/25 dark:text-indigo-400 border border-indigo-500/20`)
-      - **Customer**: `<UserCheck />` — Circular Light Sky (`bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20`)
-      - **Admin User**: `<UserCog />` — Circular Light Amber (`bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20`)
-      - **Super Admin**: `<Crown />` — Circular Light Purple (`bg-purple-500/10 text-purple-600 dark:text-purple-400`)
+13. **Entity Avatars & Unique Role Icons System**: - Every primary entity (Publisher, Author, Customer, Library Staff, Student, Admin User, Super Admin) across table listings, profile details, user detail screens, fallback avatars, and metric cards MUST use a unified circular avatar design (`rounded-full`) with a distinct Lucide icon and soft light background tint: - **Publisher**: `<Building2 />` — Circular Light Indigo (`bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 border border-indigo-500/20`) - **Author**: `<Feather />` (Quill Pen) — Circular Light Emerald (`bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20`) - **Student**: `<GraduationCap />` — Circular Light Emerald (`bg-emerald-500/15 text-emerald-600 dark:bg-emerald-500/25 dark:text-emerald-400 border border-emerald-500/20`) - **Library Staff**: `<UserCog />` — Circular Light Indigo (`bg-indigo-500/15 text-indigo-600 dark:bg-indigo-500/25 dark:text-indigo-400 border border-indigo-500/20`) - **Customer**: `<UserCheck />` — Circular Light Sky (`bg-sky-500/12 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20`) - **Admin User**: `<UserCog />` — Circular Light Amber (`bg-amber-500/12 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20`) - **Super Admin**: `<Crown />` — Circular Light Purple (`bg-purple-500/10 text-purple-600 dark:text-purple-400`)
 
     - **Role Badges & User Detail Screen Avatars**:
       - On User Detail and Edit screens, replace generic text initials with the role-specific icon avatar (`<GraduationCap size={36} />` for Student or `<UserCog size={36} />` for Staff).
       - In tables and dropdown selectors, display rounded role pills (`inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2 py-0.5`) with embedded circular role icons.
-

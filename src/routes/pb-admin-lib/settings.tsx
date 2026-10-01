@@ -225,7 +225,9 @@ function RateConfigModal({
         {/* Header */}
         <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-3">
-            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${iconBgClass}`}>
+            <span
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${iconBgClass}`}
+            >
               <Icon size={18} />
             </span>
             <h2 className="text-sm font-bold text-foreground">{title}</h2>
@@ -297,11 +299,7 @@ function PBAdminLibrarySettingsPage() {
 
   const handleTogglePush = (v: boolean) => {
     setPushNotifications(v);
-    toast.success(
-      v
-        ? "Push notifications enabled."
-        : "Push notifications disabled."
-    );
+    toast.success(v ? "Push notifications enabled." : "Push notifications disabled.");
   };
 
   return (
@@ -480,7 +478,9 @@ function PBAdminLibrarySettingsPage() {
                   <UserCheck size={18} />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-foreground">Default Author Commission Rate</p>
+                  <p className="text-sm font-bold text-foreground">
+                    Default Author Commission Rate
+                  </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     Configure default royalty and commission percentage for author accounts.
                   </p>
@@ -509,7 +509,9 @@ function PBAdminLibrarySettingsPage() {
                   <Building2 size={18} />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-foreground">Default Publisher Commission Rate</p>
+                  <p className="text-sm font-bold text-foreground">
+                    Default Publisher Commission Rate
+                  </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     Configure default margin and commission percentage for publisher accounts.
                   </p>

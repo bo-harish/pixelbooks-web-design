@@ -42,7 +42,8 @@ export const Route = createFileRoute("/publisher/support")({
       { title: "Support — PixelBooks" },
       {
         name: "description",
-        content: "Contact PixelBooks publisher support for help with royalty statements, catalogue metadata, or platform inquiries.",
+        content:
+          "Contact PixelBooks publisher support for help with royalty statements, catalogue metadata, or platform inquiries.",
       },
     ],
   }),
@@ -206,10 +207,10 @@ function PublisherSupportPage() {
         priority: priority.startsWith("Critical")
           ? "Critical"
           : priority.startsWith("High")
-          ? "High"
-          : priority.startsWith("Medium")
-          ? "Medium"
-          : "Low",
+            ? "High"
+            : priority.startsWith("Medium")
+              ? "Medium"
+              : "Low",
         createdAt: "Just now",
         lastUpdate: "Just now",
         messagesCount: 1,
@@ -446,7 +447,8 @@ function PublisherSupportPage() {
                   {/* Book Title / ISBN (Optional) */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-foreground">
-                      Book Title or ISBN <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                      Book Title or ISBN{" "}
+                      <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                     </Label>
                     <Input
                       placeholder="e.g., 978-0-123456-47-2 or Book Title"
@@ -459,7 +461,8 @@ function PublisherSupportPage() {
                   {/* Reference ID (Optional) */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-foreground">
-                      Transaction or Payout ID <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                      Transaction or Payout ID{" "}
+                      <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                     </Label>
                     <Input
                       placeholder="e.g., TXN-2026-0814 or Batch ID"
@@ -509,7 +512,10 @@ function PublisherSupportPage() {
                 {/* File Attachment Box */}
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-foreground">
-                    Attachments <span className="text-xs text-muted-foreground font-normal">(Screenshots, logs, or error reports)</span>
+                    Attachments{" "}
+                    <span className="text-xs text-muted-foreground font-normal">
+                      (Screenshots, logs, or error reports)
+                    </span>
                   </Label>
                   <div className="rounded-xl border border-dashed border-border bg-card/50 p-4 transition-colors hover:border-[var(--brand)]/60">
                     {attachment ? (
@@ -621,8 +627,8 @@ function PublisherSupportPage() {
                     t.status === "In Progress"
                       ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
                       : t.status === "Resolved"
-                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                      : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                        : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
 
                   return (
                     <div
@@ -697,7 +703,10 @@ function PublisherSupportPage() {
 
       {/* Ticket Details Modal */}
       {selectedTicket && (
-        <Dialog open={Boolean(selectedTicket)} onOpenChange={(open) => !open && setSelectedTicket(null)}>
+        <Dialog
+          open={Boolean(selectedTicket)}
+          onOpenChange={(open) => !open && setSelectedTicket(null)}
+        >
           <DialogContent className="max-w-xl p-0 overflow-hidden border-0">
             <div className="bg-card rounded-xl p-6 sm:p-8 space-y-6">
               <DialogHeader className="pb-4 border-b border-border">
@@ -710,8 +719,8 @@ function PublisherSupportPage() {
                       selectedTicket.status === "In Progress"
                         ? "bg-amber-500/10 text-amber-600 border-amber-500/20"
                         : selectedTicket.status === "Resolved"
-                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                        : "bg-blue-500/10 text-blue-600 border-blue-500/20"
+                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                          : "bg-blue-500/10 text-blue-600 border-blue-500/20"
                     }`}
                   >
                     {selectedTicket.status}
@@ -721,7 +730,8 @@ function PublisherSupportPage() {
                   {selectedTicket.subject}
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground">
-                  Category: {selectedTicket.category} · Priority: {selectedTicket.priority} · Created on {selectedTicket.createdAt}
+                  Category: {selectedTicket.category} · Priority: {selectedTicket.priority} ·
+                  Created on {selectedTicket.createdAt}
                 </DialogDescription>
               </DialogHeader>
 

@@ -27,7 +27,8 @@ export const Route = createFileRoute("/pb-admin/cart-analysis")({
       { title: "Book Cart Analysis — PixelBooks Admin" },
       {
         name: "description",
-        content: "Analyze book additions to cart, purchase conversion rates, and abandoned cart items across catalog titles.",
+        content:
+          "Analyze book additions to cart, purchase conversion rates, and abandoned cart items across catalog titles.",
       },
     ],
   }),
@@ -226,16 +227,37 @@ const cartAnalysisData: CartAnalysisItem[] = [
 
 // ── Constants & Helpers ───────────────────────────────────────────────────────
 
-const presetOptions = ["MTD", "QTD", "YTD", "Current FY", "Last FY", "Last 30 days", "Custom"] as const;
+const presetOptions = [
+  "MTD",
+  "QTD",
+  "YTD",
+  "Current FY",
+  "Last FY",
+  "Last 30 days",
+  "Custom",
+] as const;
 const PAGE_SIZE = 10;
 
 function applyPresetDates(opt: string, setStart: (v: string) => void, setEnd: (v: string) => void) {
-  if (opt === "MTD") { setStart("2026-07-01"); setEnd("2026-07-23"); }
-  else if (opt === "QTD") { setStart("2026-07-01"); setEnd("2026-07-23"); }
-  else if (opt === "YTD") { setStart("2026-01-01"); setEnd("2026-07-23"); }
-  else if (opt === "Current FY") { setStart("2026-04-01"); setEnd("2027-03-31"); }
-  else if (opt === "Last FY") { setStart("2025-04-01"); setEnd("2026-03-31"); }
-  else if (opt === "Last 30 days") { setStart("2026-06-23"); setEnd("2026-07-23"); }
+  if (opt === "MTD") {
+    setStart("2026-07-01");
+    setEnd("2026-07-23");
+  } else if (opt === "QTD") {
+    setStart("2026-07-01");
+    setEnd("2026-07-23");
+  } else if (opt === "YTD") {
+    setStart("2026-01-01");
+    setEnd("2026-07-23");
+  } else if (opt === "Current FY") {
+    setStart("2026-04-01");
+    setEnd("2027-03-31");
+  } else if (opt === "Last FY") {
+    setStart("2025-04-01");
+    setEnd("2026-03-31");
+  } else if (opt === "Last 30 days") {
+    setStart("2026-06-23");
+    setEnd("2026-07-23");
+  }
 }
 
 function StatCard({
@@ -254,11 +276,15 @@ function StatCard({
   return (
     <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-3.5 sm:p-4 transition-shadow hover:shadow-xs min-h-[94px]">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          {label}
+        </span>
         <span
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
           style={{
-            backgroundColor: accent ? `color-mix(in oklab, ${accent} 10%, transparent)` : "color-mix(in oklab, var(--brand) 10%, transparent)",
+            backgroundColor: accent
+              ? `color-mix(in oklab, ${accent} 10%, transparent)`
+              : "color-mix(in oklab, var(--brand) 10%, transparent)",
             color: accent ?? "var(--brand)",
           }}
         >
@@ -266,14 +292,26 @@ function StatCard({
         </span>
       </div>
       <div className="mt-1.5 flex flex-wrap items-baseline gap-2">
-        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">{value}</p>
-        {sublabel && <span className="text-[11px] font-medium text-muted-foreground">{sublabel}</span>}
+        <p className="text-xl sm:text-[22px] font-extrabold tracking-tight text-foreground leading-tight">
+          {value}
+        </p>
+        {sublabel && (
+          <span className="text-[11px] font-medium text-muted-foreground">{sublabel}</span>
+        )}
       </div>
     </div>
   );
 }
 
-function Pagination({ page, total, onPage }: { page: number; total: number; onPage: (p: number) => void }) {
+function Pagination({
+  page,
+  total,
+  onPage,
+}: {
+  page: number;
+  total: number;
+  onPage: (p: number) => void;
+}) {
   return (
     <div className="flex items-center gap-1">
       <button
@@ -290,7 +328,14 @@ function Pagination({ page, total, onPage }: { page: number; total: number; onPa
           type="button"
           onClick={() => onPage(p)}
           className="flex h-7 w-7 items-center justify-center rounded-md text-xs font-semibold transition-colors cursor-pointer"
-          style={p === page ? { backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)", color: "var(--brand)" } : undefined}
+          style={
+            p === page
+              ? {
+                  backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
+                  color: "var(--brand)",
+                }
+              : undefined
+          }
         >
           {p}
         </button>
@@ -332,10 +377,22 @@ function CartAnalysisPage() {
   }, [search]);
 
   // Aggregate stats
-  const totalTimesAdded = useMemo(() => filtered.reduce((acc, i) => acc + i.timesAddedToCart, 0), [filtered]);
-  const totalPurchases = useMemo(() => filtered.reduce((acc, i) => acc + i.totalPurchases, 0), [filtered]);
-  const totalNotPurchased = useMemo(() => filtered.reduce((acc, i) => acc + i.notPurchased, 0), [filtered]);
-  const conversionRate = useMemo(() => (totalTimesAdded > 0 ? ((totalPurchases / totalTimesAdded) * 100).toFixed(1) : "0.0"), [totalTimesAdded, totalPurchases]);
+  const totalTimesAdded = useMemo(
+    () => filtered.reduce((acc, i) => acc + i.timesAddedToCart, 0),
+    [filtered],
+  );
+  const totalPurchases = useMemo(
+    () => filtered.reduce((acc, i) => acc + i.totalPurchases, 0),
+    [filtered],
+  );
+  const totalNotPurchased = useMemo(
+    () => filtered.reduce((acc, i) => acc + i.notPurchased, 0),
+    [filtered],
+  );
+  const conversionRate = useMemo(
+    () => (totalTimesAdded > 0 ? ((totalPurchases / totalTimesAdded) * 100).toFixed(1) : "0.0"),
+    [totalTimesAdded, totalPurchases],
+  );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const curPage = Math.min(page, totalPages);
@@ -353,7 +410,6 @@ function CartAnalysisPage() {
       }
     >
       <div className="space-y-6 p-4 sm:p-6 md:p-8 w-full">
-
         {/* Filter header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 shadow-2xs">
           <div className="flex items-center gap-2">
@@ -365,7 +421,9 @@ function CartAnalysisPage() {
             </span>
             <div>
               <h3 className="text-sm font-bold text-foreground">Analysis Filters & Date Range</h3>
-              <p className="text-xs text-muted-foreground">Select date range to update cart metrics</p>
+              <p className="text-xs text-muted-foreground">
+                Select date range to update cart metrics
+              </p>
             </div>
           </div>
 
@@ -392,8 +450,9 @@ function CartAnalysisPage() {
                         setPage(1);
                         applyPresetDates(opt, setStartDate, setEndDate);
                       }}
-                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${opt === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
-                        }`}
+                      className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
+                        opt === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
+                      }`}
                     >
                       {opt}
                     </button>
@@ -527,10 +586,18 @@ function CartAnalysisPage() {
               <thead>
                 <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground bg-muted/20">
                   <th className="py-4 pl-6 pr-4 font-semibold">Title</th>
-                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">Times Added </th>
-                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">Purchases</th>
-                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">Not Purchased</th>
-                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">Conversion Rate</th>
+                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">
+                    Times Added{" "}
+                  </th>
+                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">
+                    Purchases
+                  </th>
+                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">
+                    Not Purchased
+                  </th>
+                  <th className="py-4 pr-4 font-semibold text-center whitespace-nowrap">
+                    Conversion Rate
+                  </th>
                   <th className="py-4 pr-4 font-semibold whitespace-nowrap">Last Added</th>
                   <th className="py-4 pr-6 font-semibold whitespace-nowrap">Last Purchased</th>
                 </tr>
@@ -570,7 +637,9 @@ function CartAnalysisPage() {
                                 <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
                                   <Feather size={9} />
                                 </span>
-                                <span className="text-[11px] font-medium text-foreground">{item.author}</span>
+                                <span className="text-[11px] font-medium text-foreground">
+                                  {item.author}
+                                </span>
                               </div>
 
                               {/* Publisher Chip */}
@@ -578,7 +647,9 @@ function CartAnalysisPage() {
                                 <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
                                   <Building2 size={9} />
                                 </span>
-                                <span className="text-[11px] font-medium text-foreground">{item.publisher}</span>
+                                <span className="text-[11px] font-medium text-foreground">
+                                  {item.publisher}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -640,11 +711,15 @@ function CartAnalysisPage() {
               <span>Added: {totalTimesAdded}</span>
               <span>Purchased: {totalPurchases}</span>
               <span>Not Purchased: {totalNotPurchased}</span>
-              <span>Conversion: <span className="text-indigo-600 dark:text-indigo-400 font-bold">{conversionRate}%</span></span>
+              <span>
+                Conversion:{" "}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                  {conversionRate}%
+                </span>
+              </span>
             </div>
           </div>
         </div>
-
       </div>
     </AppShell>
   );

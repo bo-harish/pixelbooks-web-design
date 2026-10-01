@@ -139,9 +139,7 @@ function DateRangePickerField({
 }: DateRangePickerFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [tempRange, setTempRange] = useState<DateRange | undefined>(value);
-  const [currentMonth, setCurrentMonth] = useState<Date>(
-    value?.from || new Date("2026-07-01")
-  );
+  const [currentMonth, setCurrentMonth] = useState<Date>(value?.from || new Date("2026-07-01"));
 
   useEffect(() => {
     setTempRange(value);
@@ -205,7 +203,7 @@ function DateRangePickerField({
         getRange: () => ({ from: now, to: new Date(2026, 11, 31) }),
       },
     ],
-    []
+    [],
   );
 
   const selectedPresetIndex = useMemo(() => {
@@ -214,10 +212,7 @@ function DateRangePickerField({
     const toStr = format(tempRange.to, "yyyy-MM-dd");
     const idx = presets.findIndex((p) => {
       const r = p.getRange();
-      return (
-        format(r.from, "yyyy-MM-dd") === fromStr &&
-        format(r.to, "yyyy-MM-dd") === toStr
-      );
+      return format(r.from, "yyyy-MM-dd") === fromStr && format(r.to, "yyyy-MM-dd") === toStr;
     });
     return idx !== -1 ? String(idx) : "custom";
   }, [tempRange, presets]);
@@ -293,9 +288,7 @@ function DateRangePickerField({
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 min-w-0">
                 <CalendarIcon size={14} className="text-[var(--brand)] shrink-0" />
-                <span className="text-xs font-bold text-foreground truncate">
-                  Validity Period
-                </span>
+                <span className="text-xs font-bold text-foreground truncate">Validity Period</span>
               </div>
 
               {/* Quick Presets Dropdown */}
@@ -531,10 +524,14 @@ function EditPromoCodePage() {
 
   const [ebook, setEbook] = useState(existingPromo?.ebook || "");
   const [promoCode, setPromoCode] = useState(existingPromo?.code || "");
-  const [percentage, setPercentage] = useState(existingPromo?.discount ? existingPromo.discount.toString() : "");
-  const [minimumAmount, setMinimumAmount] = useState(existingPromo?.minimumAmount ? existingPromo.minimumAmount.toString() : "");
+  const [percentage, setPercentage] = useState(
+    existingPromo?.discount ? existingPromo.discount.toString() : "",
+  );
+  const [minimumAmount, setMinimumAmount] = useState(
+    existingPromo?.minimumAmount ? existingPromo.minimumAmount.toString() : "",
+  );
   const [dateRange, setDateRange] = useState<DateRange | undefined>(
-    initialFrom ? { from: initialFrom, to: initialTo } : undefined
+    initialFrom ? { from: initialFrom, to: initialTo } : undefined,
   );
   const [description, setDescription] = useState(existingPromo?.description || "");
   const [active, setActive] = useState(existingPromo?.active ?? false);
@@ -583,7 +580,9 @@ function EditPromoCodePage() {
 
   const toggleActive = () => {
     const allPromos = getPromos();
-    const updatedPromos = allPromos.map((p) => (p.id === promoId ? { ...p, active: !p.active } : p));
+    const updatedPromos = allPromos.map((p) =>
+      p.id === promoId ? { ...p, active: !p.active } : p,
+    );
     savePromos(updatedPromos);
     setActive((v) => !v);
   };
@@ -675,7 +674,9 @@ function EditPromoCodePage() {
               <div className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-800 dark:text-amber-300">
                 <AlertCircle size={18} className="shrink-0 text-amber-600 dark:text-amber-400" />
                 <p className="text-xs font-medium leading-relaxed">
-                  This promo code status is <strong>{existingPromo.status}</strong>. Edit, delete, and cancellation options are disabled for {existingPromo.status.toLowerCase()} promo codes.
+                  This promo code status is <strong>{existingPromo.status}</strong>. Edit, delete,
+                  and cancellation options are disabled for {existingPromo.status.toLowerCase()}{" "}
+                  promo codes.
                 </p>
               </div>
             )}
@@ -835,7 +836,9 @@ function EditPromoCodePage() {
             <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-xl">
               <h3 className="text-lg font-bold text-foreground">Delete Promo Code?</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Are you sure you want to delete promo code <strong className="text-foreground">{existingPromo.code}</strong>? This action cannot be undone.
+                Are you sure you want to delete promo code{" "}
+                <strong className="text-foreground">{existingPromo.code}</strong>? This action
+                cannot be undone.
               </p>
               <div className="mt-6 flex items-center justify-end gap-3">
                 <button

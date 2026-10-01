@@ -25,7 +25,11 @@ export function usePublisherType(): [PublisherUserType, (type: PublisherUserType
   useEffect(() => {
     const handleCustomEvent = (e: Event) => {
       const customEvent = e as CustomEvent<PublisherUserType>;
-      if (customEvent.detail && (customEvent.detail === "Complete Publisher" || customEvent.detail === "Library-Only Publisher")) {
+      if (
+        customEvent.detail &&
+        (customEvent.detail === "Complete Publisher" ||
+          customEvent.detail === "Library-Only Publisher")
+      ) {
         setUserTypeState(customEvent.detail);
       }
     };

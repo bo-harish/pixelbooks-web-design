@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 export type LibraryAdminUserType = "Complete Library Admin" | "Standard Library Admin";
 const KEY = "pb_library_admin_user_type";
 
-export function useLibraryAdminType(): [LibraryAdminUserType, (type: LibraryAdminUserType) => void] {
+export function useLibraryAdminType(): [
+  LibraryAdminUserType,
+  (type: LibraryAdminUserType) => void,
+] {
   const [userType, setUserTypeState] = useState<LibraryAdminUserType>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem(KEY);
@@ -25,7 +28,11 @@ export function useLibraryAdminType(): [LibraryAdminUserType, (type: LibraryAdmi
   useEffect(() => {
     const handleCustomEvent = (e: Event) => {
       const customEvent = e as CustomEvent<LibraryAdminUserType>;
-      if (customEvent.detail && (customEvent.detail === "Complete Library Admin" || customEvent.detail === "Standard Library Admin")) {
+      if (
+        customEvent.detail &&
+        (customEvent.detail === "Complete Library Admin" ||
+          customEvent.detail === "Standard Library Admin")
+      ) {
         setUserTypeState(customEvent.detail);
       }
     };

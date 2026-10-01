@@ -52,12 +52,12 @@ function GenreBannerPage() {
       <div className="p-4 sm:p-6 md:p-8 space-y-6 w-full">
         <form onSubmit={handleSave} className="space-y-6 w-full">
           <div className="rounded-xl  border-border bg-card p-6 md:p-8 shadow-2xs space-y-8 w-full">
-
             <div>
               <div className="mb-5">
                 <h4 className="text-sm font-bold text-foreground">Banner Artwork</h4>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Upload high-resolution promotional artwork optimized for desktop and mobile devices.
+                  Upload high-resolution promotional artwork optimized for desktop and mobile
+                  devices.
                 </p>
               </div>
 
@@ -103,7 +103,9 @@ function GenreBannerPage() {
 
                   <label className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
                     <UploadCloud size={14} className="text-[var(--brand)]" />
-                    <span>{webCoverUploaded ? "Change Image for Web" : "Choose Image for Web"}</span>
+                    <span>
+                      {webCoverUploaded ? "Change Image for Web" : "Choose Image for Web"}
+                    </span>
                     <input
                       type="file"
                       accept="image/*"
@@ -160,7 +162,9 @@ function GenreBannerPage() {
 
                   <label className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
                     <UploadCloud size={14} className="text-[var(--brand)]" />
-                    <span>{mobileCoverUploaded ? "Change Image for Mobile" : "Choose Image for Mobile"}</span>
+                    <span>
+                      {mobileCoverUploaded ? "Change Image for Mobile" : "Choose Image for Mobile"}
+                    </span>
                     <input
                       type="file"
                       accept="image/*"

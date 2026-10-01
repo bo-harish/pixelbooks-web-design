@@ -72,7 +72,10 @@ export function DropdownSelect<T extends string>({
           {searchable && (
             <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
               <div className="relative flex items-center">
-                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <Search
+                  size={14}
+                  className="absolute left-2.5 text-muted-foreground pointer-events-none"
+                />
                 <input
                   type="text"
                   value={searchTerm}

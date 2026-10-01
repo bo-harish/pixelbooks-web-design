@@ -28,7 +28,10 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/publisher/margin-report")({
   head: () => {
-    const isAuthor = typeof window !== "undefined" && (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
+    const isAuthor =
+      typeof window !== "undefined" &&
+      (window.location.pathname.startsWith("/author") ||
+        window.location.search.includes("role=author"));
     return {
       meta: [
         { title: `${isAuthor ? "Royalty" : "Margin"} Report — PixelBooks` },
@@ -58,15 +61,7 @@ type LedgerRow = {
   mode: string;
 };
 
-const PRESETS = [
-  "MTD",
-  "QTD",
-  "YTD",
-  "Current FY",
-  "Last FY",
-  "Last 30 days",
-  "Custom",
-] as const;
+const PRESETS = ["MTD", "QTD", "YTD", "Current FY", "Last FY", "Last 30 days", "Custom"] as const;
 type Preset = (typeof PRESETS)[number];
 
 const LEDGER_TYPES = ["Margin & Payments Received", "Margin only", "Payments only"] as const;
@@ -251,9 +246,7 @@ function StatCard({
           {value}
         </p>
         {subtitle && (
-          <span className="text-[11px] font-medium text-muted-foreground">
-            {subtitle}
-          </span>
+          <span className="text-[11px] font-medium text-muted-foreground">{subtitle}</span>
         )}
       </div>
     </div>
@@ -414,7 +407,10 @@ function BookCover({ color, size = 40 }: { color: string; size?: number }) {
 }
 
 function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () => void }) {
-  const isAuthor = typeof window !== "undefined" && (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
+  const isAuthor =
+    typeof window !== "undefined" &&
+    (window.location.pathname.startsWith("/author") ||
+      window.location.search.includes("role=author"));
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(detail.items.length / DETAIL_PAGE_SIZE));
   const paged = detail.items.slice((page - 1) * DETAIL_PAGE_SIZE, page * DETAIL_PAGE_SIZE);
@@ -513,9 +509,9 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
                 style={
                   p === page
                     ? {
-                      backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
-                      color: "var(--brand)",
-                    }
+                        backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
+                        color: "var(--brand)",
+                      }
                     : undefined
                 }
               >
@@ -535,7 +531,9 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
 
         {/* Total margin / royalty footer */}
         <div className="flex items-center justify-between border-t border-border px-5 py-4">
-          <span className="text-sm font-semibold">{isAuthor ? "Total Royalty" : "Total Margin"}</span>
+          <span className="text-sm font-semibold">
+            {isAuthor ? "Total Royalty" : "Total Margin"}
+          </span>
           <span className="text-base font-bold">₹{totalMargin.toFixed(2)}</span>
         </div>
       </div>
@@ -546,7 +544,10 @@ function TransactionDetail({ detail, onBack }: { detail: TxnDetail; onBack: () =
 function MarginReportPage() {
   const [publisherType] = usePublisherType();
   const navigate = useNavigate();
-  const isAuthor = typeof window !== "undefined" && (window.location.pathname.startsWith("/author") || window.location.search.includes("role=author"));
+  const isAuthor =
+    typeof window !== "undefined" &&
+    (window.location.pathname.startsWith("/author") ||
+      window.location.search.includes("role=author"));
 
   useEffect(() => {
     if (publisherType === "Library-Only Publisher") {
@@ -564,7 +565,9 @@ function MarginReportPage() {
   const [to, setTo] = useState("2026-07-04");
   const [selectedTxn, setSelectedTxn] = useState<TxnDetail | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<PaymentDetail | null>(null);
-  const [ledgerType, setLedgerType] = useState<string>(isAuthor ? "Royalty & Payments Received" : "Margin & Payments Received");
+  const [ledgerType, setLedgerType] = useState<string>(
+    isAuthor ? "Royalty & Payments Received" : "Margin & Payments Received",
+  );
   const [ledgerOpen, setLedgerOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -617,7 +620,10 @@ function MarginReportPage() {
   const rangeLabel = `${new Date(from).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })} – ${new Date(to).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`;
 
   return (
-    <AppShell title={isAuthor ? "Royalty Report" : "Margin Report"} subtitle="Track your sales, royalty and payments in one place.">
+    <AppShell
+      title={isAuthor ? "Royalty Report" : "Margin Report"}
+      subtitle="Track your sales, royalty and payments in one place."
+    >
       {selectedTxn ? (
         <TransactionDetail detail={selectedTxn} onBack={() => setSelectedTxn(null)} />
       ) : selectedPayment ? (
@@ -627,13 +633,19 @@ function MarginReportPage() {
           {/* Total Receivable Till Date — Premium Card */}
           <div
             className="relative overflow-hidden rounded-2xl p-px"
-            style={{ background: "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))" }}
+            style={{
+              background:
+                "linear-gradient(135deg, oklch(0.72 0.17 160), oklch(0.55 0.14 200), oklch(0.62 0.15 260))",
+            }}
           >
             <div className="relative rounded-[15px] bg-card p-5 sm:p-6">
               {/* Subtle background glow */}
               <div
                 className="pointer-events-none absolute inset-0 opacity-[0.07]"
-                style={{ background: "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)" }}
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 10% 50%, oklch(0.72 0.17 160), transparent 60%), radial-gradient(ellipse at 90% 50%, oklch(0.62 0.15 260), transparent 60%)",
+                }}
               />
 
               <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -647,7 +659,9 @@ function MarginReportPage() {
                   </span>
                   <div>
                     <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                      {isAuthor ? "Total Royalty Receivable Till Date" : "Total Receivable Till Date"}
+                      {isAuthor
+                        ? "Total Royalty Receivable Till Date"
+                        : "Total Receivable Till Date"}
                     </p>
                     <div className="flex flex-wrap items-baseline gap-2.5 mt-0.5">
                       <p className="text-3xl font-extrabold tracking-tight text-foreground">
@@ -671,7 +685,9 @@ function MarginReportPage() {
                 {/* Right: Info pillars */}
                 <div className="flex items-center gap-6 sm:shrink-0">
                   <div className="text-center">
-                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Last Payout</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Last Payout
+                    </p>
                     <p className="mt-1 text-sm font-bold text-foreground">24 Mar 2026</p>
                     <p className="mt-0.5 text-[10px] text-muted-foreground">₹3,200 disbursed</p>
                   </div>
@@ -694,7 +710,9 @@ function MarginReportPage() {
               </span>
               <div>
                 <h3 className="text-sm font-bold text-foreground">Date Range & Period</h3>
-                <p className="text-xs text-muted-foreground">Select period to update summary metrics</p>
+                <p className="text-xs text-muted-foreground">
+                  Select period to update summary metrics
+                </p>
               </div>
             </div>
 
@@ -716,8 +734,9 @@ function MarginReportPage() {
                         key={p}
                         type="button"
                         onClick={() => handlePresetSelect(p)}
-                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${p === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
-                          }`}
+                        className={`flex w-full items-center px-3.5 py-2 text-left text-xs font-medium transition-colors hover:bg-secondary cursor-pointer ${
+                          p === preset ? "font-bold text-brand bg-secondary/60" : "text-foreground"
+                        }`}
                       >
                         {p}
                       </button>
@@ -758,10 +777,30 @@ function MarginReportPage() {
           {/* Compact Period Stat cards */}
           {isAuthor ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <StatCard icon={Tag} label="Total Sales" value="₹1,50,733.10" subtitle="Gross eBook Sales" />
-              <StatCard icon={Clock} label="Total Royalty Amount" value="₹75,366.55" subtitle="50% Royalty Rate" />
-              <StatCard icon={ScrollText} label="TDS Deducted" value="₹7,536.66" subtitle="10% TDS" />
-              <StatCard icon={TrendingUp} label="Net Earnings" value="₹67,829.89" subtitle="Net Payable Payout" />
+              <StatCard
+                icon={Tag}
+                label="Total Sales"
+                value="₹1,50,733.10"
+                subtitle="Gross eBook Sales"
+              />
+              <StatCard
+                icon={Clock}
+                label="Total Royalty Amount"
+                value="₹75,366.55"
+                subtitle="50% Royalty Rate"
+              />
+              <StatCard
+                icon={ScrollText}
+                label="TDS Deducted"
+                value="₹7,536.66"
+                subtitle="10% TDS"
+              />
+              <StatCard
+                icon={TrendingUp}
+                label="Net Earnings"
+                value="₹67,829.89"
+                subtitle="Net Payable Payout"
+              />
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -797,8 +836,11 @@ function MarginReportPage() {
                             setLedgerType(t);
                             setLedgerOpen(false);
                           }}
-                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${t === ledgerType ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
-                            }`}
+                          className={`flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-secondary cursor-pointer ${
+                            t === ledgerType
+                              ? "font-semibold text-foreground bg-secondary/50"
+                              : "text-muted-foreground"
+                          }`}
                         >
                           {t}
                         </button>
@@ -823,7 +865,11 @@ function MarginReportPage() {
                         type="button"
                         onClick={() => {
                           setExportOpen(false);
-                          toast.success(isAuthor ? "Downloading Author Royalty Report (PDF)..." : "Downloading Publisher Margin Report (PDF)...");
+                          toast.success(
+                            isAuthor
+                              ? "Downloading Author Royalty Report (PDF)..."
+                              : "Downloading Publisher Margin Report (PDF)...",
+                          );
                         }}
                         className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer"
                       >
@@ -834,7 +880,11 @@ function MarginReportPage() {
                         type="button"
                         onClick={() => {
                           setExportOpen(false);
-                          toast.success(isAuthor ? "Downloading Author Royalty Report (Excel)..." : "Downloading Publisher Margin Report (Excel)...");
+                          toast.success(
+                            isAuthor
+                              ? "Downloading Author Royalty Report (Excel)..."
+                              : "Downloading Publisher Margin Report (Excel)...",
+                          );
                         }}
                         className="flex w-full items-center gap-2 px-3.5 py-2.5 text-left text-sm font-medium transition-colors hover:bg-secondary cursor-pointer"
                       >
@@ -898,8 +948,9 @@ function MarginReportPage() {
                             if (isClickable) setSelectedTxn(TXN_DETAILS[r.ref]);
                             else if (isPayment) setSelectedPayment(PAYMENT_DETAILS[r.ref]);
                           }}
-                          className={`group border-b border-border/60 transition-colors hover:bg-secondary/40 ${isActionable ? "cursor-pointer" : ""
-                            }`}
+                          className={`group border-b border-border/60 transition-colors hover:bg-secondary/40 ${
+                            isActionable ? "cursor-pointer" : ""
+                          }`}
                         >
                           <td className="py-4 pl-6 pr-4">{r.date}</td>
                           <td className="py-4 pr-4">{r.type}</td>
@@ -963,7 +1014,9 @@ function MarginReportPage() {
                     <span>{r.mode}</span>
                   </div>
                   <div className="flex items-center justify-between pt-1 text-xs">
-                    <span>{isAuthor ? "Royalty" : "Margin"}: {formatINR(r.margin)}</span>
+                    <span>
+                      {isAuthor ? "Royalty" : "Margin"}: {formatINR(r.margin)}
+                    </span>
                     <span>Received: {formatINR(r.received)}</span>
                     <span className="font-semibold">{formatINR(r.balance)}</span>
                   </div>
@@ -1012,10 +1065,10 @@ function MarginReportPage() {
                           style={
                             n === currentPage
                               ? {
-                                backgroundColor: "var(--brand)",
-                                color: "var(--brand-contrast)",
-                                borderColor: "transparent",
-                              }
+                                  backgroundColor: "var(--brand)",
+                                  color: "var(--brand-contrast)",
+                                  borderColor: "transparent",
+                                }
                               : undefined
                           }
                         >

@@ -39,7 +39,8 @@ export const Route = createFileRoute("/pb-admin/ad-banners/image")({
       { title: "Image Banner — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage hero banner sliders, promotional campaigns, and link redirections in PixelBooks.",
+        content:
+          "Manage hero banner sliders, promotional campaigns, and link redirections in PixelBooks.",
       },
     ],
   }),
@@ -105,7 +106,9 @@ export function ImageBannerPage() {
   const [viewMode, setViewMode] = useState<"list" | "create">("list");
   const [banners, setBanners] = useState<BannerItem[]>(INITIAL_BANNERS);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive">("All Status");
+  const [statusFilter, setStatusFilter] = useState<"All Status" | "Active" | "Inactive">(
+    "All Status",
+  );
 
   // Active editing item (null = creating new banner)
   const [editingBanner, setEditingBanner] = useState<BannerItem | null>(null);
@@ -150,7 +153,7 @@ export function ImageBannerPage() {
           return { ...item, status: next };
         }
         return item;
-      })
+      }),
     );
   };
 
@@ -215,22 +218,22 @@ export function ImageBannerPage() {
         prev.map((b) =>
           b.id === editingBanner.id
             ? {
-              ...b,
-              title: bannerTitleInput,
-              duration,
-              startDate: startDateInput || undefined,
-              endDate: endDateInput || undefined,
-              adsClient: targetUrlInput,
-              redirectionType: "Link",
-              targetUrl: targetUrlInput,
-              externalUrl: targetUrlInput,
-              buttonText: buttonTextInput || "Learn More",
-              description: descriptionInput || undefined,
-              webCover: webCoverUploaded || b.webCover,
-              mobileCover: mobileCoverUploaded || b.mobileCover,
-            }
-            : b
-        )
+                ...b,
+                title: bannerTitleInput,
+                duration,
+                startDate: startDateInput || undefined,
+                endDate: endDateInput || undefined,
+                adsClient: targetUrlInput,
+                redirectionType: "Link",
+                targetUrl: targetUrlInput,
+                externalUrl: targetUrlInput,
+                buttonText: buttonTextInput || "Learn More",
+                description: descriptionInput || undefined,
+                webCover: webCoverUploaded || b.webCover,
+                mobileCover: mobileCoverUploaded || b.mobileCover,
+              }
+            : b,
+        ),
       );
       toast.success(`Image Banner "${bannerTitleInput}" updated successfully!`);
     } else {
@@ -312,13 +315,19 @@ export function ImageBannerPage() {
                     <span>{statusFilter}</span>
                     <ChevronDown size={16} className="text-muted-foreground shrink-0" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[140px] bg-card border-border shadow-md">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-[140px] bg-card border-border shadow-md"
+                  >
                     {(["All Status", "Active", "Inactive"] as const).map((st) => (
                       <DropdownMenuItem
                         key={st}
                         onClick={() => setStatusFilter(st)}
-                        className={`cursor-pointer font-medium text-xs ${statusFilter === st ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]" : ""
-                          }`}
+                        className={`cursor-pointer font-medium text-xs ${
+                          statusFilter === st
+                            ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
+                            : ""
+                        }`}
                       >
                         {st}
                       </DropdownMenuItem>
@@ -346,8 +355,12 @@ export function ImageBannerPage() {
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Banner Duration</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Target URL</th>
                       <th className="px-6 py-4 whitespace-nowrap font-semibold">Enable/Disable</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Remove</th>
-                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">Preview</th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                        Remove
+                      </th>
+                      <th className="px-6 py-4 text-center whitespace-nowrap font-semibold">
+                        Preview
+                      </th>
                       <th className="px-6 py-4 w-10 font-semibold"></th>
                     </tr>
                   </thead>
@@ -420,7 +433,10 @@ export function ImageBannerPage() {
                           </td>
 
                           {/* Status Switch Toggle Column */}
-                          <td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <div className="flex items-center">
                               <Switch
                                 checked={item.status}
@@ -431,7 +447,10 @@ export function ImageBannerPage() {
                           </td>
 
                           {/* Remove Trash Button Column */}
-                          <td className="px-6 py-4 text-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                          <td
+                            className="px-6 py-4 text-center whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <button
                               onClick={() => handleRemoveBanner(item.id, item.title)}
                               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
@@ -520,9 +539,7 @@ export function ImageBannerPage() {
               >
                 <ArrowLeft size={16} />
               </button>
-              <span className="text-sm font-semibold text-foreground">
-                Back to Image Banner
-              </span>
+              <span className="text-sm font-semibold text-foreground">Back to Image Banner</span>
             </div>
 
             {/* Main Form Wrapper */}
@@ -573,7 +590,10 @@ export function ImageBannerPage() {
                     {/* Row 2: Button Text */}
                     <div>
                       <label className="block text-xs font-semibold text-foreground mb-1.5">
-                        Button Text <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                        Button Text{" "}
+                        <span className="text-xs text-muted-foreground font-normal">
+                          (Optional)
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -587,7 +607,10 @@ export function ImageBannerPage() {
                     {/* Row 2: Start Date - End Date */}
                     <div>
                       <label className="block text-xs font-semibold text-foreground mb-1.5">
-                        Start Date - End Date <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                        Start Date - End Date{" "}
+                        <span className="text-xs text-muted-foreground font-normal">
+                          (Optional)
+                        </span>
                       </label>
                       <div className="flex items-center gap-2.5 w-full">
                         <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3 shadow-none focus-within:border-[var(--brand)] transition-colors cursor-pointer">
@@ -598,7 +621,9 @@ export function ImageBannerPage() {
                             className="w-full bg-transparent text-sm text-foreground outline-none cursor-pointer"
                           />
                         </label>
-                        <span className="text-muted-foreground text-xs font-medium shrink-0">to</span>
+                        <span className="text-muted-foreground text-xs font-medium shrink-0">
+                          to
+                        </span>
                         <label className="relative flex h-11 flex-1 items-center rounded-lg border border-border bg-card px-3 shadow-none focus-within:border-[var(--brand)] transition-colors cursor-pointer">
                           <input
                             type="date"
@@ -613,7 +638,10 @@ export function ImageBannerPage() {
                     {/* Row 3: Description - Spanning both columns */}
                     <div className="col-span-1 md:col-span-2">
                       <label className="block text-xs font-semibold text-foreground mb-1.5">
-                        Description <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                        Description{" "}
+                        <span className="text-xs text-muted-foreground font-normal">
+                          (Optional)
+                        </span>
                       </label>
                       <textarea
                         value={descriptionInput}
@@ -631,7 +659,8 @@ export function ImageBannerPage() {
                   <div className="mb-5">
                     <h4 className="text-sm font-bold text-foreground">Banner Artwork</h4>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Upload high-resolution promotional artwork optimized for desktop and mobile devices.
+                      Upload high-resolution promotional artwork optimized for desktop and mobile
+                      devices.
                     </p>
                   </div>
 
@@ -677,7 +706,9 @@ export function ImageBannerPage() {
                       </div>
                       <label className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
                         <UploadCloud size={14} className="text-[var(--brand)]" />
-                        <span>{webCoverUploaded ? "Change Image for Web" : "Choose Image for Web"}</span>
+                        <span>
+                          {webCoverUploaded ? "Change Image for Web" : "Choose Image for Web"}
+                        </span>
                         <input
                           type="file"
                           accept="image/*"
@@ -733,7 +764,11 @@ export function ImageBannerPage() {
                       </div>
                       <label className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-border bg-card text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer transition-colors shadow-2xs">
                         <UploadCloud size={14} className="text-[var(--brand)]" />
-                        <span>{mobileCoverUploaded ? "Change Image for Mobile" : "Choose Image for Mobile"}</span>
+                        <span>
+                          {mobileCoverUploaded
+                            ? "Change Image for Mobile"
+                            : "Choose Image for Mobile"}
+                        </span>
                         <input
                           type="file"
                           accept="image/*"
@@ -793,7 +828,9 @@ export function ImageBannerPage() {
             <div className="space-y-6 py-2">
               {/* Web Banner Preview */}
               <div className="space-y-2">
-                <span className="text-xs font-semibold text-foreground">Desktop Web Banner (1360 × 526)</span>
+                <span className="text-xs font-semibold text-foreground">
+                  Desktop Web Banner (1360 × 526)
+                </span>
                 <div
                   className="relative h-48 w-full rounded-xl overflow-hidden shadow-md flex items-center justify-center p-6 text-white text-center"
                   style={{ background: previewBanner.webCover }}
@@ -818,7 +855,9 @@ export function ImageBannerPage() {
 
               {/* Mobile Banner Preview */}
               <div className="space-y-2">
-                <span className="text-xs font-semibold text-foreground">Mobile Banner (1518 × 864)</span>
+                <span className="text-xs font-semibold text-foreground">
+                  Mobile Banner (1518 × 864)
+                </span>
                 <div
                   className="relative h-36 w-72 mx-auto rounded-xl overflow-hidden shadow-md flex items-center justify-center p-4 text-white text-center"
                   style={{ background: previewBanner.mobileCover }}

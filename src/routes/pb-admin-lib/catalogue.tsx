@@ -60,7 +60,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "contact@nuals.ac.in",
     totalMapped: 1807,
     status: "Active Catalog",
-    logoBg: "bg-indigo-500/15 text-indigo-600 border-indigo-500/30 dark:bg-indigo-950/50 dark:text-indigo-400",
+    logoBg:
+      "bg-indigo-500/15 text-indigo-600 border-indigo-500/30 dark:bg-indigo-950/50 dark:text-indigo-400",
   },
   {
     id: "LIB-103",
@@ -70,7 +71,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "library@psgtech.ac.in",
     totalMapped: 420,
     status: "Active Catalog",
-    logoBg: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30 dark:bg-emerald-950/50 dark:text-emerald-400",
+    logoBg:
+      "bg-emerald-500/15 text-emerald-600 border-emerald-500/30 dark:bg-emerald-950/50 dark:text-emerald-400",
   },
   {
     id: "LIB-104",
@@ -80,7 +82,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "library@aktu.ac.in",
     totalMapped: 950,
     status: "Active Catalog",
-    logoBg: "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:bg-amber-950/50 dark:text-amber-400",
+    logoBg:
+      "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:bg-amber-950/50 dark:text-amber-400",
   },
   {
     id: "LIB-105",
@@ -90,7 +93,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "library@iitm.ac.in",
     totalMapped: 3200,
     status: "Active Catalog",
-    logoBg: "bg-blue-500/15 text-blue-600 border-blue-500/30 dark:bg-blue-950/50 dark:text-blue-400",
+    logoBg:
+      "bg-blue-500/15 text-blue-600 border-blue-500/30 dark:bg-blue-950/50 dark:text-blue-400",
   },
   {
     id: "LIB-106",
@@ -100,7 +104,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "office@library.iisc.ac.in",
     totalMapped: 2850,
     status: "Active Catalog",
-    logoBg: "bg-purple-500/15 text-purple-600 border-purple-500/30 dark:bg-purple-950/50 dark:text-purple-400",
+    logoBg:
+      "bg-purple-500/15 text-purple-600 border-purple-500/30 dark:bg-purple-950/50 dark:text-purple-400",
   },
   {
     id: "LIB-107",
@@ -110,7 +115,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "library@loyolacollege.edu",
     totalMapped: 610,
     status: "Active Catalog",
-    logoBg: "bg-teal-500/15 text-teal-600 border-teal-500/30 dark:bg-teal-950/50 dark:text-teal-400",
+    logoBg:
+      "bg-teal-500/15 text-teal-600 border-teal-500/30 dark:bg-teal-950/50 dark:text-teal-400",
   },
   {
     id: "LIB-108",
@@ -120,7 +126,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "amritalib@amrita.edu",
     totalMapped: 1420,
     status: "Active Catalog",
-    logoBg: "bg-rose-500/15 text-rose-600 border-rose-500/30 dark:bg-rose-950/50 dark:text-rose-400",
+    logoBg:
+      "bg-rose-500/15 text-rose-600 border-rose-500/30 dark:bg-rose-950/50 dark:text-rose-400",
   },
   {
     id: "LIB-109",
@@ -130,7 +137,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "library@xaviers.edu",
     totalMapped: 830,
     status: "Active Catalog",
-    logoBg: "bg-cyan-500/15 text-cyan-600 border-cyan-500/30 dark:bg-cyan-950/50 dark:text-cyan-400",
+    logoBg:
+      "bg-cyan-500/15 text-cyan-600 border-cyan-500/30 dark:bg-cyan-950/50 dark:text-cyan-400",
   },
   {
     id: "LIB-110",
@@ -140,7 +148,8 @@ const mockLibraries: InstitutionLibrary[] = [
     contactEmail: "lib.head@manipal.edu",
     totalMapped: 1950,
     status: "Active Catalog",
-    logoBg: "bg-orange-500/15 text-orange-600 border-orange-500/30 dark:bg-orange-950/50 dark:text-orange-400",
+    logoBg:
+      "bg-orange-500/15 text-orange-600 border-orange-500/30 dark:bg-orange-950/50 dark:text-orange-400",
   },
   {
     id: "LIB-111",
@@ -426,9 +435,7 @@ function PBAdminLibraryCataloguePage() {
   const [libraryDropdownOpen, setLibraryDropdownOpen] = useState(false);
 
   // Mapped eBooks State
-  const [mappedEBooks, setMappedEBooks] = useState<MappedEBook[]>(
-    initialMappedEBooks
-  );
+  const [mappedEBooks, setMappedEBooks] = useState<MappedEBook[]>(initialMappedEBooks);
 
   // Filters State
   const [searchQuery, setSearchQuery] = useState("");
@@ -463,8 +470,7 @@ function PBAdminLibraryCataloguePage() {
     if (!librarySearchQuery.trim()) return mockLibraries;
     const q = librarySearchQuery.toLowerCase().trim();
     return mockLibraries.filter(
-      (l) =>
-        l.name.toLowerCase().includes(q) || l.location.toLowerCase().includes(q)
+      (l) => l.name.toLowerCase().includes(q) || l.location.toLowerCase().includes(q),
     );
   }, [librarySearchQuery]);
 
@@ -483,11 +489,9 @@ function PBAdminLibraryCataloguePage() {
         item.publisher.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesPublisher =
-        selectedPublisher === "All Publishers" ||
-        item.publisher === selectedPublisher;
+        selectedPublisher === "All Publishers" || item.publisher === selectedPublisher;
 
-      const matchesGenre =
-        selectedGenre === "All Genres" || item.genre === selectedGenre;
+      const matchesGenre = selectedGenre === "All Genres" || item.genre === selectedGenre;
 
       return matchesSearch && matchesPublisher && matchesGenre;
     });
@@ -504,9 +508,7 @@ function PBAdminLibraryCataloguePage() {
 
   // Unique lists for dropdowns
   const publishersList = useMemo(() => {
-    const list = Array.from(
-      new Set(allAvailableEBooks.map((b) => b.publisher))
-    );
+    const list = Array.from(new Set(allAvailableEBooks.map((b) => b.publisher)));
     return ["All Publishers", "PixelBooks", ...list];
   }, []);
 
@@ -550,8 +552,7 @@ function PBAdminLibraryCataloguePage() {
       const matchesPublisher =
         modalPublisher === "All Publishers" || book.publisher === modalPublisher;
 
-      const matchesGenre =
-        modalGenre === "All Genres" || book.genre === modalGenre;
+      const matchesGenre = modalGenre === "All Genres" || book.genre === modalGenre;
 
       return matchesSearch && matchesPublisher && matchesGenre;
     });
@@ -576,7 +577,7 @@ function PBAdminLibraryCataloguePage() {
 
   const handleUnmapByTitle = (title: string) => {
     setMappedEBooks((prev) =>
-      prev.filter((item) => !(item.libraryId === selectedLibraryId && item.title === title))
+      prev.filter((item) => !(item.libraryId === selectedLibraryId && item.title === title)),
     );
     toast.success(`"${title}" unmapped from ${selectedLibrary?.name || "library"}.`);
   };
@@ -611,24 +612,27 @@ function PBAdminLibraryCataloguePage() {
       subtitle="Map publisher eBooks to institutional library catalogs across publishers and configure availability."
     >
       <div className="space-y-6 p-4 pb-8 sm:p-6 md:p-8">
-
-
         {/* Compact Library Context Strip */}
         <section className="rounded-2xl border border-border bg-card shadow-2xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3">
-
             {/* Left: Library Identity */}
             {selectedLibrary ? (
               <div className="flex items-center gap-3 min-w-0">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-2xs ${selectedLibrary.logoBg}`}>
+                <div
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-2xs ${selectedLibrary.logoBg}`}
+                >
                   <LibraryIcon size={20} strokeWidth={2.2} />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Selected Library</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      Selected Library
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-base font-extrabold text-foreground truncate">{selectedLibrary.name}</span>
+                    <span className="text-base font-extrabold text-foreground truncate">
+                      {selectedLibrary.name}
+                    </span>
                     <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 shrink-0">
                       <BookOpen size={10} />
                       {currentLibraryMappedEBooks.length} Mapped
@@ -657,7 +661,9 @@ function PBAdminLibraryCataloguePage() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-foreground">No Library Selected</p>
-                  <p className="text-[11px] text-muted-foreground font-medium">Choose a library to view and assign eBooks.</p>
+                  <p className="text-[11px] text-muted-foreground font-medium">
+                    Choose a library to view and assign eBooks.
+                  </p>
                 </div>
               </div>
             )}
@@ -696,7 +702,10 @@ function PBAdminLibraryCataloguePage() {
                   {/* Search input in dropdown */}
                   <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-1.5">
                     <div className="relative flex items-center">
-                      <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+                      <Search
+                        size={14}
+                        className="absolute left-3 text-muted-foreground pointer-events-none"
+                      />
                       <input
                         type="text"
                         value={librarySearchQuery}
@@ -741,7 +750,9 @@ function PBAdminLibraryCataloguePage() {
                             </div>
                             <div>
                               <p className="text-xs font-bold leading-tight">{lib.name}</p>
-                              <p className="text-[10px] text-muted-foreground mt-0.5">{lib.location}</p>
+                              <p className="text-[10px] text-muted-foreground mt-0.5">
+                                {lib.location}
+                              </p>
                             </div>
                           </div>
                           {lib.id === selectedLibraryId && (
@@ -807,7 +818,10 @@ function PBAdminLibraryCataloguePage() {
                   {/* Sticky Search Input Bar in Publisher Dropdown */}
                   <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
                     <div className="relative flex items-center">
-                      <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+                      <Search
+                        size={14}
+                        className="absolute left-3 text-muted-foreground pointer-events-none"
+                      />
                       <input
                         type="text"
                         value={publisherSearchQuery}
@@ -888,7 +902,10 @@ function PBAdminLibraryCataloguePage() {
                   {/* Sticky Search Input Bar in Genre Dropdown */}
                   <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
                     <div className="relative flex items-center">
-                      <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+                      <Search
+                        size={14}
+                        className="absolute left-3 text-muted-foreground pointer-events-none"
+                      />
                       <input
                         type="text"
                         value={genreSearchQuery}
@@ -978,7 +995,8 @@ function PBAdminLibraryCataloguePage() {
                         <LibraryIcon size={32} className="text-muted-foreground/60" />
                         <p className="font-semibold text-foreground text-sm">No Library Selected</p>
                         <p className="text-xs text-muted-foreground">
-                          Please select an institutional library from the dropdown above to view its mapped eBooks.
+                          Please select an institutional library from the dropdown above to view its
+                          mapped eBooks.
                         </p>
                       </div>
                     </td>
@@ -1055,9 +1073,16 @@ function PBAdminLibraryCataloguePage() {
           {selectedLibraryId && filteredMappedEBooks.length > 0 && (
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-border/50 text-xs font-medium text-muted-foreground">
               <span>
-                Showing <strong className="text-foreground">{Math.min((currentPage - 1) * itemsPerPage + 1, filteredMappedEBooks.length)}</strong> to{" "}
-                <strong className="text-foreground">{Math.min(currentPage * itemsPerPage, filteredMappedEBooks.length)}</strong> of{" "}
-                <strong className="text-foreground">{filteredMappedEBooks.length}</strong> mapped eBooks
+                Showing{" "}
+                <strong className="text-foreground">
+                  {Math.min((currentPage - 1) * itemsPerPage + 1, filteredMappedEBooks.length)}
+                </strong>{" "}
+                to{" "}
+                <strong className="text-foreground">
+                  {Math.min(currentPage * itemsPerPage, filteredMappedEBooks.length)}
+                </strong>{" "}
+                of <strong className="text-foreground">{filteredMappedEBooks.length}</strong> mapped
+                eBooks
               </span>
 
               <div className="flex items-center gap-1.5">
@@ -1205,7 +1230,10 @@ function PBAdminLibraryCataloguePage() {
                   >
                     <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
                       <div className="relative flex items-center">
-                        <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+                        <Search
+                          size={14}
+                          className="absolute left-3 text-muted-foreground pointer-events-none"
+                        />
                         <input
                           type="text"
                           value={modalPublisherSearchQuery}
@@ -1284,7 +1312,10 @@ function PBAdminLibraryCataloguePage() {
                   >
                     <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
                       <div className="relative flex items-center">
-                        <Search size={14} className="absolute left-3 text-muted-foreground pointer-events-none" />
+                        <Search
+                          size={14}
+                          className="absolute left-3 text-muted-foreground pointer-events-none"
+                        />
                         <input
                           type="text"
                           value={modalGenreSearchQuery}
@@ -1351,7 +1382,7 @@ function PBAdminLibraryCataloguePage() {
                   ) : (
                     paginatedModalEBooks.map((book) => {
                       const isMapped = currentLibraryMappedEBooks.some(
-                        (mapped) => mapped.title === book.title
+                        (mapped) => mapped.title === book.title,
                       );
 
                       return (
@@ -1415,9 +1446,19 @@ function PBAdminLibraryCataloguePage() {
               <span className="text-xs font-medium text-muted-foreground">
                 {filteredModalEBooks.length > 0 ? (
                   <>
-                    Showing <strong className="text-foreground">{Math.min((modalCurrentPage - 1) * modalItemsPerPage + 1, filteredModalEBooks.length)}</strong> to{" "}
-                    <strong className="text-foreground">{Math.min(modalCurrentPage * modalItemsPerPage, filteredModalEBooks.length)}</strong> of{" "}
-                    <strong className="text-foreground">{filteredModalEBooks.length}</strong> available eBooks
+                    Showing{" "}
+                    <strong className="text-foreground">
+                      {Math.min(
+                        (modalCurrentPage - 1) * modalItemsPerPage + 1,
+                        filteredModalEBooks.length,
+                      )}
+                    </strong>{" "}
+                    to{" "}
+                    <strong className="text-foreground">
+                      {Math.min(modalCurrentPage * modalItemsPerPage, filteredModalEBooks.length)}
+                    </strong>{" "}
+                    of <strong className="text-foreground">{filteredModalEBooks.length}</strong>{" "}
+                    available eBooks
                   </>
                 ) : (
                   "0 eBooks available"

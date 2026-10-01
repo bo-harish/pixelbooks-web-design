@@ -83,10 +83,7 @@ export function PbWebHeader({
     };
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        searchContainerRef.current &&
-        !searchContainerRef.current.contains(e.target as Node)
-      ) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
         setIsSearchOpen(false);
       }
     };
@@ -111,14 +108,14 @@ export function PbWebHeader({
     if (!currentSearchQuery.trim()) return [];
     const q = currentSearchQuery.toLowerCase();
     const allBooks = Object.entries(sampleBooksByGenre).flatMap(([genre, books]) =>
-      books.map((b) => ({ ...b, genre }))
+      books.map((b) => ({ ...b, genre })),
     );
     return allBooks.filter(
       (b) =>
         b.title.toLowerCase().includes(q) ||
         b.author.toLowerCase().includes(q) ||
         b.isbn.toLowerCase().includes(q) ||
-        b.genre.toLowerCase().includes(q)
+        b.genre.toLowerCase().includes(q),
     );
   }, [currentSearchQuery]);
 
@@ -187,10 +184,11 @@ export function PbWebHeader({
               <button
                 type="button"
                 onClick={() => onTabChange("Browse Genres")}
-                className={`whitespace-nowrap transition-colors py-1.5 cursor-pointer ${activeTab === "Browse Genres"
-                  ? "font-bold text-foreground"
-                  : "text-muted-foreground/70 hover:text-foreground"
-                  }`}
+                className={`whitespace-nowrap transition-colors py-1.5 cursor-pointer ${
+                  activeTab === "Browse Genres"
+                    ? "font-bold text-foreground"
+                    : "text-muted-foreground/70 hover:text-foreground"
+                }`}
               >
                 Browse Genres
               </button>
@@ -223,10 +221,11 @@ export function PbWebHeader({
             </Link>
             <Link
               to="/pb-web/support"
-              className={`whitespace-nowrap transition-colors py-1.5 ${activeTab === "Support"
-                ? "font-bold text-foreground"
-                : "text-muted-foreground/70 hover:text-foreground"
-                }`}
+              className={`whitespace-nowrap transition-colors py-1.5 ${
+                activeTab === "Support"
+                  ? "font-bold text-foreground"
+                  : "text-muted-foreground/70 hover:text-foreground"
+              }`}
             >
               Support
             </Link>
@@ -405,7 +404,9 @@ export function PbWebHeader({
 
                 {/* Dropdown Footer */}
                 <div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
-                  <span>Press <kbd className="font-semibold text-foreground">ESC</kbd> to exit</span>
+                  <span>
+                    Press <kbd className="font-semibold text-foreground">ESC</kbd> to exit
+                  </span>
                   <button
                     type="button"
                     onClick={() => handleSearch()}
@@ -454,7 +455,8 @@ export function PbWebHeader({
                 {[
                   {
                     id: "rn1",
-                    message: "📦 Your order #CS-4821 has been confirmed! 'NEET Courseware Biology Class-XII' is ready in your library.",
+                    message:
+                      "📦 Your order #CS-4821 has been confirmed! 'NEET Courseware Biology Class-XII' is ready in your library.",
                     category: "Order Confirmed",
                     date: "Today",
                     time: "10:14 AM",
@@ -462,7 +464,8 @@ export function PbWebHeader({
                   },
                   {
                     id: "rn2",
-                    message: "🎉 PixelBooks has added 12 new Malayalam titles you might love. Explore the collection!",
+                    message:
+                      "🎉 PixelBooks has added 12 new Malayalam titles you might love. Explore the collection!",
                     category: "New Arrivals",
                     date: "Today",
                     time: "08:30 AM",
@@ -470,7 +473,8 @@ export function PbWebHeader({
                   },
                   {
                     id: "rn3",
-                    message: "⬇️ Your offline download for 'Foundation Mathematics JEE' is complete and ready to read.",
+                    message:
+                      "⬇️ Your offline download for 'Foundation Mathematics JEE' is complete and ready to read.",
                     category: "Download Ready",
                     date: "Yesterday",
                     time: "06:55 PM",
@@ -478,22 +482,31 @@ export function PbWebHeader({
                   },
                   {
                     id: "rn4",
-                    message: "⚠️ Your session on Desktop Chrome was signed in from a new device. Secure your account if this wasn't you.",
+                    message:
+                      "⚠️ Your session on Desktop Chrome was signed in from a new device. Secure your account if this wasn't you.",
                     category: "Security Alert",
                     date: "Yesterday",
                     time: "02:11 PM",
                     unread: false,
                   },
                 ].map((n) => (
-                  <div key={n.id} className="flex items-start gap-3 px-4 py-3 border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors">
+                  <div
+                    key={n.id}
+                    className="flex items-start gap-3 px-4 py-3 border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
+                  >
                     <span
                       className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: n.unread ? "var(--brand)" : "transparent", border: n.unread ? "none" : "1.5px solid var(--border)" }}
+                      style={{
+                        backgroundColor: n.unread ? "var(--brand)" : "transparent",
+                        border: n.unread ? "none" : "1.5px solid var(--border)",
+                      }}
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-3">
                         <p className="text-[12.5px] leading-snug text-foreground">{n.message}</p>
-                        <span className="shrink-0 text-[11px] text-muted-foreground whitespace-nowrap">{n.time}</span>
+                        <span className="shrink-0 text-[11px] text-muted-foreground whitespace-nowrap">
+                          {n.time}
+                        </span>
                       </div>
                       <p className="mt-0.5 text-[11px] text-muted-foreground">{n.category}</p>
                     </div>
@@ -505,7 +518,9 @@ export function PbWebHeader({
               <div className="px-4 py-3 border-t border-border flex items-center justify-center">
                 <button
                   type="button"
-                  onClick={() => navigate({ to: "/pb-web/accounts", search: { tab: "notifications" } })}
+                  onClick={() =>
+                    navigate({ to: "/pb-web/accounts", search: { tab: "notifications" } })
+                  }
                   className="text-xs font-semibold transition-colors cursor-pointer"
                   style={{ color: "var(--brand)" }}
                 >
@@ -551,7 +566,10 @@ export function PbWebHeader({
                 <ChevronDown size={16} className="text-muted-foreground shrink-0" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60 sm:w-64 mt-2.5 p-2 rounded-xl shadow-lg border border-border/80">
+            <DropdownMenuContent
+              align="end"
+              className="w-60 sm:w-64 mt-2.5 p-2 rounded-xl shadow-lg border border-border/80"
+            >
               <DropdownMenuItem
                 onClick={() => navigate({ to: "/pb-web/accounts", search: { tab: "profile" } })}
                 className="text-sm font-medium flex items-center gap-3 py-2.5 px-3 rounded-lg cursor-pointer transition-colors focus:bg-emerald-50 focus:text-[#137365]"
@@ -601,10 +619,11 @@ export function PbWebHeader({
                   onTabChange("Browse Genres");
                   setIsMobileMenuOpen(false);
                 }}
-                className={`text-left py-2.5 px-3 rounded-lg transition-colors cursor-pointer ${activeTab === "Browse Genres"
-                  ? "bg-pbgreen-light text-pbgreen-dark font-bold"
-                  : "hover:bg-secondary"
-                  }`}
+                className={`text-left py-2.5 px-3 rounded-lg transition-colors cursor-pointer ${
+                  activeTab === "Browse Genres"
+                    ? "bg-pbgreen-light text-pbgreen-dark font-bold"
+                    : "hover:bg-secondary"
+                }`}
               >
                 Browse Genres
               </button>
@@ -642,8 +661,9 @@ export function PbWebHeader({
             <Link
               to="/pb-web/support"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`py-2.5 px-3 rounded-lg hover:bg-secondary transition-colors ${activeTab === "Support" ? "font-bold text-foreground bg-secondary/50" : ""
-                }`}
+              className={`py-2.5 px-3 rounded-lg hover:bg-secondary transition-colors ${
+                activeTab === "Support" ? "font-bold text-foreground bg-secondary/50" : ""
+              }`}
             >
               Support
             </Link>

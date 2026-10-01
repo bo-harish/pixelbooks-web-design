@@ -36,7 +36,8 @@ export const Route = createFileRoute("/pb-admin/promo-codes")({
       { title: "Promo Code — PixelBooks Admin" },
       {
         name: "description",
-        content: "Manage promotional discount codes, approval status, and campaign durations in PixelBooks.",
+        content:
+          "Manage promotional discount codes, approval status, and campaign durations in PixelBooks.",
       },
     ],
   }),
@@ -194,7 +195,10 @@ function DropdownSelect<T extends string>({
           {searchable && (
             <div className="p-2 border-b border-border bg-card sticky top-0 z-10">
               <div className="relative flex items-center">
-                <Search size={14} className="absolute left-2.5 text-muted-foreground pointer-events-none" />
+                <Search
+                  size={14}
+                  className="absolute left-2.5 text-muted-foreground pointer-events-none"
+                />
                 <input
                   type="text"
                   value={searchTerm}
@@ -306,7 +310,7 @@ export function PromoCodePage() {
   // Change Status inline from dropdown
   const handleChangeStatus = (id: string, newStatus: PromoStatus) => {
     setPromoCodes((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
+      prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item)),
     );
     toast.success(`Status updated to ${newStatus}`);
   };
@@ -371,7 +375,12 @@ export function PromoCodePage() {
 
     const durationStr = formatRangeStr(startDateInput, endDateInput);
     const formattedDiscount = percentageInput ? `${percentageInput}%` : "10%";
-    const targetStr = selectedEbook !== "Choose eBook" ? selectedEbook : selectedPublisherOrAuthor !== "Choose from list" ? selectedPublisherOrAuthor : "All eBooks";
+    const targetStr =
+      selectedEbook !== "Choose eBook"
+        ? selectedEbook
+        : selectedPublisherOrAuthor !== "Choose from list"
+          ? selectedPublisherOrAuthor
+          : "All eBooks";
 
     if (editingItem) {
       setPromoCodes((prev) =>
@@ -381,7 +390,10 @@ export function PromoCodePage() {
                 ...item,
                 code: promoCodeInput.toUpperCase(),
                 creatorType: publisherAuthorType,
-                publisherOrAuthorName: selectedPublisherOrAuthor !== "Choose from list" ? selectedPublisherOrAuthor : "National Book Trust",
+                publisherOrAuthorName:
+                  selectedPublisherOrAuthor !== "Choose from list"
+                    ? selectedPublisherOrAuthor
+                    : "National Book Trust",
                 ebookName: selectedEbook !== "Choose eBook" ? selectedEbook : "General eBook",
                 targetEntity: targetStr,
                 discount: formattedDiscount,
@@ -391,8 +403,8 @@ export function PromoCodePage() {
                 minimumAmount: minimumAmountInput || "₹500",
                 description: descriptionInput || "Promotional discount code.",
               }
-            : item
-        )
+            : item,
+        ),
       );
       toast.success(`Promo code "${promoCodeInput.toUpperCase()}" updated successfully!`);
     } else {
@@ -400,7 +412,10 @@ export function PromoCodePage() {
         id: `pc-${Date.now()}`,
         code: promoCodeInput.toUpperCase(),
         creatorType: publisherAuthorType,
-        publisherOrAuthorName: selectedPublisherOrAuthor !== "Choose from list" ? selectedPublisherOrAuthor : "National Book Trust",
+        publisherOrAuthorName:
+          selectedPublisherOrAuthor !== "Choose from list"
+            ? selectedPublisherOrAuthor
+            : "National Book Trust",
         ebookName: selectedEbook !== "Choose eBook" ? selectedEbook : "General eBook",
         targetEntity: targetStr,
         discount: formattedDiscount,
@@ -501,19 +516,22 @@ export function PromoCodePage() {
                       </tr>
                     ) : (
                       filteredItems.map((item) => (
-                        <tr
-                          key={item.id}
-                          className="transition-colors hover:bg-secondary/40"
-                        >
+                        <tr key={item.id} className="transition-colors hover:bg-secondary/40">
                           {/* Promo Code Column */}
                           <td className="py-4 pl-6 pr-4 align-middle">
                             <div className="inline-flex items-center gap-2 rounded-md border border-border/80 bg-secondary/30 px-3 py-1.5 text-xs font-mono font-bold tracking-wider text-foreground shadow-2xs">
                               {item.creatorType === "Publisher" ? (
-                                <span title="Publisher" className="inline-flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                <span
+                                  title="Publisher"
+                                  className="inline-flex items-center justify-center text-indigo-600 dark:text-indigo-400"
+                                >
                                   <Building2 size={14} className="shrink-0" />
                                 </span>
                               ) : (
-                                <span title="Author" className="inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                <span
+                                  title="Author"
+                                  className="inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400"
+                                >
                                   <Feather size={14} className="shrink-0" />
                                 </span>
                               )}
@@ -568,27 +586,39 @@ export function PromoCodePage() {
                               <DropdownMenuTrigger className="outline-none cursor-pointer">
                                 {item.status === "Approved" && (
                                   <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/60 shadow-2xs">
-                                    <CheckCircle2 size={14} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+                                    <CheckCircle2
+                                      size={14}
+                                      className="shrink-0 text-emerald-600 dark:text-emerald-400"
+                                    />
                                     <span>Approved</span>
                                     <ChevronDown size={12} className="ml-0.5 opacity-75" />
                                   </span>
                                 )}
                                 {item.status === "Pending" && (
                                   <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200/80 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/60 shadow-2xs">
-                                    <AlertTriangle size={14} className="shrink-0 text-amber-600 dark:text-amber-400" />
+                                    <AlertTriangle
+                                      size={14}
+                                      className="shrink-0 text-amber-600 dark:text-amber-400"
+                                    />
                                     <span>Pending</span>
                                     <ChevronDown size={12} className="ml-0.5 opacity-75" />
                                   </span>
                                 )}
                                 {item.status === "Rejected" && (
                                   <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200/80 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/60 shadow-2xs">
-                                    <XCircle size={14} className="shrink-0 text-rose-600 dark:text-rose-400" />
+                                    <XCircle
+                                      size={14}
+                                      className="shrink-0 text-rose-600 dark:text-rose-400"
+                                    />
                                     <span>Rejected</span>
                                     <ChevronDown size={12} className="ml-0.5 opacity-75" />
                                   </span>
                                 )}
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-36 bg-card border-border shadow-lg rounded-xl py-1">
+                              <DropdownMenuContent
+                                align="end"
+                                className="w-36 bg-card border-border shadow-lg rounded-xl py-1"
+                              >
                                 <DropdownMenuItem
                                   onClick={() => handleChangeStatus(item.id, "Approved")}
                                   className="cursor-pointer px-3 py-2 text-xs font-semibold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
@@ -620,11 +650,10 @@ export function PromoCodePage() {
               {/* Table Footer */}
               <div className="flex items-center justify-between border-t border-border bg-secondary/10 px-6 py-4">
                 <span className="text-xs text-muted-foreground">
-                  Showing <strong className="text-foreground">{filteredItems.length}</strong> from <strong className="text-foreground">{promoCodes.length}</strong> promo codes
+                  Showing <strong className="text-foreground">{filteredItems.length}</strong> from{" "}
+                  <strong className="text-foreground">{promoCodes.length}</strong> promo codes
                 </span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Page 1 of 1
-                </span>
+                <span className="text-xs font-medium text-muted-foreground">Page 1 of 1</span>
               </div>
             </div>
           </>
@@ -651,7 +680,6 @@ export function PromoCodePage() {
             {/* Form Card Container */}
             <form onSubmit={handleSavePromoCode} className="space-y-6 w-full">
               <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-2xs space-y-6">
-                
                 {/* Row 1: Publisher/Author Dropdown */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -675,14 +703,29 @@ export function PromoCodePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      {publisherAuthorType}<span className="text-red-500">*</span>
+                      {publisherAuthorType}
+                      <span className="text-red-500">*</span>
                     </label>
                     <DropdownSelect
                       value={selectedPublisherOrAuthor}
                       options={
                         publisherAuthorType === "Publisher"
-                          ? ["Choose from list", "National Book Trust", "Penguin India", "Rupa Publications", "HarperCollins", "Oxford University Press"]
-                          : ["Choose from list", "Ruskin Bond", "Arundhati Roy", "Chetan Bhagat", "Vikram Seth", "Jhumpa Lahiri"]
+                          ? [
+                              "Choose from list",
+                              "National Book Trust",
+                              "Penguin India",
+                              "Rupa Publications",
+                              "HarperCollins",
+                              "Oxford University Press",
+                            ]
+                          : [
+                              "Choose from list",
+                              "Ruskin Bond",
+                              "Arundhati Roy",
+                              "Chetan Bhagat",
+                              "Vikram Seth",
+                              "Jhumpa Lahiri",
+                            ]
                       }
                       onChange={setSelectedPublisherOrAuthor}
                       className="w-full"
@@ -747,13 +790,19 @@ export function PromoCodePage() {
                             className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer transition-colors"
                             title="Copy Code"
                           >
-                            {copiedId === "form-code" ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
+                            {copiedId === "form-code" ? (
+                              <Check size={13} className="text-emerald-500" />
+                            ) : (
+                              <Copy size={13} />
+                            )}
                           </button>
                         )}
                       </div>
                       <button
                         type="button"
-                        onClick={() => setPromoCodeInput(`PROMO${Math.floor(100000 + Math.random() * 900000)}`)}
+                        onClick={() =>
+                          setPromoCodeInput(`PROMO${Math.floor(100000 + Math.random() * 900000)}`)
+                        }
                         className="flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white shadow-2xs transition-opacity hover:opacity-90 shrink-0 cursor-pointer whitespace-nowrap"
                       >
                         <Sparkles size={14} />
@@ -801,7 +850,10 @@ export function PromoCodePage() {
                           <CalendarDays size={18} className="text-muted-foreground shrink-0 ml-2" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent align="end" className="w-auto p-4 bg-card border-border shadow-xl rounded-xl">
+                      <PopoverContent
+                        align="end"
+                        className="w-auto p-4 bg-card border-border shadow-xl rounded-xl"
+                      >
                         <div className="flex items-center justify-between pb-3 mb-2 border-b border-border text-xs">
                           <div className="flex items-center gap-1.5">
                             <span className="text-muted-foreground">From:</span>

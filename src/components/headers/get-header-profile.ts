@@ -64,5 +64,3 @@ export function getSettingsRoute(pathname: string): string {
   }
   return "/publisher/settings";
 }
-
-

@@ -13,11 +13,7 @@ import {
 import { AppShell } from "@/components/app-shell";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { Switch } from "@/components/ui/switch";
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from "@/components/ui/hover-card";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { BookCover } from "@/components/ui/book-cover";
 import {
   Dialog,
@@ -42,7 +38,8 @@ export const Route = createFileRoute("/pb-admin/featured-collections")({
       { title: "Featured Collections — PixelBooks Admin" },
       {
         name: "description",
-        content: "View and manage featured book collections, views, and monthly sales performance in PixelBooks Admin.",
+        content:
+          "View and manage featured book collections, views, and monthly sales performance in PixelBooks Admin.",
       },
     ],
   }),
@@ -84,9 +81,7 @@ function CollectionBooksHoverCard({ collection }: { collection: CollectionItem }
         <div className="flex items-center justify-between border-b border-border/80 pb-2 mb-2.5">
           <div className="flex items-center gap-2 min-w-0">
             <BookOpen size={14} className="text-[var(--brand)] shrink-0" />
-            <p className="text-xs font-bold text-foreground truncate">
-              {collection.name}
-            </p>
+            <p className="text-xs font-bold text-foreground truncate">{collection.name}</p>
           </div>
           <span className="shrink-0 text-[11px] font-bold text-[var(--brand)] bg-[var(--sidebar-highlight)] px-2 py-0.5 rounded-full border border-[var(--brand)]/20">
             {books.length} {books.length === 1 ? "Title" : "Titles"}
@@ -112,9 +107,7 @@ function CollectionBooksHoverCard({ collection }: { collection: CollectionItem }
                   <p className="text-xs font-semibold text-foreground truncate leading-tight">
                     {b.title}
                   </p>
-                  <p className="text-[11px] text-muted-foreground truncate">
-                    {b.author}
-                  </p>
+                  <p className="text-[11px] text-muted-foreground truncate">{b.author}</p>
                   <p className="text-[10px] text-muted-foreground font-medium">
                     {b.category} • ₹{b.price}
                   </p>
@@ -264,7 +257,7 @@ function FeaturedCollectionsPage() {
             sorting: editSortingInput.trim(),
             designLayout: editDesignInput as "A1 Design" | "A2 Design",
           }
-        : c
+        : c,
     );
 
     setCollections(updated);
@@ -277,9 +270,11 @@ function FeaturedCollectionsPage() {
     statusFilter === "All" ? "All Status" : statusFilter === "Enabled" ? "Enabled" : "Disabled";
 
   return (
-    <AppShell title="Featured Collections" subtitle="Overview and status control for featured book collections">
+    <AppShell
+      title="Featured Collections"
+      subtitle="Overview and status control for featured book collections"
+    >
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-
         {/* Search & Filter Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Search Box */}
@@ -430,8 +425,9 @@ function FeaturedCollectionsPage() {
           {/* Table Footer / Pagination */}
           <div className="flex flex-col gap-3 border-t border-border px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground font-medium">
-              Showing {paginatedCollections.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-              {Math.min(currentPage * itemsPerPage, simulatedTotalBase)} of {simulatedTotalBase} entries
+              Showing {paginatedCollections.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}{" "}
+              to {Math.min(currentPage * itemsPerPage, simulatedTotalBase)} of {simulatedTotalBase}{" "}
+              entries
             </p>
 
             <div className="flex items-center gap-1.5">
@@ -489,7 +485,6 @@ function FeaturedCollectionsPage() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Add Featured Collection Modal */}
@@ -576,7 +571,10 @@ function FeaturedCollectionsPage() {
       </Dialog>
 
       {/* Edit Collection Modal */}
-      <Dialog open={!!editingCollection} onOpenChange={(open) => !open && setEditingCollection(null)}>
+      <Dialog
+        open={!!editingCollection}
+        onOpenChange={(open) => !open && setEditingCollection(null)}
+      >
         <DialogContent className="sm:max-w-md bg-card border-border">
           <DialogHeader>
             <DialogTitle className="text-base font-bold text-foreground">

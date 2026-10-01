@@ -49,7 +49,11 @@ export function BookCover({
       {showLogo && (
         <div className="relative z-10 pt-0.5 flex items-center justify-center">
           <div className="rounded-full bg-black/25 p-0.5 backdrop-blur-[1px] shadow-2xs border border-white/25">
-            <img src="/logo-app-icon.png" alt="PixelBooks Icon" className={`object-contain ${logoSizes}`} />
+            <img
+              src="/logo-app-icon.png"
+              alt="PixelBooks Icon"
+              className={`object-contain ${logoSizes}`}
+            />
           </div>
         </div>
       )}

@@ -8,7 +8,10 @@ export const Route = createFileRoute("/author/")({
 
 function AuthorDashboard() {
   return (
-    <AppShell title="Dashboard" subtitle="A quick pulse on your sales, royalties and top published titles.">
+    <AppShell
+      title="Dashboard"
+      subtitle="A quick pulse on your sales, royalties and top published titles."
+    >
       <DashboardContent />
     </AppShell>
   );

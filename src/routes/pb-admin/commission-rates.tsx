@@ -15,7 +15,13 @@ import {
 import { AppShell } from "@/components/app-shell";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 
-function EntityAvatar({ type }: { name?: string; type: "Publisher" | "Author"; avatarBg?: string }) {
+function EntityAvatar({
+  type,
+}: {
+  name?: string;
+  type: "Publisher" | "Author";
+  avatarBg?: string;
+}) {
   if (type === "Publisher") {
     return (
       <div
@@ -43,7 +49,8 @@ export const Route = createFileRoute("/pb-admin/commission-rates")({
       { title: "Commission Rates — PixelBooks Admin" },
       {
         name: "description",
-        content: "View and manage publisher and author commission rates, default rates, and custom tier contracts.",
+        content:
+          "View and manage publisher and author commission rates, default rates, and custom tier contracts.",
       },
     ],
   }),
@@ -184,8 +191,7 @@ function CommissionRates() {
       item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.location.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesRole =
-      publisherFilter === "Publisher & Author" || item.type === publisherFilter;
+    const matchesRole = publisherFilter === "Publisher & Author" || item.type === publisherFilter;
 
     const matchesRateType =
       rateFilter === "Rate Type" ||
@@ -222,7 +228,9 @@ function CommissionRates() {
               <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
                 {commissionData.length}
               </p>
-              <span className="text-[11px] font-medium text-muted-foreground">Publishers & Authors</span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Publishers & Authors
+              </span>
             </div>
           </div>
 
@@ -278,7 +286,9 @@ function CommissionRates() {
                 ).toFixed(1)}
                 %
               </p>
-              <span className="text-[11px] font-medium text-muted-foreground">Across All Accounts</span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Across All Accounts
+              </span>
             </div>
           </div>
 
@@ -301,7 +311,9 @@ function CommissionRates() {
               <p className="text-xl sm:text-[22px] font-extrabold text-foreground tracking-tight leading-tight">
                 {commissionData.filter((d) => d.isCustom).length}
               </p>
-              <span className="text-[11px] font-medium text-muted-foreground">Special Tier Contracts</span>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Special Tier Contracts
+              </span>
             </div>
           </div>
         </div>
@@ -378,7 +390,11 @@ function CommissionRates() {
                       {/* Column 1: Publisher / Author Name with distinct profile pic style */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <EntityAvatar name={item.name} type={item.type} avatarBg={item.avatarBg} />
+                          <EntityAvatar
+                            name={item.name}
+                            type={item.type}
+                            avatarBg={item.avatarBg}
+                          />
                           <div>
                             <p className="font-semibold text-foreground group-hover:text-[var(--brand)] transition-colors">
                               {item.name}
@@ -456,7 +472,6 @@ function CommissionRates() {
             </button>
           </div>
         </div>
-
       </div>
     </AppShell>
   );

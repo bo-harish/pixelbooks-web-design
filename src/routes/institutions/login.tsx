@@ -25,7 +25,8 @@ export const Route = createFileRoute("/institutions/login")({
       { title: "Institutions Login — PixelBooks" },
       {
         name: "description",
-        content: "Institutional portal login gateway for publishers, library administrators, and students & staff.",
+        content:
+          "Institutional portal login gateway for publishers, library administrators, and students & staff.",
       },
     ],
   }),
@@ -76,18 +77,26 @@ function InstitutionsLoginPage() {
     if (typeof window === "undefined") return;
 
     const readOtpSetting = () => {
-      const stored = localStorage.getItem("pb_disable_otp_logins_LIB-101") ?? localStorage.getItem("pb_disable_otp_logins");
+      const stored =
+        localStorage.getItem("pb_disable_otp_logins_LIB-101") ??
+        localStorage.getItem("pb_disable_otp_logins");
       setDisableOtpLogins(stored === "true");
     };
 
     readOtpSetting();
 
     const handleOtpSettingChange = () => readOtpSetting();
-    window.addEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+    window.addEventListener(
+      "pb-disable-otp-logins-change",
+      handleOtpSettingChange as EventListener,
+    );
     window.addEventListener("storage", handleOtpSettingChange);
 
     return () => {
-      window.removeEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+      window.removeEventListener(
+        "pb-disable-otp-logins-change",
+        handleOtpSettingChange as EventListener,
+      );
       window.removeEventListener("storage", handleOtpSettingChange);
     };
   }, []);
@@ -271,7 +280,8 @@ function InstitutionsLoginPage() {
                 {institution.location}
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground/80 pt-1 leading-relaxed">
-                Institutional portal to distribute and access academic books and journals for students and staff.
+                Institutional portal to distribute and access academic books and journals for
+                students and staff.
               </p>
             </div>
           </div>
@@ -294,9 +304,7 @@ function InstitutionsLoginPage() {
                 className="group relative flex flex-1 flex-col justify-between rounded-2xl border border-border bg-card/60 hover:bg-card/90 p-6 sm:p-7 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer text-foreground no-underline"
                 style={{
                   borderColor:
-                    hoveredBox === "publisher"
-                      ? "oklch(0.55 0.11 195 / 0.6)"
-                      : undefined,
+                    hoveredBox === "publisher" ? "oklch(0.55 0.11 195 / 0.6)" : undefined,
                   boxShadow:
                     hoveredBox === "publisher"
                       ? "0 16px 32px -12px rgba(4, 150, 180, 0.25)"
@@ -310,7 +318,8 @@ function InstitutionsLoginPage() {
                       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide"
                       style={{
                         color: "oklch(0.55 0.11 195)",
-                        backgroundColor: "color-mix(in oklab, oklch(0.55 0.11 195) 12%, transparent)",
+                        backgroundColor:
+                          "color-mix(in oklab, oklch(0.55 0.11 195) 12%, transparent)",
                       }}
                     >
                       Publishing
@@ -329,7 +338,8 @@ function InstitutionsLoginPage() {
                       className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shrink-0 shadow-xs"
                       style={{
                         color: "oklch(0.55 0.11 195)",
-                        backgroundColor: "color-mix(in oklab, oklch(0.55 0.11 195) 12%, transparent)",
+                        backgroundColor:
+                          "color-mix(in oklab, oklch(0.55 0.11 195) 12%, transparent)",
                       }}
                     >
                       <BookMarked size={22} strokeWidth={2} />
@@ -350,7 +360,8 @@ function InstitutionsLoginPage() {
                   </div>
 
                   <p className="text-xs text-muted-foreground/80 leading-relaxed">
-                    Publish and distribute internal books, academic journals, and course literature exclusively for students and faculty across the institution.
+                    Publish and distribute internal books, academic journals, and course literature
+                    exclusively for students and faculty across the institution.
                   </p>
                 </div>
 
@@ -362,7 +373,10 @@ function InstitutionsLoginPage() {
                     }}
                   >
                     <span>Publisher Login</span>
-                    <ExternalLink size={13} className="transition-transform group-hover:translate-x-0.5" />
+                    <ExternalLink
+                      size={13}
+                      className="transition-transform group-hover:translate-x-0.5"
+                    />
                   </div>
                 </div>
               </a>
@@ -378,9 +392,7 @@ function InstitutionsLoginPage() {
                 className="group relative flex flex-1 flex-col justify-between rounded-2xl border border-border bg-card/60 hover:bg-card/90 p-6 sm:p-7 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer text-foreground no-underline"
                 style={{
                   borderColor:
-                    hoveredBox === "library-admin"
-                      ? "oklch(0.55 0.13 260 / 0.6)"
-                      : undefined,
+                    hoveredBox === "library-admin" ? "oklch(0.55 0.13 260 / 0.6)" : undefined,
                   boxShadow:
                     hoveredBox === "library-admin"
                       ? "0 16px 32px -12px rgba(79, 70, 229, 0.25)"
@@ -394,7 +406,8 @@ function InstitutionsLoginPage() {
                       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide"
                       style={{
                         color: "oklch(0.55 0.13 260)",
-                        backgroundColor: "color-mix(in oklab, oklch(0.55 0.13 260) 12%, transparent)",
+                        backgroundColor:
+                          "color-mix(in oklab, oklch(0.55 0.13 260) 12%, transparent)",
                       }}
                     >
                       Administration
@@ -413,7 +426,8 @@ function InstitutionsLoginPage() {
                       className="flex h-11 w-11 items-center justify-center rounded-xl transition-transform group-hover:scale-110 shrink-0"
                       style={{
                         color: "oklch(0.55 0.13 260)",
-                        backgroundColor: "color-mix(in oklab, oklch(0.55 0.13 260) 12%, transparent)",
+                        backgroundColor:
+                          "color-mix(in oklab, oklch(0.55 0.13 260) 12%, transparent)",
                       }}
                     >
                       <Library size={22} strokeWidth={2} />
@@ -422,7 +436,8 @@ function InstitutionsLoginPage() {
                       <h2
                         className="text-base font-bold text-foreground leading-tight transition-colors"
                         style={{
-                          color: hoveredBox === "library-admin" ? "oklch(0.55 0.13 260)" : undefined,
+                          color:
+                            hoveredBox === "library-admin" ? "oklch(0.55 0.13 260)" : undefined,
                         }}
                       >
                         Library Admin
@@ -434,7 +449,8 @@ function InstitutionsLoginPage() {
                   </div>
 
                   <p className="text-xs text-muted-foreground/80 leading-relaxed">
-                    Centrally manage eBook collections, borrow limits, and license allocations across all departmental libraries in the organization.
+                    Centrally manage eBook collections, borrow limits, and license allocations
+                    across all departmental libraries in the organization.
                   </p>
                 </div>
 
@@ -446,7 +462,10 @@ function InstitutionsLoginPage() {
                     }}
                   >
                     <span>Library Admin</span>
-                    <ExternalLink size={13} className="transition-transform group-hover:translate-x-0.5" />
+                    <ExternalLink
+                      size={13}
+                      className="transition-transform group-hover:translate-x-0.5"
+                    />
                   </div>
                 </div>
               </a>
@@ -469,7 +488,8 @@ function InstitutionsLoginPage() {
                       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide"
                       style={{
                         color: "oklch(0.62 0.15 155)",
-                        backgroundColor: "color-mix(in oklab, oklch(0.62 0.15 155) 12%, transparent)",
+                        backgroundColor:
+                          "color-mix(in oklab, oklch(0.62 0.15 155) 12%, transparent)",
                       }}
                     >
                       Library Portal
@@ -486,7 +506,8 @@ function InstitutionsLoginPage() {
                       className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0 shadow-xs"
                       style={{
                         color: "oklch(0.62 0.15 155)",
-                        backgroundColor: "color-mix(in oklab, oklch(0.62 0.15 155) 14%, transparent)",
+                        backgroundColor:
+                          "color-mix(in oklab, oklch(0.62 0.15 155) 14%, transparent)",
                       }}
                     >
                       <GraduationCap size={24} strokeWidth={2} />
@@ -505,21 +526,25 @@ function InstitutionsLoginPage() {
                   </div>
 
                   <p className="text-xs text-muted-foreground/80 leading-relaxed">
-                    Access the institutional digital library, read assigned e-books, explore university collections, and track reading progress.
+                    Access the institutional digital library, read assigned e-books, explore
+                    university collections, and track reading progress.
                   </p>
 
                   {/* Method Switcher Tabs: Password vs OTP */}
-                  <div className={`grid ${disableOtpLogins ? "grid-cols-1" : "grid-cols-2"} gap-1.5 p-1 rounded-xl bg-secondary/40 border border-border/60`}>
+                  <div
+                    className={`grid ${disableOtpLogins ? "grid-cols-1" : "grid-cols-2"} gap-1.5 p-1 rounded-xl bg-secondary/40 border border-border/60`}
+                  >
                     <button
                       type="button"
                       onClick={() => {
                         setLoginMethod("password");
                         setOtpSent(false);
                       }}
-                      className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${loginMethod === "password"
-                        ? "bg-card text-foreground shadow-2xs"
-                        : "text-muted-foreground hover:text-foreground"
-                        }`}
+                      className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        loginMethod === "password"
+                          ? "bg-card text-foreground shadow-2xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
                     >
                       <Lock size={13} />
                       <span>Login ID & Password</span>
@@ -531,10 +556,11 @@ function InstitutionsLoginPage() {
                           setLoginMethod("otp");
                           setOtpSent(false);
                         }}
-                        className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${loginMethod === "otp"
-                          ? "bg-card text-foreground shadow-2xs"
-                          : "text-muted-foreground hover:text-foreground"
-                          }`}
+                        className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                          loginMethod === "otp"
+                            ? "bg-card text-foreground shadow-2xs"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
                       >
                         <Smartphone size={13} />
                         <span>Phone / Email OTP</span>
@@ -651,7 +677,10 @@ function InstitutionsLoginPage() {
                         }}
                       >
                         <span>{isSubmitting ? "Authenticating..." : "Sign In to Library"}</span>
-                        <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+                        <ArrowRight
+                          size={16}
+                          className="transition-transform group-hover:translate-x-0.5"
+                        />
                       </button>
                     </form>
                   ) : (
@@ -686,7 +715,9 @@ function InstitutionsLoginPage() {
                               backgroundColor: "oklch(0.62 0.15 155)",
                             }}
                           >
-                            <span>{isSubmitting ? "Sending 4-Digit OTP..." : "Get OTP & Login"}</span>
+                            <span>
+                              {isSubmitting ? "Sending 4-Digit OTP..." : "Get OTP & Login"}
+                            </span>
                             <ArrowRight size={16} />
                           </button>
                         </div>
@@ -700,7 +731,8 @@ function InstitutionsLoginPage() {
                               <KeyRound size={14} /> Enter 4-Digit OTP
                             </span>
                             <p className="text-[11px] text-muted-foreground">
-                              Sent to <span className="font-semibold text-foreground">{identifier}</span>
+                              Sent to{" "}
+                              <span className="font-semibold text-foreground">{identifier}</span>
                             </p>
                           </div>
 
@@ -773,7 +805,8 @@ function InstitutionsLoginPage() {
                       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide"
                       style={{
                         color: "oklch(0.62 0.15 155)",
-                        backgroundColor: "color-mix(in oklab, oklch(0.62 0.15 155) 12%, transparent)",
+                        backgroundColor:
+                          "color-mix(in oklab, oklch(0.62 0.15 155) 12%, transparent)",
                       }}
                     >
                       Account Recovery
@@ -783,7 +816,8 @@ function InstitutionsLoginPage() {
                   <div className="space-y-1">
                     <h3 className="text-base font-bold text-foreground">Password Recovery</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Enter your Student / Staff Login ID to receive password reset instructions and an authentication link.
+                      Enter your Student / Staff Login ID to receive password reset instructions and
+                      an authentication link.
                     </p>
                   </div>
 
@@ -815,7 +849,9 @@ function InstitutionsLoginPage() {
                         backgroundColor: "oklch(0.62 0.15 155)",
                       }}
                     >
-                      <span>{isSubmitting ? "Sending Reset Link..." : "Send Reset Link & OTP"}</span>
+                      <span>
+                        {isSubmitting ? "Sending Reset Link..." : "Send Reset Link & OTP"}
+                      </span>
                       <ArrowRight size={14} />
                     </button>
                   </form>
@@ -824,7 +860,8 @@ function InstitutionsLoginPage() {
                 <div className="space-y-4 animate-in fade-in duration-200">
                   <div className="rounded-xl border border-border bg-secondary/20 p-4">
                     <p className="text-xs text-muted-foreground">
-                      Password reset is currently restricted by the library administrator. Please contact your library support team.
+                      Password reset is currently restricted by the library administrator. Please
+                      contact your library support team.
                     </p>
                   </div>
                 </div>

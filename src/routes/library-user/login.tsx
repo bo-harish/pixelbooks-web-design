@@ -64,18 +64,26 @@ function UnifiedStudentLoginPage() {
     if (typeof window === "undefined") return;
 
     const readOtpSetting = () => {
-      const stored = localStorage.getItem("pb_disable_otp_logins_LIB-101") ?? localStorage.getItem("pb_disable_otp_logins");
+      const stored =
+        localStorage.getItem("pb_disable_otp_logins_LIB-101") ??
+        localStorage.getItem("pb_disable_otp_logins");
       setDisableOtpLogins(stored === "true");
     };
 
     readOtpSetting();
 
     const handleOtpSettingChange = () => readOtpSetting();
-    window.addEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+    window.addEventListener(
+      "pb-disable-otp-logins-change",
+      handleOtpSettingChange as EventListener,
+    );
     window.addEventListener("storage", handleOtpSettingChange);
 
     return () => {
-      window.removeEventListener("pb-disable-otp-logins-change", handleOtpSettingChange as EventListener);
+      window.removeEventListener(
+        "pb-disable-otp-logins-change",
+        handleOtpSettingChange as EventListener,
+      );
       window.removeEventListener("storage", handleOtpSettingChange);
     };
   }, []);
@@ -267,14 +275,17 @@ function UnifiedStudentLoginPage() {
       {/* Main Container Card (Fixed position below header) */}
       <main className="w-full max-w-[540px] shrink-0 mt-0 sm:mt-1">
         <div className="bg-card border border-border rounded-3xl p-5 sm:p-7 pt-2 sm:pt-2.5 shadow-xl relative overflow-hidden space-y-6">
-
           {/* VIEW 1: MAIN LOGIN SCREEN */}
           {viewMode === "login" && (
             <div className="space-y-4 animate-in fade-in duration-200">
               {/* Vimala College Crest / Logo */}
               <div className="flex flex-col items-center text-center space-y-2">
                 <div className="relative flex h-44 w-44 sm:h-52 sm:w-52 items-center justify-center p-0 -mt-2 sm:-mt-2.5">
-                  <img src="/vimala-logo.png" alt="Vimala College Crest" className="h-full w-full object-contain" />
+                  <img
+                    src="/vimala-logo.png"
+                    alt="Vimala College Crest"
+                    className="h-full w-full object-contain"
+                  />
                 </div>
 
                 <div className="space-y-0.5">
@@ -376,10 +387,11 @@ function UnifiedStudentLoginPage() {
                       onClick={handlePasswordLogin}
                       disabled={isSubmitting}
                       id="btn-unified-password-login"
-                      className={`w-full h-11 rounded-full font-semibold text-sm transition-all shadow-sm cursor-pointer mt-1 ${identifier.trim() && password.trim()
-                        ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                        : "bg-secondary text-muted-foreground cursor-not-allowed"
-                        }`}
+                      className={`w-full h-11 rounded-full font-semibold text-sm transition-all shadow-sm cursor-pointer mt-1 ${
+                        identifier.trim() && password.trim()
+                          ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                          : "bg-secondary text-muted-foreground cursor-not-allowed"
+                      }`}
                     >
                       {isSubmitting ? "Authenticating..." : "Login"}
                     </button>
@@ -392,7 +404,9 @@ function UnifiedStudentLoginPage() {
                             <div className="w-full border-t border-border/70" />
                           </div>
                           <div className="relative flex justify-center text-[11px]">
-                            <span className="bg-card px-2 text-muted-foreground font-medium">or continue with</span>
+                            <span className="bg-card px-2 text-muted-foreground font-medium">
+                              or continue with
+                            </span>
                           </div>
                         </div>
 
@@ -448,10 +462,11 @@ function UnifiedStudentLoginPage() {
                           onClick={handleSendOtp}
                           disabled={isSubmitting}
                           id="btn-unified-send-otp"
-                          className={`w-full h-11 rounded-full font-semibold text-sm transition-all shadow-sm cursor-pointer mt-1 ${identifier.trim()
-                            ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                            : "bg-secondary text-muted-foreground cursor-not-allowed"
-                            }`}
+                          className={`w-full h-11 rounded-full font-semibold text-sm transition-all shadow-sm cursor-pointer mt-1 ${
+                            identifier.trim()
+                              ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                              : "bg-secondary text-muted-foreground cursor-not-allowed"
+                          }`}
                         >
                           {isSubmitting ? "Sending 4-Digit OTP..." : "Get OTP & Login"}
                         </button>
@@ -464,7 +479,8 @@ function UnifiedStudentLoginPage() {
                             <KeyRound size={14} /> Enter 4-Digit OTP
                           </span>
                           <p className="text-[11px] text-muted-foreground">
-                            Sent to <span className="font-semibold text-foreground">{identifier}</span>
+                            Sent to{" "}
+                            <span className="font-semibold text-foreground">{identifier}</span>
                           </p>
                         </div>
 
@@ -519,7 +535,9 @@ function UnifiedStudentLoginPage() {
                         <div className="w-full border-t border-border/70" />
                       </div>
                       <div className="relative flex justify-center text-[11px]">
-                        <span className="bg-card px-2 text-muted-foreground font-medium">or continue with</span>
+                        <span className="bg-card px-2 text-muted-foreground font-medium">
+                          or continue with
+                        </span>
                       </div>
                     </div>
 
@@ -584,10 +602,11 @@ function UnifiedStudentLoginPage() {
                     onClick={handleForgotSubmit}
                     disabled={isSubmitting}
                     id="btn-submit-forgot-password"
-                    className={`w-full h-12 rounded-full font-semibold text-sm transition-all shadow-sm cursor-pointer mt-4 ${forgotId.trim()
-                      ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                      : "bg-secondary text-muted-foreground cursor-not-allowed opacity-80"
-                      }`}
+                    className={`w-full h-12 rounded-full font-semibold text-sm transition-all shadow-sm cursor-pointer mt-4 ${
+                      forgotId.trim()
+                        ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                        : "bg-secondary text-muted-foreground cursor-not-allowed opacity-80"
+                    }`}
                   >
                     {isSubmitting ? "Submitting Request..." : "Forgot Password?"}
                   </button>
@@ -602,7 +621,9 @@ function UnifiedStudentLoginPage() {
                   <div className="space-y-1">
                     <h3 className="text-base font-bold text-foreground">Reset Request Submitted</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      A 4-digit password reset OTP has been sent for ID <span className="font-semibold text-foreground">{forgotId}</span> to your registered email & phone.
+                      A 4-digit password reset OTP has been sent for ID{" "}
+                      <span className="font-semibold text-foreground">{forgotId}</span> to your
+                      registered email & phone.
                     </p>
                   </div>
 
@@ -629,7 +650,9 @@ function UnifiedStudentLoginPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      toast.success("Password reset verified! Please enter your new password upon logging in.");
+                      toast.success(
+                        "Password reset verified! Please enter your new password upon logging in.",
+                      );
                       setViewMode("login");
                     }}
                     className="w-full h-11 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs transition-all shadow-md cursor-pointer"

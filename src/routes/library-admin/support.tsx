@@ -41,7 +41,8 @@ export const Route = createFileRoute("/library-admin/support")({
       { title: "Support — Library Admin — PixelBooks" },
       {
         name: "description",
-        content: "Institutional library support for Vimala College, managing student licenses, allocations, and digital reader inquiries.",
+        content:
+          "Institutional library support for Vimala College, managing student licenses, allocations, and digital reader inquiries.",
       },
     ],
   }),
@@ -216,10 +217,10 @@ function LibraryAdminSupportPage() {
         priority: priority.startsWith("Critical")
           ? "Critical"
           : priority.startsWith("High")
-          ? "High"
-          : priority.startsWith("Medium")
-          ? "Medium"
-          : "Low",
+            ? "High"
+            : priority.startsWith("Medium")
+              ? "Medium"
+              : "Low",
         createdAt: "Just now",
         lastUpdate: "Just now",
         description: message.trim(),
@@ -339,7 +340,8 @@ function LibraryAdminSupportPage() {
                       Raise Support Request
                     </h2>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Provide details below to submit a priority request to the campus operations team.
+                      Provide details below to submit a priority request to the campus operations
+                      team.
                     </p>
                   </div>
                 </div>
@@ -486,7 +488,8 @@ function LibraryAdminSupportPage() {
                   {/* Student ID / Enrollment ID (Optional) */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-foreground">
-                      Student / Enrollment ID <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
+                      Student / Enrollment ID{" "}
+                      <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                     </Label>
                     <Input
                       placeholder="e.g., CS-2026-042 or Login ID"
@@ -536,7 +539,10 @@ function LibraryAdminSupportPage() {
                 {/* File Attachment Box */}
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-foreground">
-                    Attachments <span className="text-xs text-muted-foreground font-normal">(Roster CSV, error screenshot, approval PDF)</span>
+                    Attachments{" "}
+                    <span className="text-xs text-muted-foreground font-normal">
+                      (Roster CSV, error screenshot, approval PDF)
+                    </span>
                   </Label>
                   <div className="rounded-xl border border-dashed border-border bg-card/50 p-4 transition-colors hover:border-[var(--brand)]/60">
                     {attachment ? (
@@ -648,8 +654,8 @@ function LibraryAdminSupportPage() {
                     t.status === "In Progress"
                       ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
                       : t.status === "Resolved"
-                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                      : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                        : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
 
                   return (
                     <div
@@ -724,7 +730,10 @@ function LibraryAdminSupportPage() {
 
       {/* Ticket Details Modal */}
       {selectedTicket && (
-        <Dialog open={Boolean(selectedTicket)} onOpenChange={(open) => !open && setSelectedTicket(null)}>
+        <Dialog
+          open={Boolean(selectedTicket)}
+          onOpenChange={(open) => !open && setSelectedTicket(null)}
+        >
           <DialogContent className="max-w-xl p-0 overflow-hidden border-0">
             <div className="bg-card rounded-xl p-6 sm:p-8 space-y-6">
               <DialogHeader className="pb-4 border-b border-border">
@@ -737,8 +746,8 @@ function LibraryAdminSupportPage() {
                       selectedTicket.status === "In Progress"
                         ? "bg-amber-500/10 text-amber-600 border-amber-500/20"
                         : selectedTicket.status === "Resolved"
-                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                        : "bg-blue-500/10 text-blue-600 border-blue-500/20"
+                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                          : "bg-blue-500/10 text-blue-600 border-blue-500/20"
                     }`}
                   >
                     {selectedTicket.status}
@@ -748,7 +757,8 @@ function LibraryAdminSupportPage() {
                   {selectedTicket.subject}
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground">
-                  Category: {selectedTicket.category} · Department: {selectedTicket.department} · Created {selectedTicket.createdAt}
+                  Category: {selectedTicket.category} · Department: {selectedTicket.department} ·
+                  Created {selectedTicket.createdAt}
                 </DialogDescription>
               </DialogHeader>
 

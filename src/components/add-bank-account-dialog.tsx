@@ -23,13 +23,20 @@ interface AddBankAccountDialogProps {
   }) => void;
 }
 
-export function AddBankAccountDialog({ open, onOpenChange, initialData, onAdd }: AddBankAccountDialogProps) {
+export function AddBankAccountDialog({
+  open,
+  onOpenChange,
+  initialData,
+  onAdd,
+}: AddBankAccountDialogProps) {
   const [ifsc, setIfsc] = useState(initialData?.ifsc || "");
   const [bankName, setBankName] = useState(initialData?.bankName || "");
   const [branch, setBranch] = useState(initialData?.branch || "");
   const [accountHolder, setAccountHolder] = useState(initialData?.accountHolder || "");
   const [accountNumber, setAccountNumber] = useState(initialData?.accountNumber || "");
-  const [confirmAccountNumber, setConfirmAccountNumber] = useState(initialData?.accountNumber || "");
+  const [confirmAccountNumber, setConfirmAccountNumber] = useState(
+    initialData?.accountNumber || "",
+  );
   const [showAccountNumber, setShowAccountNumber] = useState(false);
   const [showConfirmNumber, setShowConfirmNumber] = useState(false);
 

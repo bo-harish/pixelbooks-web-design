@@ -123,22 +123,22 @@
   /* pb-web Base Colors: #137365 (Dark Green) & #30C047 (Light Green) */
   --pb-dark: #137365;
   --pb-dark-hover: #0e5b50;
-  --pb-dark-light: #E7F3F1;
-  --pb-dark-subtle: #D2E9E5;
-  --pb-dark-border: #B2D8D2;
+  --pb-dark-light: #e7f3f1;
+  --pb-dark-subtle: #d2e9e5;
+  --pb-dark-border: #b2d8d2;
 
-  --pb-light: #30C047;
+  --pb-light: #30c047;
   --pb-light-hover: #28a73d;
-  --pb-light-bg: #EBF9ED;
-  --pb-light-subtle: #D8F5DC;
-  --pb-light-border: #B7EDBF;
-  --pb-light-dark: #19772B;
+  --pb-light-bg: #ebf9ed;
+  --pb-light-subtle: #d8f5dc;
+  --pb-light-border: #b7edbf;
+  --pb-light-dark: #19772b;
 
-  --pbgreen: #30C047;
-  --pbgreen-light: #EBF9ED;
-  --pbgreen-subtle: #D8F5DC;
-  --pbgreen-border: #B7EDBF;
-  --pbgreen-dark: #19772B;
+  --pbgreen: #30c047;
+  --pbgreen-light: #ebf9ed;
+  --pbgreen-subtle: #d8f5dc;
+  --pbgreen-border: #b7edbf;
+  --pbgreen-dark: #19772b;
 }
 
 .dark {
@@ -185,18 +185,18 @@
   --pb-dark-subtle: #124a41;
   --pb-dark-border: #1a5e53;
 
-  --pb-light: #30C047;
+  --pb-light: #30c047;
   --pb-light-hover: #3bd955;
-  --pb-light-bg: #16381C;
-  --pb-light-subtle: #1F4C27;
-  --pb-light-border: #2A6A36;
-  --pb-light-dark: #6BE882;
+  --pb-light-bg: #16381c;
+  --pb-light-subtle: #1f4c27;
+  --pb-light-border: #2a6a36;
+  --pb-light-dark: #6be882;
 
-  --pbgreen: #30C047;
-  --pbgreen-light: #16381C;
-  --pbgreen-subtle: #1F4C27;
-  --pbgreen-border: #2A6A36;
-  --pbgreen-dark: #6BE882;
+  --pbgreen: #30c047;
+  --pbgreen-light: #16381c;
+  --pbgreen-subtle: #1f4c27;
+  --pbgreen-border: #2a6a36;
+  --pbgreen-dark: #6be882;
 }
 
 @layer base {
@@ -240,22 +240,22 @@
 
   --pb-dark: #137365;
   --pb-dark-hover: #0e5b50;
-  --pb-dark-light: #E7F3F1;
-  --pb-dark-subtle: #D2E9E5;
-  --pb-dark-border: #B2D8D2;
+  --pb-dark-light: #e7f3f1;
+  --pb-dark-subtle: #d2e9e5;
+  --pb-dark-border: #b2d8d2;
 
-  --pb-light: #30C047;
+  --pb-light: #30c047;
   --pb-light-hover: #28a73d;
-  --pb-light-bg: #EBF9ED;
-  --pb-light-subtle: #D8F5DC;
-  --pb-light-border: #B7EDBF;
-  --pb-light-dark: #19772B;
+  --pb-light-bg: #ebf9ed;
+  --pb-light-subtle: #d8f5dc;
+  --pb-light-border: #b7edbf;
+  --pb-light-dark: #19772b;
 
-  --pbgreen: #30C047;
-  --pbgreen-light: #EBF9ED;
-  --pbgreen-subtle: #D8F5DC;
-  --pbgreen-border: #B7EDBF;
-  --pbgreen-dark: #19772B;
+  --pbgreen: #30c047;
+  --pbgreen-light: #ebf9ed;
+  --pbgreen-subtle: #d8f5dc;
+  --pbgreen-border: #b7edbf;
+  --pbgreen-dark: #19772b;
 }
 
 /* ------------------------------------------------------------------ */

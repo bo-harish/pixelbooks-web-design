@@ -564,8 +564,6 @@ const initialOrders: Order[] = [
   },
 ];
 
-
-
 const departments = [
   "Literature & Languages",
   "Mathematics & Stats",
@@ -687,7 +685,6 @@ function LibraryAdminOrdersPage() {
     setSelectedOrder(order);
     setIsViewOpen(true);
   };
-
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -861,22 +858,37 @@ function LibraryAdminOrdersPage() {
               <div className="text-xs text-muted-foreground flex items-center gap-4 flex-wrap pt-1">
                 <span className="inline-flex items-center gap-1.5">
                   <User size={13} className="text-muted-foreground/70" />
-                  <span>Ordered By: <strong className="text-foreground font-medium">{selectedOrder.orderedBy}</strong></span>
+                  <span>
+                    Ordered By:{" "}
+                    <strong className="text-foreground font-medium">
+                      {selectedOrder.orderedBy}
+                    </strong>
+                  </span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Building2 size={13} className="text-muted-foreground/70" />
-                  <span>Department: <strong className="text-foreground font-medium">{selectedOrder.department}</strong></span>
+                  <span>
+                    Department:{" "}
+                    <strong className="text-foreground font-medium">
+                      {selectedOrder.department}
+                    </strong>
+                  </span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Clock size={13} className="text-muted-foreground/70" />
-                  <span>Order Date: <strong className="text-foreground font-medium">{selectedOrder.date}</strong></span>
+                  <span>
+                    Order Date:{" "}
+                    <strong className="text-foreground font-medium">{selectedOrder.date}</strong>
+                  </span>
                 </span>
               </div>
             </div>
 
             <div className="text-left md:text-right border-t md:border-t-0 pt-3 md:pt-0 border-border/60">
               <span className="text-xs text-muted-foreground block">Total Amount</span>
-              <span className="text-2xl font-bold tracking-tight text-foreground">{totalPriceText}</span>
+              <span className="text-2xl font-bold tracking-tight text-foreground">
+                {totalPriceText}
+              </span>
             </div>
           </div>
 
@@ -887,7 +899,9 @@ function LibraryAdminOrdersPage() {
               {/* Items Table Card */}
               <div className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <h3 className="text-base font-semibold text-foreground">Requested Titles ({selectedOrder.items.length})</h3>
+                  <h3 className="text-base font-semibold text-foreground">
+                    Requested Titles ({selectedOrder.items.length})
+                  </h3>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -896,15 +910,14 @@ function LibraryAdminOrdersPage() {
                       <tr className="bg-secondary/40 border-y border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         <th className="py-3 px-4 font-semibold rounded-l-lg">Title & Author</th>
                         <th className="py-3 px-4 font-semibold text-center">Qty</th>
-                        <th className="py-3 px-4 font-semibold text-right rounded-r-lg">Unit Price</th>
+                        <th className="py-3 px-4 font-semibold text-right rounded-r-lg">
+                          Unit Price
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/60">
                       {selectedOrder.items.map((item, idx) => (
-                        <tr
-                          key={idx}
-                          className="hover:bg-secondary/15 transition-colors"
-                        >
+                        <tr key={idx} className="hover:bg-secondary/15 transition-colors">
                           <td className="py-4 px-4 font-medium text-foreground">
                             <div className="flex items-center gap-3.5">
                               <BookCover
@@ -951,8 +964,8 @@ function LibraryAdminOrdersPage() {
                             history.status === "Approved"
                               ? "bg-emerald-500"
                               : history.status === "Rejected"
-                              ? "bg-rose-500"
-                              : "bg-amber-500"
+                                ? "bg-rose-500"
+                                : "bg-amber-500"
                           }`}
                         >
                           <span className="h-1.5 w-1.5 rounded-full bg-white" />
@@ -962,8 +975,12 @@ function LibraryAdminOrdersPage() {
                             <span className="text-xs font-semibold text-foreground">
                               {history.status}
                             </span>
-                            <span className="text-[11px] text-muted-foreground">• {history.date}</span>
-                            <span className="text-[11px] text-muted-foreground">by {history.user}</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              • {history.date}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground">
+                              by {history.user}
+                            </span>
                           </div>
                           {history.note && (
                             <p className="text-xs text-muted-foreground bg-secondary/30 rounded-lg p-2.5 border border-border/50">
@@ -1021,7 +1038,9 @@ function LibraryAdminOrdersPage() {
                   </div>
                   <div className="flex justify-between items-center pt-2 text-sm">
                     <span className="font-bold text-foreground">Total Price</span>
-                    <span className="text-base font-extrabold text-foreground">{totalPriceText}</span>
+                    <span className="text-base font-extrabold text-foreground">
+                      {totalPriceText}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1062,7 +1081,10 @@ function LibraryAdminOrdersPage() {
               value={activeTab === "Pending" ? "Pending Approval" : activeTab}
               options={["All", "Approved", "Pending Approval", "Rejected"]}
               onChange={(label) => {
-                const tab = label === "Pending Approval" ? "Pending" : (label as "All" | "Approved" | "Pending" | "Rejected");
+                const tab =
+                  label === "Pending Approval"
+                    ? "Pending"
+                    : (label as "All" | "Approved" | "Pending" | "Rejected");
                 setActiveTab(tab);
                 setPage(1);
               }}
@@ -1091,7 +1113,9 @@ function LibraryAdminOrdersPage() {
                       key={p}
                       onClick={() => handlePresetSelect(p)}
                       className={`flex w-full items-center px-3 py-2 text-left text-xs transition-colors hover:bg-secondary cursor-pointer ${
-                        p === preset ? "font-semibold text-foreground bg-secondary/50" : "text-muted-foreground"
+                        p === preset
+                          ? "font-semibold text-foreground bg-secondary/50"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {p}
@@ -1291,8 +1315,6 @@ function LibraryAdminOrdersPage() {
         )}
 
         {/* View Details Modal Dialog */}
-
-
 
         {/* Upload Order Modal Dialog */}
         <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>

@@ -32,7 +32,8 @@ export const Route = createFileRoute("/pb-admin/profile")({
       { title: "Admin Profile — PixelBooks" },
       {
         name: "description",
-        content: "Manage system administrator details, security permissions, and audit preferences.",
+        content:
+          "Manage system administrator details, security permissions, and audit preferences.",
       },
     ],
   }),
@@ -81,8 +82,9 @@ function Field({
           placeholder={placeholder}
           disabled={disabled}
           onChange={(e) => onChange?.(e.target.value)}
-          className={`flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${disabled ? "opacity-75 bg-secondary/30 cursor-not-allowed" : ""
-            } ${rightSlot ? "pr-24" : ""}`}
+          className={`flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+            disabled ? "opacity-75 bg-secondary/30 cursor-not-allowed" : ""
+          } ${rightSlot ? "pr-24" : ""}`}
         />
         {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
       </div>
@@ -171,18 +173,14 @@ function PbAdminProfilePage() {
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Super Administrator account with full permissions across PixelBooks Retail & Library Management Portals, system configurations, and security policies.
+                  Super Administrator account with full permissions across PixelBooks Retail &
+                  Library Management Portals, system configurations, and security policies.
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
-              <Field
-                label="Full Name"
-                required
-                value={adminName}
-                onChange={setAdminName}
-              />
+              <Field label="Full Name" required value={adminName} onChange={setAdminName} />
               <Field
                 label="Admin Role Title"
                 disabled
@@ -230,16 +228,8 @@ function PbAdminProfilePage() {
                   )
                 }
               />
-              <Field
-                label="Office Location"
-                value={officeLocation}
-                onChange={setOfficeLocation}
-              />
-              <Field
-                label="System ID"
-                disabled
-                value="ADM-PB-001928"
-              />
+              <Field label="Office Location" value={officeLocation} onChange={setOfficeLocation} />
+              <Field label="System ID" disabled value="ADM-PB-001928" />
             </div>
           </div>
         </SectionCard>
@@ -247,7 +237,6 @@ function PbAdminProfilePage() {
         {/* Security & Access Controls */}
         <SectionCard title="Security Controls & Privileges">
           <div className="grid grid-cols-1 gap-6">
-
             {/* Audit Logging */}
             <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 space-y-4">
               <div className="flex items-start justify-between gap-4">
@@ -257,7 +246,9 @@ function PbAdminProfilePage() {
                   </span>
                   <div>
                     <h3 className="text-sm font-semibold text-foreground">Master Audit Logging</h3>
-                    <p className="text-xs text-muted-foreground">Logs all administrative state changes</p>
+                    <p className="text-xs text-muted-foreground">
+                      Logs all administrative state changes
+                    </p>
                   </div>
                 </div>
                 <button
@@ -266,17 +257,20 @@ function PbAdminProfilePage() {
                     setAuditLoggingEnabled(!auditLoggingEnabled);
                     toast.success(`Audit logging ${!auditLoggingEnabled ? "activated" : "paused"}`);
                   }}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${auditLoggingEnabled ? "bg-indigo-600" : "bg-muted"
-                    }`}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                    auditLoggingEnabled ? "bg-indigo-600" : "bg-muted"
+                  }`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${auditLoggingEnabled ? "translate-x-5" : "translate-x-0"
-                      }`}
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                      auditLoggingEnabled ? "translate-x-5" : "translate-x-0"
+                    }`}
                   />
                 </button>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Records full timestamps, IP signatures, and entity diffs for every configuration update and user modification.
+                Records full timestamps, IP signatures, and entity diffs for every configuration
+                update and user modification.
               </p>
             </div>
           </div>
@@ -430,7 +424,8 @@ function OtpModal({
         <div className="space-y-2">
           <h2 className="text-2xl font-extrabold text-foreground tracking-tight">Enter OTP</h2>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
-            Verification code sent to email <span className="font-medium text-foreground">{email}</span> and mobile{" "}
+            Verification code sent to email{" "}
+            <span className="font-medium text-foreground">{email}</span> and mobile{" "}
             <span className="font-medium text-foreground">{phone}</span>
           </p>
         </div>

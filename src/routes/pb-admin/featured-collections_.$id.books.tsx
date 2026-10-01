@@ -38,7 +38,8 @@ export const Route = createFileRoute("/pb-admin/featured-collections_/$id/books"
       { title: "Manage Collection Books — PixelBooks Admin" },
       {
         name: "description",
-        content: "Add and remove titles, search catalogue, and filter by category, publisher, and author.",
+        content:
+          "Add and remove titles, search catalogue, and filter by category, publisher, and author.",
       },
     ],
   }),
@@ -100,7 +101,7 @@ function ManageCollectionBooksPage() {
       return ALL_SUB_CATEGORIES;
     }
     const matching = FEATURED_CATALOGUE_BOOKS.filter(
-      (b) => b.category.toLowerCase() === selectedCategory.toLowerCase()
+      (b) => b.category.toLowerCase() === selectedCategory.toLowerCase(),
     ).map((b) => b.subCategory);
     const unique = Array.from(new Set(matching));
     return ["All Sub Categories", ...unique];
@@ -286,7 +287,8 @@ function ManageCollectionBooksPage() {
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Add or remove titles for this featured collection • {selectedBookIds.length} titles currently selected
+                Add or remove titles for this featured collection • {selectedBookIds.length} titles
+                currently selected
               </p>
             </div>
           </div>
@@ -357,7 +359,8 @@ function ManageCollectionBooksPage() {
               </div>
               <p className="text-sm font-semibold text-foreground">No Titles Selected Yet</p>
               <p className="text-xs text-muted-foreground max-w-md mt-1">
-                Browse available catalogue books below and click "+ Add to Collection" to feature them in this section.
+                Browse available catalogue books below and click "+ Add to Collection" to feature
+                them in this section.
               </p>
             </div>
           ) : (
@@ -585,7 +588,10 @@ function ManageCollectionBooksPage() {
                               <div className="flex flex-wrap items-center gap-2 text-xs">
                                 {/* Author Chip */}
                                 <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2.5 py-0.5 shadow-2xs">
-                                  <Feather size={11} className="text-emerald-600 dark:text-emerald-400" />
+                                  <Feather
+                                    size={11}
+                                    className="text-emerald-600 dark:text-emerald-400"
+                                  />
                                   <span className="text-[11.5px] font-medium text-foreground">
                                     {b.author}
                                   </span>
@@ -593,7 +599,10 @@ function ManageCollectionBooksPage() {
 
                                 {/* Publisher Chip */}
                                 <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/60 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
-                                  <Building2 size={11} className="shrink-0 text-muted-foreground/80" />
+                                  <Building2
+                                    size={11}
+                                    className="shrink-0 text-muted-foreground/80"
+                                  />
                                   <span>{b.publisher}</span>
                                 </div>
                               </div>
@@ -670,7 +679,8 @@ function ManageCollectionBooksPage() {
           {/* Footer summary */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-t border-border px-6 py-4">
             <p className="text-xs text-muted-foreground">
-              Showing {filteredCandidateBooks.length} available books • {selectedBookIds.length} currently selected for this collection
+              Showing {filteredCandidateBooks.length} available books • {selectedBookIds.length}{" "}
+              currently selected for this collection
             </p>
 
             <div className="flex items-center gap-2">

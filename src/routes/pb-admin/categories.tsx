@@ -95,10 +95,7 @@ function ManageCategoryPage() {
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(e.target as Node)
-      ) {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(e.target as Node)) {
         setIsCategoryDropdownOpen(false);
       }
     };
@@ -118,20 +115,14 @@ function ManageCategoryPage() {
   const filteredMasterOptions = useMemo(() => {
     const q = categorySearchTerm.toLowerCase().trim();
     if (!q) return allSystemCategories;
-    return allSystemCategories.filter((cat) =>
-      cat.name.toLowerCase().includes(q)
-    );
+    return allSystemCategories.filter((cat) => cat.name.toLowerCase().includes(q));
   }, [allSystemCategories, categorySearchTerm]);
 
   // Existing System Categories - categories already added in system show at the bottom of the list
   const sortedMasterOptions = useMemo(() => {
     return [...filteredMasterOptions].sort((a, b) => {
-      const aInPbAdmin = categories.some(
-        (c) => c.name.toLowerCase() === a.name.toLowerCase()
-      );
-      const bInPbAdmin = categories.some(
-        (c) => c.name.toLowerCase() === b.name.toLowerCase()
-      );
+      const aInPbAdmin = categories.some((c) => c.name.toLowerCase() === a.name.toLowerCase());
+      const bInPbAdmin = categories.some((c) => c.name.toLowerCase() === b.name.toLowerCase());
       if (aInPbAdmin !== bInPbAdmin) {
         return aInPbAdmin ? 1 : -1; // Existing categories placed at the bottom
       }
@@ -154,7 +145,7 @@ function ManageCategoryPage() {
         const query = searchQuery.toLowerCase();
         const matchesName = (cat.name || "").toLowerCase().includes(query);
         const matchesSubcat = (cat.subcategories || []).some((sub) =>
-          sub.toLowerCase().includes(query)
+          sub.toLowerCase().includes(query),
         );
         if (!matchesName && !matchesSubcat) return false;
       }
@@ -250,7 +241,7 @@ function ManageCategoryPage() {
           return { ...c, status: nextStatus };
         }
         return c;
-      })
+      }),
     );
   };
 
@@ -281,7 +272,11 @@ function ManageCategoryPage() {
     setNewSubcatInput("");
     setFormStatus(cat.status);
 
-    if (focusSubcatIndex !== undefined && focusSubcatIndex >= 0 && focusSubcatIndex < cat.subcategories.length) {
+    if (
+      focusSubcatIndex !== undefined &&
+      focusSubcatIndex >= 0 &&
+      focusSubcatIndex < cat.subcategories.length
+    ) {
       setEditingSubcatIndex(focusSubcatIndex);
       setEditingSubcatText(cat.subcategories[focusSubcatIndex]);
     } else {
@@ -294,7 +289,7 @@ function ManageCategoryPage() {
 
   const handleSelectMasterCategory = (cat: (typeof MASTER_CATEGORIES)[number]) => {
     const isAlreadyInPbAdmin = categories.some(
-      (c) => c.name.toLowerCase() === cat.name.toLowerCase()
+      (c) => c.name.toLowerCase() === cat.name.toLowerCase(),
     );
     if (isAlreadyInPbAdmin) {
       toast.error(`Category "${cat.name}" already exists in PixelBooks Admin.`);
@@ -309,9 +304,7 @@ function ManageCategoryPage() {
 
     // Pull default subcategories if available
     if (cat.subcategories && cat.subcategories.length > 0) {
-      const stringSubs = cat.subcategories.map((s) =>
-        typeof s === "string" ? s : s.name
-      );
+      const stringSubs = cat.subcategories.map((s) => (typeof s === "string" ? s : s.name));
       setFormSubcategories(stringSubs);
     } else {
       setFormSubcategories([]);
@@ -351,14 +344,14 @@ function ManageCategoryPage() {
       return;
     }
     setErrorMessage("");
-    if (formSubcategories.some((sub, i) => i !== index && sub.toLowerCase() === trimmed.toLowerCase())) {
+    if (
+      formSubcategories.some((sub, i) => i !== index && sub.toLowerCase() === trimmed.toLowerCase())
+    ) {
       toast.error("Subcategory already exists.");
       setErrorMessage(`Subcategory "${trimmed}" already exists.`);
       return;
     }
-    setFormSubcategories((prev) =>
-      prev.map((sub, i) => (i === index ? trimmed : sub))
-    );
+    setFormSubcategories((prev) => prev.map((sub, i) => (i === index ? trimmed : sub)));
     setEditingSubcatIndex(null);
     setEditingSubcatText("");
   };
@@ -383,9 +376,7 @@ function ManageCategoryPage() {
     if (editingCategory) {
       // Edit single existing category
       const isDuplicate = categories.some(
-        (c) =>
-          c.id !== editingCategory.id &&
-          c.name.toLowerCase() === trimmedName.toLowerCase()
+        (c) => c.id !== editingCategory.id && c.name.toLowerCase() === trimmedName.toLowerCase(),
       );
       if (isDuplicate) {
         toast.error("Category already exists.");
@@ -406,15 +397,15 @@ function ManageCategoryPage() {
                 status: formStatus,
                 displayOrder: finalDisplayOrder,
               }
-            : c
-        )
+            : c,
+        ),
       );
       toast.success(`Category "${trimmedName}" updated successfully`);
       setIsModalOpen(false);
     } else {
       // Add Mode: Single Category
       const isDuplicate = categories.some(
-        (c) => c.name.toLowerCase() === trimmedName.toLowerCase()
+        (c) => c.name.toLowerCase() === trimmedName.toLowerCase(),
       );
       if (isDuplicate) {
         toast.error("Category already exists.");
@@ -427,15 +418,15 @@ function ManageCategoryPage() {
       const startOrder = isNaN(parsedOrder) || parsedOrder < 1 ? maxOrder + 1 : parsedOrder;
 
       const master = MASTER_CATEGORIES.find(
-        (m) => m.name.toLowerCase() === trimmedName.toLowerCase()
+        (m) => m.name.toLowerCase() === trimmedName.toLowerCase(),
       );
 
       const subs =
         finalSubcategories.length > 0
           ? finalSubcategories
           : master?.subcategories
-          ? master.subcategories.map((s) => (typeof s === "string" ? s : s.name))
-          : [];
+            ? master.subcategories.map((s) => (typeof s === "string" ? s : s.name))
+            : [];
 
       const newCat: CategoryItem = {
         id: master?.id || `cat-${Date.now()}`,
@@ -459,9 +450,11 @@ function ManageCategoryPage() {
     statusFilter === "All" ? "All Status" : statusFilter === "Enabled" ? "Enabled" : "Disabled";
 
   return (
-    <AppShell title="Categories" subtitle="Overview, subcategories, and status control for book categories">
+    <AppShell
+      title="Categories"
+      subtitle="Overview, subcategories, and status control for book categories"
+    >
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-
         {/* Search & Filter Toolbar */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Search Box */}
@@ -573,58 +566,63 @@ function ManageCategoryPage() {
                           {item.name}
                         </td>
 
-                      {/* Subcategories Column */}
-                      <td className="py-4 pr-4 align-top">
-                        <div className="flex flex-wrap gap-1.5 max-w-xl">
-                          {item.subcategories.length > 0 ? (
-                            item.subcategories.map((sub, idx) => (
-                              <button
-                                key={idx}
-                                type="button"
-                                onClick={() => handleOpenEditModal(item, idx)}
-                                title={`Click to edit subcategory "${sub}"`}
-                                className="group/tag inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/70 hover:bg-secondary hover:border-[var(--brand)]/50 px-2.5 py-0.5 text-xs font-medium text-foreground transition-colors cursor-pointer"
-                              >
-                                <span>{sub}</span>
-                                <Pencil size={11} className="text-muted-foreground group-hover/tag:text-[var(--brand)] transition-colors" />
-                              </button>
-                            ))
-                          ) : (
-                            <span className="text-xs text-muted-foreground italic">No subcategories</span>
-                          )}
-                        </div>
-                      </td>
+                        {/* Subcategories Column */}
+                        <td className="py-4 pr-4 align-top">
+                          <div className="flex flex-wrap gap-1.5 max-w-xl">
+                            {item.subcategories.length > 0 ? (
+                              item.subcategories.map((sub, idx) => (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => handleOpenEditModal(item, idx)}
+                                  title={`Click to edit subcategory "${sub}"`}
+                                  className="group/tag inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/70 hover:bg-secondary hover:border-[var(--brand)]/50 px-2.5 py-0.5 text-xs font-medium text-foreground transition-colors cursor-pointer"
+                                >
+                                  <span>{sub}</span>
+                                  <Pencil
+                                    size={11}
+                                    className="text-muted-foreground group-hover/tag:text-[var(--brand)] transition-colors"
+                                  />
+                                </button>
+                              ))
+                            ) : (
+                              <span className="text-xs text-muted-foreground italic">
+                                No subcategories
+                              </span>
+                            )}
+                          </div>
+                        </td>
 
-                      {/* Views Column */}
-                      <td className="py-4 pr-4 text-center font-medium text-foreground align-top">
-                        {item.views}
-                      </td>
+                        {/* Views Column */}
+                        <td className="py-4 pr-4 text-center font-medium text-foreground align-top">
+                          {item.views}
+                        </td>
 
-                      {/* Status Switch Toggle Column */}
-                      <td className="py-4 pr-4 text-center align-top">
-                        <div className="inline-flex items-center justify-center">
-                          <Switch
-                            checked={item.status === "Enabled"}
-                            onCheckedChange={() => handleToggleStatus(item.id)}
-                          />
-                        </div>
-                      </td>
+                        {/* Status Switch Toggle Column */}
+                        <td className="py-4 pr-4 text-center align-top">
+                          <div className="inline-flex items-center justify-center">
+                            <Switch
+                              checked={item.status === "Enabled"}
+                              onCheckedChange={() => handleToggleStatus(item.id)}
+                            />
+                          </div>
+                        </td>
 
-                      {/* Actions Column */}
-                      <td className="py-4 pr-6 text-right align-top">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenEditModal(item)}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)] cursor-pointer"
-                          title="Edit Category"
-                        >
-                          <Pencil size={15} />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
+                        {/* Actions Column */}
+                        <td className="py-4 pr-6 text-right align-top">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(item)}
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)] cursor-pointer"
+                            title="Edit Category"
+                          >
+                            <Pencil size={15} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
@@ -633,7 +631,8 @@ function ManageCategoryPage() {
           <div className="flex flex-col gap-3 border-t border-border px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground font-medium">
               Showing {paginatedCategories.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-              {Math.min(currentPage * itemsPerPage, simulatedTotalBase)} of {simulatedTotalBase} entries
+              {Math.min(currentPage * itemsPerPage, simulatedTotalBase)} of {simulatedTotalBase}{" "}
+              entries
             </p>
 
             <div className="flex items-center gap-1.5">
@@ -691,7 +690,6 @@ function ManageCategoryPage() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Add / Edit Category Modal */}
@@ -724,7 +722,8 @@ function ManageCategoryPage() {
                 <div className="flex items-center gap-2 rounded-xl border border-[var(--brand)]/20 bg-[var(--sidebar-highlight)]/50 px-3.5 py-2.5 text-xs text-foreground animate-in fade-in-50">
                   <span className="font-semibold text-[var(--brand)] shrink-0">Global Scope:</span>
                   <span className="text-muted-foreground">
-                    Categories created or added here will reflect across all publishers in the PixelBooks catalogue.
+                    Categories created or added here will reflect across all publishers in the
+                    PixelBooks catalogue.
                   </span>
                 </div>
               )}
@@ -845,16 +844,15 @@ function ManageCategoryPage() {
                             </div>
                           ) : (
                             sortedMasterOptions.map((cat, index) => {
-                              const isSelected =
-                                formName.toLowerCase() === cat.name.toLowerCase();
+                              const isSelected = formName.toLowerCase() === cat.name.toLowerCase();
                               const isAlreadyInPbAdmin = categories.some(
-                                (c) => c.name.toLowerCase() === cat.name.toLowerCase()
+                                (c) => c.name.toLowerCase() === cat.name.toLowerCase(),
                               );
 
                               const prevCat = index > 0 ? sortedMasterOptions[index - 1] : null;
                               const prevInPbAdmin = prevCat
                                 ? categories.some(
-                                    (c) => c.name.toLowerCase() === prevCat.name.toLowerCase()
+                                    (c) => c.name.toLowerCase() === prevCat.name.toLowerCase(),
                                   )
                                 : false;
                               const showAlreadyInSystemHeader =
@@ -871,8 +869,8 @@ function ManageCategoryPage() {
                                             categories.filter((c) =>
                                               allSystemCategories.some(
                                                 (m) =>
-                                                  m.name.toLowerCase() === c.name.toLowerCase()
-                                              )
+                                                  m.name.toLowerCase() === c.name.toLowerCase(),
+                                              ),
                                             ).length
                                           }
                                         </span>
@@ -890,17 +888,14 @@ function ManageCategoryPage() {
                                       isSelected
                                         ? "bg-[var(--sidebar-highlight)]/70 font-semibold text-[var(--brand)]"
                                         : isAlreadyInPbAdmin
-                                        ? "opacity-60 text-muted-foreground bg-muted/20 cursor-not-allowed"
-                                        : "text-foreground"
+                                          ? "opacity-60 text-muted-foreground bg-muted/20 cursor-not-allowed"
+                                          : "text-foreground"
                                     }`}
                                   >
                                     <div className="flex items-center gap-2.5 min-w-0">
                                       <span className="truncate">{cat.name}</span>
                                       {isSelected && (
-                                        <Check
-                                          size={14}
-                                          className="text-[var(--brand)] shrink-0"
-                                        />
+                                        <Check size={14} className="text-[var(--brand)] shrink-0" />
                                       )}
                                       {isAlreadyInPbAdmin && (
                                         <span className="text-[10px] font-semibold text-muted-foreground bg-secondary px-1.5 py-0.5 rounded border border-border/50 shrink-0">
@@ -1066,9 +1061,7 @@ function ManageCategoryPage() {
               {/* Status Switch Toggle */}
               <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3.5 sm:p-4">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
-                    Status
-                  </label>
+                  <label className="block text-xs font-semibold text-foreground">Status</label>
                   <p className="text-[11.5px] text-muted-foreground mt-0.5">
                     {formStatus === "Enabled"
                       ? "Category is active in PixelBooks retail app."
@@ -1087,9 +1080,7 @@ function ManageCategoryPage() {
                   </span>
                   <Switch
                     checked={formStatus === "Enabled"}
-                    onCheckedChange={(checked) =>
-                      setFormStatus(checked ? "Enabled" : "Disabled")
-                    }
+                    onCheckedChange={(checked) => setFormStatus(checked ? "Enabled" : "Disabled")}
                   />
                 </div>
               </div>
@@ -1117,4 +1108,3 @@ function ManageCategoryPage() {
     </AppShell>
   );
 }
-

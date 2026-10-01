@@ -83,12 +83,15 @@ import { Route as LibraryAdminCartRouteImport } from './routes/library-admin/car
 import { Route as LibraryAdminBannersRouteImport } from './routes/library-admin/banners'
 import { Route as InstitutionsLoginRouteImport } from './routes/institutions/login'
 import { Route as AuthorProfileRouteImport } from './routes/author/profile'
+import { Route as PublisherVideoLibraryIndexRouteImport } from './routes/publisher/video-library.index'
 import { Route as PublisherPromoCodesIndexRouteImport } from './routes/publisher/promo-codes.index'
 import { Route as PublisherCatalogueIndexRouteImport } from './routes/publisher/catalogue.index'
 import { Route as PublisherCatalogueImportIndexRouteImport } from './routes/publisher/catalogue-import.index'
 import { Route as PublisherBundlesIndexRouteImport } from './routes/publisher/bundles.index'
+import { Route as PublisherAudioLibraryIndexRouteImport } from './routes/publisher/audio-library.index'
 import { Route as PbAdminTitlesIndexRouteImport } from './routes/pb-admin/titles.index'
 import { Route as PbAdminBundlesIndexRouteImport } from './routes/pb-admin/bundles.index'
+import { Route as PublisherVideoLibraryNewRouteImport } from './routes/publisher/video-library.new'
 import { Route as PublisherPromoCodesNewRouteImport } from './routes/publisher/promo-codes.new'
 import { Route as PublisherPromoCodesPromoIdRouteImport } from './routes/publisher/promo-codes.$promoId'
 import { Route as PublisherCatalogueNewRouteImport } from './routes/publisher/catalogue.new'
@@ -97,6 +100,7 @@ import { Route as PublisherCatalogueImportNewRouteImport } from './routes/publis
 import { Route as PublisherCatalogueImportFileNameRouteImport } from './routes/publisher/catalogue-import.$fileName'
 import { Route as PublisherBundlesNewRouteImport } from './routes/publisher/bundles.new'
 import { Route as PublisherBundlesBundleIdRouteImport } from './routes/publisher/bundles.$bundleId'
+import { Route as PublisherAudioLibraryNewRouteImport } from './routes/publisher/audio-library.new'
 import { Route as PbAdminTitlesNewRouteImport } from './routes/pb-admin/titles.new'
 import { Route as PbAdminTitlesBookIdRouteImport } from './routes/pb-admin/titles.$bookId'
 import { Route as PbAdminTermsConditionsNewRouteImport } from './routes/pb-admin/terms-conditions_.new'
@@ -497,6 +501,12 @@ const AuthorProfileRoute = AuthorProfileRouteImport.update({
   path: '/author/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublisherVideoLibraryIndexRoute =
+  PublisherVideoLibraryIndexRouteImport.update({
+    id: '/publisher/video-library/',
+    path: '/publisher/video-library/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PublisherPromoCodesIndexRoute =
   PublisherPromoCodesIndexRouteImport.update({
     id: '/publisher/promo-codes/',
@@ -519,6 +529,12 @@ const PublisherBundlesIndexRoute = PublisherBundlesIndexRouteImport.update({
   path: '/publisher/bundles/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublisherAudioLibraryIndexRoute =
+  PublisherAudioLibraryIndexRouteImport.update({
+    id: '/publisher/audio-library/',
+    path: '/publisher/audio-library/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PbAdminTitlesIndexRoute = PbAdminTitlesIndexRouteImport.update({
   id: '/pb-admin/titles/',
   path: '/pb-admin/titles/',
@@ -529,6 +545,12 @@ const PbAdminBundlesIndexRoute = PbAdminBundlesIndexRouteImport.update({
   path: '/pb-admin/bundles/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublisherVideoLibraryNewRoute =
+  PublisherVideoLibraryNewRouteImport.update({
+    id: '/publisher/video-library/new',
+    path: '/publisher/video-library/new',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PublisherPromoCodesNewRoute = PublisherPromoCodesNewRouteImport.update({
   id: '/publisher/promo-codes/new',
   path: '/publisher/promo-codes/new',
@@ -572,6 +594,12 @@ const PublisherBundlesBundleIdRoute =
   PublisherBundlesBundleIdRouteImport.update({
     id: '/publisher/bundles/$bundleId',
     path: '/publisher/bundles/$bundleId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherAudioLibraryNewRoute =
+  PublisherAudioLibraryNewRouteImport.update({
+    id: '/publisher/audio-library/new',
+    path: '/publisher/audio-library/new',
     getParentRoute: () => rootRouteImport,
   } as any)
 const PbAdminTitlesNewRoute = PbAdminTitlesNewRouteImport.update({
@@ -810,6 +838,7 @@ export interface FileRoutesByFullPath {
   '/pb-admin/terms-conditions/new': typeof PbAdminTermsConditionsNewRoute
   '/pb-admin/titles/$bookId': typeof PbAdminTitlesBookIdRoute
   '/pb-admin/titles/new': typeof PbAdminTitlesNewRoute
+  '/publisher/audio-library/new': typeof PublisherAudioLibraryNewRoute
   '/publisher/bundles/$bundleId': typeof PublisherBundlesBundleIdRoute
   '/publisher/bundles/new': typeof PublisherBundlesNewRoute
   '/publisher/catalogue-import/$fileName': typeof PublisherCatalogueImportFileNameRoute
@@ -818,12 +847,15 @@ export interface FileRoutesByFullPath {
   '/publisher/catalogue/new': typeof PublisherCatalogueNewRoute
   '/publisher/promo-codes/$promoId': typeof PublisherPromoCodesPromoIdRoute
   '/publisher/promo-codes/new': typeof PublisherPromoCodesNewRoute
+  '/publisher/video-library/new': typeof PublisherVideoLibraryNewRoute
   '/pb-admin/bundles/': typeof PbAdminBundlesIndexRoute
   '/pb-admin/titles/': typeof PbAdminTitlesIndexRoute
+  '/publisher/audio-library/': typeof PublisherAudioLibraryIndexRoute
   '/publisher/bundles/': typeof PublisherBundlesIndexRoute
   '/publisher/catalogue-import/': typeof PublisherCatalogueImportIndexRoute
   '/publisher/catalogue/': typeof PublisherCatalogueIndexRoute
   '/publisher/promo-codes/': typeof PublisherPromoCodesIndexRoute
+  '/publisher/video-library/': typeof PublisherVideoLibraryIndexRoute
   '/pb-admin/featured-collections/$id/books': typeof PbAdminFeaturedCollectionsIdBooksRoute
   '/pb-admin/publishers-authors/$id/titles': typeof PbAdminPublishersAuthorsIdTitlesRoute
 }
@@ -925,6 +957,7 @@ export interface FileRoutesByTo {
   '/pb-admin/terms-conditions/new': typeof PbAdminTermsConditionsNewRoute
   '/pb-admin/titles/$bookId': typeof PbAdminTitlesBookIdRoute
   '/pb-admin/titles/new': typeof PbAdminTitlesNewRoute
+  '/publisher/audio-library/new': typeof PublisherAudioLibraryNewRoute
   '/publisher/bundles/$bundleId': typeof PublisherBundlesBundleIdRoute
   '/publisher/bundles/new': typeof PublisherBundlesNewRoute
   '/publisher/catalogue-import/$fileName': typeof PublisherCatalogueImportFileNameRoute
@@ -933,12 +966,15 @@ export interface FileRoutesByTo {
   '/publisher/catalogue/new': typeof PublisherCatalogueNewRoute
   '/publisher/promo-codes/$promoId': typeof PublisherPromoCodesPromoIdRoute
   '/publisher/promo-codes/new': typeof PublisherPromoCodesNewRoute
+  '/publisher/video-library/new': typeof PublisherVideoLibraryNewRoute
   '/pb-admin/bundles': typeof PbAdminBundlesIndexRoute
   '/pb-admin/titles': typeof PbAdminTitlesIndexRoute
+  '/publisher/audio-library': typeof PublisherAudioLibraryIndexRoute
   '/publisher/bundles': typeof PublisherBundlesIndexRoute
   '/publisher/catalogue-import': typeof PublisherCatalogueImportIndexRoute
   '/publisher/catalogue': typeof PublisherCatalogueIndexRoute
   '/publisher/promo-codes': typeof PublisherPromoCodesIndexRoute
+  '/publisher/video-library': typeof PublisherVideoLibraryIndexRoute
   '/pb-admin/featured-collections/$id/books': typeof PbAdminFeaturedCollectionsIdBooksRoute
   '/pb-admin/publishers-authors/$id/titles': typeof PbAdminPublishersAuthorsIdTitlesRoute
 }
@@ -1041,6 +1077,7 @@ export interface FileRoutesById {
   '/pb-admin/terms-conditions_/new': typeof PbAdminTermsConditionsNewRoute
   '/pb-admin/titles/$bookId': typeof PbAdminTitlesBookIdRoute
   '/pb-admin/titles/new': typeof PbAdminTitlesNewRoute
+  '/publisher/audio-library/new': typeof PublisherAudioLibraryNewRoute
   '/publisher/bundles/$bundleId': typeof PublisherBundlesBundleIdRoute
   '/publisher/bundles/new': typeof PublisherBundlesNewRoute
   '/publisher/catalogue-import/$fileName': typeof PublisherCatalogueImportFileNameRoute
@@ -1049,12 +1086,15 @@ export interface FileRoutesById {
   '/publisher/catalogue/new': typeof PublisherCatalogueNewRoute
   '/publisher/promo-codes/$promoId': typeof PublisherPromoCodesPromoIdRoute
   '/publisher/promo-codes/new': typeof PublisherPromoCodesNewRoute
+  '/publisher/video-library/new': typeof PublisherVideoLibraryNewRoute
   '/pb-admin/bundles/': typeof PbAdminBundlesIndexRoute
   '/pb-admin/titles/': typeof PbAdminTitlesIndexRoute
+  '/publisher/audio-library/': typeof PublisherAudioLibraryIndexRoute
   '/publisher/bundles/': typeof PublisherBundlesIndexRoute
   '/publisher/catalogue-import/': typeof PublisherCatalogueImportIndexRoute
   '/publisher/catalogue/': typeof PublisherCatalogueIndexRoute
   '/publisher/promo-codes/': typeof PublisherPromoCodesIndexRoute
+  '/publisher/video-library/': typeof PublisherVideoLibraryIndexRoute
   '/pb-admin/featured-collections_/$id/books': typeof PbAdminFeaturedCollectionsIdBooksRoute
   '/pb-admin/publishers-authors/$id/titles': typeof PbAdminPublishersAuthorsIdTitlesRoute
 }
@@ -1158,6 +1198,7 @@ export interface FileRouteTypes {
     | '/pb-admin/terms-conditions/new'
     | '/pb-admin/titles/$bookId'
     | '/pb-admin/titles/new'
+    | '/publisher/audio-library/new'
     | '/publisher/bundles/$bundleId'
     | '/publisher/bundles/new'
     | '/publisher/catalogue-import/$fileName'
@@ -1166,12 +1207,15 @@ export interface FileRouteTypes {
     | '/publisher/catalogue/new'
     | '/publisher/promo-codes/$promoId'
     | '/publisher/promo-codes/new'
+    | '/publisher/video-library/new'
     | '/pb-admin/bundles/'
     | '/pb-admin/titles/'
+    | '/publisher/audio-library/'
     | '/publisher/bundles/'
     | '/publisher/catalogue-import/'
     | '/publisher/catalogue/'
     | '/publisher/promo-codes/'
+    | '/publisher/video-library/'
     | '/pb-admin/featured-collections/$id/books'
     | '/pb-admin/publishers-authors/$id/titles'
   fileRoutesByTo: FileRoutesByTo
@@ -1273,6 +1317,7 @@ export interface FileRouteTypes {
     | '/pb-admin/terms-conditions/new'
     | '/pb-admin/titles/$bookId'
     | '/pb-admin/titles/new'
+    | '/publisher/audio-library/new'
     | '/publisher/bundles/$bundleId'
     | '/publisher/bundles/new'
     | '/publisher/catalogue-import/$fileName'
@@ -1281,12 +1326,15 @@ export interface FileRouteTypes {
     | '/publisher/catalogue/new'
     | '/publisher/promo-codes/$promoId'
     | '/publisher/promo-codes/new'
+    | '/publisher/video-library/new'
     | '/pb-admin/bundles'
     | '/pb-admin/titles'
+    | '/publisher/audio-library'
     | '/publisher/bundles'
     | '/publisher/catalogue-import'
     | '/publisher/catalogue'
     | '/publisher/promo-codes'
+    | '/publisher/video-library'
     | '/pb-admin/featured-collections/$id/books'
     | '/pb-admin/publishers-authors/$id/titles'
   id:
@@ -1388,6 +1436,7 @@ export interface FileRouteTypes {
     | '/pb-admin/terms-conditions_/new'
     | '/pb-admin/titles/$bookId'
     | '/pb-admin/titles/new'
+    | '/publisher/audio-library/new'
     | '/publisher/bundles/$bundleId'
     | '/publisher/bundles/new'
     | '/publisher/catalogue-import/$fileName'
@@ -1396,12 +1445,15 @@ export interface FileRouteTypes {
     | '/publisher/catalogue/new'
     | '/publisher/promo-codes/$promoId'
     | '/publisher/promo-codes/new'
+    | '/publisher/video-library/new'
     | '/pb-admin/bundles/'
     | '/pb-admin/titles/'
+    | '/publisher/audio-library/'
     | '/publisher/bundles/'
     | '/publisher/catalogue-import/'
     | '/publisher/catalogue/'
     | '/publisher/promo-codes/'
+    | '/publisher/video-library/'
     | '/pb-admin/featured-collections_/$id/books'
     | '/pb-admin/publishers-authors/$id/titles'
   fileRoutesById: FileRoutesById
@@ -1502,6 +1554,7 @@ export interface RootRouteChildren {
   PbAdminTermsConditionsNewRoute: typeof PbAdminTermsConditionsNewRoute
   PbAdminTitlesBookIdRoute: typeof PbAdminTitlesBookIdRoute
   PbAdminTitlesNewRoute: typeof PbAdminTitlesNewRoute
+  PublisherAudioLibraryNewRoute: typeof PublisherAudioLibraryNewRoute
   PublisherBundlesBundleIdRoute: typeof PublisherBundlesBundleIdRoute
   PublisherBundlesNewRoute: typeof PublisherBundlesNewRoute
   PublisherCatalogueImportFileNameRoute: typeof PublisherCatalogueImportFileNameRoute
@@ -1510,12 +1563,15 @@ export interface RootRouteChildren {
   PublisherCatalogueNewRoute: typeof PublisherCatalogueNewRoute
   PublisherPromoCodesPromoIdRoute: typeof PublisherPromoCodesPromoIdRoute
   PublisherPromoCodesNewRoute: typeof PublisherPromoCodesNewRoute
+  PublisherVideoLibraryNewRoute: typeof PublisherVideoLibraryNewRoute
   PbAdminBundlesIndexRoute: typeof PbAdminBundlesIndexRoute
   PbAdminTitlesIndexRoute: typeof PbAdminTitlesIndexRoute
+  PublisherAudioLibraryIndexRoute: typeof PublisherAudioLibraryIndexRoute
   PublisherBundlesIndexRoute: typeof PublisherBundlesIndexRoute
   PublisherCatalogueImportIndexRoute: typeof PublisherCatalogueImportIndexRoute
   PublisherCatalogueIndexRoute: typeof PublisherCatalogueIndexRoute
   PublisherPromoCodesIndexRoute: typeof PublisherPromoCodesIndexRoute
+  PublisherVideoLibraryIndexRoute: typeof PublisherVideoLibraryIndexRoute
   PbAdminFeaturedCollectionsIdBooksRoute: typeof PbAdminFeaturedCollectionsIdBooksRoute
 }
 
@@ -2039,6 +2095,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthorProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/publisher/video-library/': {
+      id: '/publisher/video-library/'
+      path: '/publisher/video-library'
+      fullPath: '/publisher/video-library/'
+      preLoaderRoute: typeof PublisherVideoLibraryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/publisher/promo-codes/': {
       id: '/publisher/promo-codes/'
       path: '/publisher/promo-codes'
@@ -2067,6 +2130,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublisherBundlesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/publisher/audio-library/': {
+      id: '/publisher/audio-library/'
+      path: '/publisher/audio-library'
+      fullPath: '/publisher/audio-library/'
+      preLoaderRoute: typeof PublisherAudioLibraryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-admin/titles/': {
       id: '/pb-admin/titles/'
       path: '/pb-admin/titles'
@@ -2079,6 +2149,13 @@ declare module '@tanstack/react-router' {
       path: '/pb-admin/bundles'
       fullPath: '/pb-admin/bundles/'
       preLoaderRoute: typeof PbAdminBundlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/video-library/new': {
+      id: '/publisher/video-library/new'
+      path: '/publisher/video-library/new'
+      fullPath: '/publisher/video-library/new'
+      preLoaderRoute: typeof PublisherVideoLibraryNewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/publisher/promo-codes/new': {
@@ -2135,6 +2212,13 @@ declare module '@tanstack/react-router' {
       path: '/publisher/bundles/$bundleId'
       fullPath: '/publisher/bundles/$bundleId'
       preLoaderRoute: typeof PublisherBundlesBundleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/audio-library/new': {
+      id: '/publisher/audio-library/new'
+      path: '/publisher/audio-library/new'
+      fullPath: '/publisher/audio-library/new'
+      preLoaderRoute: typeof PublisherAudioLibraryNewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-admin/titles/new': {
@@ -2455,6 +2539,7 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminTermsConditionsNewRoute: PbAdminTermsConditionsNewRoute,
   PbAdminTitlesBookIdRoute: PbAdminTitlesBookIdRoute,
   PbAdminTitlesNewRoute: PbAdminTitlesNewRoute,
+  PublisherAudioLibraryNewRoute: PublisherAudioLibraryNewRoute,
   PublisherBundlesBundleIdRoute: PublisherBundlesBundleIdRoute,
   PublisherBundlesNewRoute: PublisherBundlesNewRoute,
   PublisherCatalogueImportFileNameRoute: PublisherCatalogueImportFileNameRoute,
@@ -2463,12 +2548,15 @@ const rootRouteChildren: RootRouteChildren = {
   PublisherCatalogueNewRoute: PublisherCatalogueNewRoute,
   PublisherPromoCodesPromoIdRoute: PublisherPromoCodesPromoIdRoute,
   PublisherPromoCodesNewRoute: PublisherPromoCodesNewRoute,
+  PublisherVideoLibraryNewRoute: PublisherVideoLibraryNewRoute,
   PbAdminBundlesIndexRoute: PbAdminBundlesIndexRoute,
   PbAdminTitlesIndexRoute: PbAdminTitlesIndexRoute,
+  PublisherAudioLibraryIndexRoute: PublisherAudioLibraryIndexRoute,
   PublisherBundlesIndexRoute: PublisherBundlesIndexRoute,
   PublisherCatalogueImportIndexRoute: PublisherCatalogueImportIndexRoute,
   PublisherCatalogueIndexRoute: PublisherCatalogueIndexRoute,
   PublisherPromoCodesIndexRoute: PublisherPromoCodesIndexRoute,
+  PublisherVideoLibraryIndexRoute: PublisherVideoLibraryIndexRoute,
   PbAdminFeaturedCollectionsIdBooksRoute:
     PbAdminFeaturedCollectionsIdBooksRoute,
 }

@@ -649,10 +649,11 @@ function AuthorSearchResultCard({
           onAdd();
         }
       }}
-      className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ${isSelected
-        ? "cursor-default border-border/70 bg-secondary/30 text-muted-foreground"
-        : "border-border bg-background hover:bg-secondary/50 cursor-pointer"
-        }`}
+      className={`flex items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors ${
+        isSelected
+          ? "cursor-default border-border/70 bg-secondary/30 text-muted-foreground"
+          : "border-border bg-background hover:bg-secondary/50 cursor-pointer"
+      }`}
     >
       {match.avatar ? (
         <img
@@ -685,8 +686,9 @@ function AuthorSearchResultCard({
               e.stopPropagation();
               if (match.books > 0) setShowBooksPopup((v) => !v);
             }}
-            className={`inline-flex items-center gap-1 text-[11px] text-muted-foreground cursor-pointer ${match.books > 0 ? "hover:text-foreground" : ""
-              }`}
+            className={`inline-flex items-center gap-1 text-[11px] text-muted-foreground cursor-pointer ${
+              match.books > 0 ? "hover:text-foreground" : ""
+            }`}
           >
             <BookOpen size={11} />
             <span className={match.books > 0 ? "underline-offset-2 hover:underline" : ""}>
@@ -1240,8 +1242,9 @@ function CategoryDialog({
                     <button
                       type="button"
                       onClick={() => setActive(name)}
-                      className={`flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors ${isActive ? "bg-secondary/60" : "hover:bg-secondary/30"
-                        }`}
+                      className={`flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors ${
+                        isActive ? "bg-secondary/60" : "hover:bg-secondary/30"
+                      }`}
                     >
                       <span
                         role="checkbox"
@@ -1250,8 +1253,9 @@ function CategoryDialog({
                           e.stopPropagation();
                           toggleMain(name);
                         }}
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${checked ? "border-transparent" : "border-border bg-background"
-                          }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
+                          checked ? "border-transparent" : "border-border bg-background"
+                        }`}
                         style={
                           checked
                             ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
@@ -1296,8 +1300,9 @@ function CategoryDialog({
                       className="flex w-full items-center gap-3 border-b border-border/60 px-5 py-3 text-left text-sm transition-colors hover:bg-secondary/30 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${checked ? "border-transparent" : "border-border bg-background"
-                          }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
+                          checked ? "border-transparent" : "border-border bg-background"
+                        }`}
                         style={
                           checked
                             ? { backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }
@@ -1730,9 +1735,9 @@ function RentalDialog({
                   style={
                     p === page
                       ? {
-                        backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
-                        color: "var(--brand)",
-                      }
+                          backgroundColor: "color-mix(in oklab, var(--brand) 12%, transparent)",
+                          color: "var(--brand)",
+                        }
                       : undefined
                   }
                 >
@@ -1872,7 +1877,9 @@ function AddEBookPage() {
           <div className="mb-4 flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-xs font-semibold text-amber-700 dark:text-amber-400 shadow-2xs">
             <span className="flex items-center gap-2">
               <Sparkles size={16} />
-              <span>Editing Draft eBook: <strong>{targetBook?.title ?? "Draft Title"}</strong></span>
+              <span>
+                Editing Draft eBook: <strong>{targetBook?.title ?? "Draft Title"}</strong>
+              </span>
             </span>
             <span className="rounded-md bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
               Draft Mode
