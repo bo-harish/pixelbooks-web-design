@@ -85,6 +85,7 @@ import { Route as PublisherSalesReportRouteImport } from './routes/publisher/sal
 import { Route as PublisherSettingsRouteImport } from './routes/publisher/settings'
 import { Route as PublisherSupportRouteImport } from './routes/publisher/support'
 import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin.settings'
+import { Route as LibraryAdminCatalogueBookIdRouteImport } from './routes/library-admin/catalogue_.$bookId'
 import { Route as PbAdminLibLibrariesIdRouteImport } from './routes/pb-admin-lib/libraries_.$id'
 import { Route as PbAdminLibLibrariesNewRouteImport } from './routes/pb-admin-lib/libraries_.new'
 import { Route as PbAdminLibOrdersIdRouteImport } from './routes/pb-admin-lib/orders_.$id'
@@ -515,6 +516,12 @@ const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
   path: '/super-admin/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibraryAdminCatalogueBookIdRoute =
+  LibraryAdminCatalogueBookIdRouteImport.update({
+    id: '/library-admin/catalogue_/$bookId',
+    path: '/library-admin/catalogue/$bookId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PbAdminLibLibrariesIdRoute = PbAdminLibLibrariesIdRouteImport.update({
   id: '/pb-admin-lib/libraries_/$id',
   path: '/pb-admin-lib/libraries/$id',
@@ -831,6 +838,7 @@ export interface FileRoutesByFullPath {
   '/pb-admin/': typeof PbAdminIndexRoute
   '/pb-web/': typeof PbWebIndexRoute
   '/publisher/': typeof PublisherIndexRoute
+  '/library-admin/catalogue/$bookId': typeof LibraryAdminCatalogueBookIdRoute
   '/pb-admin-lib/libraries/$id': typeof PbAdminLibLibrariesIdRoute
   '/pb-admin-lib/libraries/new': typeof PbAdminLibLibrariesNewRoute
   '/pb-admin-lib/orders/$id': typeof PbAdminLibOrdersIdRoute
@@ -952,6 +960,7 @@ export interface FileRoutesByTo {
   '/pb-admin': typeof PbAdminIndexRoute
   '/pb-web': typeof PbWebIndexRoute
   '/publisher': typeof PublisherIndexRoute
+  '/library-admin/catalogue/$bookId': typeof LibraryAdminCatalogueBookIdRoute
   '/pb-admin-lib/libraries/$id': typeof PbAdminLibLibrariesIdRoute
   '/pb-admin-lib/libraries/new': typeof PbAdminLibLibrariesNewRoute
   '/pb-admin-lib/orders/$id': typeof PbAdminLibOrdersIdRoute
@@ -1074,6 +1083,7 @@ export interface FileRoutesById {
   '/pb-admin/': typeof PbAdminIndexRoute
   '/pb-web/': typeof PbWebIndexRoute
   '/publisher/': typeof PublisherIndexRoute
+  '/library-admin/catalogue_/$bookId': typeof LibraryAdminCatalogueBookIdRoute
   '/pb-admin-lib/libraries_/$id': typeof PbAdminLibLibrariesIdRoute
   '/pb-admin-lib/libraries_/new': typeof PbAdminLibLibrariesNewRoute
   '/pb-admin-lib/orders_/$id': typeof PbAdminLibOrdersIdRoute
@@ -1197,6 +1207,7 @@ export interface FileRouteTypes {
     | '/pb-admin/'
     | '/pb-web/'
     | '/publisher/'
+    | '/library-admin/catalogue/$bookId'
     | '/pb-admin-lib/libraries/$id'
     | '/pb-admin-lib/libraries/new'
     | '/pb-admin-lib/orders/$id'
@@ -1318,6 +1329,7 @@ export interface FileRouteTypes {
     | '/pb-admin'
     | '/pb-web'
     | '/publisher'
+    | '/library-admin/catalogue/$bookId'
     | '/pb-admin-lib/libraries/$id'
     | '/pb-admin-lib/libraries/new'
     | '/pb-admin-lib/orders/$id'
@@ -1439,6 +1451,7 @@ export interface FileRouteTypes {
     | '/pb-admin/'
     | '/pb-web/'
     | '/publisher/'
+    | '/library-admin/catalogue_/$bookId'
     | '/pb-admin-lib/libraries_/$id'
     | '/pb-admin-lib/libraries_/new'
     | '/pb-admin-lib/orders_/$id'
@@ -1561,6 +1574,7 @@ export interface RootRouteChildren {
   PbAdminIndexRoute: typeof PbAdminIndexRoute
   PbWebIndexRoute: typeof PbWebIndexRoute
   PublisherIndexRoute: typeof PublisherIndexRoute
+  LibraryAdminCatalogueBookIdRoute: typeof LibraryAdminCatalogueBookIdRoute
   PbAdminLibLibrariesIdRoute: typeof PbAdminLibLibrariesIdRoute
   PbAdminLibLibrariesNewRoute: typeof PbAdminLibLibrariesNewRoute
   PbAdminLibOrdersIdRoute: typeof PbAdminLibOrdersIdRoute
@@ -2137,6 +2151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperAdminSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/library-admin/catalogue_/$bookId': {
+      id: '/library-admin/catalogue_/$bookId'
+      path: '/library-admin/catalogue/$bookId'
+      fullPath: '/library-admin/catalogue/$bookId'
+      preLoaderRoute: typeof LibraryAdminCatalogueBookIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pb-admin-lib/libraries_/$id': {
       id: '/pb-admin-lib/libraries_/$id'
       path: '/pb-admin-lib/libraries/$id'
@@ -2562,6 +2583,7 @@ const rootRouteChildren: RootRouteChildren = {
   PbAdminIndexRoute: PbAdminIndexRoute,
   PbWebIndexRoute: PbWebIndexRoute,
   PublisherIndexRoute: PublisherIndexRoute,
+  LibraryAdminCatalogueBookIdRoute: LibraryAdminCatalogueBookIdRoute,
   PbAdminLibLibrariesIdRoute: PbAdminLibLibrariesIdRoute,
   PbAdminLibLibrariesNewRoute: PbAdminLibLibrariesNewRoute,
   PbAdminLibOrdersIdRoute: PbAdminLibOrdersIdRoute,

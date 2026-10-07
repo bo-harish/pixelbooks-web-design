@@ -63,6 +63,8 @@ export const SEED_VIDEOS: VideoItem[] = [
       "Science & Technology": ["Computer Science", "Artificial Intelligence"],
       "Academic & Educational": ["Higher Education", "Reference"],
     },
+    courses: ["B.Sc (CS)", "B.Tech (IT)"],
+    batches: ["2024 - 2028", "2023 - 2027"],
     videoUrl: "https://www.youtube.com/watch?v=aircAruvnKk",
     duration: "45:20",
     status: "Published",
@@ -77,6 +79,8 @@ export const SEED_VIDEOS: VideoItem[] = [
     categories: {
       History: ["Ancient", "Cultural", "World History"],
     },
+    courses: ["MSC"],
+    batches: ["Batch 2025"],
     videoUrl: "https://www.youtube.com/watch?v=sample-history",
     duration: "32:15",
     status: "Published",
@@ -92,6 +96,8 @@ export const SEED_VIDEOS: VideoItem[] = [
       Fiction: ["Fantasy", "Mystery"],
       "Self-Help": ["Productivity"],
     },
+    courses: ["B.Com (CA)"],
+    batches: ["2025 - 2029"],
     videoUrl: "",
     duration: "28:50",
     status: "Draft",
@@ -109,6 +115,8 @@ export const SEED_AUDIOS: AudioItem[] = [
     categories: {
       "Self-Help": ["Mindfulness", "Leadership", "Productivity"],
     },
+    courses: ["M.B.A"],
+    batches: ["2025 - 2027"],
     audioUrl: "https://example.com/audio/mindful-leadership.mp3",
     duration: "38:40",
     narrator: "Dr. Elena Vance",
@@ -125,6 +133,8 @@ export const SEED_AUDIOS: AudioItem[] = [
       History: ["Modern", "Political"],
       Biography: ["Historical", "Political"],
     },
+    courses: ["B.Sc (CS)"],
+    batches: ["2025 - 2029"],
     audioUrl: "https://example.com/audio/great-speeches.mp3",
     duration: "54:10",
     narrator: "Marcus Thorne",
@@ -141,6 +151,8 @@ export const SEED_AUDIOS: AudioItem[] = [
       "Science & Technology": ["Physics"],
       "Academic & Educational": ["Higher Education", "Study Guides"],
     },
+    courses: ["MSC"],
+    batches: ["Batch 2026"],
     audioUrl: "",
     duration: "42:00",
     narrator: "Prof. Arthur Pendelton",
@@ -161,7 +173,32 @@ export function getVideoLibrary(): VideoItem[] {
       return SEED_VIDEOS;
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : SEED_VIDEOS;
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed.map((item: VideoItem) => {
+        const seedMatch = SEED_VIDEOS.find((s) => s.id === item.id);
+        if (seedMatch) {
+          const courses =
+            item.courses && item.courses.length > 0
+              ? item.courses
+              : item.course
+                ? [item.course]
+                : seedMatch.courses;
+          const batches =
+            item.batches && item.batches.length > 0
+              ? item.batches
+              : item.batch
+                ? [item.batch]
+                : seedMatch.batches;
+          return {
+            ...item,
+            courses,
+            batches,
+          };
+        }
+        return item;
+      });
+    }
+    return SEED_VIDEOS;
   } catch {
     return SEED_VIDEOS;
   }
@@ -182,7 +219,32 @@ export function getAudioLibrary(): AudioItem[] {
       return SEED_AUDIOS;
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : SEED_AUDIOS;
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed.map((item: AudioItem) => {
+        const seedMatch = SEED_AUDIOS.find((s) => s.id === item.id);
+        if (seedMatch) {
+          const courses =
+            item.courses && item.courses.length > 0
+              ? item.courses
+              : item.course
+                ? [item.course]
+                : seedMatch.courses;
+          const batches =
+            item.batches && item.batches.length > 0
+              ? item.batches
+              : item.batch
+                ? [item.batch]
+                : seedMatch.batches;
+          return {
+            ...item,
+            courses,
+            batches,
+          };
+        }
+        return item;
+      });
+    }
+    return SEED_AUDIOS;
   } catch {
     return SEED_AUDIOS;
   }
