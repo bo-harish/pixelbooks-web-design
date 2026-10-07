@@ -211,9 +211,8 @@ function StatusSelectPill({
           e.stopPropagation();
           if (!readOnly) setOpen((o) => !o);
         }}
-        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${
-          readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
-        }`}
+        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-tight transition-all ${cfg.bgClass} ${cfg.textColor} ${cfg.borderColor} ${readOnly ? "cursor-default" : "hover:opacity-90 cursor-pointer shadow-2xs"
+          }`}
       >
         <CurrentIcon size={15} className="shrink-0" />
         <span>{cfg.label}</span>
@@ -244,9 +243,8 @@ function StatusSelectPill({
                   key={st}
                   type="button"
                   onClick={(e) => handleItemClick(st, e)}
-                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${
-                    isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
-                  } ${itemCfg.textColor}`}
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold transition-colors cursor-pointer ${isSelected ? "bg-secondary/80" : "hover:bg-secondary/50"
+                    } ${itemCfg.textColor}`}
                 >
                   <ItemIcon size={16} className="shrink-0" />
                   <span>{itemCfg.label}</span>
@@ -272,11 +270,10 @@ function StatusSelectPill({
           >
             <div className="flex items-center gap-3">
               <div
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-                  pendingStatus === "Published"
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${pendingStatus === "Published"
                     ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                     : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
-                }`}
+                  }`}
               >
                 {pendingStatus === "Published" ? (
                   <CheckCircle2 size={22} />
@@ -315,9 +312,8 @@ function StatusSelectPill({
                   setPendingStatus(null);
                   onChange?.(target);
                 }}
-                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${
-                  pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
-                }`}
+                className={`inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer ${pendingStatus === "Published" ? "bg-emerald-600" : "bg-slate-700"
+                  }`}
               >
                 {pendingStatus === "Published" ? "Confirm & Publish" : "Confirm & Unpublish"}
               </button>
@@ -433,11 +429,10 @@ function LibraryMultiSelectDropdown({
     <div className="relative w-full" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${
-          isOpen
+        className={`flex min-h-[46px] w-full items-center justify-between gap-2 rounded-xl border bg-card p-2 text-sm font-medium transition-colors cursor-pointer shadow-2xs ${isOpen
             ? "border-[var(--brand)] ring-1 ring-[var(--brand)]"
             : "border-border hover:bg-secondary/30"
-        }`}
+          }`}
       >
         <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
           {selectedNames.length === 0 ? (
@@ -542,9 +537,8 @@ function LibraryMultiSelectDropdown({
                 return (
                   <div
                     key={lib.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${
-                      isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
-                    }`}
+                    className={`flex items-center justify-between px-3.5 py-2.5 text-xs transition-colors hover:bg-secondary/60 ${isSelected ? "bg-[var(--brand)]/5 font-semibold" : ""
+                      }`}
                   >
                     <div
                       className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer pr-2"
@@ -553,7 +547,7 @@ function LibraryMultiSelectDropdown({
                       <input
                         type="checkbox"
                         checked={isSelected}
-                        onChange={() => {}}
+                        onChange={() => { }}
                         className="h-4 w-4 rounded border-border text-[var(--brand)] focus:ring-[var(--brand)] accent-[var(--brand)] cursor-pointer"
                       />
                       <div className="min-w-0">
@@ -730,11 +724,10 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
                             key={preset}
                             type="button"
                             onClick={() => updateCopies(libName, preset)}
-                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${
-                              copies === preset
+                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-md border transition-colors cursor-pointer ${copies === preset
                                 ? "bg-[var(--brand)] text-white border-[var(--brand)]"
                                 : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
-                            }`}
+                              }`}
                           >
                             {preset}
                           </button>
@@ -1020,11 +1013,10 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
                       key={plan.id}
                       type="button"
                       onClick={() => setSelectedPlanId(plan.id)}
-                      className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all cursor-pointer ${
-                        isSelected
+                      className={`flex flex-col items-center justify-center rounded-xl border p-3 text-center transition-all cursor-pointer ${isSelected
                           ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
                           : "border-border bg-card hover:bg-secondary/40"
-                      }`}
+                        }`}
                     >
                       <span className="text-sm font-extrabold text-foreground">{plan.price}</span>
                       <span className="text-[10px] font-medium italic text-muted-foreground mt-0.5">
@@ -1039,11 +1031,10 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
                     key={plan.id}
                     type="button"
                     onClick={() => setSelectedPlanId(plan.id)}
-                    className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all cursor-pointer ${
-                      isSelected
+                    className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all cursor-pointer ${isSelected
                         ? "border-[var(--brand)] bg-[var(--brand)]/5 ring-1 ring-[var(--brand)]"
                         : "border-border bg-card hover:bg-secondary/40"
-                    }`}
+                      }`}
                   >
                     <span className="text-[11px] font-bold text-foreground whitespace-nowrap">
                       {plan.duration}
@@ -1391,17 +1382,24 @@ function EBookDetailPage() {
 
               {/* Actions */}
               <div className="pt-2 flex flex-wrap items-center gap-3">
-                <button
-                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs cursor-pointer"
+                <Link
+                  to="/publisher/catalogue/new"
+                  search={{ edit: book.id }}
+                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs cursor-pointer text-white"
                   style={{
                     backgroundColor: "var(--brand)",
-                    color: "var(--brand-contrast)",
                   }}
+                >
+                  <Pencil size={15} />
+                  Edit Listing
+                </Link>
+                <button
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
                 >
                   <Eye size={16} />
                   Preview eBook
                 </button>
-                <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer">
+                <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs">
                   <BookOpen size={16} />
                   Preview Sample eBook
                 </button>

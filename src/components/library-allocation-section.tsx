@@ -460,20 +460,20 @@ export function LibraryAllocationSection({
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
-      {/* Card Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+    <div className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 space-y-4 shadow-xs">
+      {/* Card Header in Select Categories Style */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3.5">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-2xs">
-            <Library size={22} />
-          </span>
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-800/40 shrink-0 shadow-2xs">
+            <Library size={16} strokeWidth={2} />
+          </div>
           <div>
-            <h2 className="text-base font-extrabold text-foreground leading-tight">
+            <h2 className="text-sm sm:text-base font-bold text-foreground">
               {showCopies
                 ? "Library Allocation & License Copies"
                 : "Library Allocation & Curriculum Access"}
             </h2>
-            <p className="text-xs text-muted-foreground font-medium mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {showCopies
                 ? "Select authorized institutional libraries, allocate license copies, and configure course & batch access per library."
                 : `Select authorized institutional libraries and configure course & batch access per library.`}

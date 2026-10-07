@@ -15,6 +15,7 @@ import {
   Clock,
   Building2,
   Check,
+  Pencil,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -159,8 +160,8 @@ function DropdownSelect<T extends string>({
                     setSearchTerm("");
                   }}
                   className={`block w-full px-4 py-2 text-left text-sm hover:bg-secondary ${opt === value
-                      ? "font-medium text-foreground bg-secondary/50"
-                      : "text-muted-foreground"
+                    ? "font-medium text-foreground bg-secondary/50"
+                    : "text-muted-foreground"
                     }`}
                 >
                   <span className="truncate">{opt}</span>
@@ -311,8 +312,8 @@ function StatusSelectPill({
             <div className="flex items-center gap-3">
               <div
                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${pendingStatus === "Published"
-                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                    : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
+                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                  : "bg-slate-500/15 text-slate-600 dark:text-slate-400"
                   }`}
               >
                 {pendingStatus === "Published" ? (
@@ -604,10 +605,30 @@ function CataloguePage() {
                         <span className="font-medium">₹{b.price.toFixed(2)}</span>
                       )}
                     </td>
-                    <td className="py-4 pr-6 text-right">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
-                        <ChevronRight size={16} />
-                      </span>
+                    <td className="py-4 pr-6 text-right" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link
+                          to="/publisher/catalogue/new"
+                          search={{ edit: b.id }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
+                          title="Edit eBook listing"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Pencil size={14} />
+                        </Link>
+                        <span
+                          onClick={() => {
+                            if (b.status === "Draft") {
+                              navigate({ to: "/publisher/catalogue/new", search: { edit: b.id } });
+                            } else {
+                              navigate({ to: "/publisher/catalogue/$bookId", params: { bookId: b.id } });
+                            }
+                          }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground cursor-pointer"
+                        >
+                          <ChevronRight size={16} />
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -673,7 +694,18 @@ function CataloguePage() {
                       </p>
                     )}
                   </div>
-                  <ChevronRight size={16} className="mt-1 shrink-0 text-muted-foreground" />
+                  <div className="flex items-center gap-1.5 mt-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                    <Link
+                      to="/publisher/catalogue/new"
+                      search={{ edit: b.id }}
+                      className="p-1 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
+                      title="Edit eBook listing"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Pencil size={15} />
+                    </Link>
+                    <ChevronRight size={16} className="text-muted-foreground" />
+                  </div>
                 </div>
               </li>
             ))}

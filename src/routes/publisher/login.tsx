@@ -12,8 +12,10 @@ import {
   Smartphone,
   CheckCircle2,
   Building2,
+  Library,
 } from "lucide-react";
 import { toast } from "sonner";
+import { usePublisherType, type PublisherUserType } from "@/hooks/use-publisher-type";
 
 export const Route = createFileRoute("/publisher/login")({
   head: () => ({
@@ -35,6 +37,8 @@ type ViewMode = "login" | "forgot-password";
 
 function PublisherLoginPage() {
   const navigate = useNavigate();
+  const [publisherType, setPublisherType] = usePublisherType();
+  const [activePubType, setActivePubType] = useState<PublisherUserType>(publisherType);
 
   // Navigation & View Modes
   const [viewMode, setViewMode] = useState<ViewMode>("login");
@@ -115,9 +119,14 @@ function PublisherLoginPage() {
       return;
     }
     setIsSubmitting(true);
+    if (selectedRole === "publisher") {
+      setPublisherType(activePubType);
+    }
     setTimeout(() => {
       setIsSubmitting(false);
-      toast.success(`OTP Verified! Welcome to Publisher Portal.`);
+      toast.success(
+        `OTP Verified! Welcome to Publisher Portal (${selectedRole === "publisher" ? activePubType : "Author"}).`,
+      );
       navigate({ to: "/publisher" });
     }, 800);
   };
@@ -134,9 +143,14 @@ function PublisherLoginPage() {
       return;
     }
     setIsSubmitting(true);
+    if (selectedRole === "publisher") {
+      setPublisherType(activePubType);
+    }
     setTimeout(() => {
       setIsSubmitting(false);
-      toast.success(`Welcome back! Authenticated as ${identifier}`);
+      toast.success(
+        `Welcome back! Authenticated as ${selectedRole === "publisher" ? activePubType : "Author"}.`,
+      );
       navigate({ to: "/publisher" });
     }, 800);
   };
@@ -239,6 +253,44 @@ function PublisherLoginPage() {
                     Author / Editor
                   </button>
                 </div>
+
+                {/* Sub-toggle: Publisher Login Type */}
+                {selectedRole === "publisher" && (
+                  <div className="space-y-1.5 pt-1 animate-in fade-in duration-150">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block text-left">
+                      Publisher Account Type
+                    </label>
+                    <div className="grid grid-cols-2 gap-1.5 bg-secondary/50 p-1 rounded-xl border border-border/60">
+                      <button
+                        type="button"
+                        onClick={() => setActivePubType("Complete Publisher")}
+                        id="tab-pub-type-complete"
+                        className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          activePubType === "Complete Publisher"
+                            ? "bg-card text-teal-600 dark:text-teal-400 shadow-2xs border border-teal-500/30"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Building2 size={13} />
+                        Complete Publisher
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setActivePubType("Library-Only Publisher")}
+                        id="tab-pub-type-library"
+                        className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          activePubType === "Library-Only Publisher"
+                            ? "bg-card text-indigo-600 dark:text-indigo-400 shadow-2xs border border-indigo-500/30"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Library size={13} />
+                        Library-Only Publisher
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* 2. FORM BODY */}

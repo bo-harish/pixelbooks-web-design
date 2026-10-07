@@ -361,115 +361,116 @@ export function CategoriesSectionCard({
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
-      {/* Card Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+    <div className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 space-y-3.5 shadow-xs">
+      {/* Header: Icon + Title/Subtitle + Select Categories Button */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-500/12 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 shadow-2xs">
-            <Tag size={22} />
-          </span>
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-800/40 shrink-0 shadow-2xs">
+            <Tag size={16} strokeWidth={2} />
+          </div>
           <div>
-            <h2 className="text-base font-extrabold text-foreground leading-tight">
-              Select Categories
-            </h2>
-            <p className="text-xs text-muted-foreground font-medium mt-0.5">
+            <h2 className="text-sm sm:text-base font-bold text-foreground">Select Categories</h2>
+            <p className="text-xs text-muted-foreground">
               Select one or more categories and subcategories to classify this {mediaTypeLabel} in
               the catalogue.
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors shadow-2xs cursor-pointer"
-          >
-            {groups.length > 0 ? <Pencil size={14} /> : <Plus size={15} />}
-            <span>{groups.length > 0 ? "Edit Categories" : "Select Categories"}</span>
-          </button>
-        </div>
+
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex h-8.5 items-center gap-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-white px-3.5 text-xs font-semibold shadow-2xs transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
+        >
+          <Pencil size={12} strokeWidth={2.5} />
+          <span>Select Categories</span>
+        </button>
       </div>
 
-      {/* Selected Categories Breakdown Table */}
-      {groups.length > 0 ? (
-        <div className="rounded-xl border border-border/80 bg-secondary/20 p-4 space-y-3">
-          <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-              <span>Selected Categories & Subcategories</span>
-            </h3>
-            <span className="text-xs font-semibold text-muted-foreground">
-              Total:{" "}
-              <strong className="text-foreground font-extrabold">
-                {groups.length} categories • {totalSubs} subcategories
-              </strong>
-            </span>
+      {/* Subheader: Selected Categories & Subcategories Count Bar */}
+      <div className="flex items-center justify-between text-[11px] pt-0.5">
+        <span className="font-bold uppercase tracking-wider text-muted-foreground">
+          SELECTED CATEGORIES &amp; SUBCATEGORIES
+        </span>
+        <span className="text-muted-foreground">
+          Total:{" "}
+          <strong className="text-foreground font-semibold">
+            {groups.length} categories
+          </strong>{" "}
+          &bull;{" "}
+          <strong className="text-foreground font-semibold">
+            {totalSubs} subcategories
+          </strong>
+        </span>
+      </div>
+
+      {/* Categories List - Compact Rows */}
+      <div className="space-y-2">
+        {groups.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-200 dark:border-border p-6 text-center text-xs text-muted-foreground">
+            No categories selected yet. Click &quot;Select Categories&quot; above to classify this{" "}
+            {mediaTypeLabel}.
           </div>
-
-          <div className="divide-y divide-border/40">
-            {groups.map((g) => (
-              <div
-                key={g.name}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-purple-600 dark:text-purple-400">
-                    <Tag size={16} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-foreground truncate">{g.name}</p>
-                    {g.subs.length > 0 ? (
-                      <div className="flex flex-wrap items-center gap-1 mt-1">
-                        {g.subs.map((s, idx) => (
-                          <span
-                            key={idx}
-                            className="inline-flex items-center rounded-md bg-secondary border border-border/60 px-2 py-0.5 text-[10.5px] font-medium text-muted-foreground"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-[11px] text-muted-foreground italic">No subcategories</p>
-                    )}
-                  </div>
+        ) : (
+          groups.map((g) => (
+            <div
+              key={g.name}
+              className="rounded-xl border border-slate-200/90 dark:border-border bg-slate-50/40 dark:bg-secondary/20 px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-2xs hover:border-slate-300 dark:hover:border-border transition-all"
+            >
+              {/* Left: Icon + Category Name + Subcategory pills */}
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-800/40 shrink-0 shadow-2xs">
+                  <Tag size={12} />
                 </div>
-
-                <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-                  <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                    {g.subs.length} subcategories
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveCategory(g.name)}
-                    className="rounded-md p-1.5 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
-                    title="Remove category"
-                  >
-                    <Trash2 size={15} />
-                  </button>
+                <div className="min-w-0 flex flex-wrap items-center gap-2">
+                  <h4 className="text-xs font-bold text-foreground shrink-0">{g.name}</h4>
+                  {g.subs.length > 0 ? (
+                    <div className="flex flex-wrap items-center gap-1">
+                      {g.subs.map((sub, sIdx) => (
+                        <span
+                          key={sIdx}
+                          className="rounded-md bg-white dark:bg-secondary px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:text-foreground border border-slate-200/80 dark:border-border shadow-2xs"
+                        >
+                          {sub}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="text-[11px] italic text-muted-foreground">
+                      No subcategories
+                    </span>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-9 text-center bg-secondary/10">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-muted-foreground mb-2.5">
-            <Tag size={22} />
-          </div>
-          <p className="text-xs font-semibold text-foreground">No categories selected</p>
-          <p className="text-xs text-muted-foreground mt-0.5 mb-3.5 max-w-sm">
-            Categorizing your {mediaTypeLabel} helps libraries and students discover it easily in
-            search and recommendations.
-          </p>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer"
-          >
-            <Plus size={15} /> <span>Select Categories</span>
-          </button>
-        </div>
-      )}
+
+              {/* Right: Pill count + Edit + Delete */}
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                {g.subs.length > 0 && (
+                  <span className="rounded-full bg-slate-200/70 dark:bg-secondary px-2.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:text-muted-foreground">
+                    {g.subs.length} subcategories
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setOpen(true)}
+                  className="inline-flex h-7.5 items-center gap-1 rounded-lg border border-slate-200 dark:border-border bg-white dark:bg-card px-2.5 text-[11px] font-semibold text-slate-700 dark:text-foreground hover:bg-slate-50 dark:hover:bg-secondary/60 transition-colors cursor-pointer shadow-2xs"
+                >
+                  <Pencil size={11} />
+                  <span>Edit</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveCategory(g.name)}
+                  className="inline-flex h-7.5 w-7.5 items-center justify-center rounded-lg border border-slate-200 dark:border-border bg-white dark:bg-card text-slate-400 hover:text-rose-600 hover:border-rose-300 dark:hover:border-rose-900 transition-colors cursor-pointer shadow-2xs"
+                  title="Remove category"
+                >
+                  <Trash2 size={12} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
       {open && (
         <CategoryDialog
