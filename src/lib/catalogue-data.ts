@@ -15,6 +15,10 @@ export type Book = {
   dop?: string; // Date of Purchase
   language?: string; // Language
   licenseCount?: number; // License Count (No. of copies)
+  courses?: string[]; // Courses for Library-Only Publisher
+  batches?: string[]; // Batches for Library-Only Publisher
+  course?: string; // Legacy/fallback single course
+  batch?: string; // Legacy/fallback single batch
 };
 
 export const gradients = [

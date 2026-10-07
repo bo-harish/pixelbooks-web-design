@@ -9,167 +9,134 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PublisherIndexRouteImport } from './routes/publisher/index'
-import { Route as PbWebIndexRouteImport } from './routes/pb-web/index'
-import { Route as PbAdminIndexRouteImport } from './routes/pb-admin/index'
-import { Route as PbAdminLibIndexRouteImport } from './routes/pb-admin-lib/index'
-import { Route as LibraryUserIndexRouteImport } from './routes/library-user/index'
-import { Route as LibraryAdminIndexRouteImport } from './routes/library-admin/index'
-import { Route as InstitutionsIndexRouteImport } from './routes/institutions/index'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as AuthorIndexRouteImport } from './routes/author/index'
-import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin.settings'
-import { Route as PublisherSupportRouteImport } from './routes/publisher/support'
-import { Route as PublisherSettingsRouteImport } from './routes/publisher/settings'
-import { Route as PublisherSalesReportRouteImport } from './routes/publisher/sales-report'
-import { Route as PublisherProfileRouteImport } from './routes/publisher/profile'
-import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
-import { Route as PublisherLoginRouteImport } from './routes/publisher/login'
-import { Route as PublisherLinkSourcesRouteImport } from './routes/publisher/link-sources'
-import { Route as PublisherCategoriesRouteImport } from './routes/publisher/categories'
-import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
-import { Route as PbWebTermsConditionsRouteImport } from './routes/pb-web/terms-conditions'
-import { Route as PbWebSupportRouteImport } from './routes/pb-web/support'
-import { Route as PbWebPrivacyPolicyRouteImport } from './routes/pb-web/privacy-policy'
-import { Route as PbWebGenreRouteImport } from './routes/pb-web/genre'
-import { Route as PbWebFaqRouteImport } from './routes/pb-web/faq'
-import { Route as PbWebCartRouteImport } from './routes/pb-web/cart'
-import { Route as PbWebAccountsRouteImport } from './routes/pb-web/accounts'
-import { Route as PbWebAboutRouteImport } from './routes/pb-web/about'
-import { Route as PbAdminViewsReportRouteImport } from './routes/pb-admin/views-report'
-import { Route as PbAdminTermsConditionsRouteImport } from './routes/pb-admin/terms-conditions'
-import { Route as PbAdminSettingsRouteImport } from './routes/pb-admin/settings'
-import { Route as PbAdminSalesReportRouteImport } from './routes/pb-admin/sales-report'
-import { Route as PbAdminQuizzesRewardsRouteImport } from './routes/pb-admin/quizzes-rewards'
-import { Route as PbAdminQuizzRewardsRouteImport } from './routes/pb-admin/quizz-rewards'
-import { Route as PbAdminPublishersAuthorsRouteImport } from './routes/pb-admin/publishers-authors'
-import { Route as PbAdminPromoCodesRouteImport } from './routes/pb-admin/promo-codes'
-import { Route as PbAdminProfileRouteImport } from './routes/pb-admin/profile'
-import { Route as PbAdminPrivacyPolicyRouteImport } from './routes/pb-admin/privacy-policy'
-import { Route as PbAdminNotificationsRouteImport } from './routes/pb-admin/notifications'
-import { Route as PbAdminMergeAuthorsRouteImport } from './routes/pb-admin/merge-authors'
-import { Route as PbAdminMarginReportRouteImport } from './routes/pb-admin/margin-report'
-import { Route as PbAdminFeaturedCollectionsRouteImport } from './routes/pb-admin/featured-collections'
-import { Route as PbAdminCustomersRouteImport } from './routes/pb-admin/customers'
-import { Route as PbAdminCommissionRatesRouteImport } from './routes/pb-admin/commission-rates'
-import { Route as PbAdminCategoriesRouteImport } from './routes/pb-admin/categories'
-import { Route as PbAdminCartViewRouteImport } from './routes/pb-admin/cart-view'
-import { Route as PbAdminCartAnalysisRouteImport } from './routes/pb-admin/cart-analysis'
-import { Route as PbAdminAuthorManagementRouteImport } from './routes/pb-admin/author-management'
-import { Route as PbAdminAuditLogRouteImport } from './routes/pb-admin/audit-log'
-import { Route as PbAdminAdminUsersRouteImport } from './routes/pb-admin/admin-users'
-import { Route as PbAdminLibTermsConditionsRouteImport } from './routes/pb-admin-lib/terms-conditions'
-import { Route as PbAdminLibSettingsRouteImport } from './routes/pb-admin-lib/settings'
-import { Route as PbAdminLibReportsRouteImport } from './routes/pb-admin-lib/reports'
-import { Route as PbAdminLibPrivacyPolicyRouteImport } from './routes/pb-admin-lib/privacy-policy'
-import { Route as PbAdminLibOrdersRouteImport } from './routes/pb-admin-lib/orders'
-import { Route as PbAdminLibLibrariesRouteImport } from './routes/pb-admin-lib/libraries'
-import { Route as PbAdminLibCloneRouteImport } from './routes/pb-admin-lib/clone'
-import { Route as PbAdminLibCatalogueRouteImport } from './routes/pb-admin-lib/catalogue'
-import { Route as LibraryUserProfileRouteImport } from './routes/library-user/profile'
-import { Route as LibraryUserLoginRouteImport } from './routes/library-user/login'
-import { Route as LibraryAdminUsersRouteImport } from './routes/library-admin/users'
-import { Route as LibraryAdminSupportRouteImport } from './routes/library-admin/support'
-import { Route as LibraryAdminRequestsRouteImport } from './routes/library-admin/requests'
-import { Route as LibraryAdminReportsRouteImport } from './routes/library-admin/reports'
-import { Route as LibraryAdminProfileRouteImport } from './routes/library-admin/profile'
-import { Route as LibraryAdminOrdersRouteImport } from './routes/library-admin/orders'
-import { Route as LibraryAdminManageEbooksRouteImport } from './routes/library-admin/manage-ebooks'
-import { Route as LibraryAdminDepartmentsRouteImport } from './routes/library-admin/departments'
-import { Route as LibraryAdminCoursesRouteImport } from './routes/library-admin/courses'
-import { Route as LibraryAdminCatalogueRouteImport } from './routes/library-admin/catalogue'
-import { Route as LibraryAdminCartRouteImport } from './routes/library-admin/cart'
-import { Route as LibraryAdminBannersRouteImport } from './routes/library-admin/banners'
-import { Route as InstitutionsLoginRouteImport } from './routes/institutions/login'
 import { Route as AuthorProfileRouteImport } from './routes/author/profile'
-import { Route as PublisherVideoLibraryIndexRouteImport } from './routes/publisher/video-library.index'
-import { Route as PublisherPromoCodesIndexRouteImport } from './routes/publisher/promo-codes.index'
-import { Route as PublisherCatalogueIndexRouteImport } from './routes/publisher/catalogue.index'
-import { Route as PublisherCatalogueImportIndexRouteImport } from './routes/publisher/catalogue-import.index'
-import { Route as PublisherBundlesIndexRouteImport } from './routes/publisher/bundles.index'
-import { Route as PublisherAudioLibraryIndexRouteImport } from './routes/publisher/audio-library.index'
-import { Route as PbAdminTitlesIndexRouteImport } from './routes/pb-admin/titles.index'
-import { Route as PbAdminBundlesIndexRouteImport } from './routes/pb-admin/bundles.index'
-import { Route as PublisherVideoLibraryNewRouteImport } from './routes/publisher/video-library.new'
-import { Route as PublisherPromoCodesNewRouteImport } from './routes/publisher/promo-codes.new'
-import { Route as PublisherPromoCodesPromoIdRouteImport } from './routes/publisher/promo-codes.$promoId'
-import { Route as PublisherCatalogueNewRouteImport } from './routes/publisher/catalogue.new'
-import { Route as PublisherCatalogueBookIdRouteImport } from './routes/publisher/catalogue.$bookId'
-import { Route as PublisherCatalogueImportNewRouteImport } from './routes/publisher/catalogue-import.new'
-import { Route as PublisherCatalogueImportFileNameRouteImport } from './routes/publisher/catalogue-import.$fileName'
-import { Route as PublisherBundlesNewRouteImport } from './routes/publisher/bundles.new'
-import { Route as PublisherBundlesBundleIdRouteImport } from './routes/publisher/bundles.$bundleId'
-import { Route as PublisherAudioLibraryNewRouteImport } from './routes/publisher/audio-library.new'
-import { Route as PbAdminTitlesNewRouteImport } from './routes/pb-admin/titles.new'
-import { Route as PbAdminTitlesBookIdRouteImport } from './routes/pb-admin/titles.$bookId'
-import { Route as PbAdminTermsConditionsNewRouteImport } from './routes/pb-admin/terms-conditions_.new'
-import { Route as PbAdminTermsConditionsIdRouteImport } from './routes/pb-admin/terms-conditions_.$id'
-import { Route as PbAdminPublishersAuthorsIdRouteImport } from './routes/pb-admin/publishers-authors.$id'
-import { Route as PbAdminPrivacyPolicyNewRouteImport } from './routes/pb-admin/privacy-policy_.new'
-import { Route as PbAdminPrivacyPolicyIdRouteImport } from './routes/pb-admin/privacy-policy_.$id'
-import { Route as PbAdminMarketingSitemapRouteImport } from './routes/pb-admin/marketing.sitemap'
-import { Route as PbAdminMarketingSchemaMetaRouteImport } from './routes/pb-admin/marketing.schema-meta'
-import { Route as PbAdminCommissionRatesIdRouteImport } from './routes/pb-admin/commission-rates_/$id'
-import { Route as PbAdminBundlesNewRouteImport } from './routes/pb-admin/bundles.new'
-import { Route as PbAdminBundlesBundleIdRouteImport } from './routes/pb-admin/bundles.$bundleId'
-import { Route as PbAdminAuthorManagementAuthorIdRouteImport } from './routes/pb-admin/author-management.$authorId'
-import { Route as PbAdminAdBannersPopupRouteImport } from './routes/pb-admin/ad-banners.popup'
-import { Route as PbAdminAdBannersImageRouteImport } from './routes/pb-admin/ad-banners.image'
-import { Route as PbAdminAdBannersGenreRouteImport } from './routes/pb-admin/ad-banners.genre'
-import { Route as PbAdminLibTermsConditionsNewRouteImport } from './routes/pb-admin-lib/terms-conditions_.new'
-import { Route as PbAdminLibTermsConditionsIdRouteImport } from './routes/pb-admin-lib/terms-conditions_.$id'
-import { Route as PbAdminLibPrivacyPolicyNewRouteImport } from './routes/pb-admin-lib/privacy-policy_.new'
-import { Route as PbAdminLibPrivacyPolicyIdRouteImport } from './routes/pb-admin-lib/privacy-policy_.$id'
-import { Route as PbAdminLibOrdersIdRouteImport } from './routes/pb-admin-lib/orders_.$id'
-import { Route as PbAdminLibLibrariesNewRouteImport } from './routes/pb-admin-lib/libraries_.new'
+import { Route as InstitutionsIndexRouteImport } from './routes/institutions/index'
+import { Route as InstitutionsLoginRouteImport } from './routes/institutions/login'
+import { Route as LibraryAdminIndexRouteImport } from './routes/library-admin/index'
+import { Route as LibraryAdminAudioLibraryRouteImport } from './routes/library-admin/audio-library'
+import { Route as LibraryAdminBannersRouteImport } from './routes/library-admin/banners'
+import { Route as LibraryAdminCartRouteImport } from './routes/library-admin/cart'
+import { Route as LibraryAdminCatalogueRouteImport } from './routes/library-admin/catalogue'
+import { Route as LibraryAdminCoursesRouteImport } from './routes/library-admin/courses'
+import { Route as LibraryAdminDepartmentsRouteImport } from './routes/library-admin/departments'
+import { Route as LibraryAdminManageEbooksRouteImport } from './routes/library-admin/manage-ebooks'
+import { Route as LibraryAdminOrdersRouteImport } from './routes/library-admin/orders'
+import { Route as LibraryAdminProfileRouteImport } from './routes/library-admin/profile'
+import { Route as LibraryAdminReportsRouteImport } from './routes/library-admin/reports'
+import { Route as LibraryAdminRequestsRouteImport } from './routes/library-admin/requests'
+import { Route as LibraryAdminSupportRouteImport } from './routes/library-admin/support'
+import { Route as LibraryAdminUsersRouteImport } from './routes/library-admin/users'
+import { Route as LibraryAdminVideoLibraryRouteImport } from './routes/library-admin/video-library'
+import { Route as LibraryUserIndexRouteImport } from './routes/library-user/index'
+import { Route as LibraryUserLoginRouteImport } from './routes/library-user/login'
+import { Route as LibraryUserProfileRouteImport } from './routes/library-user/profile'
+import { Route as PbAdminLibIndexRouteImport } from './routes/pb-admin-lib/index'
+import { Route as PbAdminLibCatalogueRouteImport } from './routes/pb-admin-lib/catalogue'
+import { Route as PbAdminLibCloneRouteImport } from './routes/pb-admin-lib/clone'
+import { Route as PbAdminLibLibrariesRouteImport } from './routes/pb-admin-lib/libraries'
+import { Route as PbAdminLibOrdersRouteImport } from './routes/pb-admin-lib/orders'
+import { Route as PbAdminLibPrivacyPolicyRouteImport } from './routes/pb-admin-lib/privacy-policy'
+import { Route as PbAdminLibReportsRouteImport } from './routes/pb-admin-lib/reports'
+import { Route as PbAdminLibSettingsRouteImport } from './routes/pb-admin-lib/settings'
+import { Route as PbAdminLibTermsConditionsRouteImport } from './routes/pb-admin-lib/terms-conditions'
+import { Route as PbAdminIndexRouteImport } from './routes/pb-admin/index'
+import { Route as PbAdminAdminUsersRouteImport } from './routes/pb-admin/admin-users'
+import { Route as PbAdminAuditLogRouteImport } from './routes/pb-admin/audit-log'
+import { Route as PbAdminAuthorManagementRouteImport } from './routes/pb-admin/author-management'
+import { Route as PbAdminCartAnalysisRouteImport } from './routes/pb-admin/cart-analysis'
+import { Route as PbAdminCartViewRouteImport } from './routes/pb-admin/cart-view'
+import { Route as PbAdminCategoriesRouteImport } from './routes/pb-admin/categories'
+import { Route as PbAdminCommissionRatesRouteImport } from './routes/pb-admin/commission-rates'
+import { Route as PbAdminCustomersRouteImport } from './routes/pb-admin/customers'
+import { Route as PbAdminFeaturedCollectionsRouteImport } from './routes/pb-admin/featured-collections'
+import { Route as PbAdminMarginReportRouteImport } from './routes/pb-admin/margin-report'
+import { Route as PbAdminMergeAuthorsRouteImport } from './routes/pb-admin/merge-authors'
+import { Route as PbAdminNotificationsRouteImport } from './routes/pb-admin/notifications'
+import { Route as PbAdminPrivacyPolicyRouteImport } from './routes/pb-admin/privacy-policy'
+import { Route as PbAdminProfileRouteImport } from './routes/pb-admin/profile'
+import { Route as PbAdminPromoCodesRouteImport } from './routes/pb-admin/promo-codes'
+import { Route as PbAdminPublishersAuthorsRouteImport } from './routes/pb-admin/publishers-authors'
+import { Route as PbAdminQuizzRewardsRouteImport } from './routes/pb-admin/quizz-rewards'
+import { Route as PbAdminQuizzesRewardsRouteImport } from './routes/pb-admin/quizzes-rewards'
+import { Route as PbAdminSalesReportRouteImport } from './routes/pb-admin/sales-report'
+import { Route as PbAdminSettingsRouteImport } from './routes/pb-admin/settings'
+import { Route as PbAdminTermsConditionsRouteImport } from './routes/pb-admin/terms-conditions'
+import { Route as PbAdminViewsReportRouteImport } from './routes/pb-admin/views-report'
+import { Route as PbWebIndexRouteImport } from './routes/pb-web/index'
+import { Route as PbWebAboutRouteImport } from './routes/pb-web/about'
+import { Route as PbWebAccountsRouteImport } from './routes/pb-web/accounts'
+import { Route as PbWebCartRouteImport } from './routes/pb-web/cart'
+import { Route as PbWebFaqRouteImport } from './routes/pb-web/faq'
+import { Route as PbWebGenreRouteImport } from './routes/pb-web/genre'
+import { Route as PbWebPrivacyPolicyRouteImport } from './routes/pb-web/privacy-policy'
+import { Route as PbWebSupportRouteImport } from './routes/pb-web/support'
+import { Route as PbWebTermsConditionsRouteImport } from './routes/pb-web/terms-conditions'
+import { Route as PublisherIndexRouteImport } from './routes/publisher/index'
+import { Route as PublisherBankAccountsRouteImport } from './routes/publisher/bank-accounts'
+import { Route as PublisherCategoriesRouteImport } from './routes/publisher/categories'
+import { Route as PublisherLinkSourcesRouteImport } from './routes/publisher/link-sources'
+import { Route as PublisherLoginRouteImport } from './routes/publisher/login'
+import { Route as PublisherMarginReportRouteImport } from './routes/publisher/margin-report'
+import { Route as PublisherProfileRouteImport } from './routes/publisher/profile'
+import { Route as PublisherSalesReportRouteImport } from './routes/publisher/sales-report'
+import { Route as PublisherSettingsRouteImport } from './routes/publisher/settings'
+import { Route as PublisherSupportRouteImport } from './routes/publisher/support'
+import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin.settings'
 import { Route as PbAdminLibLibrariesIdRouteImport } from './routes/pb-admin-lib/libraries_.$id'
-import { Route as PbAdminPublishersAuthorsIdTitlesRouteImport } from './routes/pb-admin/publishers-authors.$id.titles'
+import { Route as PbAdminLibLibrariesNewRouteImport } from './routes/pb-admin-lib/libraries_.new'
+import { Route as PbAdminLibOrdersIdRouteImport } from './routes/pb-admin-lib/orders_.$id'
+import { Route as PbAdminLibPrivacyPolicyIdRouteImport } from './routes/pb-admin-lib/privacy-policy_.$id'
+import { Route as PbAdminLibPrivacyPolicyNewRouteImport } from './routes/pb-admin-lib/privacy-policy_.new'
+import { Route as PbAdminLibTermsConditionsIdRouteImport } from './routes/pb-admin-lib/terms-conditions_.$id'
+import { Route as PbAdminLibTermsConditionsNewRouteImport } from './routes/pb-admin-lib/terms-conditions_.new'
+import { Route as PbAdminAdBannersGenreRouteImport } from './routes/pb-admin/ad-banners.genre'
+import { Route as PbAdminAdBannersImageRouteImport } from './routes/pb-admin/ad-banners.image'
+import { Route as PbAdminAdBannersPopupRouteImport } from './routes/pb-admin/ad-banners.popup'
+import { Route as PbAdminAuthorManagementAuthorIdRouteImport } from './routes/pb-admin/author-management.$authorId'
+import { Route as PbAdminBundlesIndexRouteImport } from './routes/pb-admin/bundles.index'
+import { Route as PbAdminBundlesBundleIdRouteImport } from './routes/pb-admin/bundles.$bundleId'
+import { Route as PbAdminBundlesNewRouteImport } from './routes/pb-admin/bundles.new'
+import { Route as PbAdminCommissionRatesIdRouteImport } from './routes/pb-admin/commission-rates_/$id'
+import { Route as PbAdminMarketingSchemaMetaRouteImport } from './routes/pb-admin/marketing.schema-meta'
+import { Route as PbAdminMarketingSitemapRouteImport } from './routes/pb-admin/marketing.sitemap'
+import { Route as PbAdminPrivacyPolicyIdRouteImport } from './routes/pb-admin/privacy-policy_.$id'
+import { Route as PbAdminPrivacyPolicyNewRouteImport } from './routes/pb-admin/privacy-policy_.new'
+import { Route as PbAdminPublishersAuthorsIdRouteImport } from './routes/pb-admin/publishers-authors.$id'
+import { Route as PbAdminTermsConditionsIdRouteImport } from './routes/pb-admin/terms-conditions_.$id'
+import { Route as PbAdminTermsConditionsNewRouteImport } from './routes/pb-admin/terms-conditions_.new'
+import { Route as PbAdminTitlesIndexRouteImport } from './routes/pb-admin/titles.index'
+import { Route as PbAdminTitlesBookIdRouteImport } from './routes/pb-admin/titles.$bookId'
+import { Route as PbAdminTitlesNewRouteImport } from './routes/pb-admin/titles.new'
+import { Route as PublisherAudioLibraryIndexRouteImport } from './routes/publisher/audio-library.index'
+import { Route as PublisherAudioLibraryNewRouteImport } from './routes/publisher/audio-library.new'
+import { Route as PublisherBundlesIndexRouteImport } from './routes/publisher/bundles.index'
+import { Route as PublisherBundlesBundleIdRouteImport } from './routes/publisher/bundles.$bundleId'
+import { Route as PublisherBundlesNewRouteImport } from './routes/publisher/bundles.new'
+import { Route as PublisherCatalogueImportIndexRouteImport } from './routes/publisher/catalogue-import.index'
+import { Route as PublisherCatalogueImportFileNameRouteImport } from './routes/publisher/catalogue-import.$fileName'
+import { Route as PublisherCatalogueImportNewRouteImport } from './routes/publisher/catalogue-import.new'
+import { Route as PublisherCatalogueIndexRouteImport } from './routes/publisher/catalogue.index'
+import { Route as PublisherCatalogueBookIdRouteImport } from './routes/publisher/catalogue.$bookId'
+import { Route as PublisherCatalogueNewRouteImport } from './routes/publisher/catalogue.new'
+import { Route as PublisherPromoCodesIndexRouteImport } from './routes/publisher/promo-codes.index'
+import { Route as PublisherPromoCodesPromoIdRouteImport } from './routes/publisher/promo-codes.$promoId'
+import { Route as PublisherPromoCodesNewRouteImport } from './routes/publisher/promo-codes.new'
+import { Route as PublisherVideoLibraryIndexRouteImport } from './routes/publisher/video-library.index'
+import { Route as PublisherVideoLibraryNewRouteImport } from './routes/publisher/video-library.new'
 import { Route as PbAdminFeaturedCollectionsIdBooksRouteImport } from './routes/pb-admin/featured-collections_.$id.books'
+import { Route as PbAdminPublishersAuthorsIdTitlesRouteImport } from './routes/pb-admin/publishers-authors.$id.titles'
 
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherIndexRoute = PublisherIndexRouteImport.update({
-  id: '/publisher/',
-  path: '/publisher/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebIndexRoute = PbWebIndexRouteImport.update({
-  id: '/pb-web/',
-  path: '/pb-web/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminIndexRoute = PbAdminIndexRouteImport.update({
-  id: '/pb-admin/',
-  path: '/pb-admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibIndexRoute = PbAdminLibIndexRouteImport.update({
-  id: '/pb-admin-lib/',
-  path: '/pb-admin-lib/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryUserIndexRoute = LibraryUserIndexRouteImport.update({
-  id: '/library-user/',
-  path: '/library-user/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryAdminIndexRoute = LibraryAdminIndexRouteImport.update({
-  id: '/library-admin/',
-  path: '/library-admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InstitutionsIndexRoute = InstitutionsIndexRouteImport.update({
-  id: '/institutions/',
-  path: '/institutions/',
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthorIndexRoute = AuthorIndexRouteImport.update({
@@ -177,287 +144,55 @@ const AuthorIndexRoute = AuthorIndexRouteImport.update({
   path: '/author/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
-  id: '/super-admin/settings',
-  path: '/super-admin/settings',
+const AuthorProfileRoute = AuthorProfileRouteImport.update({
+  id: '/author/profile',
+  path: '/author/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherSupportRoute = PublisherSupportRouteImport.update({
-  id: '/publisher/support',
-  path: '/publisher/support',
+const InstitutionsIndexRoute = InstitutionsIndexRouteImport.update({
+  id: '/institutions/',
+  path: '/institutions/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherSettingsRoute = PublisherSettingsRouteImport.update({
-  id: '/publisher/settings',
-  path: '/publisher/settings',
+const InstitutionsLoginRoute = InstitutionsLoginRouteImport.update({
+  id: '/institutions/login',
+  path: '/institutions/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherSalesReportRoute = PublisherSalesReportRouteImport.update({
-  id: '/publisher/sales-report',
-  path: '/publisher/sales-report',
+const LibraryAdminIndexRoute = LibraryAdminIndexRouteImport.update({
+  id: '/library-admin/',
+  path: '/library-admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherProfileRoute = PublisherProfileRouteImport.update({
-  id: '/publisher/profile',
-  path: '/publisher/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublisherMarginReportRoute = PublisherMarginReportRouteImport.update({
-  id: '/publisher/margin-report',
-  path: '/publisher/margin-report',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublisherLoginRoute = PublisherLoginRouteImport.update({
-  id: '/publisher/login',
-  path: '/publisher/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublisherLinkSourcesRoute = PublisherLinkSourcesRouteImport.update({
-  id: '/publisher/link-sources',
-  path: '/publisher/link-sources',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublisherCategoriesRoute = PublisherCategoriesRouteImport.update({
-  id: '/publisher/categories',
-  path: '/publisher/categories',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
-  id: '/publisher/bank-accounts',
-  path: '/publisher/bank-accounts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebTermsConditionsRoute = PbWebTermsConditionsRouteImport.update({
-  id: '/pb-web/terms-conditions',
-  path: '/pb-web/terms-conditions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebSupportRoute = PbWebSupportRouteImport.update({
-  id: '/pb-web/support',
-  path: '/pb-web/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebPrivacyPolicyRoute = PbWebPrivacyPolicyRouteImport.update({
-  id: '/pb-web/privacy-policy',
-  path: '/pb-web/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebGenreRoute = PbWebGenreRouteImport.update({
-  id: '/pb-web/genre',
-  path: '/pb-web/genre',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebFaqRoute = PbWebFaqRouteImport.update({
-  id: '/pb-web/faq',
-  path: '/pb-web/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebCartRoute = PbWebCartRouteImport.update({
-  id: '/pb-web/cart',
-  path: '/pb-web/cart',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebAccountsRoute = PbWebAccountsRouteImport.update({
-  id: '/pb-web/accounts',
-  path: '/pb-web/accounts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbWebAboutRoute = PbWebAboutRouteImport.update({
-  id: '/pb-web/about',
-  path: '/pb-web/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminViewsReportRoute = PbAdminViewsReportRouteImport.update({
-  id: '/pb-admin/views-report',
-  path: '/pb-admin/views-report',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminTermsConditionsRoute = PbAdminTermsConditionsRouteImport.update({
-  id: '/pb-admin/terms-conditions',
-  path: '/pb-admin/terms-conditions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminSettingsRoute = PbAdminSettingsRouteImport.update({
-  id: '/pb-admin/settings',
-  path: '/pb-admin/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminSalesReportRoute = PbAdminSalesReportRouteImport.update({
-  id: '/pb-admin/sales-report',
-  path: '/pb-admin/sales-report',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminQuizzesRewardsRoute = PbAdminQuizzesRewardsRouteImport.update({
-  id: '/pb-admin/quizzes-rewards',
-  path: '/pb-admin/quizzes-rewards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminQuizzRewardsRoute = PbAdminQuizzRewardsRouteImport.update({
-  id: '/pb-admin/quizz-rewards',
-  path: '/pb-admin/quizz-rewards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminPublishersAuthorsRoute =
-  PbAdminPublishersAuthorsRouteImport.update({
-    id: '/pb-admin/publishers-authors',
-    path: '/pb-admin/publishers-authors',
+const LibraryAdminAudioLibraryRoute =
+  LibraryAdminAudioLibraryRouteImport.update({
+    id: '/library-admin/audio-library',
+    path: '/library-admin/audio-library',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PbAdminPromoCodesRoute = PbAdminPromoCodesRouteImport.update({
-  id: '/pb-admin/promo-codes',
-  path: '/pb-admin/promo-codes',
+const LibraryAdminBannersRoute = LibraryAdminBannersRouteImport.update({
+  id: '/library-admin/banners',
+  path: '/library-admin/banners',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminProfileRoute = PbAdminProfileRouteImport.update({
-  id: '/pb-admin/profile',
-  path: '/pb-admin/profile',
+const LibraryAdminCartRoute = LibraryAdminCartRouteImport.update({
+  id: '/library-admin/cart',
+  path: '/library-admin/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminPrivacyPolicyRoute = PbAdminPrivacyPolicyRouteImport.update({
-  id: '/pb-admin/privacy-policy',
-  path: '/pb-admin/privacy-policy',
+const LibraryAdminCatalogueRoute = LibraryAdminCatalogueRouteImport.update({
+  id: '/library-admin/catalogue',
+  path: '/library-admin/catalogue',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminNotificationsRoute = PbAdminNotificationsRouteImport.update({
-  id: '/pb-admin/notifications',
-  path: '/pb-admin/notifications',
+const LibraryAdminCoursesRoute = LibraryAdminCoursesRouteImport.update({
+  id: '/library-admin/courses',
+  path: '/library-admin/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminMergeAuthorsRoute = PbAdminMergeAuthorsRouteImport.update({
-  id: '/pb-admin/merge-authors',
-  path: '/pb-admin/merge-authors',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminMarginReportRoute = PbAdminMarginReportRouteImport.update({
-  id: '/pb-admin/margin-report',
-  path: '/pb-admin/margin-report',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminFeaturedCollectionsRoute =
-  PbAdminFeaturedCollectionsRouteImport.update({
-    id: '/pb-admin/featured-collections',
-    path: '/pb-admin/featured-collections',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminCustomersRoute = PbAdminCustomersRouteImport.update({
-  id: '/pb-admin/customers',
-  path: '/pb-admin/customers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminCommissionRatesRoute = PbAdminCommissionRatesRouteImport.update({
-  id: '/pb-admin/commission-rates',
-  path: '/pb-admin/commission-rates',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminCategoriesRoute = PbAdminCategoriesRouteImport.update({
-  id: '/pb-admin/categories',
-  path: '/pb-admin/categories',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminCartViewRoute = PbAdminCartViewRouteImport.update({
-  id: '/pb-admin/cart-view',
-  path: '/pb-admin/cart-view',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminCartAnalysisRoute = PbAdminCartAnalysisRouteImport.update({
-  id: '/pb-admin/cart-analysis',
-  path: '/pb-admin/cart-analysis',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminAuthorManagementRoute = PbAdminAuthorManagementRouteImport.update({
-  id: '/pb-admin/author-management',
-  path: '/pb-admin/author-management',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminAuditLogRoute = PbAdminAuditLogRouteImport.update({
-  id: '/pb-admin/audit-log',
-  path: '/pb-admin/audit-log',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminAdminUsersRoute = PbAdminAdminUsersRouteImport.update({
-  id: '/pb-admin/admin-users',
-  path: '/pb-admin/admin-users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibTermsConditionsRoute =
-  PbAdminLibTermsConditionsRouteImport.update({
-    id: '/pb-admin-lib/terms-conditions',
-    path: '/pb-admin-lib/terms-conditions',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminLibSettingsRoute = PbAdminLibSettingsRouteImport.update({
-  id: '/pb-admin-lib/settings',
-  path: '/pb-admin-lib/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibReportsRoute = PbAdminLibReportsRouteImport.update({
-  id: '/pb-admin-lib/reports',
-  path: '/pb-admin-lib/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibPrivacyPolicyRoute = PbAdminLibPrivacyPolicyRouteImport.update({
-  id: '/pb-admin-lib/privacy-policy',
-  path: '/pb-admin-lib/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibOrdersRoute = PbAdminLibOrdersRouteImport.update({
-  id: '/pb-admin-lib/orders',
-  path: '/pb-admin-lib/orders',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibLibrariesRoute = PbAdminLibLibrariesRouteImport.update({
-  id: '/pb-admin-lib/libraries',
-  path: '/pb-admin-lib/libraries',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibCloneRoute = PbAdminLibCloneRouteImport.update({
-  id: '/pb-admin-lib/clone',
-  path: '/pb-admin-lib/clone',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PbAdminLibCatalogueRoute = PbAdminLibCatalogueRouteImport.update({
-  id: '/pb-admin-lib/catalogue',
-  path: '/pb-admin-lib/catalogue',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryUserProfileRoute = LibraryUserProfileRouteImport.update({
-  id: '/library-user/profile',
-  path: '/library-user/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryUserLoginRoute = LibraryUserLoginRouteImport.update({
-  id: '/library-user/login',
-  path: '/library-user/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryAdminUsersRoute = LibraryAdminUsersRouteImport.update({
-  id: '/library-admin/users',
-  path: '/library-admin/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryAdminSupportRoute = LibraryAdminSupportRouteImport.update({
-  id: '/library-admin/support',
-  path: '/library-admin/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryAdminRequestsRoute = LibraryAdminRequestsRouteImport.update({
-  id: '/library-admin/requests',
-  path: '/library-admin/requests',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryAdminReportsRoute = LibraryAdminReportsRouteImport.update({
-  id: '/library-admin/reports',
-  path: '/library-admin/reports',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryAdminProfileRoute = LibraryAdminProfileRouteImport.update({
-  id: '/library-admin/profile',
-  path: '/library-admin/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LibraryAdminOrdersRoute = LibraryAdminOrdersRouteImport.update({
-  id: '/library-admin/orders',
-  path: '/library-admin/orders',
+const LibraryAdminDepartmentsRoute = LibraryAdminDepartmentsRouteImport.update({
+  id: '/library-admin/departments',
+  path: '/library-admin/departments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryAdminManageEbooksRoute =
@@ -466,238 +201,339 @@ const LibraryAdminManageEbooksRoute =
     path: '/library-admin/manage-ebooks',
     getParentRoute: () => rootRouteImport,
   } as any)
-const LibraryAdminDepartmentsRoute = LibraryAdminDepartmentsRouteImport.update({
-  id: '/library-admin/departments',
-  path: '/library-admin/departments',
+const LibraryAdminOrdersRoute = LibraryAdminOrdersRouteImport.update({
+  id: '/library-admin/orders',
+  path: '/library-admin/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryAdminCoursesRoute = LibraryAdminCoursesRouteImport.update({
-  id: '/library-admin/courses',
-  path: '/library-admin/courses',
+const LibraryAdminProfileRoute = LibraryAdminProfileRouteImport.update({
+  id: '/library-admin/profile',
+  path: '/library-admin/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryAdminCatalogueRoute = LibraryAdminCatalogueRouteImport.update({
-  id: '/library-admin/catalogue',
-  path: '/library-admin/catalogue',
+const LibraryAdminReportsRoute = LibraryAdminReportsRouteImport.update({
+  id: '/library-admin/reports',
+  path: '/library-admin/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryAdminCartRoute = LibraryAdminCartRouteImport.update({
-  id: '/library-admin/cart',
-  path: '/library-admin/cart',
+const LibraryAdminRequestsRoute = LibraryAdminRequestsRouteImport.update({
+  id: '/library-admin/requests',
+  path: '/library-admin/requests',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryAdminBannersRoute = LibraryAdminBannersRouteImport.update({
-  id: '/library-admin/banners',
-  path: '/library-admin/banners',
+const LibraryAdminSupportRoute = LibraryAdminSupportRouteImport.update({
+  id: '/library-admin/support',
+  path: '/library-admin/support',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InstitutionsLoginRoute = InstitutionsLoginRouteImport.update({
-  id: '/institutions/login',
-  path: '/institutions/login',
+const LibraryAdminUsersRoute = LibraryAdminUsersRouteImport.update({
+  id: '/library-admin/users',
+  path: '/library-admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthorProfileRoute = AuthorProfileRouteImport.update({
-  id: '/author/profile',
-  path: '/author/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublisherVideoLibraryIndexRoute =
-  PublisherVideoLibraryIndexRouteImport.update({
-    id: '/publisher/video-library/',
-    path: '/publisher/video-library/',
+const LibraryAdminVideoLibraryRoute =
+  LibraryAdminVideoLibraryRouteImport.update({
+    id: '/library-admin/video-library',
+    path: '/library-admin/video-library',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PublisherPromoCodesIndexRoute =
-  PublisherPromoCodesIndexRouteImport.update({
-    id: '/publisher/promo-codes/',
-    path: '/publisher/promo-codes/',
+const LibraryUserIndexRoute = LibraryUserIndexRouteImport.update({
+  id: '/library-user/',
+  path: '/library-user/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryUserLoginRoute = LibraryUserLoginRouteImport.update({
+  id: '/library-user/login',
+  path: '/library-user/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryUserProfileRoute = LibraryUserProfileRouteImport.update({
+  id: '/library-user/profile',
+  path: '/library-user/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibIndexRoute = PbAdminLibIndexRouteImport.update({
+  id: '/pb-admin-lib/',
+  path: '/pb-admin-lib/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibCatalogueRoute = PbAdminLibCatalogueRouteImport.update({
+  id: '/pb-admin-lib/catalogue',
+  path: '/pb-admin-lib/catalogue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibCloneRoute = PbAdminLibCloneRouteImport.update({
+  id: '/pb-admin-lib/clone',
+  path: '/pb-admin-lib/clone',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibLibrariesRoute = PbAdminLibLibrariesRouteImport.update({
+  id: '/pb-admin-lib/libraries',
+  path: '/pb-admin-lib/libraries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibOrdersRoute = PbAdminLibOrdersRouteImport.update({
+  id: '/pb-admin-lib/orders',
+  path: '/pb-admin-lib/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibPrivacyPolicyRoute = PbAdminLibPrivacyPolicyRouteImport.update({
+  id: '/pb-admin-lib/privacy-policy',
+  path: '/pb-admin-lib/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibReportsRoute = PbAdminLibReportsRouteImport.update({
+  id: '/pb-admin-lib/reports',
+  path: '/pb-admin-lib/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibSettingsRoute = PbAdminLibSettingsRouteImport.update({
+  id: '/pb-admin-lib/settings',
+  path: '/pb-admin-lib/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibTermsConditionsRoute =
+  PbAdminLibTermsConditionsRouteImport.update({
+    id: '/pb-admin-lib/terms-conditions',
+    path: '/pb-admin-lib/terms-conditions',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PublisherCatalogueIndexRoute = PublisherCatalogueIndexRouteImport.update({
-  id: '/publisher/catalogue/',
-  path: '/publisher/catalogue/',
+const PbAdminIndexRoute = PbAdminIndexRouteImport.update({
+  id: '/pb-admin/',
+  path: '/pb-admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherCatalogueImportIndexRoute =
-  PublisherCatalogueImportIndexRouteImport.update({
-    id: '/publisher/catalogue-import/',
-    path: '/publisher/catalogue-import/',
+const PbAdminAdminUsersRoute = PbAdminAdminUsersRouteImport.update({
+  id: '/pb-admin/admin-users',
+  path: '/pb-admin/admin-users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminAuditLogRoute = PbAdminAuditLogRouteImport.update({
+  id: '/pb-admin/audit-log',
+  path: '/pb-admin/audit-log',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminAuthorManagementRoute = PbAdminAuthorManagementRouteImport.update({
+  id: '/pb-admin/author-management',
+  path: '/pb-admin/author-management',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminCartAnalysisRoute = PbAdminCartAnalysisRouteImport.update({
+  id: '/pb-admin/cart-analysis',
+  path: '/pb-admin/cart-analysis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminCartViewRoute = PbAdminCartViewRouteImport.update({
+  id: '/pb-admin/cart-view',
+  path: '/pb-admin/cart-view',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminCategoriesRoute = PbAdminCategoriesRouteImport.update({
+  id: '/pb-admin/categories',
+  path: '/pb-admin/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminCommissionRatesRoute = PbAdminCommissionRatesRouteImport.update({
+  id: '/pb-admin/commission-rates',
+  path: '/pb-admin/commission-rates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminCustomersRoute = PbAdminCustomersRouteImport.update({
+  id: '/pb-admin/customers',
+  path: '/pb-admin/customers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminFeaturedCollectionsRoute =
+  PbAdminFeaturedCollectionsRouteImport.update({
+    id: '/pb-admin/featured-collections',
+    path: '/pb-admin/featured-collections',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PublisherBundlesIndexRoute = PublisherBundlesIndexRouteImport.update({
-  id: '/publisher/bundles/',
-  path: '/publisher/bundles/',
+const PbAdminMarginReportRoute = PbAdminMarginReportRouteImport.update({
+  id: '/pb-admin/margin-report',
+  path: '/pb-admin/margin-report',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherAudioLibraryIndexRoute =
-  PublisherAudioLibraryIndexRouteImport.update({
-    id: '/publisher/audio-library/',
-    path: '/publisher/audio-library/',
+const PbAdminMergeAuthorsRoute = PbAdminMergeAuthorsRouteImport.update({
+  id: '/pb-admin/merge-authors',
+  path: '/pb-admin/merge-authors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminNotificationsRoute = PbAdminNotificationsRouteImport.update({
+  id: '/pb-admin/notifications',
+  path: '/pb-admin/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminPrivacyPolicyRoute = PbAdminPrivacyPolicyRouteImport.update({
+  id: '/pb-admin/privacy-policy',
+  path: '/pb-admin/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminProfileRoute = PbAdminProfileRouteImport.update({
+  id: '/pb-admin/profile',
+  path: '/pb-admin/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminPromoCodesRoute = PbAdminPromoCodesRouteImport.update({
+  id: '/pb-admin/promo-codes',
+  path: '/pb-admin/promo-codes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminPublishersAuthorsRoute =
+  PbAdminPublishersAuthorsRouteImport.update({
+    id: '/pb-admin/publishers-authors',
+    path: '/pb-admin/publishers-authors',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PbAdminTitlesIndexRoute = PbAdminTitlesIndexRouteImport.update({
-  id: '/pb-admin/titles/',
-  path: '/pb-admin/titles/',
+const PbAdminQuizzRewardsRoute = PbAdminQuizzRewardsRouteImport.update({
+  id: '/pb-admin/quizz-rewards',
+  path: '/pb-admin/quizz-rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminBundlesIndexRoute = PbAdminBundlesIndexRouteImport.update({
-  id: '/pb-admin/bundles/',
-  path: '/pb-admin/bundles/',
+const PbAdminQuizzesRewardsRoute = PbAdminQuizzesRewardsRouteImport.update({
+  id: '/pb-admin/quizzes-rewards',
+  path: '/pb-admin/quizzes-rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherVideoLibraryNewRoute =
-  PublisherVideoLibraryNewRouteImport.update({
-    id: '/publisher/video-library/new',
-    path: '/publisher/video-library/new',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PublisherPromoCodesNewRoute = PublisherPromoCodesNewRouteImport.update({
-  id: '/publisher/promo-codes/new',
-  path: '/publisher/promo-codes/new',
+const PbAdminSalesReportRoute = PbAdminSalesReportRouteImport.update({
+  id: '/pb-admin/sales-report',
+  path: '/pb-admin/sales-report',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherPromoCodesPromoIdRoute =
-  PublisherPromoCodesPromoIdRouteImport.update({
-    id: '/publisher/promo-codes/$promoId',
-    path: '/publisher/promo-codes/$promoId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PublisherCatalogueNewRoute = PublisherCatalogueNewRouteImport.update({
-  id: '/publisher/catalogue/new',
-  path: '/publisher/catalogue/new',
+const PbAdminSettingsRoute = PbAdminSettingsRouteImport.update({
+  id: '/pb-admin/settings',
+  path: '/pb-admin/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherCatalogueBookIdRoute =
-  PublisherCatalogueBookIdRouteImport.update({
-    id: '/publisher/catalogue/$bookId',
-    path: '/publisher/catalogue/$bookId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PublisherCatalogueImportNewRoute =
-  PublisherCatalogueImportNewRouteImport.update({
-    id: '/publisher/catalogue-import/new',
-    path: '/publisher/catalogue-import/new',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PublisherCatalogueImportFileNameRoute =
-  PublisherCatalogueImportFileNameRouteImport.update({
-    id: '/publisher/catalogue-import/$fileName',
-    path: '/publisher/catalogue-import/$fileName',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PublisherBundlesNewRoute = PublisherBundlesNewRouteImport.update({
-  id: '/publisher/bundles/new',
-  path: '/publisher/bundles/new',
+const PbAdminTermsConditionsRoute = PbAdminTermsConditionsRouteImport.update({
+  id: '/pb-admin/terms-conditions',
+  path: '/pb-admin/terms-conditions',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublisherBundlesBundleIdRoute =
-  PublisherBundlesBundleIdRouteImport.update({
-    id: '/publisher/bundles/$bundleId',
-    path: '/publisher/bundles/$bundleId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PublisherAudioLibraryNewRoute =
-  PublisherAudioLibraryNewRouteImport.update({
-    id: '/publisher/audio-library/new',
-    path: '/publisher/audio-library/new',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminTitlesNewRoute = PbAdminTitlesNewRouteImport.update({
-  id: '/pb-admin/titles/new',
-  path: '/pb-admin/titles/new',
+const PbAdminViewsReportRoute = PbAdminViewsReportRouteImport.update({
+  id: '/pb-admin/views-report',
+  path: '/pb-admin/views-report',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminTitlesBookIdRoute = PbAdminTitlesBookIdRouteImport.update({
-  id: '/pb-admin/titles/$bookId',
-  path: '/pb-admin/titles/$bookId',
+const PbWebIndexRoute = PbWebIndexRouteImport.update({
+  id: '/pb-web/',
+  path: '/pb-web/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminTermsConditionsNewRoute =
-  PbAdminTermsConditionsNewRouteImport.update({
-    id: '/pb-admin/terms-conditions_/new',
-    path: '/pb-admin/terms-conditions/new',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminTermsConditionsIdRoute =
-  PbAdminTermsConditionsIdRouteImport.update({
-    id: '/pb-admin/terms-conditions_/$id',
-    path: '/pb-admin/terms-conditions/$id',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminPublishersAuthorsIdRoute =
-  PbAdminPublishersAuthorsIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
-    getParentRoute: () => PbAdminPublishersAuthorsRoute,
-  } as any)
-const PbAdminPrivacyPolicyNewRoute = PbAdminPrivacyPolicyNewRouteImport.update({
-  id: '/pb-admin/privacy-policy_/new',
-  path: '/pb-admin/privacy-policy/new',
+const PbWebAboutRoute = PbWebAboutRouteImport.update({
+  id: '/pb-web/about',
+  path: '/pb-web/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminPrivacyPolicyIdRoute = PbAdminPrivacyPolicyIdRouteImport.update({
-  id: '/pb-admin/privacy-policy_/$id',
-  path: '/pb-admin/privacy-policy/$id',
+const PbWebAccountsRoute = PbWebAccountsRouteImport.update({
+  id: '/pb-web/accounts',
+  path: '/pb-web/accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminMarketingSitemapRoute = PbAdminMarketingSitemapRouteImport.update({
-  id: '/pb-admin/marketing/sitemap',
-  path: '/pb-admin/marketing/sitemap',
+const PbWebCartRoute = PbWebCartRouteImport.update({
+  id: '/pb-web/cart',
+  path: '/pb-web/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminMarketingSchemaMetaRoute =
-  PbAdminMarketingSchemaMetaRouteImport.update({
-    id: '/pb-admin/marketing/schema-meta',
-    path: '/pb-admin/marketing/schema-meta',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminCommissionRatesIdRoute =
-  PbAdminCommissionRatesIdRouteImport.update({
-    id: '/pb-admin/commission-rates_/$id',
-    path: '/pb-admin/commission-rates/$id',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminBundlesNewRoute = PbAdminBundlesNewRouteImport.update({
-  id: '/pb-admin/bundles/new',
-  path: '/pb-admin/bundles/new',
+const PbWebFaqRoute = PbWebFaqRouteImport.update({
+  id: '/pb-web/faq',
+  path: '/pb-web/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminBundlesBundleIdRoute = PbAdminBundlesBundleIdRouteImport.update({
-  id: '/pb-admin/bundles/$bundleId',
-  path: '/pb-admin/bundles/$bundleId',
+const PbWebGenreRoute = PbWebGenreRouteImport.update({
+  id: '/pb-web/genre',
+  path: '/pb-web/genre',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminAuthorManagementAuthorIdRoute =
-  PbAdminAuthorManagementAuthorIdRouteImport.update({
-    id: '/$authorId',
-    path: '/$authorId',
-    getParentRoute: () => PbAdminAuthorManagementRoute,
-  } as any)
-const PbAdminAdBannersPopupRoute = PbAdminAdBannersPopupRouteImport.update({
-  id: '/pb-admin/ad-banners/popup',
-  path: '/pb-admin/ad-banners/popup',
+const PbWebPrivacyPolicyRoute = PbWebPrivacyPolicyRouteImport.update({
+  id: '/pb-web/privacy-policy',
+  path: '/pb-web/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminAdBannersImageRoute = PbAdminAdBannersImageRouteImport.update({
-  id: '/pb-admin/ad-banners/image',
-  path: '/pb-admin/ad-banners/image',
+const PbWebSupportRoute = PbWebSupportRouteImport.update({
+  id: '/pb-web/support',
+  path: '/pb-web/support',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminAdBannersGenreRoute = PbAdminAdBannersGenreRouteImport.update({
-  id: '/pb-admin/ad-banners/genre',
-  path: '/pb-admin/ad-banners/genre',
+const PbWebTermsConditionsRoute = PbWebTermsConditionsRouteImport.update({
+  id: '/pb-web/terms-conditions',
+  path: '/pb-web/terms-conditions',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminLibTermsConditionsNewRoute =
-  PbAdminLibTermsConditionsNewRouteImport.update({
-    id: '/pb-admin-lib/terms-conditions_/new',
-    path: '/pb-admin-lib/terms-conditions/new',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PbAdminLibTermsConditionsIdRoute =
-  PbAdminLibTermsConditionsIdRouteImport.update({
-    id: '/pb-admin-lib/terms-conditions_/$id',
-    path: '/pb-admin-lib/terms-conditions/$id',
+const PublisherIndexRoute = PublisherIndexRouteImport.update({
+  id: '/publisher/',
+  path: '/publisher/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherBankAccountsRoute = PublisherBankAccountsRouteImport.update({
+  id: '/publisher/bank-accounts',
+  path: '/publisher/bank-accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherCategoriesRoute = PublisherCategoriesRouteImport.update({
+  id: '/publisher/categories',
+  path: '/publisher/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherLinkSourcesRoute = PublisherLinkSourcesRouteImport.update({
+  id: '/publisher/link-sources',
+  path: '/publisher/link-sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherLoginRoute = PublisherLoginRouteImport.update({
+  id: '/publisher/login',
+  path: '/publisher/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherMarginReportRoute = PublisherMarginReportRouteImport.update({
+  id: '/publisher/margin-report',
+  path: '/publisher/margin-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherProfileRoute = PublisherProfileRouteImport.update({
+  id: '/publisher/profile',
+  path: '/publisher/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherSalesReportRoute = PublisherSalesReportRouteImport.update({
+  id: '/publisher/sales-report',
+  path: '/publisher/sales-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherSettingsRoute = PublisherSettingsRouteImport.update({
+  id: '/publisher/settings',
+  path: '/publisher/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherSupportRoute = PublisherSupportRouteImport.update({
+  id: '/publisher/support',
+  path: '/publisher/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
+  id: '/super-admin/settings',
+  path: '/super-admin/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibLibrariesIdRoute = PbAdminLibLibrariesIdRouteImport.update({
+  id: '/pb-admin-lib/libraries_/$id',
+  path: '/pb-admin-lib/libraries/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibLibrariesNewRoute = PbAdminLibLibrariesNewRouteImport.update({
+  id: '/pb-admin-lib/libraries_/new',
+  path: '/pb-admin-lib/libraries/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibOrdersIdRoute = PbAdminLibOrdersIdRouteImport.update({
+  id: '/pb-admin-lib/orders_/$id',
+  path: '/pb-admin-lib/orders/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminLibPrivacyPolicyIdRoute =
+  PbAdminLibPrivacyPolicyIdRouteImport.update({
+    id: '/pb-admin-lib/privacy-policy_/$id',
+    path: '/pb-admin-lib/privacy-policy/$id',
     getParentRoute: () => rootRouteImport,
   } as any)
 const PbAdminLibPrivacyPolicyNewRoute =
@@ -706,32 +542,204 @@ const PbAdminLibPrivacyPolicyNewRoute =
     path: '/pb-admin-lib/privacy-policy/new',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PbAdminLibPrivacyPolicyIdRoute =
-  PbAdminLibPrivacyPolicyIdRouteImport.update({
-    id: '/pb-admin-lib/privacy-policy_/$id',
-    path: '/pb-admin-lib/privacy-policy/$id',
+const PbAdminLibTermsConditionsIdRoute =
+  PbAdminLibTermsConditionsIdRouteImport.update({
+    id: '/pb-admin-lib/terms-conditions_/$id',
+    path: '/pb-admin-lib/terms-conditions/$id',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PbAdminLibOrdersIdRoute = PbAdminLibOrdersIdRouteImport.update({
-  id: '/pb-admin-lib/orders_/$id',
-  path: '/pb-admin-lib/orders/$id',
+const PbAdminLibTermsConditionsNewRoute =
+  PbAdminLibTermsConditionsNewRouteImport.update({
+    id: '/pb-admin-lib/terms-conditions_/new',
+    path: '/pb-admin-lib/terms-conditions/new',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PbAdminAdBannersGenreRoute = PbAdminAdBannersGenreRouteImport.update({
+  id: '/pb-admin/ad-banners/genre',
+  path: '/pb-admin/ad-banners/genre',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminLibLibrariesNewRoute = PbAdminLibLibrariesNewRouteImport.update({
-  id: '/pb-admin-lib/libraries_/new',
-  path: '/pb-admin-lib/libraries/new',
+const PbAdminAdBannersImageRoute = PbAdminAdBannersImageRouteImport.update({
+  id: '/pb-admin/ad-banners/image',
+  path: '/pb-admin/ad-banners/image',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminLibLibrariesIdRoute = PbAdminLibLibrariesIdRouteImport.update({
-  id: '/pb-admin-lib/libraries_/$id',
-  path: '/pb-admin-lib/libraries/$id',
+const PbAdminAdBannersPopupRoute = PbAdminAdBannersPopupRouteImport.update({
+  id: '/pb-admin/ad-banners/popup',
+  path: '/pb-admin/ad-banners/popup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PbAdminPublishersAuthorsIdTitlesRoute =
-  PbAdminPublishersAuthorsIdTitlesRouteImport.update({
-    id: '/titles',
-    path: '/titles',
-    getParentRoute: () => PbAdminPublishersAuthorsIdRoute,
+const PbAdminAuthorManagementAuthorIdRoute =
+  PbAdminAuthorManagementAuthorIdRouteImport.update({
+    id: '/$authorId',
+    path: '/$authorId',
+    getParentRoute: () => PbAdminAuthorManagementRoute,
+  } as any)
+const PbAdminBundlesIndexRoute = PbAdminBundlesIndexRouteImport.update({
+  id: '/pb-admin/bundles/',
+  path: '/pb-admin/bundles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminBundlesBundleIdRoute = PbAdminBundlesBundleIdRouteImport.update({
+  id: '/pb-admin/bundles/$bundleId',
+  path: '/pb-admin/bundles/$bundleId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminBundlesNewRoute = PbAdminBundlesNewRouteImport.update({
+  id: '/pb-admin/bundles/new',
+  path: '/pb-admin/bundles/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminCommissionRatesIdRoute =
+  PbAdminCommissionRatesIdRouteImport.update({
+    id: '/pb-admin/commission-rates_/$id',
+    path: '/pb-admin/commission-rates/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PbAdminMarketingSchemaMetaRoute =
+  PbAdminMarketingSchemaMetaRouteImport.update({
+    id: '/pb-admin/marketing/schema-meta',
+    path: '/pb-admin/marketing/schema-meta',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PbAdminMarketingSitemapRoute = PbAdminMarketingSitemapRouteImport.update({
+  id: '/pb-admin/marketing/sitemap',
+  path: '/pb-admin/marketing/sitemap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminPrivacyPolicyIdRoute = PbAdminPrivacyPolicyIdRouteImport.update({
+  id: '/pb-admin/privacy-policy_/$id',
+  path: '/pb-admin/privacy-policy/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminPrivacyPolicyNewRoute = PbAdminPrivacyPolicyNewRouteImport.update({
+  id: '/pb-admin/privacy-policy_/new',
+  path: '/pb-admin/privacy-policy/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminPublishersAuthorsIdRoute =
+  PbAdminPublishersAuthorsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => PbAdminPublishersAuthorsRoute,
+  } as any)
+const PbAdminTermsConditionsIdRoute =
+  PbAdminTermsConditionsIdRouteImport.update({
+    id: '/pb-admin/terms-conditions_/$id',
+    path: '/pb-admin/terms-conditions/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PbAdminTermsConditionsNewRoute =
+  PbAdminTermsConditionsNewRouteImport.update({
+    id: '/pb-admin/terms-conditions_/new',
+    path: '/pb-admin/terms-conditions/new',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PbAdminTitlesIndexRoute = PbAdminTitlesIndexRouteImport.update({
+  id: '/pb-admin/titles/',
+  path: '/pb-admin/titles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminTitlesBookIdRoute = PbAdminTitlesBookIdRouteImport.update({
+  id: '/pb-admin/titles/$bookId',
+  path: '/pb-admin/titles/$bookId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbAdminTitlesNewRoute = PbAdminTitlesNewRouteImport.update({
+  id: '/pb-admin/titles/new',
+  path: '/pb-admin/titles/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherAudioLibraryIndexRoute =
+  PublisherAudioLibraryIndexRouteImport.update({
+    id: '/publisher/audio-library/',
+    path: '/publisher/audio-library/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherAudioLibraryNewRoute =
+  PublisherAudioLibraryNewRouteImport.update({
+    id: '/publisher/audio-library/new',
+    path: '/publisher/audio-library/new',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherBundlesIndexRoute = PublisherBundlesIndexRouteImport.update({
+  id: '/publisher/bundles/',
+  path: '/publisher/bundles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherBundlesBundleIdRoute =
+  PublisherBundlesBundleIdRouteImport.update({
+    id: '/publisher/bundles/$bundleId',
+    path: '/publisher/bundles/$bundleId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherBundlesNewRoute = PublisherBundlesNewRouteImport.update({
+  id: '/publisher/bundles/new',
+  path: '/publisher/bundles/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherCatalogueImportIndexRoute =
+  PublisherCatalogueImportIndexRouteImport.update({
+    id: '/publisher/catalogue-import/',
+    path: '/publisher/catalogue-import/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherCatalogueImportFileNameRoute =
+  PublisherCatalogueImportFileNameRouteImport.update({
+    id: '/publisher/catalogue-import/$fileName',
+    path: '/publisher/catalogue-import/$fileName',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherCatalogueImportNewRoute =
+  PublisherCatalogueImportNewRouteImport.update({
+    id: '/publisher/catalogue-import/new',
+    path: '/publisher/catalogue-import/new',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherCatalogueIndexRoute = PublisherCatalogueIndexRouteImport.update({
+  id: '/publisher/catalogue/',
+  path: '/publisher/catalogue/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherCatalogueBookIdRoute =
+  PublisherCatalogueBookIdRouteImport.update({
+    id: '/publisher/catalogue/$bookId',
+    path: '/publisher/catalogue/$bookId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherCatalogueNewRoute = PublisherCatalogueNewRouteImport.update({
+  id: '/publisher/catalogue/new',
+  path: '/publisher/catalogue/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherPromoCodesIndexRoute =
+  PublisherPromoCodesIndexRouteImport.update({
+    id: '/publisher/promo-codes/',
+    path: '/publisher/promo-codes/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherPromoCodesPromoIdRoute =
+  PublisherPromoCodesPromoIdRouteImport.update({
+    id: '/publisher/promo-codes/$promoId',
+    path: '/publisher/promo-codes/$promoId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherPromoCodesNewRoute = PublisherPromoCodesNewRouteImport.update({
+  id: '/publisher/promo-codes/new',
+  path: '/publisher/promo-codes/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublisherVideoLibraryIndexRoute =
+  PublisherVideoLibraryIndexRouteImport.update({
+    id: '/publisher/video-library/',
+    path: '/publisher/video-library/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PublisherVideoLibraryNewRoute =
+  PublisherVideoLibraryNewRouteImport.update({
+    id: '/publisher/video-library/new',
+    path: '/publisher/video-library/new',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const PbAdminFeaturedCollectionsIdBooksRoute =
   PbAdminFeaturedCollectionsIdBooksRouteImport.update({
@@ -739,12 +747,19 @@ const PbAdminFeaturedCollectionsIdBooksRoute =
     path: '/pb-admin/featured-collections/$id/books',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PbAdminPublishersAuthorsIdTitlesRoute =
+  PbAdminPublishersAuthorsIdTitlesRouteImport.update({
+    id: '/titles',
+    path: '/titles',
+    getParentRoute: () => PbAdminPublishersAuthorsIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
   '/institutions/login': typeof InstitutionsLoginRoute
+  '/library-admin/audio-library': typeof LibraryAdminAudioLibraryRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -757,6 +772,7 @@ export interface FileRoutesByFullPath {
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-admin/video-library': typeof LibraryAdminVideoLibraryRoute
   '/library-user/login': typeof LibraryUserLoginRoute
   '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
@@ -864,6 +880,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
   '/institutions/login': typeof InstitutionsLoginRoute
+  '/library-admin/audio-library': typeof LibraryAdminAudioLibraryRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -876,6 +893,7 @@ export interface FileRoutesByTo {
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-admin/video-library': typeof LibraryAdminVideoLibraryRoute
   '/library-user/login': typeof LibraryUserLoginRoute
   '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
@@ -984,6 +1002,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/author/profile': typeof AuthorProfileRoute
   '/institutions/login': typeof InstitutionsLoginRoute
+  '/library-admin/audio-library': typeof LibraryAdminAudioLibraryRoute
   '/library-admin/banners': typeof LibraryAdminBannersRoute
   '/library-admin/cart': typeof LibraryAdminCartRoute
   '/library-admin/catalogue': typeof LibraryAdminCatalogueRoute
@@ -996,6 +1015,7 @@ export interface FileRoutesById {
   '/library-admin/requests': typeof LibraryAdminRequestsRoute
   '/library-admin/support': typeof LibraryAdminSupportRoute
   '/library-admin/users': typeof LibraryAdminUsersRoute
+  '/library-admin/video-library': typeof LibraryAdminVideoLibraryRoute
   '/library-user/login': typeof LibraryUserLoginRoute
   '/library-user/profile': typeof LibraryUserProfileRoute
   '/pb-admin-lib/catalogue': typeof PbAdminLibCatalogueRoute
@@ -1105,6 +1125,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/author/profile'
     | '/institutions/login'
+    | '/library-admin/audio-library'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -1117,6 +1138,7 @@ export interface FileRouteTypes {
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-admin/video-library'
     | '/library-user/login'
     | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
@@ -1224,6 +1246,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/author/profile'
     | '/institutions/login'
+    | '/library-admin/audio-library'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -1236,6 +1259,7 @@ export interface FileRouteTypes {
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-admin/video-library'
     | '/library-user/login'
     | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
@@ -1343,6 +1367,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/author/profile'
     | '/institutions/login'
+    | '/library-admin/audio-library'
     | '/library-admin/banners'
     | '/library-admin/cart'
     | '/library-admin/catalogue'
@@ -1355,6 +1380,7 @@ export interface FileRouteTypes {
     | '/library-admin/requests'
     | '/library-admin/support'
     | '/library-admin/users'
+    | '/library-admin/video-library'
     | '/library-user/login'
     | '/library-user/profile'
     | '/pb-admin-lib/catalogue'
@@ -1463,6 +1489,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   AuthorProfileRoute: typeof AuthorProfileRoute
   InstitutionsLoginRoute: typeof InstitutionsLoginRoute
+  LibraryAdminAudioLibraryRoute: typeof LibraryAdminAudioLibraryRoute
   LibraryAdminBannersRoute: typeof LibraryAdminBannersRoute
   LibraryAdminCartRoute: typeof LibraryAdminCartRoute
   LibraryAdminCatalogueRoute: typeof LibraryAdminCatalogueRoute
@@ -1475,6 +1502,7 @@ export interface RootRouteChildren {
   LibraryAdminRequestsRoute: typeof LibraryAdminRequestsRoute
   LibraryAdminSupportRoute: typeof LibraryAdminSupportRoute
   LibraryAdminUsersRoute: typeof LibraryAdminUsersRoute
+  LibraryAdminVideoLibraryRoute: typeof LibraryAdminVideoLibraryRoute
   LibraryUserLoginRoute: typeof LibraryUserLoginRoute
   LibraryUserProfileRoute: typeof LibraryUserProfileRoute
   PbAdminLibCatalogueRoute: typeof PbAdminLibCatalogueRoute
@@ -1577,13 +1605,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -1591,53 +1612,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/': {
-      id: '/publisher/'
-      path: '/publisher'
-      fullPath: '/publisher/'
-      preLoaderRoute: typeof PublisherIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/': {
-      id: '/pb-web/'
-      path: '/pb-web'
-      fullPath: '/pb-web/'
-      preLoaderRoute: typeof PbWebIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/': {
-      id: '/pb-admin/'
-      path: '/pb-admin'
-      fullPath: '/pb-admin/'
-      preLoaderRoute: typeof PbAdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/': {
-      id: '/pb-admin-lib/'
-      path: '/pb-admin-lib'
-      fullPath: '/pb-admin-lib/'
-      preLoaderRoute: typeof PbAdminLibIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-user/': {
-      id: '/library-user/'
-      path: '/library-user'
-      fullPath: '/library-user/'
-      preLoaderRoute: typeof LibraryUserIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/': {
-      id: '/library-admin/'
-      path: '/library-admin'
-      fullPath: '/library-admin/'
-      preLoaderRoute: typeof LibraryAdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/institutions/': {
-      id: '/institutions/'
-      path: '/institutions'
-      fullPath: '/institutions/'
-      preLoaderRoute: typeof InstitutionsIndexRouteImport
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/author/': {
@@ -1647,438 +1626,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthorIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/super-admin/settings': {
-      id: '/super-admin/settings'
-      path: '/super-admin/settings'
-      fullPath: '/super-admin/settings'
-      preLoaderRoute: typeof SuperAdminSettingsRouteImport
+    '/author/profile': {
+      id: '/author/profile'
+      path: '/author/profile'
+      fullPath: '/author/profile'
+      preLoaderRoute: typeof AuthorProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/support': {
-      id: '/publisher/support'
-      path: '/publisher/support'
-      fullPath: '/publisher/support'
-      preLoaderRoute: typeof PublisherSupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/settings': {
-      id: '/publisher/settings'
-      path: '/publisher/settings'
-      fullPath: '/publisher/settings'
-      preLoaderRoute: typeof PublisherSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/sales-report': {
-      id: '/publisher/sales-report'
-      path: '/publisher/sales-report'
-      fullPath: '/publisher/sales-report'
-      preLoaderRoute: typeof PublisherSalesReportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/profile': {
-      id: '/publisher/profile'
-      path: '/publisher/profile'
-      fullPath: '/publisher/profile'
-      preLoaderRoute: typeof PublisherProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/margin-report': {
-      id: '/publisher/margin-report'
-      path: '/publisher/margin-report'
-      fullPath: '/publisher/margin-report'
-      preLoaderRoute: typeof PublisherMarginReportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/login': {
-      id: '/publisher/login'
-      path: '/publisher/login'
-      fullPath: '/publisher/login'
-      preLoaderRoute: typeof PublisherLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/link-sources': {
-      id: '/publisher/link-sources'
-      path: '/publisher/link-sources'
-      fullPath: '/publisher/link-sources'
-      preLoaderRoute: typeof PublisherLinkSourcesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/categories': {
-      id: '/publisher/categories'
-      path: '/publisher/categories'
-      fullPath: '/publisher/categories'
-      preLoaderRoute: typeof PublisherCategoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publisher/bank-accounts': {
-      id: '/publisher/bank-accounts'
-      path: '/publisher/bank-accounts'
-      fullPath: '/publisher/bank-accounts'
-      preLoaderRoute: typeof PublisherBankAccountsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/terms-conditions': {
-      id: '/pb-web/terms-conditions'
-      path: '/pb-web/terms-conditions'
-      fullPath: '/pb-web/terms-conditions'
-      preLoaderRoute: typeof PbWebTermsConditionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/support': {
-      id: '/pb-web/support'
-      path: '/pb-web/support'
-      fullPath: '/pb-web/support'
-      preLoaderRoute: typeof PbWebSupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/privacy-policy': {
-      id: '/pb-web/privacy-policy'
-      path: '/pb-web/privacy-policy'
-      fullPath: '/pb-web/privacy-policy'
-      preLoaderRoute: typeof PbWebPrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/genre': {
-      id: '/pb-web/genre'
-      path: '/pb-web/genre'
-      fullPath: '/pb-web/genre'
-      preLoaderRoute: typeof PbWebGenreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/faq': {
-      id: '/pb-web/faq'
-      path: '/pb-web/faq'
-      fullPath: '/pb-web/faq'
-      preLoaderRoute: typeof PbWebFaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/cart': {
-      id: '/pb-web/cart'
-      path: '/pb-web/cart'
-      fullPath: '/pb-web/cart'
-      preLoaderRoute: typeof PbWebCartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/accounts': {
-      id: '/pb-web/accounts'
-      path: '/pb-web/accounts'
-      fullPath: '/pb-web/accounts'
-      preLoaderRoute: typeof PbWebAccountsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-web/about': {
-      id: '/pb-web/about'
-      path: '/pb-web/about'
-      fullPath: '/pb-web/about'
-      preLoaderRoute: typeof PbWebAboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/views-report': {
-      id: '/pb-admin/views-report'
-      path: '/pb-admin/views-report'
-      fullPath: '/pb-admin/views-report'
-      preLoaderRoute: typeof PbAdminViewsReportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/terms-conditions': {
-      id: '/pb-admin/terms-conditions'
-      path: '/pb-admin/terms-conditions'
-      fullPath: '/pb-admin/terms-conditions'
-      preLoaderRoute: typeof PbAdminTermsConditionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/settings': {
-      id: '/pb-admin/settings'
-      path: '/pb-admin/settings'
-      fullPath: '/pb-admin/settings'
-      preLoaderRoute: typeof PbAdminSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/sales-report': {
-      id: '/pb-admin/sales-report'
-      path: '/pb-admin/sales-report'
-      fullPath: '/pb-admin/sales-report'
-      preLoaderRoute: typeof PbAdminSalesReportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/quizzes-rewards': {
-      id: '/pb-admin/quizzes-rewards'
-      path: '/pb-admin/quizzes-rewards'
-      fullPath: '/pb-admin/quizzes-rewards'
-      preLoaderRoute: typeof PbAdminQuizzesRewardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/quizz-rewards': {
-      id: '/pb-admin/quizz-rewards'
-      path: '/pb-admin/quizz-rewards'
-      fullPath: '/pb-admin/quizz-rewards'
-      preLoaderRoute: typeof PbAdminQuizzRewardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/publishers-authors': {
-      id: '/pb-admin/publishers-authors'
-      path: '/pb-admin/publishers-authors'
-      fullPath: '/pb-admin/publishers-authors'
-      preLoaderRoute: typeof PbAdminPublishersAuthorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/promo-codes': {
-      id: '/pb-admin/promo-codes'
-      path: '/pb-admin/promo-codes'
-      fullPath: '/pb-admin/promo-codes'
-      preLoaderRoute: typeof PbAdminPromoCodesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/profile': {
-      id: '/pb-admin/profile'
-      path: '/pb-admin/profile'
-      fullPath: '/pb-admin/profile'
-      preLoaderRoute: typeof PbAdminProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/privacy-policy': {
-      id: '/pb-admin/privacy-policy'
-      path: '/pb-admin/privacy-policy'
-      fullPath: '/pb-admin/privacy-policy'
-      preLoaderRoute: typeof PbAdminPrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/notifications': {
-      id: '/pb-admin/notifications'
-      path: '/pb-admin/notifications'
-      fullPath: '/pb-admin/notifications'
-      preLoaderRoute: typeof PbAdminNotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/merge-authors': {
-      id: '/pb-admin/merge-authors'
-      path: '/pb-admin/merge-authors'
-      fullPath: '/pb-admin/merge-authors'
-      preLoaderRoute: typeof PbAdminMergeAuthorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/margin-report': {
-      id: '/pb-admin/margin-report'
-      path: '/pb-admin/margin-report'
-      fullPath: '/pb-admin/margin-report'
-      preLoaderRoute: typeof PbAdminMarginReportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/featured-collections': {
-      id: '/pb-admin/featured-collections'
-      path: '/pb-admin/featured-collections'
-      fullPath: '/pb-admin/featured-collections'
-      preLoaderRoute: typeof PbAdminFeaturedCollectionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/customers': {
-      id: '/pb-admin/customers'
-      path: '/pb-admin/customers'
-      fullPath: '/pb-admin/customers'
-      preLoaderRoute: typeof PbAdminCustomersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/commission-rates': {
-      id: '/pb-admin/commission-rates'
-      path: '/pb-admin/commission-rates'
-      fullPath: '/pb-admin/commission-rates'
-      preLoaderRoute: typeof PbAdminCommissionRatesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/categories': {
-      id: '/pb-admin/categories'
-      path: '/pb-admin/categories'
-      fullPath: '/pb-admin/categories'
-      preLoaderRoute: typeof PbAdminCategoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/cart-view': {
-      id: '/pb-admin/cart-view'
-      path: '/pb-admin/cart-view'
-      fullPath: '/pb-admin/cart-view'
-      preLoaderRoute: typeof PbAdminCartViewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/cart-analysis': {
-      id: '/pb-admin/cart-analysis'
-      path: '/pb-admin/cart-analysis'
-      fullPath: '/pb-admin/cart-analysis'
-      preLoaderRoute: typeof PbAdminCartAnalysisRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/author-management': {
-      id: '/pb-admin/author-management'
-      path: '/pb-admin/author-management'
-      fullPath: '/pb-admin/author-management'
-      preLoaderRoute: typeof PbAdminAuthorManagementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/audit-log': {
-      id: '/pb-admin/audit-log'
-      path: '/pb-admin/audit-log'
-      fullPath: '/pb-admin/audit-log'
-      preLoaderRoute: typeof PbAdminAuditLogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin/admin-users': {
-      id: '/pb-admin/admin-users'
-      path: '/pb-admin/admin-users'
-      fullPath: '/pb-admin/admin-users'
-      preLoaderRoute: typeof PbAdminAdminUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/terms-conditions': {
-      id: '/pb-admin-lib/terms-conditions'
-      path: '/pb-admin-lib/terms-conditions'
-      fullPath: '/pb-admin-lib/terms-conditions'
-      preLoaderRoute: typeof PbAdminLibTermsConditionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/settings': {
-      id: '/pb-admin-lib/settings'
-      path: '/pb-admin-lib/settings'
-      fullPath: '/pb-admin-lib/settings'
-      preLoaderRoute: typeof PbAdminLibSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/reports': {
-      id: '/pb-admin-lib/reports'
-      path: '/pb-admin-lib/reports'
-      fullPath: '/pb-admin-lib/reports'
-      preLoaderRoute: typeof PbAdminLibReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/privacy-policy': {
-      id: '/pb-admin-lib/privacy-policy'
-      path: '/pb-admin-lib/privacy-policy'
-      fullPath: '/pb-admin-lib/privacy-policy'
-      preLoaderRoute: typeof PbAdminLibPrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/orders': {
-      id: '/pb-admin-lib/orders'
-      path: '/pb-admin-lib/orders'
-      fullPath: '/pb-admin-lib/orders'
-      preLoaderRoute: typeof PbAdminLibOrdersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/libraries': {
-      id: '/pb-admin-lib/libraries'
-      path: '/pb-admin-lib/libraries'
-      fullPath: '/pb-admin-lib/libraries'
-      preLoaderRoute: typeof PbAdminLibLibrariesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/clone': {
-      id: '/pb-admin-lib/clone'
-      path: '/pb-admin-lib/clone'
-      fullPath: '/pb-admin-lib/clone'
-      preLoaderRoute: typeof PbAdminLibCloneRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pb-admin-lib/catalogue': {
-      id: '/pb-admin-lib/catalogue'
-      path: '/pb-admin-lib/catalogue'
-      fullPath: '/pb-admin-lib/catalogue'
-      preLoaderRoute: typeof PbAdminLibCatalogueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-user/profile': {
-      id: '/library-user/profile'
-      path: '/library-user/profile'
-      fullPath: '/library-user/profile'
-      preLoaderRoute: typeof LibraryUserProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-user/login': {
-      id: '/library-user/login'
-      path: '/library-user/login'
-      fullPath: '/library-user/login'
-      preLoaderRoute: typeof LibraryUserLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/users': {
-      id: '/library-admin/users'
-      path: '/library-admin/users'
-      fullPath: '/library-admin/users'
-      preLoaderRoute: typeof LibraryAdminUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/support': {
-      id: '/library-admin/support'
-      path: '/library-admin/support'
-      fullPath: '/library-admin/support'
-      preLoaderRoute: typeof LibraryAdminSupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/requests': {
-      id: '/library-admin/requests'
-      path: '/library-admin/requests'
-      fullPath: '/library-admin/requests'
-      preLoaderRoute: typeof LibraryAdminRequestsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/reports': {
-      id: '/library-admin/reports'
-      path: '/library-admin/reports'
-      fullPath: '/library-admin/reports'
-      preLoaderRoute: typeof LibraryAdminReportsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/profile': {
-      id: '/library-admin/profile'
-      path: '/library-admin/profile'
-      fullPath: '/library-admin/profile'
-      preLoaderRoute: typeof LibraryAdminProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/orders': {
-      id: '/library-admin/orders'
-      path: '/library-admin/orders'
-      fullPath: '/library-admin/orders'
-      preLoaderRoute: typeof LibraryAdminOrdersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/manage-ebooks': {
-      id: '/library-admin/manage-ebooks'
-      path: '/library-admin/manage-ebooks'
-      fullPath: '/library-admin/manage-ebooks'
-      preLoaderRoute: typeof LibraryAdminManageEbooksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/departments': {
-      id: '/library-admin/departments'
-      path: '/library-admin/departments'
-      fullPath: '/library-admin/departments'
-      preLoaderRoute: typeof LibraryAdminDepartmentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/courses': {
-      id: '/library-admin/courses'
-      path: '/library-admin/courses'
-      fullPath: '/library-admin/courses'
-      preLoaderRoute: typeof LibraryAdminCoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/catalogue': {
-      id: '/library-admin/catalogue'
-      path: '/library-admin/catalogue'
-      fullPath: '/library-admin/catalogue'
-      preLoaderRoute: typeof LibraryAdminCatalogueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/cart': {
-      id: '/library-admin/cart'
-      path: '/library-admin/cart'
-      fullPath: '/library-admin/cart'
-      preLoaderRoute: typeof LibraryAdminCartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library-admin/banners': {
-      id: '/library-admin/banners'
-      path: '/library-admin/banners'
-      fullPath: '/library-admin/banners'
-      preLoaderRoute: typeof LibraryAdminBannersRouteImport
+    '/institutions/': {
+      id: '/institutions/'
+      path: '/institutions'
+      fullPath: '/institutions/'
+      preLoaderRoute: typeof InstitutionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/institutions/login': {
@@ -2088,291 +1647,494 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InstitutionsLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/author/profile': {
-      id: '/author/profile'
-      path: '/author/profile'
-      fullPath: '/author/profile'
-      preLoaderRoute: typeof AuthorProfileRouteImport
+    '/library-admin/': {
+      id: '/library-admin/'
+      path: '/library-admin'
+      fullPath: '/library-admin/'
+      preLoaderRoute: typeof LibraryAdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/video-library/': {
-      id: '/publisher/video-library/'
-      path: '/publisher/video-library'
-      fullPath: '/publisher/video-library/'
-      preLoaderRoute: typeof PublisherVideoLibraryIndexRouteImport
+    '/library-admin/audio-library': {
+      id: '/library-admin/audio-library'
+      path: '/library-admin/audio-library'
+      fullPath: '/library-admin/audio-library'
+      preLoaderRoute: typeof LibraryAdminAudioLibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/promo-codes/': {
-      id: '/publisher/promo-codes/'
-      path: '/publisher/promo-codes'
-      fullPath: '/publisher/promo-codes/'
-      preLoaderRoute: typeof PublisherPromoCodesIndexRouteImport
+    '/library-admin/banners': {
+      id: '/library-admin/banners'
+      path: '/library-admin/banners'
+      fullPath: '/library-admin/banners'
+      preLoaderRoute: typeof LibraryAdminBannersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/catalogue/': {
-      id: '/publisher/catalogue/'
-      path: '/publisher/catalogue'
-      fullPath: '/publisher/catalogue/'
-      preLoaderRoute: typeof PublisherCatalogueIndexRouteImport
+    '/library-admin/cart': {
+      id: '/library-admin/cart'
+      path: '/library-admin/cart'
+      fullPath: '/library-admin/cart'
+      preLoaderRoute: typeof LibraryAdminCartRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/catalogue-import/': {
-      id: '/publisher/catalogue-import/'
-      path: '/publisher/catalogue-import'
-      fullPath: '/publisher/catalogue-import/'
-      preLoaderRoute: typeof PublisherCatalogueImportIndexRouteImport
+    '/library-admin/catalogue': {
+      id: '/library-admin/catalogue'
+      path: '/library-admin/catalogue'
+      fullPath: '/library-admin/catalogue'
+      preLoaderRoute: typeof LibraryAdminCatalogueRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/bundles/': {
-      id: '/publisher/bundles/'
-      path: '/publisher/bundles'
-      fullPath: '/publisher/bundles/'
-      preLoaderRoute: typeof PublisherBundlesIndexRouteImport
+    '/library-admin/courses': {
+      id: '/library-admin/courses'
+      path: '/library-admin/courses'
+      fullPath: '/library-admin/courses'
+      preLoaderRoute: typeof LibraryAdminCoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/audio-library/': {
-      id: '/publisher/audio-library/'
-      path: '/publisher/audio-library'
-      fullPath: '/publisher/audio-library/'
-      preLoaderRoute: typeof PublisherAudioLibraryIndexRouteImport
+    '/library-admin/departments': {
+      id: '/library-admin/departments'
+      path: '/library-admin/departments'
+      fullPath: '/library-admin/departments'
+      preLoaderRoute: typeof LibraryAdminDepartmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/titles/': {
-      id: '/pb-admin/titles/'
-      path: '/pb-admin/titles'
-      fullPath: '/pb-admin/titles/'
-      preLoaderRoute: typeof PbAdminTitlesIndexRouteImport
+    '/library-admin/manage-ebooks': {
+      id: '/library-admin/manage-ebooks'
+      path: '/library-admin/manage-ebooks'
+      fullPath: '/library-admin/manage-ebooks'
+      preLoaderRoute: typeof LibraryAdminManageEbooksRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/bundles/': {
-      id: '/pb-admin/bundles/'
-      path: '/pb-admin/bundles'
-      fullPath: '/pb-admin/bundles/'
-      preLoaderRoute: typeof PbAdminBundlesIndexRouteImport
+    '/library-admin/orders': {
+      id: '/library-admin/orders'
+      path: '/library-admin/orders'
+      fullPath: '/library-admin/orders'
+      preLoaderRoute: typeof LibraryAdminOrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/video-library/new': {
-      id: '/publisher/video-library/new'
-      path: '/publisher/video-library/new'
-      fullPath: '/publisher/video-library/new'
-      preLoaderRoute: typeof PublisherVideoLibraryNewRouteImport
+    '/library-admin/profile': {
+      id: '/library-admin/profile'
+      path: '/library-admin/profile'
+      fullPath: '/library-admin/profile'
+      preLoaderRoute: typeof LibraryAdminProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/promo-codes/new': {
-      id: '/publisher/promo-codes/new'
-      path: '/publisher/promo-codes/new'
-      fullPath: '/publisher/promo-codes/new'
-      preLoaderRoute: typeof PublisherPromoCodesNewRouteImport
+    '/library-admin/reports': {
+      id: '/library-admin/reports'
+      path: '/library-admin/reports'
+      fullPath: '/library-admin/reports'
+      preLoaderRoute: typeof LibraryAdminReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/promo-codes/$promoId': {
-      id: '/publisher/promo-codes/$promoId'
-      path: '/publisher/promo-codes/$promoId'
-      fullPath: '/publisher/promo-codes/$promoId'
-      preLoaderRoute: typeof PublisherPromoCodesPromoIdRouteImport
+    '/library-admin/requests': {
+      id: '/library-admin/requests'
+      path: '/library-admin/requests'
+      fullPath: '/library-admin/requests'
+      preLoaderRoute: typeof LibraryAdminRequestsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/catalogue/new': {
-      id: '/publisher/catalogue/new'
-      path: '/publisher/catalogue/new'
-      fullPath: '/publisher/catalogue/new'
-      preLoaderRoute: typeof PublisherCatalogueNewRouteImport
+    '/library-admin/support': {
+      id: '/library-admin/support'
+      path: '/library-admin/support'
+      fullPath: '/library-admin/support'
+      preLoaderRoute: typeof LibraryAdminSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/catalogue/$bookId': {
-      id: '/publisher/catalogue/$bookId'
-      path: '/publisher/catalogue/$bookId'
-      fullPath: '/publisher/catalogue/$bookId'
-      preLoaderRoute: typeof PublisherCatalogueBookIdRouteImport
+    '/library-admin/users': {
+      id: '/library-admin/users'
+      path: '/library-admin/users'
+      fullPath: '/library-admin/users'
+      preLoaderRoute: typeof LibraryAdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/catalogue-import/new': {
-      id: '/publisher/catalogue-import/new'
-      path: '/publisher/catalogue-import/new'
-      fullPath: '/publisher/catalogue-import/new'
-      preLoaderRoute: typeof PublisherCatalogueImportNewRouteImport
+    '/library-admin/video-library': {
+      id: '/library-admin/video-library'
+      path: '/library-admin/video-library'
+      fullPath: '/library-admin/video-library'
+      preLoaderRoute: typeof LibraryAdminVideoLibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/catalogue-import/$fileName': {
-      id: '/publisher/catalogue-import/$fileName'
-      path: '/publisher/catalogue-import/$fileName'
-      fullPath: '/publisher/catalogue-import/$fileName'
-      preLoaderRoute: typeof PublisherCatalogueImportFileNameRouteImport
+    '/library-user/': {
+      id: '/library-user/'
+      path: '/library-user'
+      fullPath: '/library-user/'
+      preLoaderRoute: typeof LibraryUserIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/bundles/new': {
-      id: '/publisher/bundles/new'
-      path: '/publisher/bundles/new'
-      fullPath: '/publisher/bundles/new'
-      preLoaderRoute: typeof PublisherBundlesNewRouteImport
+    '/library-user/login': {
+      id: '/library-user/login'
+      path: '/library-user/login'
+      fullPath: '/library-user/login'
+      preLoaderRoute: typeof LibraryUserLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/bundles/$bundleId': {
-      id: '/publisher/bundles/$bundleId'
-      path: '/publisher/bundles/$bundleId'
-      fullPath: '/publisher/bundles/$bundleId'
-      preLoaderRoute: typeof PublisherBundlesBundleIdRouteImport
+    '/library-user/profile': {
+      id: '/library-user/profile'
+      path: '/library-user/profile'
+      fullPath: '/library-user/profile'
+      preLoaderRoute: typeof LibraryUserProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/publisher/audio-library/new': {
-      id: '/publisher/audio-library/new'
-      path: '/publisher/audio-library/new'
-      fullPath: '/publisher/audio-library/new'
-      preLoaderRoute: typeof PublisherAudioLibraryNewRouteImport
+    '/pb-admin-lib/': {
+      id: '/pb-admin-lib/'
+      path: '/pb-admin-lib'
+      fullPath: '/pb-admin-lib/'
+      preLoaderRoute: typeof PbAdminLibIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/titles/new': {
-      id: '/pb-admin/titles/new'
-      path: '/pb-admin/titles/new'
-      fullPath: '/pb-admin/titles/new'
-      preLoaderRoute: typeof PbAdminTitlesNewRouteImport
+    '/pb-admin-lib/catalogue': {
+      id: '/pb-admin-lib/catalogue'
+      path: '/pb-admin-lib/catalogue'
+      fullPath: '/pb-admin-lib/catalogue'
+      preLoaderRoute: typeof PbAdminLibCatalogueRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/titles/$bookId': {
-      id: '/pb-admin/titles/$bookId'
-      path: '/pb-admin/titles/$bookId'
-      fullPath: '/pb-admin/titles/$bookId'
-      preLoaderRoute: typeof PbAdminTitlesBookIdRouteImport
+    '/pb-admin-lib/clone': {
+      id: '/pb-admin-lib/clone'
+      path: '/pb-admin-lib/clone'
+      fullPath: '/pb-admin-lib/clone'
+      preLoaderRoute: typeof PbAdminLibCloneRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/terms-conditions_/new': {
-      id: '/pb-admin/terms-conditions_/new'
-      path: '/pb-admin/terms-conditions/new'
-      fullPath: '/pb-admin/terms-conditions/new'
-      preLoaderRoute: typeof PbAdminTermsConditionsNewRouteImport
+    '/pb-admin-lib/libraries': {
+      id: '/pb-admin-lib/libraries'
+      path: '/pb-admin-lib/libraries'
+      fullPath: '/pb-admin-lib/libraries'
+      preLoaderRoute: typeof PbAdminLibLibrariesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/terms-conditions_/$id': {
-      id: '/pb-admin/terms-conditions_/$id'
-      path: '/pb-admin/terms-conditions/$id'
-      fullPath: '/pb-admin/terms-conditions/$id'
-      preLoaderRoute: typeof PbAdminTermsConditionsIdRouteImport
+    '/pb-admin-lib/orders': {
+      id: '/pb-admin-lib/orders'
+      path: '/pb-admin-lib/orders'
+      fullPath: '/pb-admin-lib/orders'
+      preLoaderRoute: typeof PbAdminLibOrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/publishers-authors/$id': {
-      id: '/pb-admin/publishers-authors/$id'
-      path: '/$id'
-      fullPath: '/pb-admin/publishers-authors/$id'
-      preLoaderRoute: typeof PbAdminPublishersAuthorsIdRouteImport
-      parentRoute: typeof PbAdminPublishersAuthorsRoute
-    }
-    '/pb-admin/privacy-policy_/new': {
-      id: '/pb-admin/privacy-policy_/new'
-      path: '/pb-admin/privacy-policy/new'
-      fullPath: '/pb-admin/privacy-policy/new'
-      preLoaderRoute: typeof PbAdminPrivacyPolicyNewRouteImport
+    '/pb-admin-lib/privacy-policy': {
+      id: '/pb-admin-lib/privacy-policy'
+      path: '/pb-admin-lib/privacy-policy'
+      fullPath: '/pb-admin-lib/privacy-policy'
+      preLoaderRoute: typeof PbAdminLibPrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/privacy-policy_/$id': {
-      id: '/pb-admin/privacy-policy_/$id'
-      path: '/pb-admin/privacy-policy/$id'
-      fullPath: '/pb-admin/privacy-policy/$id'
-      preLoaderRoute: typeof PbAdminPrivacyPolicyIdRouteImport
+    '/pb-admin-lib/reports': {
+      id: '/pb-admin-lib/reports'
+      path: '/pb-admin-lib/reports'
+      fullPath: '/pb-admin-lib/reports'
+      preLoaderRoute: typeof PbAdminLibReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/marketing/sitemap': {
-      id: '/pb-admin/marketing/sitemap'
-      path: '/pb-admin/marketing/sitemap'
-      fullPath: '/pb-admin/marketing/sitemap'
-      preLoaderRoute: typeof PbAdminMarketingSitemapRouteImport
+    '/pb-admin-lib/settings': {
+      id: '/pb-admin-lib/settings'
+      path: '/pb-admin-lib/settings'
+      fullPath: '/pb-admin-lib/settings'
+      preLoaderRoute: typeof PbAdminLibSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/marketing/schema-meta': {
-      id: '/pb-admin/marketing/schema-meta'
-      path: '/pb-admin/marketing/schema-meta'
-      fullPath: '/pb-admin/marketing/schema-meta'
-      preLoaderRoute: typeof PbAdminMarketingSchemaMetaRouteImport
+    '/pb-admin-lib/terms-conditions': {
+      id: '/pb-admin-lib/terms-conditions'
+      path: '/pb-admin-lib/terms-conditions'
+      fullPath: '/pb-admin-lib/terms-conditions'
+      preLoaderRoute: typeof PbAdminLibTermsConditionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/commission-rates_/$id': {
-      id: '/pb-admin/commission-rates_/$id'
-      path: '/pb-admin/commission-rates/$id'
-      fullPath: '/pb-admin/commission-rates/$id'
-      preLoaderRoute: typeof PbAdminCommissionRatesIdRouteImport
+    '/pb-admin/': {
+      id: '/pb-admin/'
+      path: '/pb-admin'
+      fullPath: '/pb-admin/'
+      preLoaderRoute: typeof PbAdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/bundles/new': {
-      id: '/pb-admin/bundles/new'
-      path: '/pb-admin/bundles/new'
-      fullPath: '/pb-admin/bundles/new'
-      preLoaderRoute: typeof PbAdminBundlesNewRouteImport
+    '/pb-admin/admin-users': {
+      id: '/pb-admin/admin-users'
+      path: '/pb-admin/admin-users'
+      fullPath: '/pb-admin/admin-users'
+      preLoaderRoute: typeof PbAdminAdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/bundles/$bundleId': {
-      id: '/pb-admin/bundles/$bundleId'
-      path: '/pb-admin/bundles/$bundleId'
-      fullPath: '/pb-admin/bundles/$bundleId'
-      preLoaderRoute: typeof PbAdminBundlesBundleIdRouteImport
+    '/pb-admin/audit-log': {
+      id: '/pb-admin/audit-log'
+      path: '/pb-admin/audit-log'
+      fullPath: '/pb-admin/audit-log'
+      preLoaderRoute: typeof PbAdminAuditLogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/author-management/$authorId': {
-      id: '/pb-admin/author-management/$authorId'
-      path: '/$authorId'
-      fullPath: '/pb-admin/author-management/$authorId'
-      preLoaderRoute: typeof PbAdminAuthorManagementAuthorIdRouteImport
-      parentRoute: typeof PbAdminAuthorManagementRoute
-    }
-    '/pb-admin/ad-banners/popup': {
-      id: '/pb-admin/ad-banners/popup'
-      path: '/pb-admin/ad-banners/popup'
-      fullPath: '/pb-admin/ad-banners/popup'
-      preLoaderRoute: typeof PbAdminAdBannersPopupRouteImport
+    '/pb-admin/author-management': {
+      id: '/pb-admin/author-management'
+      path: '/pb-admin/author-management'
+      fullPath: '/pb-admin/author-management'
+      preLoaderRoute: typeof PbAdminAuthorManagementRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/ad-banners/image': {
-      id: '/pb-admin/ad-banners/image'
-      path: '/pb-admin/ad-banners/image'
-      fullPath: '/pb-admin/ad-banners/image'
-      preLoaderRoute: typeof PbAdminAdBannersImageRouteImport
+    '/pb-admin/cart-analysis': {
+      id: '/pb-admin/cart-analysis'
+      path: '/pb-admin/cart-analysis'
+      fullPath: '/pb-admin/cart-analysis'
+      preLoaderRoute: typeof PbAdminCartAnalysisRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/ad-banners/genre': {
-      id: '/pb-admin/ad-banners/genre'
-      path: '/pb-admin/ad-banners/genre'
-      fullPath: '/pb-admin/ad-banners/genre'
-      preLoaderRoute: typeof PbAdminAdBannersGenreRouteImport
+    '/pb-admin/cart-view': {
+      id: '/pb-admin/cart-view'
+      path: '/pb-admin/cart-view'
+      fullPath: '/pb-admin/cart-view'
+      preLoaderRoute: typeof PbAdminCartViewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin-lib/terms-conditions_/new': {
-      id: '/pb-admin-lib/terms-conditions_/new'
-      path: '/pb-admin-lib/terms-conditions/new'
-      fullPath: '/pb-admin-lib/terms-conditions/new'
-      preLoaderRoute: typeof PbAdminLibTermsConditionsNewRouteImport
+    '/pb-admin/categories': {
+      id: '/pb-admin/categories'
+      path: '/pb-admin/categories'
+      fullPath: '/pb-admin/categories'
+      preLoaderRoute: typeof PbAdminCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin-lib/terms-conditions_/$id': {
-      id: '/pb-admin-lib/terms-conditions_/$id'
-      path: '/pb-admin-lib/terms-conditions/$id'
-      fullPath: '/pb-admin-lib/terms-conditions/$id'
-      preLoaderRoute: typeof PbAdminLibTermsConditionsIdRouteImport
+    '/pb-admin/commission-rates': {
+      id: '/pb-admin/commission-rates'
+      path: '/pb-admin/commission-rates'
+      fullPath: '/pb-admin/commission-rates'
+      preLoaderRoute: typeof PbAdminCommissionRatesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin-lib/privacy-policy_/new': {
-      id: '/pb-admin-lib/privacy-policy_/new'
-      path: '/pb-admin-lib/privacy-policy/new'
-      fullPath: '/pb-admin-lib/privacy-policy/new'
-      preLoaderRoute: typeof PbAdminLibPrivacyPolicyNewRouteImport
+    '/pb-admin/customers': {
+      id: '/pb-admin/customers'
+      path: '/pb-admin/customers'
+      fullPath: '/pb-admin/customers'
+      preLoaderRoute: typeof PbAdminCustomersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin-lib/privacy-policy_/$id': {
-      id: '/pb-admin-lib/privacy-policy_/$id'
-      path: '/pb-admin-lib/privacy-policy/$id'
-      fullPath: '/pb-admin-lib/privacy-policy/$id'
-      preLoaderRoute: typeof PbAdminLibPrivacyPolicyIdRouteImport
+    '/pb-admin/featured-collections': {
+      id: '/pb-admin/featured-collections'
+      path: '/pb-admin/featured-collections'
+      fullPath: '/pb-admin/featured-collections'
+      preLoaderRoute: typeof PbAdminFeaturedCollectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin-lib/orders_/$id': {
-      id: '/pb-admin-lib/orders_/$id'
-      path: '/pb-admin-lib/orders/$id'
-      fullPath: '/pb-admin-lib/orders/$id'
-      preLoaderRoute: typeof PbAdminLibOrdersIdRouteImport
+    '/pb-admin/margin-report': {
+      id: '/pb-admin/margin-report'
+      path: '/pb-admin/margin-report'
+      fullPath: '/pb-admin/margin-report'
+      preLoaderRoute: typeof PbAdminMarginReportRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin-lib/libraries_/new': {
-      id: '/pb-admin-lib/libraries_/new'
-      path: '/pb-admin-lib/libraries/new'
-      fullPath: '/pb-admin-lib/libraries/new'
-      preLoaderRoute: typeof PbAdminLibLibrariesNewRouteImport
+    '/pb-admin/merge-authors': {
+      id: '/pb-admin/merge-authors'
+      path: '/pb-admin/merge-authors'
+      fullPath: '/pb-admin/merge-authors'
+      preLoaderRoute: typeof PbAdminMergeAuthorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/notifications': {
+      id: '/pb-admin/notifications'
+      path: '/pb-admin/notifications'
+      fullPath: '/pb-admin/notifications'
+      preLoaderRoute: typeof PbAdminNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/privacy-policy': {
+      id: '/pb-admin/privacy-policy'
+      path: '/pb-admin/privacy-policy'
+      fullPath: '/pb-admin/privacy-policy'
+      preLoaderRoute: typeof PbAdminPrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/profile': {
+      id: '/pb-admin/profile'
+      path: '/pb-admin/profile'
+      fullPath: '/pb-admin/profile'
+      preLoaderRoute: typeof PbAdminProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/promo-codes': {
+      id: '/pb-admin/promo-codes'
+      path: '/pb-admin/promo-codes'
+      fullPath: '/pb-admin/promo-codes'
+      preLoaderRoute: typeof PbAdminPromoCodesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/publishers-authors': {
+      id: '/pb-admin/publishers-authors'
+      path: '/pb-admin/publishers-authors'
+      fullPath: '/pb-admin/publishers-authors'
+      preLoaderRoute: typeof PbAdminPublishersAuthorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/quizz-rewards': {
+      id: '/pb-admin/quizz-rewards'
+      path: '/pb-admin/quizz-rewards'
+      fullPath: '/pb-admin/quizz-rewards'
+      preLoaderRoute: typeof PbAdminQuizzRewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/quizzes-rewards': {
+      id: '/pb-admin/quizzes-rewards'
+      path: '/pb-admin/quizzes-rewards'
+      fullPath: '/pb-admin/quizzes-rewards'
+      preLoaderRoute: typeof PbAdminQuizzesRewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/sales-report': {
+      id: '/pb-admin/sales-report'
+      path: '/pb-admin/sales-report'
+      fullPath: '/pb-admin/sales-report'
+      preLoaderRoute: typeof PbAdminSalesReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/settings': {
+      id: '/pb-admin/settings'
+      path: '/pb-admin/settings'
+      fullPath: '/pb-admin/settings'
+      preLoaderRoute: typeof PbAdminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/terms-conditions': {
+      id: '/pb-admin/terms-conditions'
+      path: '/pb-admin/terms-conditions'
+      fullPath: '/pb-admin/terms-conditions'
+      preLoaderRoute: typeof PbAdminTermsConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/views-report': {
+      id: '/pb-admin/views-report'
+      path: '/pb-admin/views-report'
+      fullPath: '/pb-admin/views-report'
+      preLoaderRoute: typeof PbAdminViewsReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/': {
+      id: '/pb-web/'
+      path: '/pb-web'
+      fullPath: '/pb-web/'
+      preLoaderRoute: typeof PbWebIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/about': {
+      id: '/pb-web/about'
+      path: '/pb-web/about'
+      fullPath: '/pb-web/about'
+      preLoaderRoute: typeof PbWebAboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/accounts': {
+      id: '/pb-web/accounts'
+      path: '/pb-web/accounts'
+      fullPath: '/pb-web/accounts'
+      preLoaderRoute: typeof PbWebAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/cart': {
+      id: '/pb-web/cart'
+      path: '/pb-web/cart'
+      fullPath: '/pb-web/cart'
+      preLoaderRoute: typeof PbWebCartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/faq': {
+      id: '/pb-web/faq'
+      path: '/pb-web/faq'
+      fullPath: '/pb-web/faq'
+      preLoaderRoute: typeof PbWebFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/genre': {
+      id: '/pb-web/genre'
+      path: '/pb-web/genre'
+      fullPath: '/pb-web/genre'
+      preLoaderRoute: typeof PbWebGenreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/privacy-policy': {
+      id: '/pb-web/privacy-policy'
+      path: '/pb-web/privacy-policy'
+      fullPath: '/pb-web/privacy-policy'
+      preLoaderRoute: typeof PbWebPrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/support': {
+      id: '/pb-web/support'
+      path: '/pb-web/support'
+      fullPath: '/pb-web/support'
+      preLoaderRoute: typeof PbWebSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/terms-conditions': {
+      id: '/pb-web/terms-conditions'
+      path: '/pb-web/terms-conditions'
+      fullPath: '/pb-web/terms-conditions'
+      preLoaderRoute: typeof PbWebTermsConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/': {
+      id: '/publisher/'
+      path: '/publisher'
+      fullPath: '/publisher/'
+      preLoaderRoute: typeof PublisherIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/bank-accounts': {
+      id: '/publisher/bank-accounts'
+      path: '/publisher/bank-accounts'
+      fullPath: '/publisher/bank-accounts'
+      preLoaderRoute: typeof PublisherBankAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/categories': {
+      id: '/publisher/categories'
+      path: '/publisher/categories'
+      fullPath: '/publisher/categories'
+      preLoaderRoute: typeof PublisherCategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/link-sources': {
+      id: '/publisher/link-sources'
+      path: '/publisher/link-sources'
+      fullPath: '/publisher/link-sources'
+      preLoaderRoute: typeof PublisherLinkSourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/login': {
+      id: '/publisher/login'
+      path: '/publisher/login'
+      fullPath: '/publisher/login'
+      preLoaderRoute: typeof PublisherLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/margin-report': {
+      id: '/publisher/margin-report'
+      path: '/publisher/margin-report'
+      fullPath: '/publisher/margin-report'
+      preLoaderRoute: typeof PublisherMarginReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/profile': {
+      id: '/publisher/profile'
+      path: '/publisher/profile'
+      fullPath: '/publisher/profile'
+      preLoaderRoute: typeof PublisherProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/sales-report': {
+      id: '/publisher/sales-report'
+      path: '/publisher/sales-report'
+      fullPath: '/publisher/sales-report'
+      preLoaderRoute: typeof PublisherSalesReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/settings': {
+      id: '/publisher/settings'
+      path: '/publisher/settings'
+      fullPath: '/publisher/settings'
+      preLoaderRoute: typeof PublisherSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/support': {
+      id: '/publisher/support'
+      path: '/publisher/support'
+      fullPath: '/publisher/support'
+      preLoaderRoute: typeof PublisherSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/super-admin/settings': {
+      id: '/super-admin/settings'
+      path: '/super-admin/settings'
+      fullPath: '/super-admin/settings'
+      preLoaderRoute: typeof SuperAdminSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-admin-lib/libraries_/$id': {
@@ -2382,12 +2144,285 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PbAdminLibLibrariesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pb-admin/publishers-authors/$id/titles': {
-      id: '/pb-admin/publishers-authors/$id/titles'
-      path: '/titles'
-      fullPath: '/pb-admin/publishers-authors/$id/titles'
-      preLoaderRoute: typeof PbAdminPublishersAuthorsIdTitlesRouteImport
-      parentRoute: typeof PbAdminPublishersAuthorsIdRoute
+    '/pb-admin-lib/libraries_/new': {
+      id: '/pb-admin-lib/libraries_/new'
+      path: '/pb-admin-lib/libraries/new'
+      fullPath: '/pb-admin-lib/libraries/new'
+      preLoaderRoute: typeof PbAdminLibLibrariesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin-lib/orders_/$id': {
+      id: '/pb-admin-lib/orders_/$id'
+      path: '/pb-admin-lib/orders/$id'
+      fullPath: '/pb-admin-lib/orders/$id'
+      preLoaderRoute: typeof PbAdminLibOrdersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin-lib/privacy-policy_/$id': {
+      id: '/pb-admin-lib/privacy-policy_/$id'
+      path: '/pb-admin-lib/privacy-policy/$id'
+      fullPath: '/pb-admin-lib/privacy-policy/$id'
+      preLoaderRoute: typeof PbAdminLibPrivacyPolicyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin-lib/privacy-policy_/new': {
+      id: '/pb-admin-lib/privacy-policy_/new'
+      path: '/pb-admin-lib/privacy-policy/new'
+      fullPath: '/pb-admin-lib/privacy-policy/new'
+      preLoaderRoute: typeof PbAdminLibPrivacyPolicyNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin-lib/terms-conditions_/$id': {
+      id: '/pb-admin-lib/terms-conditions_/$id'
+      path: '/pb-admin-lib/terms-conditions/$id'
+      fullPath: '/pb-admin-lib/terms-conditions/$id'
+      preLoaderRoute: typeof PbAdminLibTermsConditionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin-lib/terms-conditions_/new': {
+      id: '/pb-admin-lib/terms-conditions_/new'
+      path: '/pb-admin-lib/terms-conditions/new'
+      fullPath: '/pb-admin-lib/terms-conditions/new'
+      preLoaderRoute: typeof PbAdminLibTermsConditionsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/ad-banners/genre': {
+      id: '/pb-admin/ad-banners/genre'
+      path: '/pb-admin/ad-banners/genre'
+      fullPath: '/pb-admin/ad-banners/genre'
+      preLoaderRoute: typeof PbAdminAdBannersGenreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/ad-banners/image': {
+      id: '/pb-admin/ad-banners/image'
+      path: '/pb-admin/ad-banners/image'
+      fullPath: '/pb-admin/ad-banners/image'
+      preLoaderRoute: typeof PbAdminAdBannersImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/ad-banners/popup': {
+      id: '/pb-admin/ad-banners/popup'
+      path: '/pb-admin/ad-banners/popup'
+      fullPath: '/pb-admin/ad-banners/popup'
+      preLoaderRoute: typeof PbAdminAdBannersPopupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/author-management/$authorId': {
+      id: '/pb-admin/author-management/$authorId'
+      path: '/$authorId'
+      fullPath: '/pb-admin/author-management/$authorId'
+      preLoaderRoute: typeof PbAdminAuthorManagementAuthorIdRouteImport
+      parentRoute: typeof PbAdminAuthorManagementRoute
+    }
+    '/pb-admin/bundles/': {
+      id: '/pb-admin/bundles/'
+      path: '/pb-admin/bundles'
+      fullPath: '/pb-admin/bundles/'
+      preLoaderRoute: typeof PbAdminBundlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/bundles/$bundleId': {
+      id: '/pb-admin/bundles/$bundleId'
+      path: '/pb-admin/bundles/$bundleId'
+      fullPath: '/pb-admin/bundles/$bundleId'
+      preLoaderRoute: typeof PbAdminBundlesBundleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/bundles/new': {
+      id: '/pb-admin/bundles/new'
+      path: '/pb-admin/bundles/new'
+      fullPath: '/pb-admin/bundles/new'
+      preLoaderRoute: typeof PbAdminBundlesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/commission-rates_/$id': {
+      id: '/pb-admin/commission-rates_/$id'
+      path: '/pb-admin/commission-rates/$id'
+      fullPath: '/pb-admin/commission-rates/$id'
+      preLoaderRoute: typeof PbAdminCommissionRatesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/marketing/schema-meta': {
+      id: '/pb-admin/marketing/schema-meta'
+      path: '/pb-admin/marketing/schema-meta'
+      fullPath: '/pb-admin/marketing/schema-meta'
+      preLoaderRoute: typeof PbAdminMarketingSchemaMetaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/marketing/sitemap': {
+      id: '/pb-admin/marketing/sitemap'
+      path: '/pb-admin/marketing/sitemap'
+      fullPath: '/pb-admin/marketing/sitemap'
+      preLoaderRoute: typeof PbAdminMarketingSitemapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/privacy-policy_/$id': {
+      id: '/pb-admin/privacy-policy_/$id'
+      path: '/pb-admin/privacy-policy/$id'
+      fullPath: '/pb-admin/privacy-policy/$id'
+      preLoaderRoute: typeof PbAdminPrivacyPolicyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/privacy-policy_/new': {
+      id: '/pb-admin/privacy-policy_/new'
+      path: '/pb-admin/privacy-policy/new'
+      fullPath: '/pb-admin/privacy-policy/new'
+      preLoaderRoute: typeof PbAdminPrivacyPolicyNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/publishers-authors/$id': {
+      id: '/pb-admin/publishers-authors/$id'
+      path: '/$id'
+      fullPath: '/pb-admin/publishers-authors/$id'
+      preLoaderRoute: typeof PbAdminPublishersAuthorsIdRouteImport
+      parentRoute: typeof PbAdminPublishersAuthorsRoute
+    }
+    '/pb-admin/terms-conditions_/$id': {
+      id: '/pb-admin/terms-conditions_/$id'
+      path: '/pb-admin/terms-conditions/$id'
+      fullPath: '/pb-admin/terms-conditions/$id'
+      preLoaderRoute: typeof PbAdminTermsConditionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/terms-conditions_/new': {
+      id: '/pb-admin/terms-conditions_/new'
+      path: '/pb-admin/terms-conditions/new'
+      fullPath: '/pb-admin/terms-conditions/new'
+      preLoaderRoute: typeof PbAdminTermsConditionsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/titles/': {
+      id: '/pb-admin/titles/'
+      path: '/pb-admin/titles'
+      fullPath: '/pb-admin/titles/'
+      preLoaderRoute: typeof PbAdminTitlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/titles/$bookId': {
+      id: '/pb-admin/titles/$bookId'
+      path: '/pb-admin/titles/$bookId'
+      fullPath: '/pb-admin/titles/$bookId'
+      preLoaderRoute: typeof PbAdminTitlesBookIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/titles/new': {
+      id: '/pb-admin/titles/new'
+      path: '/pb-admin/titles/new'
+      fullPath: '/pb-admin/titles/new'
+      preLoaderRoute: typeof PbAdminTitlesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/audio-library/': {
+      id: '/publisher/audio-library/'
+      path: '/publisher/audio-library'
+      fullPath: '/publisher/audio-library/'
+      preLoaderRoute: typeof PublisherAudioLibraryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/audio-library/new': {
+      id: '/publisher/audio-library/new'
+      path: '/publisher/audio-library/new'
+      fullPath: '/publisher/audio-library/new'
+      preLoaderRoute: typeof PublisherAudioLibraryNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/bundles/': {
+      id: '/publisher/bundles/'
+      path: '/publisher/bundles'
+      fullPath: '/publisher/bundles/'
+      preLoaderRoute: typeof PublisherBundlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/bundles/$bundleId': {
+      id: '/publisher/bundles/$bundleId'
+      path: '/publisher/bundles/$bundleId'
+      fullPath: '/publisher/bundles/$bundleId'
+      preLoaderRoute: typeof PublisherBundlesBundleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/bundles/new': {
+      id: '/publisher/bundles/new'
+      path: '/publisher/bundles/new'
+      fullPath: '/publisher/bundles/new'
+      preLoaderRoute: typeof PublisherBundlesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/catalogue-import/': {
+      id: '/publisher/catalogue-import/'
+      path: '/publisher/catalogue-import'
+      fullPath: '/publisher/catalogue-import/'
+      preLoaderRoute: typeof PublisherCatalogueImportIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/catalogue-import/$fileName': {
+      id: '/publisher/catalogue-import/$fileName'
+      path: '/publisher/catalogue-import/$fileName'
+      fullPath: '/publisher/catalogue-import/$fileName'
+      preLoaderRoute: typeof PublisherCatalogueImportFileNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/catalogue-import/new': {
+      id: '/publisher/catalogue-import/new'
+      path: '/publisher/catalogue-import/new'
+      fullPath: '/publisher/catalogue-import/new'
+      preLoaderRoute: typeof PublisherCatalogueImportNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/catalogue/': {
+      id: '/publisher/catalogue/'
+      path: '/publisher/catalogue'
+      fullPath: '/publisher/catalogue/'
+      preLoaderRoute: typeof PublisherCatalogueIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/catalogue/$bookId': {
+      id: '/publisher/catalogue/$bookId'
+      path: '/publisher/catalogue/$bookId'
+      fullPath: '/publisher/catalogue/$bookId'
+      preLoaderRoute: typeof PublisherCatalogueBookIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/catalogue/new': {
+      id: '/publisher/catalogue/new'
+      path: '/publisher/catalogue/new'
+      fullPath: '/publisher/catalogue/new'
+      preLoaderRoute: typeof PublisherCatalogueNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/promo-codes/': {
+      id: '/publisher/promo-codes/'
+      path: '/publisher/promo-codes'
+      fullPath: '/publisher/promo-codes/'
+      preLoaderRoute: typeof PublisherPromoCodesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/promo-codes/$promoId': {
+      id: '/publisher/promo-codes/$promoId'
+      path: '/publisher/promo-codes/$promoId'
+      fullPath: '/publisher/promo-codes/$promoId'
+      preLoaderRoute: typeof PublisherPromoCodesPromoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/promo-codes/new': {
+      id: '/publisher/promo-codes/new'
+      path: '/publisher/promo-codes/new'
+      fullPath: '/publisher/promo-codes/new'
+      preLoaderRoute: typeof PublisherPromoCodesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/video-library/': {
+      id: '/publisher/video-library/'
+      path: '/publisher/video-library'
+      fullPath: '/publisher/video-library/'
+      preLoaderRoute: typeof PublisherVideoLibraryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publisher/video-library/new': {
+      id: '/publisher/video-library/new'
+      path: '/publisher/video-library/new'
+      fullPath: '/publisher/video-library/new'
+      preLoaderRoute: typeof PublisherVideoLibraryNewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/pb-admin/featured-collections_/$id/books': {
       id: '/pb-admin/featured-collections_/$id/books'
@@ -2395,6 +2430,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/pb-admin/featured-collections/$id/books'
       preLoaderRoute: typeof PbAdminFeaturedCollectionsIdBooksRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/pb-admin/publishers-authors/$id/titles': {
+      id: '/pb-admin/publishers-authors/$id/titles'
+      path: '/titles'
+      fullPath: '/pb-admin/publishers-authors/$id/titles'
+      preLoaderRoute: typeof PbAdminPublishersAuthorsIdTitlesRouteImport
+      parentRoute: typeof PbAdminPublishersAuthorsIdRoute
     }
   }
 }
@@ -2448,6 +2490,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   AuthorProfileRoute: AuthorProfileRoute,
   InstitutionsLoginRoute: InstitutionsLoginRoute,
+  LibraryAdminAudioLibraryRoute: LibraryAdminAudioLibraryRoute,
   LibraryAdminBannersRoute: LibraryAdminBannersRoute,
   LibraryAdminCartRoute: LibraryAdminCartRoute,
   LibraryAdminCatalogueRoute: LibraryAdminCatalogueRoute,
@@ -2460,6 +2503,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryAdminRequestsRoute: LibraryAdminRequestsRoute,
   LibraryAdminSupportRoute: LibraryAdminSupportRoute,
   LibraryAdminUsersRoute: LibraryAdminUsersRoute,
+  LibraryAdminVideoLibraryRoute: LibraryAdminVideoLibraryRoute,
   LibraryUserLoginRoute: LibraryUserLoginRoute,
   LibraryUserProfileRoute: LibraryUserProfileRoute,
   PbAdminLibCatalogueRoute: PbAdminLibCatalogueRoute,

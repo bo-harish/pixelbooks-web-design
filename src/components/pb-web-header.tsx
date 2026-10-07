@@ -24,7 +24,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { toast } from "sonner";
-import { categoryColumns, sampleBooksByGenre, trendingSearches } from "@/routes/pb-web/data";
+import { categoryColumns, sampleBooksByGenre, trendingSearches } from "@/routes/pb-web/-data";
 
 export interface PbWebHeaderProps {
   searchQuery?: string;

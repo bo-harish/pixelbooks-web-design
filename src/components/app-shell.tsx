@@ -347,6 +347,8 @@ function getSections(
             [
               { label: "Catalogue", icon: BookMarked, to: "/library-admin/catalogue" },
               { label: "Manage Borrowings", icon: FileEdit, to: "/library-admin/manage-ebooks" },
+              { label: "Video Library", icon: Video, to: "/library-admin/video-library" },
+              { label: "Audio Library", icon: Headphones, to: "/library-admin/audio-library" },
               !hideRetailBookStore &&
                 !isStandardAdmin && {
                   label: "Book Store",

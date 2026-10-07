@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { PbWebHeader } from "@/components/pb-web-header";
 import { PbWebFooter } from "@/components/pb-web-footer";
 import { Checkbox } from "@/components/ui/checkbox";
-import { categoryColumns } from "./data";
+import { categoryColumns } from "./-data";
 
 export const Route = createFileRoute("/pb-web/genre")({
   head: () => ({

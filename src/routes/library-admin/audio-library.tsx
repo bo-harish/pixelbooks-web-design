@@ -1,63 +1,66 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
-import { usePublisherType } from "@/hooks/use-publisher-type";
 import { AppShell } from "@/components/app-shell";
-import { Switch } from "@/components/ui/switch";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Headphones,
-  Plus,
   Search,
   Tag,
   Clock,
   CheckCircle2,
-  FileEdit,
-  Trash2,
   Play,
+  Pause,
   X,
   User,
-  Eye,
   Volume2,
-  GraduationCap,
-  Users,
+  VolumeX,
+  ExternalLink,
+  Sparkles,
 } from "lucide-react";
-import { toast } from "sonner";
 import {
   getAudioLibrary,
-  saveAudioLibrary,
   type AudioItem,
   MEDIA_CATEGORY_DATA,
 } from "@/lib/media-library-data";
 
-export const Route = createFileRoute("/publisher/audio-library/")({
+export const Route = createFileRoute("/library-admin/audio-library")({
   head: () => ({
     meta: [
-      { title: "Audio Library — Publisher" },
+      { title: "Audio Library — Library Admin" },
       {
         name: "description",
-        content: "Manage audiobooks, lectures, and audio resources for library patrons.",
+        content: "Browse and listen to audiobooks, podcasts, oral histories, and spoken lecture series.",
       },
     ],
   }),
-  component: AudioLibraryPage,
+  component: LibraryAdminAudioLibraryPage,
 });
 
-function AudioLibraryPage() {
-  const [publisherType] = usePublisherType();
-  const navigate = useNavigate();
+function parseDurationToMinutes(duration?: string): number {
+  if (!duration) return 0;
+  const parts = duration.split(":").map(Number);
+  if (parts.length === 2) {
+    return parts[0] + parts[1] / 60;
+  }
+  if (parts.length === 3) {
+    return parts[0] * 60 + parts[1] + parts[2] / 60;
+  }
+  return 0;
+}
 
-  useEffect(() => {
-    if (publisherType !== "Library-Only Publisher") {
-      navigate({ to: "/publisher", replace: true });
-    }
-  }, [publisherType, navigate]);
-
+function LibraryAdminAudioLibraryPage() {
   const [audios, setAudios] = useState<AudioItem[]>(() => getAudioLibrary());
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"All" | "Published" | "Draft">("All");
   const [categoryFilter, setCategoryFilter] = useState<string>("All");
   const [previewAudio, setPreviewAudio] = useState<AudioItem | null>(null);
 
+  // Audio player mock playback state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [playbackSeconds, setPlaybackSeconds] = useState(0);
+
+  // Sync when publisher updates audio library
   useEffect(() => {
     const handleUpdate = () => {
       setAudios(getAudioLibrary());
@@ -66,25 +69,35 @@ function AudioLibraryPage() {
     return () => window.removeEventListener("pb-audio-library-change", handleUpdate);
   }, []);
 
-  const handleDelete = (id: string, title: string) => {
-    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
-    const next = audios.filter((a) => a.id !== id);
-    setAudios(next);
-    saveAudioLibrary(next);
-    toast.success(`Deleted audio "${title}"`);
+  // Timer simulator for audio modal
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    if (isPlaying && previewAudio) {
+      timer = setInterval(() => {
+        setPlaybackSeconds((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isPlaying, previewAudio]);
+
+  const handleOpenAudio = (audio: AudioItem) => {
+    setPreviewAudio(audio);
+    setIsPlaying(true);
+    setPlaybackSeconds(0);
   };
 
-  const handleToggleStatus = (id: string) => {
-    const next = audios.map((a) => {
-      if (a.id === id) {
-        const newStatus = a.status === "Published" ? ("Draft" as const) : ("Published" as const);
-        toast.success(`Audio marked as ${newStatus}`);
-        return { ...a, status: newStatus };
-      }
-      return a;
-    });
-    setAudios(next);
-    saveAudioLibrary(next);
+  const handleCloseAudio = () => {
+    setPreviewAudio(null);
+    setIsPlaying(false);
+    setPlaybackSeconds(0);
+  };
+
+  const formatSeconds = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
   const filteredAudios = useMemo(() => {
@@ -110,67 +123,91 @@ function AudioLibraryPage() {
 
   const totalCount = audios.length;
   const publishedCount = audios.filter((a) => a.status === "Published").length;
-  const draftCount = audios.filter((a) => a.status === "Draft").length;
   const uniqueCategories = useMemo(() => {
     const s = new Set<string>();
     audios.forEach((a) => Object.keys(a.categories).forEach((c) => s.add(c)));
     return s.size;
   }, [audios]);
 
-  if (publisherType !== "Library-Only Publisher") {
-    return null;
-  }
+  const totalRuntimeMinutes = useMemo(() => {
+    const total = audios.reduce((acc, a) => acc + parseDurationToMinutes(a.duration), 0);
+    return Math.round(total);
+  }, [audios]);
 
   return (
     <AppShell
       title="Audio Library"
-      subtitle="Curate and manage audiobooks, podcasts, oral histories, and spoken lecture series"
+      subtitle="Browse and listen to audiobooks, lectures, and spoken audio resources for your library"
     >
-      <div className="p-4 md:p-8 space-y-6">
-        {/* Stats Cards */}
+      <div className="p-4 sm:p-6 md:p-8 space-y-6">
+        {/* Metric / Stat Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Total Audio</span>
-              <Headphones size={16} className="text-teal-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Total Audio
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400">
+                <Headphones size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-foreground">{totalCount}</div>
-            <span className="text-[11px] text-muted-foreground">In audio catalogue</span>
+            <div>
+              <div className="text-2xl font-extrabold text-foreground">{totalCount}</div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">In audio catalogue</p>
+            </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Published</span>
-              <CheckCircle2 size={16} className="text-emerald-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Published Tracks
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
-              {publishedCount}
+            <div>
+              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                {publishedCount}
+              </div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">Available for patrons</p>
             </div>
-            <span className="text-[11px] text-muted-foreground">Available to patrons</span>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Drafts</span>
-              <Clock size={16} className="text-amber-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Categories
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <Tag size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">
-              {draftCount}
+            <div>
+              <div className="text-2xl font-extrabold text-foreground">{uniqueCategories}</div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">Genres represented</p>
             </div>
-            <span className="text-[11px] text-muted-foreground">Pending publication</span>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Categories</span>
-              <Tag size={16} className="text-blue-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Audio Duration
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <Clock size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-foreground">{uniqueCategories}</div>
-            <span className="text-[11px] text-muted-foreground">Genres represented</span>
+            <div>
+              <div className="text-2xl font-extrabold text-foreground">
+                {totalRuntimeMinutes} <span className="text-xs font-normal text-muted-foreground">mins</span>
+              </div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">Spoken audio collection</p>
+            </div>
           </div>
         </div>
 
-        {/* Toolbar: Search & Filters */}
+        {/* Toolbar: Search & Filters (No Add Audio Button) */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between shadow-2xs">
           <div className="relative flex-1 max-w-md">
             <Search
@@ -182,20 +219,22 @@ function AudioLibraryPage() {
               placeholder="Search by title, description, narrator, or tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-8 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-sm"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-sm cursor-pointer"
+                title="Clear search"
               >
                 ×
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
+            {/* Status Tabs */}
             <div className="flex h-11 items-center rounded-lg border border-border bg-secondary/30 p-1 text-xs shrink-0">
               {(["All", "Published", "Draft"] as const).map((st) => (
                 <button
@@ -213,22 +252,15 @@ function AudioLibraryPage() {
               ))}
             </div>
 
+            {/* Category Dropdown */}
             <DropdownSelect
               value={categoryFilter === "All" ? "All Categories" : categoryFilter}
               options={["All Categories", ...Object.keys(MEDIA_CATEGORY_DATA)]}
               onChange={(val) => setCategoryFilter(val === "All Categories" ? "All" : val)}
               searchable
               searchPlaceholder="Search categories..."
-              className="min-w-[170px] shrink-0"
+              className="min-w-[180px] shrink-0"
             />
-
-            <Link
-              to="/publisher/audio-library/new"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 shrink-0 cursor-pointer whitespace-nowrap"
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              <span>Add Audio</span>
-            </Link>
           </div>
         </div>
 
@@ -247,8 +279,8 @@ function AudioLibraryPage() {
                     <div className="flex items-center gap-3">
                       <button
                         type="button"
-                        onClick={() => setPreviewAudio(audio)}
-                        className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-500/20 text-teal-400 border border-teal-500/30 group-hover:scale-105 transition-transform cursor-pointer"
+                        onClick={() => handleOpenAudio(audio)}
+                        className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-500/20 text-teal-400 border border-teal-500/30 group-hover:scale-105 transition-transform cursor-pointer shadow-lg"
                         title="Listen / Preview Audio"
                       >
                         <Volume2 size={22} />
@@ -260,8 +292,8 @@ function AudioLibraryPage() {
                           </div>
                         )}
                         {audio.narrator && (
-                          <div className="text-[11px] text-slate-300 flex items-center gap-1 mt-0.5">
-                            <User size={11} />
+                          <div className="text-[11px] text-slate-300 flex items-center gap-1 mt-0.5 font-medium">
+                            <User size={11} className="text-teal-400" />
                             <span>{audio.narrator}</span>
                           </div>
                         )}
@@ -271,8 +303,8 @@ function AudioLibraryPage() {
                     <span
                       className={`rounded-md px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wider ${
                         audio.status === "Published"
-                          ? "bg-emerald-500/90 text-white"
-                          : "bg-amber-500/90 text-white"
+                          ? "bg-emerald-500/90 text-white shadow-2xs"
+                          : "bg-amber-500/90 text-white shadow-2xs"
                       }`}
                     >
                       {audio.status}
@@ -284,7 +316,7 @@ function AudioLibraryPage() {
                     <div className="space-y-2">
                       <h3
                         className="text-sm font-bold text-foreground line-clamp-2 leading-snug hover:text-[var(--brand)] transition-colors cursor-pointer"
-                        onClick={() => setPreviewAudio(audio)}
+                        onClick={() => handleOpenAudio(audio)}
                       >
                         {audio.title}
                       </h3>
@@ -292,43 +324,6 @@ function AudioLibraryPage() {
                         {audio.description || "No description provided."}
                       </p>
                     </div>
-
-                    {/* Course & Batch badge if assigned */}
-                    {((audio.courses && audio.courses.length > 0) ||
-                      (audio.batches && audio.batches.length > 0) ||
-                      audio.course ||
-                      audio.batch) && (
-                      <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                        {(audio.courses && audio.courses.length > 0
-                          ? audio.courses
-                          : audio.course
-                            ? [audio.course]
-                            : []
-                        ).map((c) => (
-                          <span
-                            key={c}
-                            className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-blue-700 dark:text-blue-300"
-                          >
-                            <GraduationCap size={11} />
-                            <span>{c}</span>
-                          </span>
-                        ))}
-                        {(audio.batches && audio.batches.length > 0
-                          ? audio.batches
-                          : audio.batch
-                            ? [audio.batch]
-                            : []
-                        ).map((b) => (
-                          <span
-                            key={b}
-                            className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-amber-700 dark:text-amber-300"
-                          >
-                            <Users size={11} />
-                            <span>{b}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
 
                     {/* Categories */}
                     <div className="space-y-1.5 pt-1">
@@ -387,51 +382,34 @@ function AudioLibraryPage() {
                       </div>
                     )}
 
-                    {/* Card Actions Footer */}
+                    {/* Card Actions Footer (Read-only for Library Admin) */}
                     <div className="flex items-center justify-between border-t border-border/60 pt-3 text-xs">
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          id={`status-switch-${audio.id}`}
-                          checked={audio.status === "Published"}
-                          onCheckedChange={() => handleToggleStatus(audio.id)}
-                          aria-label={`Toggle status to ${audio.status === "Published" ? "Draft" : "Published"}`}
-                        />
-                        <label
-                          htmlFor={`status-switch-${audio.id}`}
-                          className={`text-xs font-semibold cursor-pointer select-none ${
-                            audio.status === "Published"
-                              ? "text-emerald-600 dark:text-emerald-400"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {audio.status === "Published" ? "Published" : "Draft"}
-                        </label>
-                      </div>
+                      <span className="text-[11px] text-muted-foreground font-medium">
+                        Added: {audio.createdAt || "Recent"}
+                      </span>
 
                       <div className="flex items-center gap-1.5">
+                        {audio.audioUrl && (
+                          <a
+                            href={audio.audioUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
+                            title="Open external audio"
+                          >
+                            <ExternalLink size={14} />
+                            <span className="text-[11px] font-medium">Source</span>
+                          </a>
+                        )}
+
                         <button
                           type="button"
-                          onClick={() => setPreviewAudio(audio)}
-                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
-                          title="Preview Audio"
+                          onClick={() => handleOpenAudio(audio)}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand)]/10 text-[var(--brand)] px-2.5 py-1 text-xs font-semibold hover:bg-[var(--brand)]/20 transition-colors cursor-pointer"
+                          title="Listen to Audio"
                         >
-                          <Eye size={16} />
-                        </button>
-                        <Link
-                          to="/publisher/audio-library/new"
-                          search={{ edit: audio.id }}
-                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
-                          title="Edit Audio"
-                        >
-                          <FileEdit size={16} />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(audio.id, audio.title)}
-                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
-                          title="Delete Audio"
-                        >
-                          <Trash2 size={16} />
+                          <Volume2 size={13} />
+                          <span>Listen</span>
                         </button>
                       </div>
                     </div>
@@ -449,23 +427,29 @@ function AudioLibraryPage() {
             <p className="text-xs text-muted-foreground mt-1 mb-5 max-w-sm">
               {searchQuery || statusFilter !== "All" || categoryFilter !== "All"
                 ? "Try adjusting your search query or filters to find what you are looking for."
-                : "Your Audio Library is empty. Start adding spoken audiobooks, lectures, and resources."}
+                : "There are currently no audio tracks available in the library collection."}
             </p>
-            <Link
-              to="/publisher/audio-library/new"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--brand)] px-5 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer"
-            >
-              <Plus size={16} />
-              <span>Add Your First Audio</span>
-            </Link>
+            {(searchQuery || statusFilter !== "All" || categoryFilter !== "All") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setStatusFilter("All");
+                  setCategoryFilter("All");
+                }}
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Reset Filters
+              </button>
+            )}
           </div>
         )}
 
-        {/* Audio Preview Modal */}
+        {/* Audio Player / Preview Modal */}
         {previewAudio && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
-            onClick={() => setPreviewAudio(null)}
+            onClick={handleCloseAudio}
           >
             <div
               className="w-full max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
@@ -477,91 +461,108 @@ function AudioLibraryPage() {
                     <Headphones size={18} />
                   </span>
                   <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Audio Preview
+                    Educational Audio Player
                   </span>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setPreviewAudio(null)}
+                  onClick={handleCloseAudio}
                   className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground cursor-pointer"
                 >
                   <X size={18} />
                 </button>
               </div>
 
-              {/* Audio Waveform Simulator */}
-              <div className="p-6 rounded-xl bg-slate-950 flex flex-col items-center justify-center text-white border border-border space-y-3">
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-500 text-slate-950 shadow-md hover:scale-105 transition-transform cursor-pointer"
-                  >
-                    <Play size={20} className="ml-0.5" fill="currentColor" />
-                  </button>
-                  <div>
-                    <div className="text-sm font-bold">{previewAudio.title}</div>
-                    <div className="text-xs text-teal-400 font-mono mt-0.5">
-                      {previewAudio.duration || "00:00"}{" "}
-                      {previewAudio.narrator ? `• Narrated by ${previewAudio.narrator}` : ""}
+              {/* Audio Waveform Simulator Player */}
+              <div className="p-6 rounded-xl bg-slate-950 flex flex-col items-center justify-center text-white border border-border space-y-4 shadow-inner">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsPlaying(!isPlaying)}
+                      className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-500 text-slate-950 shadow-md hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                      title={isPlaying ? "Pause" : "Play"}
+                    >
+                      {isPlaying ? (
+                        <Pause size={20} fill="currentColor" />
+                      ) : (
+                        <Play size={20} className="ml-0.5" fill="currentColor" />
+                      )}
+                    </button>
+                    <div>
+                      <div className="text-sm font-bold text-white line-clamp-1">
+                        {previewAudio.title}
+                      </div>
+                      <div className="text-xs text-teal-400 font-mono mt-0.5 flex items-center gap-2">
+                        <span>
+                          {formatSeconds(playbackSeconds)} / {previewAudio.duration || "40:00"}
+                        </span>
+                        {previewAudio.narrator && (
+                          <span className="text-slate-400 text-[11px] font-sans">
+                            • {previewAudio.narrator}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="p-2 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                    title={isMuted ? "Unmute" : "Mute"}
+                  >
+                    {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                  </button>
                 </div>
 
-                <div className="w-full h-8 flex items-center gap-1 px-4">
+                {/* Animated Waveform */}
+                <div className="w-full h-10 flex items-center gap-1 px-2">
                   {[
                     40, 65, 30, 80, 50, 95, 70, 45, 60, 85, 30, 75, 90, 55, 65, 40, 80, 50, 70, 35,
-                    60,
-                  ].map((h, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 bg-teal-500/60 rounded-full"
-                      style={{ height: `${h}%` }}
-                    />
-                  ))}
+                    60, 45, 80, 30, 65, 90, 50, 75, 40, 85, 60,
+                  ].map((h, i) => {
+                    const activeHeight = isPlaying
+                      ? Math.min(100, Math.max(20, h + ((i % 3) - 1) * 20))
+                      : h;
+                    return (
+                      <div
+                        key={i}
+                        className={`flex-1 rounded-full transition-all duration-300 ${
+                          isPlaying ? "bg-teal-400 shadow-xs" : "bg-teal-500/40"
+                        }`}
+                        style={{ height: `${activeHeight}%` }}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Progress bar */}
+                <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                  <div
+                    className="bg-teal-400 h-full transition-all duration-500 rounded-full"
+                    style={{
+                      width: `${Math.min(100, (playbackSeconds / 300) * 100)}%`,
+                    }}
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <h2 className="text-lg font-bold text-foreground">{previewAudio.title}</h2>
+                  <span
+                    className={`rounded-md px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wider ${
+                      previewAudio.status === "Published"
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                    }`}
+                  >
+                    {previewAudio.status}
+                  </span>
                 </div>
-                {((previewAudio.courses && previewAudio.courses.length > 0) ||
-                  (previewAudio.batches && previewAudio.batches.length > 0) ||
-                  previewAudio.course ||
-                  previewAudio.batch) && (
-                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                    {(previewAudio.courses && previewAudio.courses.length > 0
-                      ? previewAudio.courses
-                      : previewAudio.course
-                        ? [previewAudio.course]
-                        : []
-                    ).map((c) => (
-                      <span
-                        key={c}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300"
-                      >
-                        <GraduationCap size={13} />
-                        <span>Course: {c}</span>
-                      </span>
-                    ))}
-                    {(previewAudio.batches && previewAudio.batches.length > 0
-                      ? previewAudio.batches
-                      : previewAudio.batch
-                        ? [previewAudio.batch]
-                        : []
-                    ).map((b) => (
-                      <span
-                        key={b}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300"
-                      >
-                        <Users size={13} />
-                        <span>Batch: {b}</span>
-                      </span>
-                    ))}
-                  </div>
-                )}
                 <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {previewAudio.description || "No description."}
+                  {previewAudio.description || "No description provided."}
                 </p>
               </div>
 
@@ -600,22 +601,28 @@ function AudioLibraryPage() {
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-border">
+                {previewAudio.audioUrl ? (
+                  <a
+                    href={previewAudio.audioUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                  >
+                    <ExternalLink size={14} />
+                    <span>Open in new window</span>
+                  </a>
+                ) : (
+                  <span />
+                )}
+
                 <button
                   type="button"
-                  onClick={() => setPreviewAudio(null)}
+                  onClick={handleCloseAudio}
                   className="rounded-lg border border-border px-4 py-2 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer"
                 >
                   Close
                 </button>
-                <Link
-                  to="/publisher/audio-library/new"
-                  search={{ edit: previewAudio.id }}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand)] px-4 py-2 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 cursor-pointer"
-                >
-                  <FileEdit size={14} />
-                  <span>Edit Audio</span>
-                </Link>
               </div>
             </div>
           </div>

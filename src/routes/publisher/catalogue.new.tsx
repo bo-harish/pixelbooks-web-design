@@ -42,6 +42,8 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { usePublisherType } from "@/hooks/use-publisher-type";
 import { seedBooks } from "@/lib/catalogue-data";
+import { DEFAULT_COURSES, DEFAULT_BATCHES } from "@/lib/academic-data";
+import { MultiSelectDropdown, type MultiSelectOption } from "@/components/ui/multi-select-dropdown";
 
 export const Route = createFileRoute("/publisher/catalogue/new")({
   validateSearch: (search: Record<string, unknown>): { edit?: string } => ({
@@ -1418,6 +1420,8 @@ function EBookDetailsSection() {
   const [publisherType] = usePublisherType();
   const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [summary, setSummary] = useState("Arun m");
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [selectedBatches, setSelectedBatches] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([
     "Promised Land 2024",
     "Barack Obama",
@@ -1432,6 +1436,30 @@ function EBookDetailsSection() {
     setTags((t) => [...t, v]);
     setTagInput("");
   };
+
+  const courseOptions: MultiSelectOption[] = useMemo(
+    () => DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+    [],
+  );
+
+  const batchOptions: MultiSelectOption[] = useMemo(() => {
+    if (selectedCourses.length === 0) {
+      return DEFAULT_BATCHES.map((b) => ({
+        id: b.id,
+        label: b.name,
+        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+      }));
+    }
+    const matching = DEFAULT_BATCHES.filter(
+      (b) => b.courseName && selectedCourses.includes(b.courseName),
+    );
+    const pool = matching.length > 0 ? matching : DEFAULT_BATCHES;
+    return pool.map((b) => ({
+      id: b.id,
+      label: b.name,
+      sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+    }));
+  }, [selectedCourses]);
 
   return (
     <SectionCard title="eBook Details" right={<AutoDetectedBadge />}>
@@ -1453,6 +1481,30 @@ function EBookDetailsSection() {
             <option>French</option>
           </SelectInput>
         </Field>
+        {isLibraryOnly && (
+          <>
+            <Field label="Course">
+              <MultiSelectDropdown
+                placeholder="Select Course"
+                searchPlaceholder="Search courses..."
+                options={courseOptions}
+                selectedValues={selectedCourses}
+                onChange={setSelectedCourses}
+                badgeVariant="blue"
+              />
+            </Field>
+            <Field label="Batch">
+              <MultiSelectDropdown
+                placeholder="Select Batch"
+                searchPlaceholder="Search batches..."
+                options={batchOptions}
+                selectedValues={selectedBatches}
+                onChange={setSelectedBatches}
+                badgeVariant="amber"
+              />
+            </Field>
+          </>
+        )}
         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-4">
           <Field label="Date of Publication in PixelBooks">
             <TextInput type="date" defaultValue="2024-01-15" />

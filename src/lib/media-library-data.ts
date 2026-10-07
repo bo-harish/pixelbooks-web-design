@@ -6,6 +6,10 @@ export interface VideoItem {
   categories: Record<string, string[]>;
   videoUrl?: string;
   duration?: string;
+  courses?: string[];
+  batches?: string[];
+  course?: string;
+  batch?: string;
   status: "Published" | "Draft";
   createdAt: string;
 }
@@ -19,6 +23,10 @@ export interface AudioItem {
   audioUrl?: string;
   duration?: string;
   narrator?: string;
+  courses?: string[];
+  batches?: string[];
+  course?: string;
+  batch?: string;
   status: "Published" | "Draft";
   createdAt: string;
 }

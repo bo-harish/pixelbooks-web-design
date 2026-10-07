@@ -13,11 +13,15 @@ import {
   Link as LinkIcon,
   Tag,
   Film,
-  Layers,
+  GraduationCap,
+  Users,
+  ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { CategoriesSectionCard } from "@/components/media-category-selector";
 import { getVideoLibrary, saveVideoLibrary, type VideoItem } from "@/lib/media-library-data";
+import { DEFAULT_COURSES, DEFAULT_BATCHES } from "@/lib/academic-data";
+import { MultiSelectDropdown, type MultiSelectOption } from "@/components/ui/multi-select-dropdown";
 
 export const Route = createFileRoute("/publisher/video-library/new")({
   head: () => ({
@@ -53,6 +57,16 @@ function AddVideoPage() {
   // Form Fields
   const [title, setTitle] = useState(targetVideo?.title ?? "");
   const [description, setDescription] = useState(targetVideo?.description ?? "");
+  const [selectedCourses, setSelectedCourses] = useState<string[]>(() => {
+    if (targetVideo?.courses && targetVideo.courses.length > 0) return targetVideo.courses;
+    if (targetVideo?.course) return [targetVideo.course];
+    return [];
+  });
+  const [selectedBatches, setSelectedBatches] = useState<string[]>(() => {
+    if (targetVideo?.batches && targetVideo.batches.length > 0) return targetVideo.batches;
+    if (targetVideo?.batch) return [targetVideo.batch];
+    return [];
+  });
   const [tags, setTags] = useState<string[]>(
     targetVideo?.tags ?? ["Education", "Academic", "Video Lecture"],
   );
@@ -65,6 +79,30 @@ function AddVideoPage() {
   const [videoUrl, setVideoUrl] = useState(targetVideo?.videoUrl ?? "");
   const [status, setStatus] = useState<"Published" | "Draft">(targetVideo?.status ?? "Published");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const courseOptions: MultiSelectOption[] = useMemo(
+    () => DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+    [],
+  );
+
+  const batchOptions: MultiSelectOption[] = useMemo(() => {
+    if (selectedCourses.length === 0) {
+      return DEFAULT_BATCHES.map((b) => ({
+        id: b.id,
+        label: b.name,
+        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+      }));
+    }
+    const matching = DEFAULT_BATCHES.filter(
+      (b) => b.courseName && selectedCourses.includes(b.courseName),
+    );
+    const pool = matching.length > 0 ? matching : DEFAULT_BATCHES;
+    return pool.map((b) => ({
+      id: b.id,
+      label: b.name,
+      sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+    }));
+  }, [selectedCourses]);
 
   const handleAddTag = () => {
     const trimmed = tagInput.trim().replace(/^#/, "");
@@ -105,6 +143,10 @@ function AddVideoPage() {
       categories,
       videoUrl: videoUrl.trim(),
       duration: targetVideo?.duration ?? "",
+      courses: selectedCourses.length > 0 ? selectedCourses : undefined,
+      batches: selectedBatches.length > 0 ? selectedBatches : undefined,
+      course: selectedCourses[0] || undefined,
+      batch: selectedBatches[0] || undefined,
       status: finalStatus,
       createdAt: targetVideo?.createdAt || now,
     };
@@ -222,6 +264,45 @@ function AddVideoPage() {
               <span className="text-[11px] text-muted-foreground mt-1 block">
                 YouTube, Vimeo, Cloudflare Stream, or direct media stream URL.
               </span>
+            </div>
+
+            {/* Course & Batch */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Course Multi-select */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1.5">
+                  Course
+                </label>
+                <MultiSelectDropdown
+                  placeholder="Select Course"
+                  searchPlaceholder="Search courses..."
+                  options={courseOptions}
+                  selectedValues={selectedCourses}
+                  onChange={setSelectedCourses}
+                  badgeVariant="blue"
+                />
+                <span className="text-[11px] text-muted-foreground mt-1 block">
+                  Link this video to institutional courses or curriculum.
+                </span>
+              </div>
+
+              {/* Batch Multi-select */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1.5">
+                  Batch
+                </label>
+                <MultiSelectDropdown
+                  placeholder="Select Batch"
+                  searchPlaceholder="Search batches..."
+                  options={batchOptions}
+                  selectedValues={selectedBatches}
+                  onChange={setSelectedBatches}
+                  badgeVariant="amber"
+                />
+                <span className="text-[11px] text-muted-foreground mt-1 block">
+                  Assign to student enrollment cohorts or batches.
+                </span>
+              </div>
             </div>
 
             {/* Description */}

@@ -13,10 +13,13 @@ import {
   Tag,
   Volume2,
   User,
+  ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { CategoriesSectionCard } from "@/components/media-category-selector";
 import { getAudioLibrary, saveAudioLibrary, type AudioItem } from "@/lib/media-library-data";
+import { DEFAULT_COURSES, DEFAULT_BATCHES } from "@/lib/academic-data";
+import { MultiSelectDropdown, type MultiSelectOption } from "@/components/ui/multi-select-dropdown";
 
 export const Route = createFileRoute("/publisher/audio-library/new")({
   head: () => ({
@@ -52,6 +55,16 @@ function AddAudioPage() {
   // Form Fields
   const [title, setTitle] = useState(targetAudio?.title ?? "");
   const [description, setDescription] = useState(targetAudio?.description ?? "");
+  const [selectedCourses, setSelectedCourses] = useState<string[]>(() => {
+    if (targetAudio?.courses && targetAudio.courses.length > 0) return targetAudio.courses;
+    if (targetAudio?.course) return [targetAudio.course];
+    return [];
+  });
+  const [selectedBatches, setSelectedBatches] = useState<string[]>(() => {
+    if (targetAudio?.batches && targetAudio.batches.length > 0) return targetAudio.batches;
+    if (targetAudio?.batch) return [targetAudio.batch];
+    return [];
+  });
   const [tags, setTags] = useState<string[]>(
     targetAudio?.tags ?? ["Audiobook", "Mindfulness", "Productivity"],
   );
@@ -65,6 +78,30 @@ function AddAudioPage() {
   const [narrator, setNarrator] = useState(targetAudio?.narrator ?? "");
   const [status, setStatus] = useState<"Published" | "Draft">(targetAudio?.status ?? "Published");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const courseOptions: MultiSelectOption[] = useMemo(
+    () => DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+    [],
+  );
+
+  const batchOptions: MultiSelectOption[] = useMemo(() => {
+    if (selectedCourses.length === 0) {
+      return DEFAULT_BATCHES.map((b) => ({
+        id: b.id,
+        label: b.name,
+        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+      }));
+    }
+    const matching = DEFAULT_BATCHES.filter(
+      (b) => b.courseName && selectedCourses.includes(b.courseName),
+    );
+    const pool = matching.length > 0 ? matching : DEFAULT_BATCHES;
+    return pool.map((b) => ({
+      id: b.id,
+      label: b.name,
+      sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+    }));
+  }, [selectedCourses]);
 
   const handleAddTag = () => {
     const trimmed = tagInput.trim().replace(/^#/, "");
@@ -106,6 +143,10 @@ function AddAudioPage() {
       audioUrl: audioUrl.trim(),
       duration: targetAudio?.duration ?? "",
       narrator: narrator.trim(),
+      courses: selectedCourses.length > 0 ? selectedCourses : undefined,
+      batches: selectedBatches.length > 0 ? selectedBatches : undefined,
+      course: selectedCourses[0] || undefined,
+      batch: selectedBatches[0] || undefined,
       status: finalStatus,
       createdAt: targetAudio?.createdAt || now,
     };
@@ -242,6 +283,45 @@ function AddAudioPage() {
                   placeholder="e.g. Dr. Elena Vance"
                   className="h-10 w-full rounded-xl border border-border bg-white pl-9 pr-3 text-xs text-foreground outline-none focus:border-[var(--brand)] shadow-2xs"
                 />
+              </div>
+            </div>
+
+            {/* Course & Batch */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Course Multi-select */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1.5">
+                  Course
+                </label>
+                <MultiSelectDropdown
+                  placeholder="Select Course"
+                  searchPlaceholder="Search courses..."
+                  options={courseOptions}
+                  selectedValues={selectedCourses}
+                  onChange={setSelectedCourses}
+                  badgeVariant="blue"
+                />
+                <span className="text-[11px] text-muted-foreground mt-1 block">
+                  Link this audio resource to institutional courses or curriculum.
+                </span>
+              </div>
+
+              {/* Batch Multi-select */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1.5">
+                  Batch
+                </label>
+                <MultiSelectDropdown
+                  placeholder="Select Batch"
+                  searchPlaceholder="Search batches..."
+                  options={batchOptions}
+                  selectedValues={selectedBatches}
+                  onChange={setSelectedBatches}
+                  badgeVariant="amber"
+                />
+                <span className="text-[11px] text-muted-foreground mt-1 block">
+                  Assign to student enrollment cohorts or batches.
+                </span>
               </div>
             </div>
 

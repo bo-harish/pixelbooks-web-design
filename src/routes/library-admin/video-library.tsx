@@ -1,65 +1,68 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
-import { usePublisherType } from "@/hooks/use-publisher-type";
 import { AppShell } from "@/components/app-shell";
-import { Switch } from "@/components/ui/switch";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Video,
-  Plus,
   Search,
   Tag,
   Clock,
   CheckCircle2,
-  FileEdit,
-  Trash2,
   ExternalLink,
   Play,
   X,
-  Layers,
-  Sparkles,
   Eye,
-  Filter,
-  GraduationCap,
-  Users,
+  Film,
+  Sparkles,
+  BookOpen,
 } from "lucide-react";
-import { toast } from "sonner";
 import {
   getVideoLibrary,
-  saveVideoLibrary,
   type VideoItem,
   MEDIA_CATEGORY_DATA,
 } from "@/lib/media-library-data";
 
-export const Route = createFileRoute("/publisher/video-library/")({
+export const Route = createFileRoute("/library-admin/video-library")({
   head: () => ({
     meta: [
-      { title: "Video Library — Publisher" },
+      { title: "Video Library — Library Admin" },
       {
         name: "description",
-        content: "Manage educational videos, lectures, and multimedia content for libraries.",
+        content: "Browse and stream educational videos, lectures, and multimedia resources for library patrons.",
       },
     ],
   }),
-  component: VideoLibraryPage,
+  component: LibraryAdminVideoLibraryPage,
 });
 
-function VideoLibraryPage() {
-  const [publisherType] = usePublisherType();
-  const navigate = useNavigate();
+function getYouTubeEmbedUrl(url?: string): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/,
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` : null;
+}
 
-  useEffect(() => {
-    if (publisherType !== "Library-Only Publisher") {
-      navigate({ to: "/publisher", replace: true });
-    }
-  }, [publisherType, navigate]);
+function parseDurationToMinutes(duration?: string): number {
+  if (!duration) return 0;
+  const parts = duration.split(":").map(Number);
+  if (parts.length === 2) {
+    return parts[0] + parts[1] / 60;
+  }
+  if (parts.length === 3) {
+    return parts[0] * 60 + parts[1] + parts[2] / 60;
+  }
+  return 0;
+}
 
+function LibraryAdminVideoLibraryPage() {
   const [videos, setVideos] = useState<VideoItem[]>(() => getVideoLibrary());
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"All" | "Published" | "Draft">("All");
   const [categoryFilter, setCategoryFilter] = useState<string>("All");
   const [previewVideo, setPreviewVideo] = useState<VideoItem | null>(null);
 
+  // Sync when publisher updates video library
   useEffect(() => {
     const handleUpdate = () => {
       setVideos(getVideoLibrary());
@@ -67,27 +70,6 @@ function VideoLibraryPage() {
     window.addEventListener("pb-video-library-change", handleUpdate);
     return () => window.removeEventListener("pb-video-library-change", handleUpdate);
   }, []);
-
-  const handleDelete = (id: string, title: string) => {
-    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
-    const next = videos.filter((v) => v.id !== id);
-    setVideos(next);
-    saveVideoLibrary(next);
-    toast.success(`Deleted video "${title}"`);
-  };
-
-  const handleToggleStatus = (id: string) => {
-    const next = videos.map((v) => {
-      if (v.id === id) {
-        const newStatus = v.status === "Published" ? ("Draft" as const) : ("Published" as const);
-        toast.success(`Video marked as ${newStatus}`);
-        return { ...v, status: newStatus };
-      }
-      return v;
-    });
-    setVideos(next);
-    saveVideoLibrary(next);
-  };
 
   const filteredVideos = useMemo(() => {
     return videos.filter((v) => {
@@ -111,67 +93,93 @@ function VideoLibraryPage() {
 
   const totalCount = videos.length;
   const publishedCount = videos.filter((v) => v.status === "Published").length;
-  const draftCount = videos.filter((v) => v.status === "Draft").length;
   const uniqueCategories = useMemo(() => {
     const s = new Set<string>();
     videos.forEach((v) => Object.keys(v.categories).forEach((c) => s.add(c)));
     return s.size;
   }, [videos]);
 
-  if (publisherType !== "Library-Only Publisher") {
-    return null;
-  }
+  const totalRuntimeMinutes = useMemo(() => {
+    const total = videos.reduce((acc, v) => acc + parseDurationToMinutes(v.duration), 0);
+    return Math.round(total);
+  }, [videos]);
+
+  const embedUrl = previewVideo ? getYouTubeEmbedUrl(previewVideo.videoUrl) : null;
 
   return (
     <AppShell
       title="Video Library"
-      subtitle="Curate and publish educational videos, lectures, and multimedia resources"
+      subtitle="Browse and stream educational lectures, instructional videos, and multimedia resources for your library"
     >
-      <div className="p-4 md:p-8 space-y-6">
-        {/* Stats Cards */}
+      <div className="p-4 sm:p-6 md:p-8 space-y-6">
+        {/* Metric / Stat Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Total Videos</span>
-              <Video size={16} className="text-purple-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Total Videos
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                <Video size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-foreground">{totalCount}</div>
-            <span className="text-[11px] text-muted-foreground">In library collection</span>
+            <div>
+              <div className="text-2xl font-extrabold text-foreground">{totalCount}</div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">In library collection</p>
+            </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Published</span>
-              <CheckCircle2 size={16} className="text-emerald-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Published Content
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
-              {publishedCount}
+            <div>
+              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                {publishedCount}
+              </div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">Available for patrons</p>
             </div>
-            <span className="text-[11px] text-muted-foreground">Visible to libraries</span>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Drafts</span>
-              <Clock size={16} className="text-amber-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Categories
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <Tag size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">
-              {draftCount}
+            <div>
+              <div className="text-2xl font-extrabold text-foreground">{uniqueCategories}</div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">Subject domains</p>
             </div>
-            <span className="text-[11px] text-muted-foreground">Under preparation</span>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Categories</span>
-              <Tag size={16} className="text-blue-500" />
+          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Watch Time
+              </span>
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                <Clock size={18} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-foreground">{uniqueCategories}</div>
-            <span className="text-[11px] text-muted-foreground">Distinct classifications</span>
+            <div>
+              <div className="text-2xl font-extrabold text-foreground">
+                {totalRuntimeMinutes} <span className="text-xs font-normal text-muted-foreground">mins</span>
+              </div>
+              <p className="text-[11.5px] text-muted-foreground mt-0.5">Curated video material</p>
+            </div>
           </div>
         </div>
 
-        {/* Toolbar: Search & Filters */}
+        {/* Toolbar: Search & Filters (No Add Video Button) */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between shadow-2xs">
           <div className="relative flex-1 max-w-md">
             <Search
@@ -183,20 +191,22 @@ function VideoLibraryPage() {
               placeholder="Search by title, description, or tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
+              className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-8 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] text-foreground"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-sm"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-sm cursor-pointer"
+                title="Clear search"
               >
                 ×
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
+            {/* Status Tabs */}
             <div className="flex h-11 items-center rounded-lg border border-border bg-secondary/30 p-1 text-xs shrink-0">
               {(["All", "Published", "Draft"] as const).map((st) => (
                 <button
@@ -214,22 +224,15 @@ function VideoLibraryPage() {
               ))}
             </div>
 
+            {/* Category Dropdown */}
             <DropdownSelect
               value={categoryFilter === "All" ? "All Categories" : categoryFilter}
               options={["All Categories", ...Object.keys(MEDIA_CATEGORY_DATA)]}
               onChange={(val) => setCategoryFilter(val === "All Categories" ? "All" : val)}
               searchable
               searchPlaceholder="Search categories..."
-              className="min-w-[170px] shrink-0"
+              className="min-w-[180px] shrink-0"
             />
-
-            <Link
-              to="/publisher/video-library/new"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-4 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-[var(--brand)]/90 shrink-0 cursor-pointer whitespace-nowrap"
-            >
-              <Plus size={16} strokeWidth={2.5} />
-              <span>Add Video</span>
-            </Link>
           </div>
         </div>
 
@@ -246,24 +249,27 @@ function VideoLibraryPage() {
                   {/* Video Thumbnail Preview */}
                   <div className="relative aspect-video bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center overflow-hidden border-b border-border/80">
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
+
                     <button
                       type="button"
                       onClick={() => setPreviewVideo(video)}
-                      className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-indigo-900 shadow-xl group-hover:scale-110 transition-transform cursor-pointer"
-                      title="Preview Video"
+                      className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/95 text-indigo-950 shadow-xl group-hover:scale-110 transition-transform cursor-pointer"
+                      title="Watch / Preview Video"
                     >
                       <Play size={20} className="ml-0.5" fill="currentColor" />
                     </button>
+
                     {video.duration && (
-                      <span className="absolute bottom-2.5 right-2.5 z-10 rounded-md bg-black/75 px-2 py-0.5 text-[10.5px] font-mono font-bold text-white tracking-wide">
+                      <span className="absolute bottom-2.5 right-2.5 z-10 rounded-md bg-black/80 px-2 py-0.5 text-[10.5px] font-mono font-bold text-white tracking-wide">
                         {video.duration}
                       </span>
                     )}
+
                     <span
                       className={`absolute top-2.5 left-2.5 z-10 rounded-md px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wider ${
                         video.status === "Published"
-                          ? "bg-emerald-500/90 text-white"
-                          : "bg-amber-500/90 text-white"
+                          ? "bg-emerald-500/90 text-white shadow-2xs"
+                          : "bg-amber-500/90 text-white shadow-2xs"
                       }`}
                     >
                       {video.status}
@@ -284,47 +290,10 @@ function VideoLibraryPage() {
                       </p>
                     </div>
 
-                    {/* Course & Batch badge if assigned */}
-                    {((video.courses && video.courses.length > 0) ||
-                      (video.batches && video.batches.length > 0) ||
-                      video.course ||
-                      video.batch) && (
-                      <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                        {(video.courses && video.courses.length > 0
-                          ? video.courses
-                          : video.course
-                            ? [video.course]
-                            : []
-                        ).map((c) => (
-                          <span
-                            key={c}
-                            className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-blue-700 dark:text-blue-300"
-                          >
-                            <GraduationCap size={11} />
-                            <span>{c}</span>
-                          </span>
-                        ))}
-                        {(video.batches && video.batches.length > 0
-                          ? video.batches
-                          : video.batch
-                            ? [video.batch]
-                            : []
-                        ).map((b) => (
-                          <span
-                            key={b}
-                            className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-amber-700 dark:text-amber-300"
-                          >
-                            <Users size={11} />
-                            <span>{b}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
                     {/* Categories */}
                     <div className="space-y-1.5 pt-1">
                       <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                        <Tag size={12} className="text-purple-500" />
+                        <Tag size={12} className="text-indigo-500" />
                         <span>Categories</span>
                       </div>
                       {catEntries.length > 0 ? (
@@ -332,7 +301,7 @@ function VideoLibraryPage() {
                           {catEntries.slice(0, 2).map(([cat, subs]) => (
                             <span
                               key={cat}
-                              className="inline-flex items-center rounded-md bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-purple-700 dark:text-purple-300"
+                              className="inline-flex items-center rounded-md bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-indigo-700 dark:text-indigo-300"
                               title={`${cat}: ${subs.join(", ") || "Main Category"}`}
                             >
                               {cat}
@@ -378,51 +347,34 @@ function VideoLibraryPage() {
                       </div>
                     )}
 
-                    {/* Card Actions Footer */}
+                    {/* Card Actions Footer (Read-only for Library Admin) */}
                     <div className="flex items-center justify-between border-t border-border/60 pt-3 text-xs">
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          id={`status-switch-${video.id}`}
-                          checked={video.status === "Published"}
-                          onCheckedChange={() => handleToggleStatus(video.id)}
-                          aria-label={`Toggle status to ${video.status === "Published" ? "Draft" : "Published"}`}
-                        />
-                        <label
-                          htmlFor={`status-switch-${video.id}`}
-                          className={`text-xs font-semibold cursor-pointer select-none ${
-                            video.status === "Published"
-                              ? "text-emerald-600 dark:text-emerald-400"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {video.status === "Published" ? "Published" : "Draft"}
-                        </label>
-                      </div>
+                      <span className="text-[11px] text-muted-foreground font-medium">
+                        Added: {video.createdAt || "Recent"}
+                      </span>
 
                       <div className="flex items-center gap-1.5">
+                        {video.videoUrl && (
+                          <a
+                            href={video.videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
+                            title="Open external source"
+                          >
+                            <ExternalLink size={14} />
+                            <span className="text-[11px] font-medium">Source</span>
+                          </a>
+                        )}
+
                         <button
                           type="button"
                           onClick={() => setPreviewVideo(video)}
-                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
-                          title="Preview Video"
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand)]/10 text-[var(--brand)] px-2.5 py-1 text-xs font-semibold hover:bg-[var(--brand)]/20 transition-colors cursor-pointer"
+                          title="Watch Video"
                         >
-                          <Eye size={16} />
-                        </button>
-                        <Link
-                          to="/publisher/video-library/new"
-                          search={{ edit: video.id }}
-                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
-                          title="Edit Video"
-                        >
-                          <FileEdit size={16} />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(video.id, video.title)}
-                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
-                          title="Delete Video"
-                        >
-                          <Trash2 size={16} />
+                          <Play size={13} fill="currentColor" />
+                          <span>Watch</span>
                         </button>
                       </div>
                     </div>
@@ -440,19 +392,25 @@ function VideoLibraryPage() {
             <p className="text-xs text-muted-foreground mt-1 mb-5 max-w-sm">
               {searchQuery || statusFilter !== "All" || categoryFilter !== "All"
                 ? "Try adjusting your search query or filters to find what you are looking for."
-                : "Your Video Library is empty. Start adding educational videos and multimedia for your libraries."}
+                : "There are currently no videos available in the library collection."}
             </p>
-            <Link
-              to="/publisher/video-library/new"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--brand)] px-5 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer"
-            >
-              <Plus size={16} />
-              <span>Add Your First Video</span>
-            </Link>
+            {(searchQuery || statusFilter !== "All" || categoryFilter !== "All") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setStatusFilter("All");
+                  setCategoryFilter("All");
+                }}
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Reset Filters
+              </button>
+            )}
           </div>
         )}
 
-        {/* Video Preview Modal */}
+        {/* Video Preview / Player Modal */}
         {previewVideo && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
@@ -464,11 +422,11 @@ function VideoLibraryPage() {
             >
               <div className="flex items-center justify-between border-b border-border pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                     <Video size={18} />
                   </span>
                   <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Video Preview
+                    Educational Video Player
                   </span>
                 </div>
                 <button
@@ -480,14 +438,29 @@ function VideoLibraryPage() {
                 </button>
               </div>
 
-              {/* Player Mockup */}
-              <div className="relative aspect-video rounded-xl bg-slate-950 flex flex-col items-center justify-center text-white border border-border">
-                <Play size={44} className="text-white/80" fill="currentColor" />
-                <span className="text-xs text-white/60 mt-2 font-mono">
-                  {previewVideo.videoUrl
-                    ? previewVideo.videoUrl
-                    : "Embedded Player Stream Placeholder"}
-                </span>
+              {/* Video Player Stream */}
+              <div className="relative aspect-video rounded-xl bg-slate-950 overflow-hidden flex flex-col items-center justify-center text-white border border-border">
+                {embedUrl ? (
+                  <iframe
+                    src={embedUrl}
+                    title={previewVideo.title}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-6 text-center">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-white mb-2">
+                      <Play size={28} className="ml-0.5" fill="currentColor" />
+                    </div>
+                    <span className="text-sm font-semibold text-white/90">
+                      {previewVideo.title}
+                    </span>
+                    <span className="text-xs text-white/60 mt-1 font-mono">
+                      {previewVideo.videoUrl || "Video playback stream ready"}
+                    </span>
+                  </div>
+                )}
                 {previewVideo.duration && (
                   <span className="absolute bottom-3 right-3 rounded bg-black/80 px-2 py-0.5 text-xs font-mono font-bold">
                     {previewVideo.duration}
@@ -498,51 +471,25 @@ function VideoLibraryPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <h2 className="text-lg font-bold text-foreground">{previewVideo.title}</h2>
+                  <span
+                    className={`rounded-md px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wider ${
+                      previewVideo.status === "Published"
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                    }`}
+                  >
+                    {previewVideo.status}
+                  </span>
                 </div>
-                {((previewVideo.courses && previewVideo.courses.length > 0) ||
-                  (previewVideo.batches && previewVideo.batches.length > 0) ||
-                  previewVideo.course ||
-                  previewVideo.batch) && (
-                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                    {(previewVideo.courses && previewVideo.courses.length > 0
-                      ? previewVideo.courses
-                      : previewVideo.course
-                        ? [previewVideo.course]
-                        : []
-                    ).map((c) => (
-                      <span
-                        key={c}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300"
-                      >
-                        <GraduationCap size={13} />
-                        <span>Course: {c}</span>
-                      </span>
-                    ))}
-                    {(previewVideo.batches && previewVideo.batches.length > 0
-                      ? previewVideo.batches
-                      : previewVideo.batch
-                        ? [previewVideo.batch]
-                        : []
-                    ).map((b) => (
-                      <span
-                        key={b}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300"
-                      >
-                        <Users size={13} />
-                        <span>Batch: {b}</span>
-                      </span>
-                    ))}
-                  </div>
-                )}
                 <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {previewVideo.description || "No description."}
+                  {previewVideo.description || "No description provided."}
                 </p>
               </div>
 
               {/* Categories */}
               <div className="rounded-xl border border-border bg-secondary/20 p-3.5 space-y-2">
                 <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                  <Tag size={13} className="text-purple-500" />
+                  <Tag size={13} className="text-indigo-500" />
                   <span>Categories & Subcategories</span>
                 </div>
                 <div className="space-y-1.5">
@@ -574,7 +521,21 @@ function VideoLibraryPage() {
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-border">
+                {previewVideo.videoUrl ? (
+                  <a
+                    href={previewVideo.videoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                  >
+                    <ExternalLink size={14} />
+                    <span>Open in new window</span>
+                  </a>
+                ) : (
+                  <span />
+                )}
+
                 <button
                   type="button"
                   onClick={() => setPreviewVideo(null)}
@@ -582,14 +543,6 @@ function VideoLibraryPage() {
                 >
                   Close
                 </button>
-                <Link
-                  to="/publisher/video-library/new"
-                  search={{ edit: previewVideo.id }}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand)] px-4 py-2 text-xs font-semibold text-white hover:bg-[var(--brand)]/90 cursor-pointer"
-                >
-                  <FileEdit size={14} />
-                  <span>Edit Video</span>
-                </Link>
               </div>
             </div>
           </div>

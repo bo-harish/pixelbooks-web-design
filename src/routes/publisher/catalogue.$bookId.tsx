@@ -30,6 +30,7 @@ import {
   Plus,
   Minus,
   Trash2,
+  GraduationCap,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
@@ -1346,6 +1347,46 @@ function EBookDetailPage() {
                     eBook Size: <strong className="text-foreground">{extra.sizeMB} MB</strong>
                   </span>
                 </span>
+                {isLibraryOnly &&
+                  ((book.courses && book.courses.length > 0) ||
+                    (book.batches && book.batches.length > 0) ||
+                    book.course ||
+                    book.batch) && (
+                    <>
+                      {(book.courses && book.courses.length > 0
+                        ? book.courses
+                        : book.course
+                          ? [book.course]
+                          : []
+                      ).map((c) => (
+                        <span key={c} className="contents">
+                          <span className="h-3 w-px bg-border" />
+                          <span className="inline-flex items-center gap-1.5 font-medium">
+                            <GraduationCap size={13} className="text-blue-600 dark:text-blue-400" />
+                            <span>
+                              Course: <strong className="text-foreground">{c}</strong>
+                            </span>
+                          </span>
+                        </span>
+                      ))}
+                      {(book.batches && book.batches.length > 0
+                        ? book.batches
+                        : book.batch
+                          ? [book.batch]
+                          : []
+                      ).map((b) => (
+                        <span key={b} className="contents">
+                          <span className="h-3 w-px bg-border" />
+                          <span className="inline-flex items-center gap-1.5 font-medium">
+                            <Users size={13} className="text-amber-600 dark:text-amber-400" />
+                            <span>
+                              Batch: <strong className="text-foreground">{b}</strong>
+                            </span>
+                          </span>
+                        </span>
+                      ))}
+                    </>
+                  )}
               </div>
 
               {/* Actions */}
