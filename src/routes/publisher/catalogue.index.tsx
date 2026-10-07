@@ -395,7 +395,7 @@ function CataloguePage() {
   const [publisherType] = usePublisherType();
   const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]>("All");
+  const [filter, setFilter] = useState<"All" | Status>("All");
   const [languageFilter, setLanguageFilter] = useState("All Languages");
   const [genreFilter, setGenreFilter] = useState("All Genre");
   const [page, setPage] = useState(1);

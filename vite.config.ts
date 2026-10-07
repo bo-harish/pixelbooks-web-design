@@ -14,7 +14,7 @@ export default async (env: ConfigEnv): Promise<UserConfig> => {
 
   // Remove vite-tsconfig-paths plugin and enable native Vite tsconfigPaths resolution
   if (Array.isArray(config.plugins)) {
-    config.plugins = config.plugins.flat(Infinity).filter((plugin: any) => {
+    config.plugins = (config.plugins as any[]).flat(10).filter((plugin: any) => {
       const name = plugin && typeof plugin === "object" && "name" in plugin ? plugin.name : "";
       return name !== "vite-tsconfig-paths";
     });
