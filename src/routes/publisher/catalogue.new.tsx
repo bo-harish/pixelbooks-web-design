@@ -121,18 +121,18 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-foreground">
+    <div className="block">
+      <label className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
         {required && <span className="ml-0.5 text-rose-500">*</span>}
-      </span>
+      </label>
       {children}
       {error ? (
         <span className="mt-1 block text-[11px] font-medium text-rose-500">{error}</span>
       ) : hint ? (
         <span className="mt-1 block text-[11px] text-muted-foreground">{hint}</span>
       ) : null}
-    </label>
+    </div>
   );
 }
 
@@ -1420,8 +1420,8 @@ function EBookDetailsSection() {
   const [publisherType] = usePublisherType();
   const isLibraryOnly = publisherType === "Library-Only Publisher";
   const [summary, setSummary] = useState("Arun m");
-  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
-  const [selectedBatches, setSelectedBatches] = useState<string[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<string[]>(["All Courses"]);
+  const [selectedBatches, setSelectedBatches] = useState<string[]>(["All Batches"]);
   const [tags, setTags] = useState<string[]>([
     "Promised Land 2024",
     "Barack Obama",
@@ -1438,28 +1438,61 @@ function EBookDetailsSection() {
   };
 
   const courseOptions: MultiSelectOption[] = useMemo(
-    () => DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+    () => [
+      { id: "all-courses", label: "All Courses" },
+      ...DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+    ],
     [],
   );
 
   const batchOptions: MultiSelectOption[] = useMemo(() => {
-    if (selectedCourses.length === 0) {
-      return DEFAULT_BATCHES.map((b) => ({
-        id: b.id,
-        label: b.name,
-        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
-      }));
+    if (selectedCourses.length === 0 || selectedCourses.includes("All Courses")) {
+      return [
+        { id: "all-batches", label: "All Batches" },
+        ...DEFAULT_BATCHES.map((b) => ({
+          id: b.id,
+          label: b.name,
+          sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+        })),
+      ];
     }
     const matching = DEFAULT_BATCHES.filter(
       (b) => b.courseName && selectedCourses.includes(b.courseName),
     );
     const pool = matching.length > 0 ? matching : DEFAULT_BATCHES;
-    return pool.map((b) => ({
-      id: b.id,
-      label: b.name,
-      sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
-    }));
+    return [
+      { id: "all-batches", label: "All Batches" },
+      ...pool.map((b) => ({
+        id: b.id,
+        label: b.name,
+        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+      })),
+    ];
   }, [selectedCourses]);
+
+  const handleCoursesChange = (next: string[]) => {
+    if (next.includes("All Courses") && !selectedCourses.includes("All Courses")) {
+      setSelectedCourses(["All Courses"]);
+      return;
+    }
+    if (next.includes("All Courses") && next.length > 1) {
+      setSelectedCourses(next.filter((c) => c !== "All Courses"));
+      return;
+    }
+    setSelectedCourses(next);
+  };
+
+  const handleBatchesChange = (next: string[]) => {
+    if (next.includes("All Batches") && !selectedBatches.includes("All Batches")) {
+      setSelectedBatches(["All Batches"]);
+      return;
+    }
+    if (next.includes("All Batches") && next.length > 1) {
+      setSelectedBatches(next.filter((b) => b !== "All Batches"));
+      return;
+    }
+    setSelectedBatches(next);
+  };
 
   return (
     <SectionCard title="eBook Details" right={<AutoDetectedBadge />}>
@@ -1483,26 +1516,38 @@ function EBookDetailsSection() {
         </Field>
         {isLibraryOnly && (
           <>
-            <Field label="Course">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Course
+              </label>
               <MultiSelectDropdown
-                placeholder="Select Course"
+                placeholder="All Courses"
                 searchPlaceholder="Search courses..."
                 options={courseOptions}
                 selectedValues={selectedCourses}
-                onChange={setSelectedCourses}
+                onChange={handleCoursesChange}
                 badgeVariant="blue"
               />
-            </Field>
-            <Field label="Batch">
+              <span className="text-[11px] text-muted-foreground mt-1 block">
+                Link this eBook to institutional courses or curriculum.
+              </span>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Batch
+              </label>
               <MultiSelectDropdown
-                placeholder="Select Batch"
+                placeholder="All Batches"
                 searchPlaceholder="Search batches..."
                 options={batchOptions}
                 selectedValues={selectedBatches}
-                onChange={setSelectedBatches}
+                onChange={handleBatchesChange}
                 badgeVariant="amber"
               />
-            </Field>
+              <span className="text-[11px] text-muted-foreground mt-1 block">
+                Assign to student enrollment cohorts or batches.
+              </span>
+            </div>
           </>
         )}
         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-4">

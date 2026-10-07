@@ -58,12 +58,12 @@ function AddAudioPage() {
   const [selectedCourses, setSelectedCourses] = useState<string[]>(() => {
     if (targetAudio?.courses && targetAudio.courses.length > 0) return targetAudio.courses;
     if (targetAudio?.course) return [targetAudio.course];
-    return [];
+    return ["All Courses"];
   });
   const [selectedBatches, setSelectedBatches] = useState<string[]>(() => {
     if (targetAudio?.batches && targetAudio.batches.length > 0) return targetAudio.batches;
     if (targetAudio?.batch) return [targetAudio.batch];
-    return [];
+    return ["All Batches"];
   });
   const [tags, setTags] = useState<string[]>(
     targetAudio?.tags ?? ["Audiobook", "Mindfulness", "Productivity"],
@@ -80,28 +80,61 @@ function AddAudioPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const courseOptions: MultiSelectOption[] = useMemo(
-    () => DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+    () => [
+      { id: "all-courses", label: "All Courses" },
+      ...DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+    ],
     [],
   );
 
   const batchOptions: MultiSelectOption[] = useMemo(() => {
-    if (selectedCourses.length === 0) {
-      return DEFAULT_BATCHES.map((b) => ({
-        id: b.id,
-        label: b.name,
-        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
-      }));
+    if (selectedCourses.length === 0 || selectedCourses.includes("All Courses")) {
+      return [
+        { id: "all-batches", label: "All Batches" },
+        ...DEFAULT_BATCHES.map((b) => ({
+          id: b.id,
+          label: b.name,
+          sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+        })),
+      ];
     }
     const matching = DEFAULT_BATCHES.filter(
       (b) => b.courseName && selectedCourses.includes(b.courseName),
     );
     const pool = matching.length > 0 ? matching : DEFAULT_BATCHES;
-    return pool.map((b) => ({
-      id: b.id,
-      label: b.name,
-      sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
-    }));
+    return [
+      { id: "all-batches", label: "All Batches" },
+      ...pool.map((b) => ({
+        id: b.id,
+        label: b.name,
+        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
+      })),
+    ];
   }, [selectedCourses]);
+
+  const handleCoursesChange = (next: string[]) => {
+    if (next.includes("All Courses") && !selectedCourses.includes("All Courses")) {
+      setSelectedCourses(["All Courses"]);
+      return;
+    }
+    if (next.includes("All Courses") && next.length > 1) {
+      setSelectedCourses(next.filter((c) => c !== "All Courses"));
+      return;
+    }
+    setSelectedCourses(next);
+  };
+
+  const handleBatchesChange = (next: string[]) => {
+    if (next.includes("All Batches") && !selectedBatches.includes("All Batches")) {
+      setSelectedBatches(["All Batches"]);
+      return;
+    }
+    if (next.includes("All Batches") && next.length > 1) {
+      setSelectedBatches(next.filter((b) => b !== "All Batches"));
+      return;
+    }
+    setSelectedBatches(next);
+  };
 
   const handleAddTag = () => {
     const trimmed = tagInput.trim().replace(/^#/, "");
@@ -294,11 +327,11 @@ function AddAudioPage() {
                   Course
                 </label>
                 <MultiSelectDropdown
-                  placeholder="Select Course"
+                  placeholder="All Courses"
                   searchPlaceholder="Search courses..."
                   options={courseOptions}
                   selectedValues={selectedCourses}
-                  onChange={setSelectedCourses}
+                  onChange={handleCoursesChange}
                   badgeVariant="blue"
                 />
                 <span className="text-[11px] text-muted-foreground mt-1 block">
@@ -312,11 +345,11 @@ function AddAudioPage() {
                   Batch
                 </label>
                 <MultiSelectDropdown
-                  placeholder="Select Batch"
+                  placeholder="All Batches"
                   searchPlaceholder="Search batches..."
                   options={batchOptions}
                   selectedValues={selectedBatches}
-                  onChange={setSelectedBatches}
+                  onChange={handleBatchesChange}
                   badgeVariant="amber"
                 />
                 <span className="text-[11px] text-muted-foreground mt-1 block">

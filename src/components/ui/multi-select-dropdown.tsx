@@ -82,7 +82,10 @@ export function MultiSelectDropdown({
   return (
     <div className={`relative w-full ${className}`} ref={dropdownRef}>
       <div
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen((prev) => !prev);
+        }}
         className={`flex min-h-[48px] w-full items-center justify-between gap-2 rounded-xl border bg-white px-3.5 py-2 text-sm transition-colors cursor-pointer shadow-2xs ${
           isOpen
             ? "border-[var(--brand)] ring-1 ring-[var(--brand)]"
@@ -139,7 +142,10 @@ export function MultiSelectDropdown({
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full z-40 mt-1.5 max-h-80 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute left-0 right-0 top-full z-40 mt-1.5 max-h-80 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl flex flex-col"
+        >
           <div className="p-2.5 border-b border-border bg-card sticky top-0 z-10 space-y-2">
             <div className="relative flex items-center">
               <Search
@@ -149,6 +155,7 @@ export function MultiSelectDropdown({
               <input
                 type="text"
                 value={searchTerm}
+                onClick={(e) => e.stopPropagation()}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={searchPlaceholder}
                 autoFocus
@@ -157,7 +164,10 @@ export function MultiSelectDropdown({
               {searchTerm && (
                 <button
                   type="button"
-                  onClick={() => setSearchTerm("")}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSearchTerm("");
+                  }}
                   className="absolute right-2.5 text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
                 >
                   <X size={14} />
@@ -170,7 +180,10 @@ export function MultiSelectDropdown({
               {filteredOptions.length > 0 && (
                 <button
                   type="button"
-                  onClick={handleToggleAll}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleAll();
+                  }}
                   className="font-medium hover:text-[var(--brand)] cursor-pointer"
                 >
                   {isAllSelected ? "Deselect All" : "Select All"}
@@ -190,7 +203,10 @@ export function MultiSelectDropdown({
                 return (
                   <div
                     key={opt.id}
-                    onClick={() => toggleOption(opt.label)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleOption(opt.label);
+                    }}
                     className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-colors text-sm ${
                       isSelected
                         ? "bg-[var(--brand)]/10 text-foreground font-semibold"
