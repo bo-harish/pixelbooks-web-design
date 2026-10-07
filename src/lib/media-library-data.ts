@@ -10,6 +10,7 @@ export interface VideoItem {
   batches?: string[];
   course?: string;
   batch?: string;
+  allocations?: Record<string, { copies: number; courses: string[]; batches: string[] }>;
   status: "Published" | "Draft";
   createdAt: string;
 }
@@ -27,6 +28,7 @@ export interface AudioItem {
   batches?: string[];
   course?: string;
   batch?: string;
+  allocations?: Record<string, { copies: number; courses: string[]; batches: string[] }>;
   status: "Published" | "Draft";
   createdAt: string;
 }

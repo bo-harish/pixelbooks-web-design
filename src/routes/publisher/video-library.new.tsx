@@ -20,8 +20,10 @@ import {
 import { toast } from "sonner";
 import { CategoriesSectionCard } from "@/components/media-category-selector";
 import { getVideoLibrary, saveVideoLibrary, type VideoItem } from "@/lib/media-library-data";
-import { DEFAULT_COURSES, DEFAULT_BATCHES } from "@/lib/academic-data";
-import { MultiSelectDropdown, type MultiSelectOption } from "@/components/ui/multi-select-dropdown";
+import {
+  LibraryAllocationSection,
+  type LibraryAllocationItem,
+} from "@/components/library-allocation-section";
 
 export const Route = createFileRoute("/publisher/video-library/new")({
   head: () => ({
@@ -57,15 +59,22 @@ function AddVideoPage() {
   // Form Fields
   const [title, setTitle] = useState(targetVideo?.title ?? "");
   const [description, setDescription] = useState(targetVideo?.description ?? "");
-  const [selectedCourses, setSelectedCourses] = useState<string[]>(() => {
-    if (targetVideo?.courses && targetVideo.courses.length > 0) return targetVideo.courses;
-    if (targetVideo?.course) return [targetVideo.course];
-    return ["All Courses"];
-  });
-  const [selectedBatches, setSelectedBatches] = useState<string[]>(() => {
-    if (targetVideo?.batches && targetVideo.batches.length > 0) return targetVideo.batches;
-    if (targetVideo?.batch) return [targetVideo.batch];
-    return ["All Batches"];
+  const [allocations, setAllocations] = useState<Record<string, LibraryAllocationItem>>(() => {
+    if (targetVideo?.allocations && Object.keys(targetVideo.allocations).length > 0) {
+      return targetVideo.allocations;
+    }
+    return {
+      "Central University Digital Library": {
+        copies: 50,
+        courses: targetVideo?.courses || ["All Courses"],
+        batches: targetVideo?.batches || ["All Batches"],
+      },
+      "National Science & Tech Consortium": {
+        copies: 30,
+        courses: targetVideo?.courses || ["All Courses"],
+        batches: targetVideo?.batches || ["All Batches"],
+      },
+    };
   });
   const [tags, setTags] = useState<string[]>(
     targetVideo?.tags ?? ["Education", "Academic", "Video Lecture"],
@@ -79,63 +88,6 @@ function AddVideoPage() {
   const [videoUrl, setVideoUrl] = useState(targetVideo?.videoUrl ?? "");
   const [status, setStatus] = useState<"Published" | "Draft">(targetVideo?.status ?? "Published");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const courseOptions: MultiSelectOption[] = useMemo(
-    () => [
-      { id: "all-courses", label: "All Courses" },
-      ...DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
-    ],
-    [],
-  );
-
-  const batchOptions: MultiSelectOption[] = useMemo(() => {
-    if (selectedCourses.length === 0 || selectedCourses.includes("All Courses")) {
-      return [
-        { id: "all-batches", label: "All Batches" },
-        ...DEFAULT_BATCHES.map((b) => ({
-          id: b.id,
-          label: b.name,
-          sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
-        })),
-      ];
-    }
-    const matching = DEFAULT_BATCHES.filter(
-      (b) => b.courseName && selectedCourses.includes(b.courseName),
-    );
-    const pool = matching.length > 0 ? matching : DEFAULT_BATCHES;
-    return [
-      { id: "all-batches", label: "All Batches" },
-      ...pool.map((b) => ({
-        id: b.id,
-        label: b.name,
-        sublabel: b.courseName ? `Course: ${b.courseName}` : undefined,
-      })),
-    ];
-  }, [selectedCourses]);
-
-  const handleCoursesChange = (next: string[]) => {
-    if (next.includes("All Courses") && !selectedCourses.includes("All Courses")) {
-      setSelectedCourses(["All Courses"]);
-      return;
-    }
-    if (next.includes("All Courses") && next.length > 1) {
-      setSelectedCourses(next.filter((c) => c !== "All Courses"));
-      return;
-    }
-    setSelectedCourses(next);
-  };
-
-  const handleBatchesChange = (next: string[]) => {
-    if (next.includes("All Batches") && !selectedBatches.includes("All Batches")) {
-      setSelectedBatches(["All Batches"]);
-      return;
-    }
-    if (next.includes("All Batches") && next.length > 1) {
-      setSelectedBatches(next.filter((b) => b !== "All Batches"));
-      return;
-    }
-    setSelectedBatches(next);
-  };
 
   const handleAddTag = () => {
     const trimmed = tagInput.trim().replace(/^#/, "");
@@ -165,7 +117,20 @@ function AddVideoPage() {
       return;
     }
 
+    const selectedLibraries = Object.keys(allocations);
+    if (selectedLibraries.length === 0) {
+      toast.error("Please allocate at least one library to proceed.");
+      return;
+    }
+
     setIsSubmitting(true);
+
+    const allCourses = Array.from(
+      new Set(Object.values(allocations).flatMap((a) => a.courses)),
+    );
+    const allBatches = Array.from(
+      new Set(Object.values(allocations).flatMap((a) => a.batches)),
+    );
 
     const now = new Date().toISOString().split("T")[0];
     const newVideo: VideoItem = {
@@ -176,10 +141,11 @@ function AddVideoPage() {
       categories,
       videoUrl: videoUrl.trim(),
       duration: targetVideo?.duration ?? "",
-      courses: selectedCourses.length > 0 ? selectedCourses : undefined,
-      batches: selectedBatches.length > 0 ? selectedBatches : undefined,
-      course: selectedCourses[0] || undefined,
-      batch: selectedBatches[0] || undefined,
+      allocations,
+      courses: allCourses.length > 0 ? allCourses : undefined,
+      batches: allBatches.length > 0 ? allBatches : undefined,
+      course: allCourses[0] || undefined,
+      batch: allBatches[0] || undefined,
       status: finalStatus,
       createdAt: targetVideo?.createdAt || now,
     };
@@ -299,44 +265,7 @@ function AddVideoPage() {
               </span>
             </div>
 
-            {/* Course & Batch */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Course Multi-select */}
-              <div>
-                <label className="block text-xs font-bold text-foreground mb-1.5">
-                  Course
-                </label>
-                <MultiSelectDropdown
-                  placeholder="All Courses"
-                  searchPlaceholder="Search courses..."
-                  options={courseOptions}
-                  selectedValues={selectedCourses}
-                  onChange={handleCoursesChange}
-                  badgeVariant="blue"
-                />
-                <span className="text-[11px] text-muted-foreground mt-1 block">
-                  Link this video to institutional courses or curriculum.
-                </span>
-              </div>
 
-              {/* Batch Multi-select */}
-              <div>
-                <label className="block text-xs font-bold text-foreground mb-1.5">
-                  Batch
-                </label>
-                <MultiSelectDropdown
-                  placeholder="All Batches"
-                  searchPlaceholder="Search batches..."
-                  options={batchOptions}
-                  selectedValues={selectedBatches}
-                  onChange={handleBatchesChange}
-                  badgeVariant="amber"
-                />
-                <span className="text-[11px] text-muted-foreground mt-1 block">
-                  Assign to student enrollment cohorts or batches.
-                </span>
-              </div>
-            </div>
 
             {/* Description */}
             <div>
@@ -439,6 +368,13 @@ function AddVideoPage() {
         <CategoriesSectionCard
           selected={categories}
           onChange={setCategories}
+          mediaTypeLabel="video"
+        />
+
+        {/* Section 3: Library Allocation & License Copies */}
+        <LibraryAllocationSection
+          allocations={allocations}
+          onChange={setAllocations}
           mediaTypeLabel="video"
         />
 

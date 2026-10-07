@@ -5,6 +5,8 @@ export interface MultiSelectOption {
   id: string;
   label: string;
   sublabel?: string;
+  chipLabel?: string;
+  chipSublabel?: string;
 }
 
 interface MultiSelectDropdownProps {
@@ -98,25 +100,47 @@ export function MultiSelectDropdown({
               {placeholder}
             </span>
           ) : (
-            selectedValues.map((val) => (
-              <span
-                key={val}
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold ${badgeStyles}`}
-              >
-                <span>{val}</span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeOption(val);
-                  }}
-                  className="rounded hover:opacity-75 p-0.5 transition-opacity cursor-pointer"
-                  title="Remove"
+            selectedValues.map((val) => {
+              const opt = options.find((o) => o.label === val || o.id === val);
+              const courseSub =
+                opt?.chipSublabel ||
+                opt?.sublabel?.match(/Course:\s*(.+)/i)?.[1] ||
+                (opt?.chipLabel && opt.chipLabel !== val
+                  ? opt.chipLabel.match(/\((.+)\)$/)?.[1]
+                  : undefined);
+
+              const mainLabel =
+                opt?.chipLabel && !courseSub
+                  ? opt.chipLabel
+                  : opt?.label || val;
+
+              return (
+                <span
+                  key={val}
+                  className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold ${badgeStyles}`}
                 >
-                  <X size={13} />
-                </button>
-              </span>
-            ))
+                  <span className="inline-flex items-baseline gap-1">
+                    <span>{mainLabel}</span>
+                    {courseSub && (
+                      <span className="font-normal text-[11px] opacity-85">
+                        ({courseSub})
+                      </span>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeOption(val);
+                    }}
+                    className="rounded hover:opacity-75 p-0.5 transition-opacity cursor-pointer"
+                    title="Remove"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              );
+            })
           )}
         </div>
         <div className="flex items-center gap-2 shrink-0 px-1">
