@@ -86,7 +86,7 @@ function CommissionRatesDetail() {
             </div>
 
             {/* Profile & High-Visibility Commission Banner Hero Card */}
-            <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-sm relative overflow-hidden">
+            <div className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs relative overflow-hidden">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 {/* Profile Pic matching pb-admin/publishers-authors avatar style */}
                 <div className="flex items-start sm:items-center gap-5">
@@ -170,14 +170,14 @@ function CommissionRatesDetail() {
             </div>
 
             {/* Prominently Highlighted Commission Rate Management Card */}
-            <div className="rounded-xl border-2 border-[var(--brand)]/40 bg-card p-6 md:p-8 shadow-md relative overflow-hidden">
+            <div className="rounded-2xl border-2 border-[var(--brand)]/40 bg-white dark:bg-card p-5 sm:p-6 shadow-xs relative overflow-hidden">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-5 mb-6">
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--brand)]/10 text-[var(--brand)]">
                       <Percent size={16} />
                     </span>
-                    <h3 className="text-lg font-bold text-foreground">Commission Rate Settings</h3>
+                    <h3 className="text-sm sm:text-base font-bold text-foreground">Commission Rate Settings</h3>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
                     Set a custom percentage rate or revert to platform standard defaults.
@@ -194,7 +194,7 @@ function CommissionRatesDetail() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                 {/* Rate Input */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground">
+                  <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                     Commission Rate (%) <span className="text-red-500">*</span>
                   </label>
                   <div className="relative flex items-center">
@@ -202,7 +202,7 @@ function CommissionRatesDetail() {
                       type="number"
                       value={rateValue}
                       onChange={(e) => setRateValue(e.target.value)}
-                      className="h-12 w-full rounded-xl border-2 border-border bg-card px-4 pr-12 text-lg font-extrabold text-foreground outline-none transition-colors focus:border-[var(--brand)]"
+                      className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 pr-12 text-sm font-bold text-foreground outline-none transition-colors focus:border-[var(--brand)] shadow-2xs"
                       min="0"
                       max="100"
                       step="0.1"
@@ -215,7 +215,7 @@ function CommissionRatesDetail() {
 
                 {/* Rate Type Selector Toggle */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground">
+                  <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                     Rate Contract Type
                   </label>
                   <div className="flex items-center gap-2 h-12 p-1 rounded-xl border border-border bg-muted/30">
@@ -249,7 +249,7 @@ function CommissionRatesDetail() {
                   <button
                     type="button"
                     onClick={handleUpdate}
-                    className="h-12 w-full flex items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-6 text-sm font-bold text-white shadow-md transition-all hover:opacity-90 active:scale-98 cursor-pointer"
+                    className="h-11 w-full flex items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-semibold text-white shadow-2xs transition-all hover:opacity-90 active:scale-98 cursor-pointer"
                   >
                     <Save size={16} />
                     Update Commission
@@ -259,75 +259,74 @@ function CommissionRatesDetail() {
             </div>
 
             {/* Profile & Business Details Form Cards */}
-            <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                 {/* Left Column: Address & Contact */}
                 <div className="space-y-6">
                   <div>
-                    <h3 className="mb-4 text-sm font-bold text-foreground flex items-center gap-2">
-                      <Building size={16} className="text-[var(--brand)]" />
-                      Company & Address Info
+                    <h3 className="mb-4 text-sm sm:text-base font-bold text-foreground">
+                       Address Info
                     </h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           {authorData.type} Name
                         </label>
                         <input
                           readOnly
                           value={authorData.name}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           PAN Card Number
                         </label>
                         <input
                           readOnly
                           value={authorData.pan}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium font-mono text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium font-mono text-foreground outline-none shadow-2xs"
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           Address Line 1
                         </label>
                         <input
                           readOnly
                           value={authorData.address1}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           Address Line 2
                         </label>
                         <input
                           readOnly
                           value={authorData.address2}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                          <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                             City
                           </label>
                           <input
                             readOnly
                             value={authorData.city}
-                            className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                            className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                           />
                         </div>
                         <div>
-                          <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                          <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                             Pincode
                           </label>
                           <input
                             readOnly
                             value={authorData.pincode}
-                            className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                            className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                           />
                         </div>
                       </div>
@@ -335,29 +334,28 @@ function CommissionRatesDetail() {
                   </div>
 
                   <div>
-                    <h3 className="mb-4 pt-2 text-sm font-bold text-foreground flex items-center gap-2">
-                      <Mail size={16} className="text-[var(--brand)]" />
+                    <h3 className="mb-4 pt-2 text-sm sm:text-base font-bold text-foreground">
                       Contact Communication
                     </h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           Email Address
                         </label>
                         <input
                           readOnly
                           value={authorData.email}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           Phone Number
                         </label>
                         <input
                           readOnly
                           value={authorData.phone}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                     </div>
@@ -367,39 +365,38 @@ function CommissionRatesDetail() {
                 {/* Right Column: Country & Financial Details */}
                 <div className="space-y-6">
                   <div>
-                    <h3 className="mb-4 text-sm font-bold text-foreground flex items-center gap-2">
-                      <CreditCard size={16} className="text-[var(--brand)]" />
+                    <h3 className="mb-4 text-sm sm:text-base font-bold text-foreground">
                       Tax & Regional Details
                     </h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           Country
                         </label>
                         <input
                           readOnly
                           value={authorData.country}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           GST Registration Number
                         </label>
                         <input
                           readOnly
                           value={authorData.gst}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium font-mono text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium font-mono text-foreground outline-none shadow-2xs"
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           State
                         </label>
                         <input
                           readOnly
                           value={authorData.state}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                     </div>
@@ -412,13 +409,13 @@ function CommissionRatesDetail() {
                     </h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                           Disbursement Bank Account
                         </label>
                         <input
                           readOnly
                           value={authorData.accountDetails}
-                          className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground outline-none"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none shadow-2xs"
                         />
                       </div>
                     </div>
@@ -432,14 +429,14 @@ function CommissionRatesDetail() {
               <button
                 type="button"
                 onClick={() => navigate({ to: "/pb-admin/commission-rates" })}
-                className="h-11 rounded-lg border border-border bg-card px-5 text-sm font-normal text-muted-foreground hover:bg-secondary/40 transition-colors cursor-pointer"
+                className="h-11 rounded-lg border border-border bg-card px-5 text-xs font-semibold text-foreground hover:bg-secondary/40 transition-colors cursor-pointer"
               >
                 Back to Listing
               </button>
               <button
                 type="button"
                 onClick={handleUpdate}
-                className="h-11 rounded-lg bg-[var(--brand)] px-6 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 cursor-pointer flex items-center gap-2"
+                className="h-11 rounded-lg bg-[var(--brand)] px-5 text-xs font-semibold text-white shadow-2xs transition-opacity hover:opacity-90 active:scale-95 cursor-pointer flex items-center gap-2"
               >
                 <Save size={16} />
                 Save All Changes

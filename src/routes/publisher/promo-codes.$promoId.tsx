@@ -55,7 +55,9 @@ export const Route = createFileRoute("/publisher/promo-codes/$promoId")({
 
 function SectionCard({ children }: { children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 md:p-7">{children}</section>
+    <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+      {children}
+    </section>
   );
 }
 
@@ -70,7 +72,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-foreground">
+      <span className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
         {label}
         {required && <span className="ml-0.5 text-rose-500">*</span>}
       </span>
@@ -85,7 +87,7 @@ function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
     <input
       {...rest}
       disabled={disabled}
-      className={`h-14 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-75 ${className}`}
+      className={`h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-75 ${className}`}
     />
   );
 }
@@ -96,7 +98,7 @@ function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
     <textarea
       {...rest}
       disabled={disabled}
-      className={`w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-75 ${className}`}
+      className={`w-full rounded-xl border border-border bg-white dark:bg-card px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-75 ${className}`}
     />
   );
 }
@@ -110,7 +112,7 @@ function SelectInput(
       <select
         {...rest}
         disabled={disabled}
-        className={`h-14 w-full appearance-none rounded-xl border border-border bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-75 ${className}`}
+        className={`h-11 w-full appearance-none rounded-xl border border-border bg-white dark:bg-card px-4 pr-9 text-sm outline-none transition-colors focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-75 ${className}`}
       >
         {children}
       </select>
@@ -223,11 +225,11 @@ function DateRangePickerField({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="group flex h-14 w-full items-center justify-between rounded-xl border border-border bg-card px-4 text-sm text-foreground outline-none transition-all hover:border-[var(--brand)]/60 focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20 cursor-pointer"
+            className="group flex h-11 w-full items-center justify-between rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none transition-all hover:border-[var(--brand)]/60 focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20 cursor-pointer shadow-2xs"
           >
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--brand)]/10 text-[var(--brand)]">
-                <CalendarDays size={18} />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--brand)]/10 text-[var(--brand)]">
+                <CalendarDays size={16} />
               </div>
               <div className="text-left min-w-0 flex-1 truncate">
                 {value?.from ? (
@@ -714,7 +716,7 @@ function EditPromoCodePage() {
                     <button
                       type="button"
                       onClick={() => setPromoCode(generatePromoCode())}
-                      className="flex h-14 items-center gap-2 rounded-xl px-4 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer shrink-0"
+                      className="flex h-11 items-center gap-2 rounded-lg px-4 text-xs font-semibold shadow-2xs transition-opacity hover:opacity-90 cursor-pointer shrink-0"
                       style={{
                         backgroundColor: "var(--brand)",
                         color: "var(--brand-contrast)",
@@ -779,7 +781,7 @@ function EditPromoCodePage() {
                   <button
                     type="button"
                     onClick={() => setShowDeleteModal(true)}
-                    className="inline-flex h-12 items-center gap-1.5 rounded-xl border border-border bg-card px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+                    className="inline-flex h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                   >
                     <Trash2 size={15} />
                     Delete Promo Code
@@ -792,7 +794,7 @@ function EditPromoCodePage() {
                 {isReadOnly ? (
                   <Link
                     to="/publisher/promo-codes"
-                    className="inline-flex h-12 items-center justify-center rounded-xl border border-border bg-card px-6 text-sm font-normal text-foreground transition-colors hover:bg-secondary"
+                    className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
                   >
                     Back to Promo Codes
                   </Link>
@@ -800,7 +802,7 @@ function EditPromoCodePage() {
                   <>
                     <Link
                       to="/publisher/promo-codes"
-                      className="inline-flex h-12 items-center justify-center rounded-xl border border-border bg-background px-6 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
+                      className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-white dark:bg-card px-5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary"
                     >
                       Cancel
                     </Link>
@@ -809,7 +811,7 @@ function EditPromoCodePage() {
                       type="button"
                       onClick={handleSave}
                       disabled={isSaved}
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold shadow-sm transition-all hover:opacity-90 cursor-pointer"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-xs font-semibold shadow-2xs transition-all hover:opacity-90 cursor-pointer"
                       style={{
                         backgroundColor: "var(--brand)",
                         color: "var(--brand-contrast)",

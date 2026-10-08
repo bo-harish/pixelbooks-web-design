@@ -18,6 +18,8 @@ import {
   Users,
   BookOpen,
   Feather,
+  FileText,
+  Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
@@ -523,50 +525,75 @@ export function AdminBundleDetailPage() {
         </SectionCard>
 
         {/* ── eBook Bundle Details ─────────────────────────────────── */}
-        <SectionCard title="eBook Bundle Details">
-          <div className="space-y-4">
-            <div className="flex text-sm border-b border-border/50 pb-3">
-              <span className="w-52 shrink-0 text-muted-foreground">eBook Bundle Name:</span>
-              <span className="font-semibold text-foreground">{bundle.title}</span>
+        <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+          <div className="mb-4 flex items-center gap-3 border-b border-border/60 pb-3.5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-200/50 bg-indigo-50 text-indigo-600 shadow-2xs dark:border-indigo-800/40 dark:bg-indigo-950/60 dark:text-indigo-400">
+              <FileText size={16} strokeWidth={2} />
+            </span>
+            <div>
+              <h2 className="text-sm font-bold text-foreground sm:text-base">
+                eBook Bundle Details
+              </h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Bundle name, summary, and discoverability tags.
+              </p>
             </div>
-            <div className="space-y-1.5 border-b border-border/50 pb-3">
-              <p className="text-sm text-muted-foreground">Summary:</p>
+          </div>
+          <div className="space-y-0">
+            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+              <span className="text-sm text-muted-foreground">
+                eBook Bundle Name
+              </span>
+              <span className="text-sm font-semibold text-foreground">{bundle.title}</span>
+            </div>
+            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+              <span className="text-sm text-muted-foreground">Summary</span>
               <p className="text-sm leading-relaxed text-foreground">{extra.summary}</p>
             </div>
-            <div className="space-y-1.5">
-              <p className="text-sm text-muted-foreground">Tags:</p>
-              <div className="flex flex-wrap gap-2 pt-0.5">
+            <div className="grid grid-cols-1 gap-2 pt-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+              <span className="text-sm text-muted-foreground">Tags</span>
+              <div className="flex flex-wrap items-start gap-2">
                 {extra.tags.map((t) => (
                   <span
                     key={t}
-                    className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground bg-secondary/30"
+                    className="inline-flex min-h-8 items-center rounded-lg bg-secondary/50 px-3 py-1 text-sm font-semibold text-foreground"
                   >
-                    <Tag size={10} />
                     {t}
                   </span>
                 ))}
               </div>
             </div>
           </div>
-        </SectionCard>
+        </section>
 
         {/* ── For SEO Purpose ────────────────────────────────────────── */}
-        <SectionCard title="For SEO Purpose">
-          <div className="space-y-4 text-sm">
-            <div className="flex border-b border-border/50 pb-3">
-              <span className="w-52 shrink-0 text-muted-foreground">Meta Titles:</span>
-              <span className="font-semibold text-foreground">{extra.seoTitle}</span>
-            </div>
-            <div className="flex border-b border-border/50 pb-3">
-              <span className="w-52 shrink-0 text-muted-foreground">Meta Keywords:</span>
-              <span className="font-semibold text-foreground">{extra.seoKeywords}</span>
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-muted-foreground">Meta Description:</p>
-              <p className="leading-relaxed text-foreground">{extra.seoDescription}</p>
+        <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+          <div className="mb-4 flex items-center gap-3 border-b border-border/60 pb-3.5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-200/50 bg-indigo-50 text-indigo-600 shadow-2xs dark:border-indigo-800/40 dark:bg-indigo-950/60 dark:text-indigo-400">
+              <Search size={16} strokeWidth={2} />
+            </span>
+            <div>
+              <h2 className="text-sm font-bold text-foreground sm:text-base">For SEO Purpose</h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Search metadata used to describe and find this bundle.
+              </p>
             </div>
           </div>
-        </SectionCard>
+          <div className="space-y-0">
+            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+              <span className="text-sm text-muted-foreground">Meta Titles</span>
+              <span className="text-sm font-semibold text-foreground">{extra.seoTitle}</span>
+            </div>
+            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+              <span className="text-sm text-muted-foreground">Meta Keywords</span>
+              <span className="text-sm font-semibold text-foreground">{extra.seoKeywords}</span>
+            </div>
+            <div className="grid grid-cols-1 gap-2 pt-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+              <span className="text-sm text-muted-foreground">Meta Description</span>
+              <p className="text-sm leading-relaxed text-foreground">{extra.seoDescription}</p>
+            </div>
+          </div>
+        </section>
 
         {/* ── Sticky Footer Actions ──────────────────────────────────── */}
         <div className="sticky bottom-0 -mx-4 mt-6 flex items-center justify-end gap-3 border-t border-border bg-background/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8 z-20">

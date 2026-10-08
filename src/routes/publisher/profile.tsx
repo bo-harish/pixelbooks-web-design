@@ -54,8 +54,8 @@ type FieldProps = {
 
 function Field({ label, required, value, onChange, rightSlot, placeholder }: FieldProps) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground">
+    <div>
+      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
         {label}
         {required && <span className="text-destructive ml-0.5">*</span>}
       </label>
@@ -64,7 +64,7 @@ function Field({ label, required, value, onChange, rightSlot, placeholder }: Fie
           value={value}
           placeholder={placeholder}
           onChange={(e) => onChange?.(e.target.value)}
-          className="flex h-12 w-full rounded-lg border border-input bg-white px-4 pr-24 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 pr-24 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-2xs"
         />
         {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
       </div>
@@ -84,12 +84,12 @@ function SelectField({
   onClear?: () => void;
 }) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground">
+    <div>
+      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
         {label}
         {required && <span className="text-destructive ml-0.5">*</span>}
       </label>
-      <div className="relative flex h-12 w-full items-center rounded-lg border border-input bg-white px-4 text-sm text-foreground">
+      <div className="relative flex h-11 w-full items-center rounded-xl border border-input bg-white dark:bg-card px-4 text-sm text-foreground shadow-2xs">
         <span className="flex-1">{value}</span>
         <div className="flex items-center gap-2 text-muted-foreground">
           {onClear && (
@@ -106,8 +106,10 @@ function SelectField({
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 md:p-7">
-      <h2 className="mb-5 text-base font-semibold text-foreground">{title}</h2>
+    <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+      <h2 className="mb-5 border-b border-border/60 pb-3.5 text-sm sm:text-base font-bold text-foreground">
+        {title}
+      </h2>
       {children}
     </section>
   );
@@ -290,14 +292,14 @@ function ProfilePage() {
             {/* Profile URL Input Bar */}
             {!isLibraryOnly && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                <label className="block text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
                   <Globe size={15} className="text-muted-foreground" />
                   Storefront Profile URL
                   <span className="text-destructive">*</span>
                 </label>
 
                 <div className="flex flex-col sm:flex-row items-stretch gap-3">
-                  <div className="flex h-12 flex-1 items-center overflow-hidden rounded-xl border border-input bg-white shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
+                  <div className="flex h-11 flex-1 items-center overflow-hidden rounded-xl border border-input bg-white shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
                     <div className="h-full border-r border-input bg-slate-50 px-3.5 text-xs font-medium text-muted-foreground flex items-center shrink-0">
                       https://{profileBaseUrl}
                     </div>
@@ -313,7 +315,7 @@ function ProfilePage() {
                     <button
                       type="button"
                       onClick={handleCopyProfileUrl}
-                      className="inline-flex h-12 items-center gap-2 px-4 rounded-xl border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
+                      className="inline-flex h-11 items-center gap-2 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
                       title={copied ? "Copied to clipboard" : "Copy URL"}
                     >
                       {copied ? (
@@ -333,7 +335,7 @@ function ProfilePage() {
                       href={`https://${profileBaseUrl}${profileSlug}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
                       title="Preview Storefront"
                     >
                       <ExternalLink size={16} />
@@ -341,14 +343,16 @@ function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">About Publisher</label>
+                <div>
+                  <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
+                    About Publisher
+                  </label>
                   <textarea
                     value={aboutPublisher}
                     onChange={(e) => setAboutPublisher(e.target.value)}
                     rows={2}
                     placeholder="Add a short description about this publisher"
-                    className="w-full rounded-xl border border-input bg-white px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground shadow-2xs transition-all focus:outline-none focus:ring-1 focus:ring-ring"
+                    className="w-full rounded-xl border border-input bg-white dark:bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground shadow-2xs transition-all focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
               </div>

@@ -82,7 +82,7 @@ function AddLibraryPage() {
         </div>
 
         {/* Top Header Card with Logo Image Upload Placeholder */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5 md:p-6 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
           <div className="flex items-center gap-4">
             {/* Interactive Logo Image Upload Placeholder */}
             <button
@@ -125,15 +125,15 @@ function AddLibraryPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Section 1: Library Details */}
-          <section className="rounded-2xl border border-border bg-card p-5 md:p-6 shadow-2xs space-y-4">
-            <h2 className="text-base font-bold tracking-tight text-foreground border-b border-border/50 pb-3">
+          <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs space-y-4">
+            <h2 className="text-sm sm:text-base font-bold text-foreground border-b border-border/60 pb-3.5">
               Library Details
             </h2>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Library Name */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Library Name<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -142,20 +142,20 @@ function AddLibraryPage() {
                   placeholder="e.g. The District Central Library"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* Library Type */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Library Type<span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <select
                     value={formData.type}
                     onChange={(e) => handleInputChange("type", e.target.value)}
-                    className="h-11 w-full appearance-none rounded-lg border border-border bg-card px-3.5 pr-10 text-sm font-medium text-foreground outline-none cursor-pointer focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]"
+                    className="h-11 w-full appearance-none rounded-xl border border-border bg-white dark:bg-card px-4 pr-10 text-sm font-medium text-foreground outline-none cursor-pointer focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] shadow-2xs"
                   >
                     <option value="" disabled>
                       Select Library Type
@@ -175,7 +175,7 @@ function AddLibraryPage() {
 
               {/* ID */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   ID<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -184,13 +184,13 @@ function AddLibraryPage() {
                   placeholder="e.g. LIB56464"
                   value={formData.customId}
                   onChange={(e) => handleInputChange("customId", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* GST Details */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   GST Details<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -199,13 +199,13 @@ function AddLibraryPage() {
                   placeholder="e.g. 32ABCDE1234F1Z5"
                   value={formData.gstDetails}
                   onChange={(e) => handleInputChange("gstDetails", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* Address Line 1 */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Address Line 1<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -214,13 +214,13 @@ function AddLibraryPage() {
                   placeholder="Street / Campus address"
                   value={formData.addressLine1}
                   onChange={(e) => handleInputChange("addressLine1", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* Address Line 2 */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Address Line 2
                 </label>
                 <input
@@ -228,20 +228,20 @@ function AddLibraryPage() {
                   placeholder="Enter address line 2"
                   value={formData.addressLine2}
                   onChange={(e) => handleInputChange("addressLine2", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* State */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   State<span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <select
                     value={formData.state}
                     onChange={(e) => handleInputChange("state", e.target.value)}
-                    className="h-11 w-full appearance-none rounded-lg border border-border bg-card px-3.5 pr-10 text-sm font-medium text-foreground outline-none cursor-pointer focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)]"
+                    className="h-11 w-full appearance-none rounded-xl border border-border bg-white dark:bg-card px-4 pr-10 text-sm font-medium text-foreground outline-none cursor-pointer focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] shadow-2xs"
                   >
                     <option value="" disabled>
                       Select State
@@ -261,7 +261,7 @@ function AddLibraryPage() {
 
               {/* City */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   City<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -270,13 +270,13 @@ function AddLibraryPage() {
                   placeholder="City name"
                   value={formData.city}
                   onChange={(e) => handleInputChange("city", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* Pincode */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Pincode<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -285,13 +285,13 @@ function AddLibraryPage() {
                   placeholder="682019"
                   value={formData.pincode}
                   onChange={(e) => handleInputChange("pincode", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* Country */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Country<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -300,22 +300,22 @@ function AddLibraryPage() {
                   placeholder="e.g. India"
                   value={formData.country}
                   onChange={(e) => handleInputChange("country", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
             </div>
           </section>
 
           {/* Section 2: Contact Details */}
-          <section className="rounded-2xl border border-border bg-card p-5 md:p-6 shadow-2xs space-y-4">
-            <h2 className="text-base font-bold tracking-tight text-foreground border-b border-border/50 pb-3">
+          <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs space-y-4">
+            <h2 className="text-sm sm:text-base font-bold text-foreground border-b border-border/60 pb-3.5">
               Contact Details
             </h2>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Contact Person */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Contact Person<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -324,13 +324,13 @@ function AddLibraryPage() {
                   placeholder="Official Admin / Librarian name"
                   value={formData.contactPerson}
                   onChange={(e) => handleInputChange("contactPerson", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* Phone Number */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Phone Number<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -339,13 +339,13 @@ function AddLibraryPage() {
                   placeholder="+91 98765 43210"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* Email */}
               <div className="sm:col-span-1">
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Email<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -354,22 +354,22 @@ function AddLibraryPage() {
                   placeholder="admin@institution.edu"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
             </div>
           </section>
 
           {/* Section 3: Manage Library */}
-          <section className="rounded-2xl border border-border bg-card p-5 md:p-6 shadow-2xs space-y-4">
-            <h2 className="text-base font-bold tracking-tight text-foreground border-b border-border/50 pb-3">
+          <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs space-y-4">
+            <h2 className="text-sm sm:text-base font-bold text-foreground border-b border-border/60 pb-3.5">
               Manage Library
             </h2>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Borrow Limit */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Borrow Limit<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -378,13 +378,13 @@ function AddLibraryPage() {
                   placeholder="e.g. 15"
                   value={formData.borrowLimit}
                   onChange={(e) => handleInputChange("borrowLimit", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
 
               {/* eBook Return Limit (in days) */}
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   eBook Return Limit (in days)<span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -393,7 +393,7 @@ function AddLibraryPage() {
                   placeholder="e.g. 30"
                   value={formData.returnLimitDays}
                   onChange={(e) => handleInputChange("returnLimitDays", e.target.value)}
-                  className="h-11 w-full rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                 />
               </div>
             </div>
@@ -403,14 +403,14 @@ function AddLibraryPage() {
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-border/60">
             <Link
               to="/pb-admin-lib/libraries"
-              className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-card px-5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
+              className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer shadow-2xs"
             >
               Cancel
             </Link>
 
             <button
               type="submit"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer shadow-2xs"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[var(--brand)] px-5 text-xs font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer shadow-2xs"
             >
               <Send size={16} /> Submit & Send Invite
             </button>

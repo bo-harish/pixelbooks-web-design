@@ -828,10 +828,14 @@ function ManageLibraryCategoryPage() {
       {/* Add / Edit Category Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-[740px] rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-border pb-4 mb-5">
-              <div>
-                <h2 className="text-lg font-semibold text-foreground">
+          <div className="w-full max-w-[740px] rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-border/60 pb-4 mb-5">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/50 shadow-2xs dark:bg-blue-950/60 dark:text-blue-400 dark:border-blue-800/40">
+                  <BookOpen size={16} strokeWidth={2} />
+                </span>
+                <div>
+                <h2 className="text-sm sm:text-base font-bold text-foreground">
                   {editingCategory ? "Edit Category" : "Add Category"}
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -839,6 +843,7 @@ function ManageLibraryCategoryPage() {
                     ? "Update category & subcategories details"
                     : "Enter a category name or select from existing system categories"}
                 </p>
+                </div>
               </div>
               <button
                 type="button"
@@ -874,7 +879,7 @@ function ManageLibraryCategoryPage() {
                   }
                 >
                   <div className={showStatusColumn ? "sm:col-span-2" : ""}>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       Category Name <span className="text-destructive">*</span>
                     </label>
                     <input
@@ -885,7 +890,7 @@ function ManageLibraryCategoryPage() {
                       readOnly
                       aria-readonly="true"
                       title="Category name is locked. Only System Admin can edit category names."
-                      className="h-11 w-full rounded-lg border border-border bg-muted/30 px-3.5 text-xs text-foreground outline-none cursor-not-allowed"
+                      className="h-11 w-full rounded-xl border border-border bg-muted/30 px-4 text-sm text-foreground outline-none cursor-not-allowed"
                     />
                     <p className="mt-1 text-[11px] text-muted-foreground">
                       Only System Admin can edit category names.
@@ -894,7 +899,7 @@ function ManageLibraryCategoryPage() {
 
                   {showStatusColumn && (
                     <div>
-                      <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                         Display Order <span className="text-destructive">*</span>
                       </label>
                       <input
@@ -907,7 +912,7 @@ function ManageLibraryCategoryPage() {
                           setFormDisplayOrder(e.target.value);
                           setErrorMessage("");
                         }}
-                        className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                        className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors shadow-2xs"
                       />
                     </div>
                   )}
@@ -920,11 +925,11 @@ function ManageLibraryCategoryPage() {
                   }
                 >
                   <div
-                    className={showStatusColumn ? "sm:col-span-2 space-y-1.5" : "space-y-1.5"}
+                    className={showStatusColumn ? "sm:col-span-2" : ""}
                     ref={categoryDropdownRef}
                   >
-                    <div className="flex items-center justify-between">
-                      <label className="block text-xs font-semibold text-foreground">
+                    <div className="mb-1.5 flex items-start justify-between gap-3">
+                      <label className="block text-xs sm:text-sm font-bold text-foreground">
                         Category Name <span className="text-destructive">*</span>
                       </label>
                       <span className="text-[11.5px] text-muted-foreground">
@@ -949,7 +954,7 @@ function ManageLibraryCategoryPage() {
                             setCategorySearchTerm(formName);
                             setIsCategoryDropdownOpen(true);
                           }}
-                          className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card pl-3.5 pr-16 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card pl-4 pr-16 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors shadow-2xs"
                         />
 
                         <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -1102,7 +1107,7 @@ function ManageLibraryCategoryPage() {
 
                   {showStatusColumn && (
                     <div>
-                      <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                         Display Order <span className="text-destructive">*</span>
                       </label>
                       <input
@@ -1115,7 +1120,7 @@ function ManageLibraryCategoryPage() {
                           setFormDisplayOrder(e.target.value);
                           setErrorMessage("");
                         }}
-                        className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                        className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors shadow-2xs"
                       />
                     </div>
                   )}
@@ -1125,7 +1130,7 @@ function ManageLibraryCategoryPage() {
               {/* Subcategories Section (Optional) */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                     Subcategories{" "}
                     <span className="text-[11px] font-normal text-muted-foreground">
                       (Optional)
@@ -1155,12 +1160,12 @@ function ManageLibraryCategoryPage() {
                           handleAddSubcategory();
                         }
                       }}
-                      className="h-10 flex-1 rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)] transition-colors"
+                      className="h-11 flex-1 rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors shadow-2xs"
                     />
                     <button
                       type="button"
                       onClick={handleAddSubcategory}
-                      className="h-10 px-4 rounded-lg bg-[var(--brand)] text-xs font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5"
+                      className="h-11 px-4 rounded-lg bg-[var(--brand)] text-sm font-semibold text-white hover:bg-[var(--brand)]/90 transition-colors cursor-pointer shadow-2xs shrink-0 flex items-center gap-1.5"
                     >
                       <Plus size={14} />
                       <span>Add</span>

@@ -185,17 +185,17 @@ function AddVideoPage() {
           </div>
 
         {/* Section 1: Video Details */}
-        <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs">
+        <div className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 space-y-5 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] shadow-2xs">
-                <Film size={22} />
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/50 shadow-2xs dark:bg-blue-950/60 dark:text-blue-400 dark:border-blue-800/40">
+                <Film size={16} strokeWidth={2} />
               </span>
               <div>
-                <h2 className="text-base font-extrabold text-foreground leading-tight">
+                <h2 className="text-sm sm:text-base font-bold text-foreground">
                   Video Details
                 </h2>
-                <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Primary title, description, and discoverability tags for this video.
                 </p>
               </div>
@@ -226,7 +226,7 @@ function AddVideoPage() {
           <div className="space-y-4">
             {/* Video Title */}
             <div>
-              <label className="block text-xs font-bold text-foreground mb-1.5">
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                 Video Title <span className="text-rose-500">*</span>
               </label>
               <input
@@ -244,7 +244,7 @@ function AddVideoPage() {
 
             {/* Video URL / Embed Source */}
             <div>
-              <label className="block text-xs font-bold text-foreground mb-1.5">
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                 Video URL / Embed Source
               </label>
               <div className="relative">
@@ -269,7 +269,7 @@ function AddVideoPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-xs font-bold text-foreground mb-1.5">Description</label>
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">Description</label>
               <div className="rounded-xl border border-border bg-white overflow-hidden focus-within:border-[var(--brand)] transition-colors shadow-2xs">
                 {/* Formatting Tools */}
                 <div className="flex items-center gap-1 border-b border-border/60 bg-slate-50 px-3 py-1.5 text-xs text-muted-foreground">
@@ -314,7 +314,7 @@ function AddVideoPage() {
 
             {/* Tags Input */}
             <div>
-              <label className="block text-xs font-bold text-foreground mb-1.5">Tags</label>
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">Tags</label>
               <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-xl border border-border bg-white px-3 py-2 shadow-2xs">
                 {tags.map((tag, idx) => (
                   <span

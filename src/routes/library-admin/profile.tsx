@@ -58,8 +58,8 @@ function Field({
   type = "text",
 }: FieldProps) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground">
+    <div>
+      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
         {label}
         {required && <span className="text-destructive ml-0.5">*</span>}
       </label>
@@ -70,7 +70,7 @@ function Field({
           placeholder={placeholder}
           disabled={disabled}
           onChange={(e) => onChange?.(e.target.value)}
-          className={`flex h-12 w-full rounded-lg border border-input bg-white dark:bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+          className={`flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-2xs ${
             rightSlot ? "pr-24" : ""
           } ${disabled ? "opacity-70 bg-secondary/30 cursor-not-allowed" : ""}`}
         />
@@ -94,12 +94,12 @@ function SelectField({
   options: { label: string; value: string }[];
 }) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground">
+    <div>
+      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
         {label}
         {required && <span className="text-destructive ml-0.5">*</span>}
       </label>
-      <div className="relative flex h-12 w-full items-center rounded-lg border border-input bg-white dark:bg-card px-4 text-sm text-foreground">
+      <div className="relative flex h-11 w-full items-center rounded-xl border border-input bg-white dark:bg-card px-4 text-sm text-foreground shadow-2xs">
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -122,8 +122,10 @@ function SelectField({
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 md:p-7">
-      <h2 className="mb-5 text-base font-semibold text-foreground">{title}</h2>
+    <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+      <h2 className="mb-5 border-b border-border/60 pb-3.5 text-sm sm:text-base font-bold text-foreground">
+        {title}
+      </h2>
       {children}
     </section>
   );
@@ -349,14 +351,14 @@ function LibraryAdminProfilePage() {
 
             {/* Profile URL Input Bar */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+              <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
                 <Globe size={15} className="text-muted-foreground" />
                 Library Profile URL
                 <span className="text-destructive">*</span>
               </label>
 
               <div className="flex flex-col sm:flex-row items-stretch gap-3">
-                <div className="flex h-12 flex-1 items-center overflow-hidden rounded-xl border border-input bg-card shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
+                <div className="flex h-11 flex-1 items-center overflow-hidden rounded-xl border border-input bg-white dark:bg-card shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
                   <div className="h-full border-r border-input bg-secondary/50 px-3.5 text-xs font-medium text-muted-foreground flex items-center shrink-0">
                     https://{profileBaseUrl}
                   </div>
@@ -372,7 +374,7 @@ function LibraryAdminProfilePage() {
                   <button
                     type="button"
                     onClick={handleCopyProfileUrl}
-                    className="inline-flex h-12 items-center gap-2 px-4 rounded-xl border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
+                    className="inline-flex h-11 items-center gap-2 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
                     title={copied ? "Copied to clipboard" : "Copy URL"}
                   >
                     {copied ? (
@@ -392,7 +394,7 @@ function LibraryAdminProfilePage() {
                     href={`https://${profileBaseUrl}${profileSlug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
                     title="Preview Profile Page"
                   >
                     <ExternalLink size={16} />
@@ -533,7 +535,7 @@ function LibraryAdminProfilePage() {
               <button
                 type="button"
                 onClick={handleReject}
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-6 text-sm font-medium text-foreground hover:bg-secondary cursor-pointer"
+                className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer"
               >
                 Reject
               </button>
@@ -541,14 +543,14 @@ function LibraryAdminProfilePage() {
               <button
                 type="button"
                 onClick={handleApprove}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 text-sm font-semibold text-white hover:opacity-90 cursor-pointer"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 text-xs font-semibold text-white hover:opacity-90 cursor-pointer shadow-2xs"
               >
                 <CheckCircle2 size={16} /> Re-approve
               </button>
             )}
             <button
               type="submit"
-              className="inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold hover:opacity-90 cursor-pointer"
+              className="inline-flex h-11 items-center justify-center rounded-lg px-5 text-xs font-semibold hover:opacity-90 cursor-pointer shadow-2xs"
               style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
             >
               {isSaved ? "Details Updated" : "Update Details"}

@@ -26,6 +26,7 @@ import {
   Save,
   ShieldCheck,
   Calendar,
+  FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
@@ -748,61 +749,113 @@ function EBookDetailPage() {
         <LibraryStoreAllocationCard />
 
         {/* ── eBook Details ──────────────────────────────────────────── */}
-        <SectionCard title="eBook Details">
-          <div className="space-y-0.5">
-            <MetaRow label="Regional Name:" value={extra.regionalName} />
-          </div>
-
-          {/* Summary */}
-          <div className="mt-5 border-t border-border pt-4">
-            <p className="mb-2 text-sm text-muted-foreground">Summary:</p>
-            <p className="text-sm leading-relaxed text-foreground">{extra.summary}</p>
-          </div>
-
-          {/* Tags */}
-          {extra.tags.length > 0 && (
-            <div className="mt-4 border-t border-border pt-4">
-              <p className="mb-2.5 text-sm text-muted-foreground">Tags:</p>
-              <div className="flex flex-wrap gap-2">
-                {extra.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground"
-                  >
-                    <Tag size={10} />
-                    {tag}
-                  </span>
-                ))}
+        <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                <FileText size={22} />
+              </span>
+              <div>
+                <h2 className="text-base font-extrabold text-foreground leading-tight">
+                  eBook Details
+                </h2>
+                <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                  Core metadata, summary, and discoverability tags for this title.
+                </p>
               </div>
             </div>
-          )}
-        </SectionCard>
+            <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+              <StatusPill status={book.status} />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                <Globe size={13} />
+                {extra.language}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-5">
+            <MetaRow label="Regional Name:" value={extra.regionalName} />
+
+            {/* Summary */}
+            <div className="border-t border-border pt-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground">
+                Summary
+              </p>
+              <p className="text-sm leading-relaxed text-foreground">{extra.summary}</p>
+            </div>
+
+            {/* Tags */}
+            {extra.tags.length > 0 && (
+              <div className="border-t border-border pt-4">
+                <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground">
+                  Tags
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {extra.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground"
+                    >
+                      <Tag size={10} />
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* ── SEO ───────────────────────────────────────────────────── */}
-        <SectionCard title="For SEO Purpose">
+        <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+          <div className="border-b border-border/60 pb-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+              For SEO Purpose
+            </h3>
+          </div>
           <div className="space-y-0.5">
             <MetaRow label="Meta Titles:" value="—" />
             <MetaRow label="Meta Keywords:" value="—" />
             <MetaRow label="Meta Description:" value="—" />
           </div>
-        </SectionCard>
+        </div>
 
-        {/* ── Author + Sub Category ─────────────────────────────────── */}
+        {/* ── Author + Category & Sub Category ──────────────────────── */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <SectionCard title="Author Details">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-border/80 bg-card px-3.5 py-1.5 shadow-2xs">
-              <AuthorAvatar author={book.author} size="md" />
-              <span className="text-sm font-semibold text-foreground">{book.author}</span>
+          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+            <div className="border-b border-border/60 pb-2.5">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Author Details
+              </h3>
             </div>
-          </SectionCard>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground">
+              <AuthorAvatar author={book.author} size="md" />
+              <span className="text-foreground">{book.author}</span>
+            </div>
+          </div>
 
-          <SectionCard title="Sub Category">
-            <p className="text-sm font-medium text-foreground">{extra.subCategory}</p>
-          </SectionCard>
+          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+            <div className="border-b border-border/60 pb-2.5">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Category &amp; Sub Category
+              </h3>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-xs font-bold text-foreground truncate">{book.category}</p>
+              <span className="inline-flex min-h-8 items-center rounded-lg border border-border bg-card px-3 py-1 text-xs font-medium text-foreground">
+                {extra.subCategory}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* ── Price Details ─────────────────────────────────────────── */}
-        <SectionCard title="Price Details">
+        <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+          <div className="border-b border-border/60 pb-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Price Details
+            </h3>
+          </div>
           <div className="space-y-0.5">
             <MetaRow label="Renewal Percentage (Excl. GST):" value="—" />
             <MetaRow label="GST Rate:" value={`${extra.gstRate}%`} />
@@ -821,7 +874,7 @@ function EBookDetailPage() {
               {book.price === null ? "Free" : `₹${book.price.toFixed(2)}`}
             </p>
           </div>
-        </SectionCard>
+        </div>
       </div>
     </AppShell>
   );

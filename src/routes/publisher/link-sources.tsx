@@ -267,11 +267,23 @@ function PublisherLinkSourcesPage() {
       <div className="p-4 sm:p-6 md:p-8 flex flex-col gap-6">
         <form
           onSubmit={handleSave}
-          className="rounded-xl border border-border bg-card p-4 sm:p-5 shadow-2xs flex flex-col gap-4"
+          className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs flex flex-col gap-5"
         >
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex items-center gap-3 border-b border-border/60 pb-4">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200/50 shadow-2xs dark:bg-blue-950/60 dark:text-blue-400 dark:border-blue-800/40">
+              <ExternalLink size={16} strokeWidth={2} />
+            </span>
+            <div>
+              <h2 className="text-sm sm:text-base font-bold text-foreground">Link Source Details</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Configure the source name, external destination, and library access.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-foreground">
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                 Publisher/Source Name <span className="text-destructive">*</span>
               </label>
               <input
@@ -279,12 +291,12 @@ function PublisherLinkSourcesPage() {
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
                 placeholder=""
-                className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card px-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
+                className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors shadow-2xs"
               />
             </div>
 
             <div className="space-y-1.5 md:col-span-2">
-              <label className="block text-xs font-semibold text-foreground">
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                 External Link <span className="text-destructive">*</span>
               </label>
               <div className="relative">
@@ -293,7 +305,7 @@ function PublisherLinkSourcesPage() {
                   value={externalLink}
                   onChange={(e) => setExternalLink(e.target.value)}
                   placeholder="https://in.pearson.com/"
-                  className="h-11 w-full rounded-lg border border-border bg-white dark:bg-card pl-9 pr-3.5 text-xs text-foreground outline-none focus:border-[var(--brand)]"
+                  className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card pl-9 pr-4 text-sm text-foreground outline-none focus:border-[var(--brand)] transition-colors shadow-2xs"
                 />
                 <ExternalLink
                   size={15}
@@ -305,7 +317,7 @@ function PublisherLinkSourcesPage() {
 
           <div className="space-y-1.5" ref={libraryDropdownRef}>
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold text-foreground">
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                 Libraries <span className="text-destructive">*</span>
               </label>
               <span className="text-[11px] text-muted-foreground">
@@ -317,7 +329,7 @@ function PublisherLinkSourcesPage() {
               <button
                 type="button"
                 onClick={() => setIsLibraryDropdownOpen((prev) => !prev)}
-                className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-lg border bg-white dark:bg-card px-3 py-2 text-left text-xs transition-colors ${
+                className={`flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border bg-white dark:bg-card px-3 py-2 text-left text-sm transition-colors shadow-2xs ${
                   isLibraryDropdownOpen
                     ? "border-[var(--brand)]"
                     : "border-border hover:border-border/80"

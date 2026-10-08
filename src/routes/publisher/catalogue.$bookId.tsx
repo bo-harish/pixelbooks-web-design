@@ -61,6 +61,7 @@ type BookExtra = {
   viewers: number;
   summary: string;
   tags: string[];
+  categoryGroups?: { name: string; subCategories: string[] }[];
   subCategory: string;
   gstRate: number;
 };
@@ -92,6 +93,9 @@ const extras: Record<string, BookExtra> = {
       "#Curriculum Transformation",
       "#Policy Formulation",
       "#Education Reforms in India",
+    ],
+    categoryGroups: [
+      { name: "Reference", subCategories: ["Competitive Exams"] },
     ],
     subCategory: "Competitive Exams",
     gstRate: 5,
@@ -683,7 +687,7 @@ function LibraryStoreAllocationCard({ bookId }: { bookId?: string }) {
 
         {/* Selected Libraries Copies Breakdown Table */}
         {selectedLibraries.length > 0 ? (
-          <div className="rounded-xl border border-border/80 bg-secondary/20 p-4 space-y-3">
+          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-border/60 pb-2.5">
               <h3 className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
                 <span>Allocated Libraries License Breakdown</span>
@@ -953,13 +957,13 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         {/* Left Column: Price Details */}
-        <div className="lg:col-span-5 flex flex-col justify-between overflow-hidden rounded-xl border border-border bg-card">
-          <div className="border-b border-border px-6 py-3.5">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+        <div className="lg:col-span-5 flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 space-y-3">
+          <div className="border-b border-border/60 pb-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
               Price Details
-            </p>
+            </h3>
           </div>
-          <div className="px-6 py-5 flex flex-col justify-between flex-1">
+          <div className="flex flex-col justify-between flex-1">
             <div className="space-y-2.5 text-xs sm:text-sm">
               <div className="flex justify-between items-center py-0.5">
                 <span className="text-muted-foreground font-medium">
@@ -997,13 +1001,13 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
         </div>
 
         {/* Right Column: Rental Plan */}
-        <div className="lg:col-span-7 overflow-hidden rounded-xl border border-border bg-card">
-          <div className="border-b border-border px-6 py-3.5">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+        <div className="lg:col-span-7 rounded-xl border border-border/80 bg-card p-4 space-y-3">
+          <div className="border-b border-border/60 pb-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
               Rental Plan
-            </p>
+            </h3>
           </div>
-          <div className="px-6 py-5">
+          <div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
               {rentalPlans.map((plan) => {
                 const isSelected = selectedPlanId === plan.id;
@@ -1199,8 +1203,46 @@ function EBookDetailPage() {
   }
 
   const extra = getExtra(bookId);
+  const categoryGroups = extra.categoryGroups?.length
+    ? extra.categoryGroups
+    : [
+        {
+          name: book.category,
+          subCategories: extra.subCategory === "—" ? [] : [extra.subCategory],
+        },
+      ];
   const priceExGST =
     book.price !== null ? (book.price / (1 + extra.gstRate / 100)).toFixed(2) : null;
+  const detailStatusMeta: Record<
+    Status,
+    { Icon: React.ElementType; tone: string; border: string; bg: string }
+  > = {
+    Published: {
+      Icon: CheckCircle2,
+      tone: "text-emerald-600 dark:text-emerald-400",
+      border: "border-emerald-500/20",
+      bg: "bg-emerald-500/10",
+    },
+    Rejected: {
+      Icon: XCircle,
+      tone: "text-rose-600 dark:text-rose-400",
+      border: "border-rose-500/20",
+      bg: "bg-rose-500/10",
+    },
+    Unpublished: {
+      Icon: CircleOff,
+      tone: "text-slate-600 dark:text-slate-400",
+      border: "border-slate-500/20",
+      bg: "bg-slate-500/10",
+    },
+    Draft: {
+      Icon: CircleOff,
+      tone: "text-amber-600 dark:text-amber-400",
+      border: "border-amber-500/20",
+      bg: "bg-amber-500/10",
+    },
+  };
+  const statusMeta = detailStatusMeta[currentStatus];
 
   return (
     <AppShell title="eBook Details">
@@ -1410,76 +1452,146 @@ function EBookDetailPage() {
         </div>
 
         {/* ── eBook Details ──────────────────────────────────────────── */}
-        <SectionCard title="eBook Details">
-          <div className="space-y-0.5">
-            <MetaRow
-              label="Status:"
-              value={
-                <StatusSelectPill
-                  status={currentStatus}
-                  onChange={(next) => {
-                    setCurrentStatus(next);
-                    toast.success(`Book status updated to ${next}`);
-                  }}
-                  allowedStatuses={
-                    isLibraryOnly
-                      ? ["Draft", "Published", "Unpublished"]
-                      : ["Published", "Unpublished", "Draft", "Rejected"]
-                  }
-                />
-              }
-            />
-            <MetaRow label="Regional Name:" value={extra.regionalName} />
-          </div>
-
-          {/* Summary */}
-          <div className="mt-5 border-t border-border pt-4">
-            <p className="mb-2 text-sm text-muted-foreground">Summary:</p>
-            <p className="text-sm leading-relaxed text-foreground">{extra.summary}</p>
-          </div>
-
-          {/* Tags */}
-          {extra.tags.length > 0 && (
-            <div className="mt-4 border-t border-border pt-4">
-              <p className="mb-2.5 text-sm text-muted-foreground">Tags:</p>
-              <div className="flex flex-wrap gap-2">
-                {extra.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground"
-                  >
-                    <Tag size={10} />
-                    {tag}
-                  </span>
-                ))}
+        <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                <FileText size={22} />
+              </span>
+              <div>
+                <h2 className="text-base font-extrabold text-foreground leading-tight">eBook Details</h2>
+                <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                  Core metadata, status settings, and discoverability info for this title.
+                </p>
               </div>
             </div>
-          )}
-        </SectionCard>
+
+            <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold border ${statusMeta.bg} ${statusMeta.tone} ${statusMeta.border}`}
+              >
+                <statusMeta.Icon size={13} />
+                {currentStatus}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                <Globe size={13} />
+                {extra.language}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <div className="flex gap-3 py-1 text-sm">
+                <span className="w-52 shrink-0 text-xs font-bold uppercase tracking-wider text-foreground">
+                  Status
+                </span>
+                <span className="font-medium text-foreground">
+                  <StatusSelectPill
+                    status={currentStatus}
+                    onChange={(next) => {
+                      setCurrentStatus(next);
+                      toast.success(`Book status updated to ${next}`);
+                    }}
+                    allowedStatuses={
+                      isLibraryOnly
+                        ? ["Draft", "Published", "Unpublished"]
+                        : ["Published", "Unpublished", "Draft", "Rejected"]
+                    }
+                  />
+                </span>
+              </div>
+
+              <div className="flex gap-3 py-1 text-sm">
+                <span className="w-52 shrink-0 text-xs font-bold uppercase tracking-wider text-foreground">
+                  Regional Name
+                </span>
+                <span className="font-medium text-foreground">{extra.regionalName}</span>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="border-t border-border pt-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground">
+                Summary
+              </p>
+              <p className="text-sm leading-relaxed text-foreground">{extra.summary}</p>
+            </div>
+
+            {/* Tags */}
+            {extra.tags.length > 0 && (
+              <div className="border-t border-border pt-4">
+                <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground">
+                  Tags
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {extra.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground"
+                    >
+                      <Tag size={10} />
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* ── SEO ───────────────────────────────────────────────────── */}
         {!isLibraryOnly && (
-          <SectionCard title="For SEO Purpose">
+          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+            <div className="border-b border-border/60 pb-2.5">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                For SEO Purpose
+              </h3>
+            </div>
             <div className="space-y-0.5">
               <MetaRow label="Meta Titles:" value="—" />
               <MetaRow label="Meta Keywords:" value="—" />
               <MetaRow label="Meta Description:" value="—" />
             </div>
-          </SectionCard>
+          </div>
         )}
 
-        {/* ── Author + Sub Category ─────────────────────────────────── */}
+        {/* ── Author + Category ─────────────────────────────────────── */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <SectionCard title="Author Details">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-border/80 bg-card px-3.5 py-1.5 shadow-2xs">
-              <AuthorAvatar author={book.author} size="md" />
-              <span className="text-sm font-semibold text-foreground">{book.author}</span>
+          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+            <div className="border-b border-border/60 pb-2.5">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Author Details
+              </h3>
             </div>
-          </SectionCard>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground">
+              <AuthorAvatar author={book.author} size="md" />
+              <span className="text-foreground">{book.author}</span>
+            </div>
+          </div>
 
-          <SectionCard title="Sub Category">
-            <p className="text-sm font-medium text-foreground">{extra.subCategory}</p>
-          </SectionCard>
+          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
+            <div className="border-b border-border/60 pb-2.5">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Category &amp; Sub Category
+              </h3>
+            </div>
+            <div className="space-y-3">
+              {categoryGroups.map((group) => (
+                <div key={group.name} className="flex flex-wrap items-center gap-2">
+                  <p className="text-xs font-bold text-foreground truncate">{group.name}</p>
+                  {group.subCategories.map((subCategory) => (
+                    <span
+                      key={`${group.name}-${subCategory}`}
+                      className="inline-flex min-h-8 items-center rounded-lg border border-border bg-card px-3 py-1 text-xs font-medium text-foreground"
+                    >
+                      {subCategory}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ── Library Allocation (For Library-Only Publisher) ─────────── */}

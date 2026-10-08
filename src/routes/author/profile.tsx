@@ -41,8 +41,8 @@ export const Route = createFileRoute("/author/profile")({
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 md:p-7 shadow-2xs">
-      <h2 className="mb-5 text-base font-semibold text-foreground flex items-center gap-2">
+    <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+      <h2 className="mb-5 border-b border-border/60 pb-3.5 text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
         {title}
       </h2>
       {children}
@@ -68,8 +68,8 @@ function Field({
   disabled?: boolean;
 }) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground flex items-center justify-between">
+    <div>
+      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground flex items-center justify-between">
         <span>
           {label}
           {required && <span className="text-destructive ml-0.5">*</span>}
@@ -81,7 +81,7 @@ function Field({
           placeholder={placeholder}
           disabled={disabled}
           onChange={(e) => onChange?.(e.target.value)}
-          className={`flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+          className={`flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-2xs ${
             disabled ? "opacity-75 bg-secondary/30 cursor-not-allowed" : ""
           } ${rightSlot ? "pr-24" : ""}`}
         />
@@ -149,6 +149,7 @@ function AuthorProfilePage() {
         <SectionCard title="Author Identity & Public Profile">
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 rounded-xl border border-border bg-emerald-500/5 p-5 dark:bg-emerald-500/10">
+              <div className="flex flex-1 items-center gap-5 min-w-0">
               <div className="relative h-24 w-24 shrink-0">
                 {authorAvatar ? (
                   <img
@@ -188,17 +189,18 @@ function AuthorProfilePage() {
                 <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">{bio}</p>
               </div>
             </div>
+            </div>
 
             {/* Public Author Profile URL Bar */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+              <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
                 <Globe size={15} className="text-muted-foreground" />
                 Public Author Page URL
                 <span className="text-destructive">*</span>
               </label>
 
               <div className="flex flex-col sm:flex-row items-stretch gap-3">
-                <div className="flex h-12 flex-1 items-center overflow-hidden rounded-xl border border-input bg-card shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
+                <div className="flex h-11 flex-1 items-center overflow-hidden rounded-xl border border-input bg-white dark:bg-card shadow-2xs focus-within:ring-1 focus-within:ring-ring transition-all">
                   <div className="h-full border-r border-input bg-secondary/50 px-3.5 text-xs font-medium text-muted-foreground flex items-center shrink-0">
                     https://{profileBaseUrl}
                   </div>
@@ -214,7 +216,7 @@ function AuthorProfilePage() {
                   <button
                     type="button"
                     onClick={handleCopyAuthorUrl}
-                    className="inline-flex h-12 items-center gap-2 px-4 rounded-xl border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
+                    className="inline-flex h-11 items-center gap-2 px-4 rounded-lg border border-border bg-card text-xs font-semibold text-foreground transition-colors hover:bg-secondary shadow-2xs cursor-pointer"
                   >
                     {copied ? (
                       <>
@@ -233,7 +235,7 @@ function AuthorProfilePage() {
                     href={`https://${profileBaseUrl}${authorSlug}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground shadow-2xs"
                     title="Preview Author Page"
                   >
                     <ExternalLink size={16} />
@@ -250,23 +252,25 @@ function AuthorProfilePage() {
                 onChange={setAuthorName}
               />
               <Field label="Pen Name / Credit Display" value={penName} onChange={setPenName} />
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-sm font-medium text-foreground">
+              <div className="md:col-span-2">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                   Primary Writing Genres
                 </label>
                 <input
                   value={genres}
                   onChange={(e) => setGenres(e.target.value)}
-                  className="flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-2xs"
                 />
               </div>
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-sm font-medium text-foreground">Author Biography</label>
+              <div className="md:col-span-2">
+                <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
+                  Author Biography
+                </label>
                 <textarea
                   rows={3}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full rounded-xl border border-input bg-card p-4 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
+                  className="w-full rounded-xl border border-input bg-white dark:bg-card p-4 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring shadow-2xs"
                 />
               </div>
             </div>
@@ -447,14 +451,14 @@ function AuthorProfilePage() {
           <button
             type="button"
             onClick={() => toast.info("Changes reset")}
-            className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-card px-6 text-sm font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="inline-flex h-11 items-center justify-center rounded-xl px-6 text-sm font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer"
+            className="inline-flex h-11 items-center justify-center rounded-lg px-5 text-xs font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer shadow-2xs"
             style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
           >
             Update Author Profile

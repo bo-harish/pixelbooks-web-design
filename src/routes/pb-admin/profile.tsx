@@ -42,8 +42,8 @@ export const Route = createFileRoute("/pb-admin/profile")({
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 md:p-7 shadow-2xs">
-      <h2 className="mb-5 text-base font-semibold text-foreground flex items-center gap-2">
+    <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+      <h2 className="mb-5 border-b border-border/60 pb-3.5 text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
         {title}
       </h2>
       {children}
@@ -69,8 +69,8 @@ function Field({
   disabled?: boolean;
 }) {
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground flex items-center justify-between">
+    <div>
+      <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground flex items-center justify-between">
         <span>
           {label}
           {required && <span className="text-destructive ml-0.5">*</span>}
@@ -82,7 +82,7 @@ function Field({
           placeholder={placeholder}
           disabled={disabled}
           onChange={(e) => onChange?.(e.target.value)}
-          className={`flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
+          className={`flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-2xs ${
             disabled ? "opacity-75 bg-secondary/30 cursor-not-allowed" : ""
           } ${rightSlot ? "pr-24" : ""}`}
         />
@@ -280,14 +280,14 @@ function PbAdminProfilePage() {
         <SectionCard title="Session & Notification Preferences">
           <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
                 <Clock size={15} className="text-muted-foreground" />
                 Admin Inactivity Session Timeout
               </label>
               <select
                 value={sessionTimeout}
                 onChange={(e) => setSessionTimeout(e.target.value)}
-                className="flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm font-medium text-foreground outline-none focus:border-[var(--brand)]"
+                className="flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none focus:border-[var(--brand)] shadow-2xs"
               >
                 <option value="15">15 Minutes (High Security)</option>
                 <option value="30">30 Minutes (Recommended)</option>
@@ -297,13 +297,13 @@ function PbAdminProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+              <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
                 <Bell size={15} className="text-muted-foreground" />
                 System Alert Email Frequency
               </label>
               <select
                 defaultValue="instant"
-                className="flex h-12 w-full rounded-xl border border-input bg-card px-4 text-sm font-medium text-foreground outline-none focus:border-[var(--brand)]"
+                className="flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 text-sm font-medium text-foreground outline-none focus:border-[var(--brand)] shadow-2xs"
               >
                 <option value="instant">Instant Critical System Alerts</option>
                 <option value="daily">Daily Administrative Summary</option>
@@ -318,14 +318,14 @@ function PbAdminProfilePage() {
           <button
             type="button"
             onClick={() => toast.info("Changes reset")}
-            className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-card px-6 text-sm font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-5 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="inline-flex h-11 items-center justify-center rounded-xl px-6 text-sm font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer"
+            className="inline-flex h-11 items-center justify-center rounded-lg px-5 text-xs font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer shadow-2xs"
             style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
           >
             Update Admin Profile

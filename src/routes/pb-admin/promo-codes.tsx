@@ -176,7 +176,7 @@ function DropdownSelect<T extends string>({
           setOpen((o) => !o);
           setSearchTerm("");
         }}
-        className={`flex h-11 items-center justify-between gap-3 rounded-lg border border-border bg-card px-3.5 text-sm font-medium transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer shadow-2xs ${className}`}
+        className={`flex h-11 items-center justify-between gap-3 rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-medium transition-colors hover:bg-secondary/40 outline-none focus:border-[var(--brand)] cursor-pointer shadow-2xs ${className}`}
       >
         <span className="truncate text-foreground">{value}</span>
         <ChevronDown
@@ -447,7 +447,7 @@ export function PromoCodePage() {
         {viewMode === "list" ? (
           <>
             {/* Top Toolbar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-2xs w-full">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-4 sm:p-5 shadow-xs w-full">
               {/* Search Box */}
               <div className="relative flex-1">
                 <Search
@@ -494,7 +494,7 @@ export function PromoCodePage() {
             </div>
 
             {/* Table Card Container */}
-            <div className="overflow-hidden rounded-xl border border-border bg-card shadow-xs w-full">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card shadow-xs w-full">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
@@ -679,11 +679,11 @@ export function PromoCodePage() {
 
             {/* Form Card Container */}
             <form onSubmit={handleSavePromoCode} className="space-y-6 w-full">
-              <div className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-2xs space-y-6">
+              <div className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs space-y-5">
                 {/* Row 1: Publisher/Author Dropdown */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       Publisher/Author<span className="text-red-500">*</span>
                     </label>
                     <DropdownSelect
@@ -702,7 +702,7 @@ export function PromoCodePage() {
                 {/* Row 2: Publisher or Author Selection + eBook */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       {publisherAuthorType}
                       <span className="text-red-500">*</span>
                     </label>
@@ -734,7 +734,7 @@ export function PromoCodePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       eBook
                     </label>
                     <DropdownSelect
@@ -759,7 +759,7 @@ export function PromoCodePage() {
                 {/* Row 3: Percentage % + Promo Code with Generate Code link */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       Percentage %<span className="text-red-500">*</span>
                     </label>
                     <input
@@ -767,11 +767,11 @@ export function PromoCodePage() {
                       value={percentageInput}
                       onChange={(e) => setPercentageInput(e.target.value)}
                       placeholder="Enter Percentage"
-                      className="w-full h-11 rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground"
+                      className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       Promo Code<span className="text-red-500">*</span>
                     </label>
                     <div className="flex items-center gap-3">
@@ -781,7 +781,7 @@ export function PromoCodePage() {
                           value={promoCodeInput}
                           onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
                           placeholder="PROMO CODE"
-                          className="w-full h-11 rounded-lg border border-border/80 bg-secondary/30 px-3.5 text-sm font-mono font-bold uppercase text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground/60 placeholder:font-normal"
+                          className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm font-mono font-bold uppercase text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground/60 placeholder:font-normal shadow-2xs"
                         />
                         {promoCodeInput && (
                           <button
@@ -815,7 +815,7 @@ export function PromoCodePage() {
                 {/* Row 4: Minimum Amount + Start Date-End Date */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       Minimum Amount<span className="text-red-500">*</span>
                     </label>
                     <input
@@ -823,18 +823,18 @@ export function PromoCodePage() {
                       value={minimumAmountInput}
                       onChange={(e) => setMinimumAmountInput(e.target.value)}
                       placeholder="Select Minimum Amount"
-                      className="w-full h-11 rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground"
+                      className="h-11 w-full rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground shadow-2xs"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                       Start Date-End Date<span className="text-red-500">*</span>
                     </label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
-                          className="flex h-11 w-full items-center justify-between rounded-lg border border-border bg-card px-3.5 text-sm text-foreground hover:bg-secondary/40 focus:outline-none focus:border-[var(--brand)] transition-colors cursor-pointer shadow-none"
+                          className="flex h-11 w-full items-center justify-between rounded-xl border border-border bg-white dark:bg-card px-4 text-sm text-foreground hover:bg-secondary/40 focus:outline-none focus:border-[var(--brand)] transition-colors cursor-pointer shadow-2xs"
                         >
                           <span className="truncate text-sm font-normal text-foreground">
                             {dateRange?.from ? (
@@ -921,7 +921,7 @@ export function PromoCodePage() {
 
                 {/* Row 5: Promo Code Description */}
                 <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  <label className="mb-1.5 block text-xs sm:text-sm font-bold text-foreground">
                     Promo Code Description<span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -929,7 +929,7 @@ export function PromoCodePage() {
                     value={descriptionInput}
                     onChange={(e) => setDescriptionInput(e.target.value)}
                     placeholder="Enter Description"
-                    className="w-full rounded-lg border border-border bg-card p-3.5 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground resize-y min-h-[90px]"
+                    className="w-full rounded-xl border border-border bg-white dark:bg-card p-4 text-sm text-foreground outline-none focus:border-[var(--brand)] placeholder:text-muted-foreground resize-y min-h-[90px] shadow-2xs"
                   />
                 </div>
               </div>
@@ -939,13 +939,13 @@ export function PromoCodePage() {
                 <button
                   type="button"
                   onClick={() => setViewMode("list")}
-                  className="rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer shadow-2xs"
+                  className="h-11 rounded-lg border border-border bg-card px-5 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer shadow-2xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-lg px-6 py-2.5 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
+                  className="h-11 rounded-lg px-5 text-xs font-semibold shadow-2xs transition-opacity hover:opacity-90 cursor-pointer"
                   style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
                 >
                   {editingItem ? "Save Changes" : "Create Promo Code"}

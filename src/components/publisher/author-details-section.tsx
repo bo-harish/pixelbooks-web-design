@@ -6,7 +6,6 @@ import {
   Check,
   Pencil,
   Trash2,
-  Percent,
   UserRound,
   Users,
 } from "lucide-react";
@@ -143,20 +142,6 @@ export function AuthorDetailsSection({
   const handleSlugChange = (authorId: string, slug: string) => {
     setSelectedAuthors(
       selectedAuthors.map((sa) => (sa.id === authorId ? { ...sa, profileSlug: slug } : sa)),
-    );
-  };
-
-  const handleRoleChange = (authorId: string, role: string) => {
-    setSelectedAuthors(
-      selectedAuthors.map((sa) => (sa.id === authorId ? { ...sa, role } : sa)),
-    );
-  };
-
-  const handleRoyaltyChange = (authorId: string, royalty: number) => {
-    setSelectedAuthors(
-      selectedAuthors.map((sa) =>
-        sa.id === authorId ? { ...sa, royaltyPercentage: royalty } : sa,
-      ),
     );
   };
 
@@ -343,65 +328,27 @@ export function AuthorDetailsSection({
                 </button>
               </div>
 
-              {/* Author Profile URL Input Group */}
-              <div>
-                <label className="mb-1.5 block text-xs font-bold text-foreground">
-                  Author Profile URL <span className="text-rose-500 font-bold">*</span>
-                </label>
-                <div className="flex items-center h-10 rounded-xl border border-slate-200 dark:border-border overflow-hidden bg-slate-50/70 dark:bg-secondary/40 focus-within:border-teal-500 transition-colors shadow-2xs">
-                  <div className="h-full px-3.5 border-r border-slate-200 dark:border-border bg-slate-100/60 dark:bg-secondary/60 text-xs text-muted-foreground select-none whitespace-nowrap flex items-center font-mono">
-                    {domainPrefix}
-                  </div>
-                  <input
-                    type="text"
-                    value={author.profileSlug}
-                    onChange={(e) => handleSlugChange(author.id, e.target.value)}
-                    placeholder={slugify(author.name)}
-                    className="h-full flex-1 px-3 bg-white dark:bg-card text-xs font-semibold text-foreground outline-none font-mono"
-                  />
-                </div>
-                <p className="mt-1 text-[11px] text-muted-foreground">The URL is available</p>
-              </div>
-
-              {/* Optional: Complete Publisher Commercial Royalty Share & Role */}
               {isCompletePublisher && (
-                <div className="flex items-center gap-3 pt-1 border-t border-slate-100 dark:border-border/60">
-                  <div className="w-36">
-                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">
-                      Contributor Role
-                    </label>
-                    <select
-                      value={author.role || "Lead Author"}
-                      onChange={(e) => handleRoleChange(author.id, e.target.value)}
-                      className="h-9 w-full rounded-lg border border-slate-200 dark:border-border bg-white dark:bg-card px-2.5 text-xs font-medium text-foreground outline-none"
-                    >
-                      <option value="Lead Author">Lead Author</option>
-                      <option value="Co-Author">Co-Author</option>
-                      <option value="Editor">Editor</option>
-                      <option value="Illustrator">Illustrator</option>
-                      <option value="Translator">Translator</option>
-                    </select>
-                  </div>
-
-                  <div className="w-32">
-                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">
-                      Commercial Royalty
-                    </label>
-                    <div className="flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 dark:border-border bg-white dark:bg-card px-2.5">
-                      <Percent size={12} className="text-muted-foreground" />
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={author.royaltyPercentage ?? 50}
-                        onChange={(e) => handleRoyaltyChange(author.id, Number(e.target.value) || 0)}
-                        className="w-10 text-xs font-bold text-foreground bg-transparent outline-none"
-                      />
-                      <span className="text-[10px] text-muted-foreground font-semibold">%</span>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-foreground">
+                    Author Profile URL <span className="text-rose-500 font-bold">*</span>
+                  </label>
+                  <div className="flex items-center h-10 rounded-xl border border-slate-200 dark:border-border overflow-hidden bg-slate-50/70 dark:bg-secondary/40 focus-within:border-teal-500 transition-colors shadow-2xs">
+                    <div className="h-full px-3.5 border-r border-slate-200 dark:border-border bg-slate-100/60 dark:bg-secondary/60 text-xs text-muted-foreground select-none whitespace-nowrap flex items-center font-mono">
+                      {domainPrefix}
                     </div>
+                    <input
+                      type="text"
+                      value={author.profileSlug}
+                      onChange={(e) => handleSlugChange(author.id, e.target.value)}
+                      placeholder={slugify(author.name)}
+                      className="h-full flex-1 px-3 bg-white dark:bg-card text-xs font-semibold text-foreground outline-none font-mono"
+                    />
                   </div>
+                  <p className="mt-1 text-[11px] text-muted-foreground">The URL is available</p>
                 </div>
               )}
+
             </div>
           ))
         )}

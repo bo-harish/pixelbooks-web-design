@@ -237,6 +237,20 @@ function AudioLibraryPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredAudios.map((audio) => {
               const catEntries = Object.entries(audio.categories);
+              const courses = audio.courses?.length
+                ? audio.courses
+                : audio.course
+                  ? [audio.course]
+                  : [];
+              const batches = audio.batches?.length
+                ? audio.batches
+                : audio.batch
+                  ? [audio.batch]
+                  : [];
+              const courseBatchPairs = Array.from(
+                { length: Math.max(courses.length, batches.length) },
+                (_, index) => ({ course: courses[index], batch: batches[index] }),
+              );
               return (
                 <div
                   key={audio.id}
@@ -294,42 +308,19 @@ function AudioLibraryPage() {
                     </div>
 
                     {/* Course & Batch badge if assigned */}
-                    {((audio.courses && audio.courses.length > 0) ||
-                      (audio.batches && audio.batches.length > 0) ||
-                      audio.course ||
-                      audio.batch) && (
+                    {courseBatchPairs.length > 0 && (
                       <div className="space-y-1.5 pt-0.5">
                         <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                           <GraduationCap size={12} className="text-blue-500" />
                           <span>Course & Batch</span>
                         </div>
                         <div className="flex flex-wrap items-center gap-1.5">
-                          {(audio.courses && audio.courses.length > 0
-                            ? audio.courses
-                            : audio.course
-                              ? [audio.course]
-                              : []
-                          ).map((c) => (
+                          {courseBatchPairs.map(({ course, batch }, index) => (
                             <span
-                              key={c}
-                              className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-blue-700 dark:text-blue-300"
+                              key={`${course ?? "course"}-${batch ?? "batch"}-${index}`}
+                              className="inline-flex items-center rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-blue-700 dark:text-blue-300"
                             >
-                              <GraduationCap size={11} />
-                              <span>{c}</span>
-                            </span>
-                          ))}
-                          {(audio.batches && audio.batches.length > 0
-                            ? audio.batches
-                            : audio.batch
-                              ? [audio.batch]
-                              : []
-                          ).map((b) => (
-                            <span
-                              key={b}
-                              className="inline-flex items-center gap-1 rounded-md bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-amber-700 dark:text-amber-300"
-                            >
-                              <Users size={11} />
-                              <span>{b}</span>
+                              <span>{[course, batch].filter(Boolean).join(" ")}</span>
                             </span>
                           ))}
                         </div>
