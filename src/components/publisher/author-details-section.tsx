@@ -149,7 +149,7 @@ export function AuthorDetailsSection({
     <div className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 space-y-5 shadow-xs">
       {/* Header: Title & Subtitle in Select Categories Style */}
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/50 dark:border-amber-800/40 shrink-0 shadow-2xs">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-800/40 shrink-0 shadow-2xs">
           <Users size={16} strokeWidth={2} />
         </div>
         <div>

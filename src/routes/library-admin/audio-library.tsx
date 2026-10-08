@@ -6,7 +6,6 @@ import {
   Headphones,
   Search,
   Tag,
-  Clock,
   CheckCircle2,
   Play,
   Pause,
@@ -39,18 +38,6 @@ export const Route = createFileRoute("/library-admin/audio-library")({
   }),
   component: LibraryAdminAudioLibraryPage,
 });
-
-function parseDurationToMinutes(duration?: string): number {
-  if (!duration) return 0;
-  const parts = duration.split(":").map(Number);
-  if (parts.length === 2) {
-    return parts[0] + parts[1] / 60;
-  }
-  if (parts.length === 3) {
-    return parts[0] * 60 + parts[1] + parts[2] / 60;
-  }
-  return 0;
-}
 
 function LibraryAdminAudioLibraryPage() {
   const [audios, setAudios] = useState<AudioItem[]>(() => getAudioLibrary());
@@ -137,18 +124,20 @@ function LibraryAdminAudioLibraryPage() {
     });
   }, [audios, searchQuery, statusFilter, categoryFilter]);
 
-  const totalCount = audios.length;
-  const publishedCount = audios.filter((a) => a.status === "Published").length;
-  const uniqueCategories = useMemo(() => {
-    const s = new Set<string>();
-    audios.forEach((a) => Object.keys(a.categories).forEach((c) => s.add(c)));
-    return s.size;
-  }, [audios]);
-
-  const totalRuntimeMinutes = useMemo(() => {
-    const total = audios.reduce((acc, a) => acc + parseDurationToMinutes(a.duration), 0);
-    return Math.round(total);
-  }, [audios]);
+  const previewCourses = previewAudio?.courses?.length
+    ? previewAudio.courses
+    : previewAudio?.course
+      ? [previewAudio.course]
+      : [];
+  const previewBatches = previewAudio?.batches?.length
+    ? previewAudio.batches
+    : previewAudio?.batch
+      ? [previewAudio.batch]
+      : [];
+  const previewCourseBatchPairs = Array.from(
+    { length: Math.max(previewCourses.length, previewBatches.length) },
+    (_, index) => ({ course: previewCourses[index], batch: previewBatches[index] }),
+  );
 
   return (
     <AppShell
@@ -156,73 +145,6 @@ function LibraryAdminAudioLibraryPage() {
       subtitle="Browse and listen to audiobooks, lectures, and spoken audio resources for your library"
     >
       <div className="p-4 sm:p-6 md:p-8 space-y-6">
-        {/* Metric / Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Total Audio
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400">
-                <Headphones size={18} />
-              </span>
-            </div>
-            <div>
-              <div className="text-2xl font-extrabold text-foreground">{totalCount}</div>
-              <p className="text-[11.5px] text-muted-foreground mt-0.5">In audio catalogue</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Published Tracks
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <CheckCircle2 size={18} />
-              </span>
-            </div>
-            <div>
-              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
-                {publishedCount}
-              </div>
-              <p className="text-[11.5px] text-muted-foreground mt-0.5">Available for patrons</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Categories
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                <Tag size={18} />
-              </span>
-            </div>
-            <div>
-              <div className="text-2xl font-extrabold text-foreground">{uniqueCategories}</div>
-              <p className="text-[11.5px] text-muted-foreground mt-0.5">Genres represented</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between rounded-xl border border-border bg-card p-5 min-h-[130px] transition-shadow hover:shadow-md shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Audio Duration
-              </span>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                <Clock size={18} />
-              </span>
-            </div>
-            <div>
-              <div className="text-2xl font-extrabold text-foreground">
-                {totalRuntimeMinutes} <span className="text-xs font-normal text-muted-foreground">mins</span>
-              </div>
-              <p className="text-[11.5px] text-muted-foreground mt-0.5">Spoken audio collection</p>
-            </div>
-          </div>
-        </div>
-
         {/* Toolbar: Search & Filters (No Add Audio Button) */}
         <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between shadow-2xs">
           <div className="relative flex-1 max-w-md">
@@ -603,39 +525,22 @@ function LibraryAdminAudioLibraryPage() {
 
               <div className="space-y-2">
                 <h2 className="text-lg font-bold text-foreground">{previewAudio.title}</h2>
-                {((previewAudio.courses && previewAudio.courses.length > 0) ||
-                  (previewAudio.batches && previewAudio.batches.length > 0) ||
-                  previewAudio.course ||
-                  previewAudio.batch) && (
-                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                    {(previewAudio.courses && previewAudio.courses.length > 0
-                      ? previewAudio.courses
-                      : previewAudio.course
-                        ? [previewAudio.course]
-                        : []
-                    ).map((c) => (
-                      <span
-                        key={c}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300"
-                      >
-                        <GraduationCap size={13} />
-                        <span>Course: {c}</span>
-                      </span>
-                    ))}
-                    {(previewAudio.batches && previewAudio.batches.length > 0
-                      ? previewAudio.batches
-                      : previewAudio.batch
-                        ? [previewAudio.batch]
-                        : []
-                    ).map((b) => (
-                      <span
-                        key={b}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300"
-                      >
-                        <Users size={13} />
-                        <span>Batch: {b}</span>
-                      </span>
-                    ))}
+                {previewCourseBatchPairs.length > 0 && (
+                  <div className="space-y-1.5 pt-0.5">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                      <GraduationCap size={12} className="text-blue-500" />
+                      <span>Course & Batch</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {previewCourseBatchPairs.map(({ course, batch }, index) => (
+                        <span
+                          key={`${course ?? "course"}-${batch ?? "batch"}-${index}`}
+                          className="inline-flex items-center rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-blue-700 dark:text-blue-300"
+                        >
+                          {[course, batch].filter(Boolean).join(" ")}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">

@@ -17,6 +17,7 @@ import {
   BookOpen,
   HardDrive,
   Users,
+  Feather,
   Pencil,
   Library,
   ChevronDown,
@@ -957,11 +958,17 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         {/* Left Column: Price Details */}
-        <div className="lg:col-span-5 flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 space-y-3">
-          <div className="border-b border-border/60 pb-2.5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
-              Price Details
-            </h3>
+        <div className="lg:col-span-5 flex flex-col justify-between rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3 border-b border-border/60 pb-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+              <Tag size={20} />
+            </span>
+            <div>
+              <h2 className="text-base font-extrabold text-foreground leading-tight">Price Details</h2>
+              <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                Pricing and tax breakdown for this title.
+              </p>
+            </div>
           </div>
           <div className="flex flex-col justify-between flex-1">
             <div className="space-y-2.5 text-xs sm:text-sm">
@@ -1001,11 +1008,17 @@ function PriceDetailsAndRentalPlanSection({ gstRate = 5 }: { gstRate?: number })
         </div>
 
         {/* Right Column: Rental Plan */}
-        <div className="lg:col-span-7 rounded-xl border border-border/80 bg-card p-4 space-y-3">
-          <div className="border-b border-border/60 pb-2.5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
-              Rental Plan
-            </h3>
+        <div className="lg:col-span-7 rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+          <div className="flex items-center gap-3 border-b border-border/60 pb-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+              <Clock size={20} />
+            </span>
+            <div>
+              <h2 className="text-base font-extrabold text-foreground leading-tight">Rental Plan</h2>
+              <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                Select an access period and rental price.
+              </p>
+            </div>
           </div>
           <div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
@@ -1452,15 +1465,15 @@ function EBookDetailPage() {
         </div>
 
         {/* ── eBook Details ──────────────────────────────────────────── */}
-        <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+        <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3.5">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
-                <FileText size={22} />
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-200/50 bg-emerald-50 text-emerald-600 shadow-2xs dark:border-emerald-800/40 dark:bg-emerald-950/60 dark:text-emerald-400">
+                <FileText size={16} strokeWidth={2} />
               </span>
               <div>
-                <h2 className="text-base font-extrabold text-foreground leading-tight">eBook Details</h2>
-                <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                <h2 className="text-sm font-bold text-foreground sm:text-base">eBook Details</h2>
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   Core metadata, status settings, and discoverability info for this title.
                 </p>
               </div>
@@ -1480,13 +1493,12 @@ function EBookDetailPage() {
             </div>
           </div>
 
-          <div className="space-y-5">
-            <div className="space-y-2">
-              <div className="flex gap-3 py-1 text-sm">
-                <span className="w-52 shrink-0 text-xs font-bold uppercase tracking-wider text-foreground">
+          <div className="space-y-0">
+            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+                <span className="text-sm text-muted-foreground">
                   Status
                 </span>
-                <span className="font-medium text-foreground">
+                <span className="min-w-0">
                   <StatusSelectPill
                     status={currentStatus}
                     onChange={(next) => {
@@ -1500,37 +1512,35 @@ function EBookDetailPage() {
                     }
                   />
                 </span>
-              </div>
+            </div>
 
-              <div className="flex gap-3 py-1 text-sm">
-                <span className="w-52 shrink-0 text-xs font-bold uppercase tracking-wider text-foreground">
+            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+                <span className="text-sm text-muted-foreground">
                   Regional Name
                 </span>
-                <span className="font-medium text-foreground">{extra.regionalName}</span>
-              </div>
+                <span className="text-sm font-semibold text-foreground">{extra.regionalName}</span>
             </div>
 
             {/* Summary */}
-            <div className="border-t border-border pt-4">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground">
+            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+              <span className="text-sm text-muted-foreground">
                 Summary
-              </p>
+              </span>
               <p className="text-sm leading-relaxed text-foreground">{extra.summary}</p>
             </div>
 
             {/* Tags */}
             {extra.tags.length > 0 && (
-              <div className="border-t border-border pt-4">
-                <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground">
+              <div className="grid grid-cols-1 gap-2 pt-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+                <span className="text-sm text-muted-foreground">
                   Tags
-                </p>
-                <div className="flex flex-wrap gap-2">
+                </span>
+                <div className="flex flex-wrap items-start gap-2">
                   {extra.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground"
+                      className="inline-flex min-h-8 items-center rounded-lg bg-secondary/50 px-3 py-1 text-sm font-semibold text-foreground"
                     >
-                      <Tag size={10} />
                       {tag}
                     </span>
                   ))}
@@ -1538,31 +1548,52 @@ function EBookDetailPage() {
               </div>
             )}
           </div>
-        </div>
+        </section>
 
         {/* ── SEO ───────────────────────────────────────────────────── */}
         {!isLibraryOnly && (
-          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
-            <div className="border-b border-border/60 pb-2.5">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                For SEO Purpose
-              </h3>
+          <section className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 border-b border-border/60 pb-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                <Search size={20} />
+              </span>
+              <div>
+                <h2 className="text-base font-extrabold text-foreground leading-tight">For SEO Purpose</h2>
+                <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                  Search metadata used to describe and find this title.
+                </p>
+              </div>
             </div>
-            <div className="space-y-0.5">
-              <MetaRow label="Meta Titles:" value="—" />
-              <MetaRow label="Meta Keywords:" value="—" />
-              <MetaRow label="Meta Description:" value="—" />
+            <div className="space-y-2">
+              <div className="grid grid-cols-1 gap-2 py-1 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-3">
+                <span className="text-sm text-muted-foreground">Meta Titles</span>
+                <span className="text-sm font-medium text-foreground">—</span>
+              </div>
+              <div className="grid grid-cols-1 gap-2 py-1 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-3">
+                <span className="text-sm text-muted-foreground">Meta Keywords</span>
+                <span className="text-sm font-medium text-foreground">—</span>
+              </div>
+              <div className="grid grid-cols-1 gap-2 py-1 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-3">
+                <span className="text-sm text-muted-foreground">Meta Description</span>
+                <span className="text-sm font-medium text-foreground">—</span>
+              </div>
             </div>
-          </div>
+          </section>
         )}
 
         {/* ── Author + Category ─────────────────────────────────────── */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
-            <div className="border-b border-border/60 pb-2.5">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                Author Details
-              </h3>
+          <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 border-b border-border/60 pb-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                <Feather size={20} />
+              </span>
+              <div>
+                <h2 className="text-base font-extrabold text-foreground leading-tight">Author Details</h2>
+                <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                  Author associated with this title.
+                </p>
+              </div>
             </div>
             <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground">
               <AuthorAvatar author={book.author} size="md" />
@@ -1570,11 +1601,19 @@ function EBookDetailPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border/80 bg-card p-4 space-y-3">
-            <div className="border-b border-border/60 pb-2.5">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                Category &amp; Sub Category
-              </h3>
+          <div className="rounded-xl border border-border bg-card p-5 md:p-6 space-y-5 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 border-b border-border/60 pb-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 shadow-2xs">
+                <Tag size={20} />
+              </span>
+              <div>
+                <h2 className="text-base font-extrabold text-foreground leading-tight">
+                  Category &amp; Sub Category
+                </h2>
+                <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                  Classification assigned to this title.
+                </p>
+              </div>
             </div>
             <div className="space-y-3">
               {categoryGroups.map((group) => (

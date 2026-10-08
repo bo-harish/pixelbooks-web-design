@@ -540,13 +540,13 @@ export function AdminBundleDetailPage() {
             </div>
           </div>
           <div className="space-y-0">
-            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
               <span className="text-sm text-muted-foreground">
                 eBook Bundle Name
               </span>
               <span className="text-sm font-semibold text-foreground">{bundle.title}</span>
             </div>
-            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
               <span className="text-sm text-muted-foreground">Summary</span>
               <p className="text-sm leading-relaxed text-foreground">{extra.summary}</p>
             </div>
@@ -580,11 +580,11 @@ export function AdminBundleDetailPage() {
             </div>
           </div>
           <div className="space-y-0">
-            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
               <span className="text-sm text-muted-foreground">Meta Titles</span>
               <span className="text-sm font-semibold text-foreground">{extra.seoTitle}</span>
             </div>
-            <div className="grid grid-cols-1 gap-2 border-b border-border/60 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
+            <div className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[12rem_minmax(0,1fr)] sm:gap-0">
               <span className="text-sm text-muted-foreground">Meta Keywords</span>
               <span className="text-sm font-semibold text-foreground">{extra.seoKeywords}</span>
             </div>

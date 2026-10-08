@@ -263,7 +263,7 @@ export function CompletePublisherCataloguePage({
   return (
     <AppShell
       title={isEditMode ? "Edit eBook Listing" : "Add New eBook Listing"}
-      subtitle="Complete Publisher Portal — Retail Storefront & Direct Distribution"
+      subtitle="Retail Storefront & Direct Distribution"
     >
       <div className="p-4 sm:p-6 md:p-8 space-y-6">
         {/* Top Navigation */}
@@ -297,7 +297,7 @@ export function CompletePublisherCataloguePage({
           </div>
         )}
 
-        <div className="space-y-6 pb-20">
+        <div className="space-y-6">
           {/* ── SECTION 1: UPLOAD EBOOK FILES & METADATA ───────────────────── */}
           <UploadEBookFilesSection
             ebookFile={ebookFile}
@@ -616,47 +616,41 @@ export function CompletePublisherCataloguePage({
               </p>
             </div>
           )}
-        </div>
 
-        {/* ── STICKY FOOTER ACTIONS BAR ────────────────────────────────────── */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between border-t border-border bg-background/95 px-4 sm:px-8 py-3.5 backdrop-blur-md shadow-lg">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              Mode: <strong>Complete Publisher</strong> &bull; Retail Storefront
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              to="/publisher/catalogue"
-              className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer"
-            >
-              Cancel
-            </Link>
-            <button
-              type="button"
-              onClick={() => handleSubmit(true)}
-              disabled={isSubmitting}
-              className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer disabled:opacity-50"
-            >
-              Save as Draft
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSubmit(false)}
-              disabled={isSubmitting}
-              className="inline-flex h-10 items-center gap-1.5 rounded-xl px-5 text-xs font-bold text-white shadow-sm hover:opacity-95 active:scale-[0.98] cursor-pointer disabled:opacity-60"
-              style={{ backgroundColor: "var(--brand)" }}
-            >
-              <CheckCircle size={14} />
-              <span>
-                {isSubmitting
-                  ? "Processing..."
-                  : isEditMode
-                    ? "Update eBook Listing"
-                    : "Submit eBook for Review"}
-              </span>
-            </button>
+          {/* Form Actions */}
+          <div className="flex justify-end border-t border-border/60 pt-4">
+            <div className="flex flex-wrap items-center justify-end gap-2.5">
+              <Link
+                to="/publisher/catalogue"
+                className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer"
+              >
+                Cancel
+              </Link>
+              <button
+                type="button"
+                onClick={() => handleSubmit(true)}
+                disabled={isSubmitting}
+                className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer disabled:opacity-50"
+              >
+                Save as Draft
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSubmit(false)}
+                disabled={isSubmitting}
+                className="inline-flex h-10 items-center gap-1.5 rounded-xl px-5 text-xs font-bold text-white shadow-sm hover:opacity-95 active:scale-[0.98] cursor-pointer disabled:opacity-60"
+                style={{ backgroundColor: "var(--brand)" }}
+              >
+                <CheckCircle size={14} />
+                <span>
+                  {isSubmitting
+                    ? "Processing..."
+                    : isEditMode
+                      ? "Update eBook Listing"
+                      : "Submit eBook for Review"}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 

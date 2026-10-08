@@ -265,7 +265,7 @@ export function LibraryOnlyPublisherCataloguePage({
   return (
     <AppShell
       title={isEditMode ? "Edit Library eBook Listing" : "Add Library eBook Title"}
-      subtitle="Library-Only Publisher Portal — Institutional Network & Academic Allocation"
+      subtitle="Institutional Network & Academic Allocation"
     >
       <div className="p-4 sm:p-6 md:p-8 space-y-6">
         {/* Top Navigation */}
@@ -299,7 +299,7 @@ export function LibraryOnlyPublisherCataloguePage({
           </div>
         )}
 
-        <div className="space-y-6 pb-20">
+        <div className="space-y-6">
           {/* ── SECTION 1: UPLOAD EBOOK FILES & METADATA ───────────────────── */}
           <UploadEBookFilesSection
             ebookFile={ebookFile}
@@ -377,18 +377,9 @@ export function LibraryOnlyPublisherCataloguePage({
               </p>
             </div>
           )}
-        </div>
 
-        {/* ── STICKY FOOTER ACTIONS BAR ────────────────────────────────────── */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between border-t border-border bg-background/95 px-4 sm:px-8 py-3.5 backdrop-blur-md shadow-lg">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              Mode: <strong>Library-Only Publisher</strong> &bull; {totalAllocatedCopies} Copies &bull;{" "}
-              {totalAllocatedLibraries} Institutions
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2.5">
+          {/* Form Actions */}
+          <div className="flex justify-end gap-2.5 border-t border-border/60 pt-4">
             <Link
               to="/publisher/catalogue"
               className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer"

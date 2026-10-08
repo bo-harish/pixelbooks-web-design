@@ -117,6 +117,20 @@ function VideoLibraryPage() {
     videos.forEach((v) => Object.keys(v.categories).forEach((c) => s.add(c)));
     return s.size;
   }, [videos]);
+  const previewCourses = previewVideo?.courses?.length
+    ? previewVideo.courses
+    : previewVideo?.course
+      ? [previewVideo.course]
+      : [];
+  const previewBatches = previewVideo?.batches?.length
+    ? previewVideo.batches
+    : previewVideo?.batch
+      ? [previewVideo.batch]
+      : [];
+  const previewCourseBatchPairs = Array.from(
+    { length: Math.max(previewCourses.length, previewBatches.length) },
+    (_, index) => ({ course: previewCourses[index], batch: previewBatches[index] }),
+  );
 
   if (publisherType !== "Library-Only Publisher") {
     return null;
@@ -129,45 +143,57 @@ function VideoLibraryPage() {
     >
       <div className="p-4 md:p-8 space-y-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Total Videos</span>
-              <Video size={16} className="text-purple-500" />
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+          <div className="flex min-h-[108px] flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-2xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">Total Videos</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                <Video size={17} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-foreground">{totalCount}</div>
-            <span className="text-[11px] text-muted-foreground">In library collection</span>
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="text-2xl font-extrabold text-foreground">{totalCount}</span>
+              <span className="text-xs text-muted-foreground sm:text-sm">In library collection</span>
+            </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Published</span>
-              <CheckCircle2 size={16} className="text-emerald-500" />
+          <div className="flex min-h-[108px] flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-2xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">Published</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 size={17} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
-              {publishedCount}
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">{publishedCount}</span>
+              <span className="text-xs text-muted-foreground sm:text-sm">Visible to libraries</span>
             </div>
-            <span className="text-[11px] text-muted-foreground">Visible to libraries</span>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Drafts</span>
-              <Clock size={16} className="text-amber-500" />
+          <div className="flex min-h-[108px] flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-2xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">Drafts</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <Clock size={17} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">
-              {draftCount}
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">{draftCount}</span>
+              <span className="text-xs text-muted-foreground sm:text-sm">Under preparation</span>
             </div>
-            <span className="text-[11px] text-muted-foreground">Under preparation</span>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
-            <div className="flex items-center justify-between text-muted-foreground mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider">Categories</span>
-              <Tag size={16} className="text-blue-500" />
+          <div className="flex min-h-[108px] flex-col justify-between rounded-xl border border-border bg-card p-4 shadow-2xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground sm:text-xs">Categories</span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <Tag size={17} />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-foreground">{uniqueCategories}</div>
-            <span className="text-[11px] text-muted-foreground">Distinct classifications</span>
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <span className="text-2xl font-extrabold text-foreground">{uniqueCategories}</span>
+              <span className="text-xs text-muted-foreground sm:text-sm">Distinct classifications</span>
+            </div>
           </div>
         </div>
 
@@ -493,39 +519,22 @@ function VideoLibraryPage() {
                 <div className="flex items-center justify-between gap-2">
                   <h2 className="text-lg font-bold text-foreground">{previewVideo.title}</h2>
                 </div>
-                {((previewVideo.courses && previewVideo.courses.length > 0) ||
-                  (previewVideo.batches && previewVideo.batches.length > 0) ||
-                  previewVideo.course ||
-                  previewVideo.batch) && (
-                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                    {(previewVideo.courses && previewVideo.courses.length > 0
-                      ? previewVideo.courses
-                      : previewVideo.course
-                        ? [previewVideo.course]
-                        : []
-                    ).map((c) => (
-                      <span
-                        key={c}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300"
-                      >
-                        <GraduationCap size={13} />
-                        <span>Course: {c}</span>
-                      </span>
-                    ))}
-                    {(previewVideo.batches && previewVideo.batches.length > 0
-                      ? previewVideo.batches
-                      : previewVideo.batch
-                        ? [previewVideo.batch]
-                        : []
-                    ).map((b) => (
-                      <span
-                        key={b}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300"
-                      >
-                        <Users size={13} />
-                        <span>Batch: {b}</span>
-                      </span>
-                    ))}
+                {previewCourseBatchPairs.length > 0 && (
+                  <div className="space-y-1.5 pt-0.5">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                      <GraduationCap size={12} className="text-blue-500" />
+                      <span>Course & Batch</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {previewCourseBatchPairs.map(({ course, batch }, index) => (
+                        <span
+                          key={`${course ?? "course"}-${batch ?? "batch"}-${index}`}
+                          className="inline-flex items-center rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10.5px] font-semibold text-blue-700 dark:text-blue-300"
+                        >
+                          {[course, batch].filter(Boolean).join(" ")}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">
