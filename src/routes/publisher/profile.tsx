@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLocation } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import {
   Pencil,
@@ -17,9 +17,18 @@ import {
   ExternalLink,
   Camera,
   ShieldCheck,
+  Building2,
+  Library,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { usePublisherType } from "@/hooks/use-publisher-type";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   ProfilePictureAdjustModal,
   useProfilePictureUpload,
@@ -64,7 +73,9 @@ function Field({ label, required, value, onChange, rightSlot, placeholder }: Fie
           value={value}
           placeholder={placeholder}
           onChange={(e) => onChange?.(e.target.value)}
-          className="flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 pr-24 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-2xs"
+          className={`flex h-11 w-full rounded-xl border border-input bg-white dark:bg-card px-4 ${
+            rightSlot ? "pr-24" : "pr-4"
+          } text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-2xs`}
         />
         {rightSlot && <div className="absolute right-4 top-1/2 -translate-y-1/2">{rightSlot}</div>}
       </div>
@@ -104,22 +115,50 @@ function SelectField({
   );
 }
 
-function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
+function SectionCard({
+  title,
+  children,
+  rightSlot,
+}: {
+  title: string;
+  children: React.ReactNode;
+  rightSlot?: React.ReactNode;
+}) {
   return (
     <section className="rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card p-5 sm:p-6 shadow-xs">
-      <h2 className="mb-5 border-b border-border/60 pb-3.5 text-sm sm:text-base font-bold text-foreground">
-        {title}
-      </h2>
+      <div className="mb-5 flex items-center justify-between border-b border-border/60 pb-3.5">
+        <h2 className="text-sm sm:text-base font-bold text-foreground">{title}</h2>
+        {rightSlot}
+      </div>
       {children}
     </section>
   );
 }
 
 function ProfilePage() {
-  const [publisherType] = usePublisherType();
-  const isLibraryOnly = publisherType === "Library-Only Publisher";
+  const [publisherType, setPublisherType] = usePublisherType();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(
+    location.search || (typeof window !== "undefined" ? window.location.search : ""),
+  );
+  const roleParam = searchParams.get("role") || searchParams.get("user");
+  const isLibraryAdmin =
+    publisherType === "Library-Only Publisher" ||
+    roleParam === "library-admin" ||
+    roleParam === "library" ||
+    roleParam === "library_admin" ||
+    (typeof window !== "undefined" &&
+      (localStorage.getItem("pb_publisher_user_type") === "Library-Only Publisher" ||
+        localStorage.getItem("pb_user_role") === "library-admin"));
+  const isLibraryOnly = isLibraryAdmin;
   const profileBaseUrl = "azdevlibcustomer.pixelbooksapp.com/";
   const [publisherName, setPublisherName] = useState("PixelBooks");
+  const [organizationId, setOrganizationId] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("pb_publisher_org_id") || "ORG-VIMALA-101";
+    }
+    return "ORG-VIMALA-101";
+  });
   const [gst, setGst] = useState("32AAGCE9532N1ZB");
   const [pan, setPan] = useState("AAGCE9532N");
   const [address1, setAddress1] = useState(
@@ -170,10 +209,59 @@ function ProfilePage() {
   };
 
   return (
-    <AppShell title="Profile" subtitle="Manage your publisher profile and account details.">
+    <AppShell
+      title="Profile"
+      subtitle={
+        isLibraryAdmin
+          ? "Manage your institutional publisher profile, organization ID, address, and contact details."
+          : "Manage your publisher profile, billing address, contact and account details."
+      }
+    >
       <div className="space-y-8 p-4 sm:p-6 md:p-8">
         {/* Publisher Profile */}
-        <SectionCard title="Publisher Profile">
+        <SectionCard
+          title="Publisher Profile"
+          rightSlot={
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-semibold text-foreground hover:bg-secondary cursor-pointer shadow-2xs"
+                  title="Switch active persona"
+                >
+                  {isLibraryAdmin ? (
+                    <>
+                      <Library size={13} className="text-indigo-600 dark:text-indigo-400" />
+                      <span>Library Admin</span>
+                    </>
+                  ) : (
+                    <>
+                      <Building2 size={13} className="text-teal-600 dark:text-teal-400" />
+                      <span>Complete Publisher</span>
+                    </>
+                  )}
+                  <ChevronDown size={12} className="text-muted-foreground ml-0.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem
+                  onClick={() => setPublisherType("Complete Publisher")}
+                  className="text-xs font-medium cursor-pointer"
+                >
+                  <Building2 size={14} className="mr-2 text-teal-600" />
+                  Complete Publisher
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setPublisherType("Library-Only Publisher")}
+                  className="text-xs font-medium cursor-pointer"
+                >
+                  <Library size={14} className="mr-2 text-indigo-600" />
+                  Library Admin
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          }
+        >
           <div className="space-y-6">
             {/* Brand Identity: Round Logo + Horizontal Logo shown together */}
             <div className="rounded-xl border border-border bg-secondary/20 p-5">
@@ -213,9 +301,16 @@ function ProfilePage() {
                   </div>
 
                   <div className="flex-1 min-w-0 space-y-1.5">
-                    <h3 className="text-lg font-bold text-foreground truncate">
-                      {publisherName || "Publisher Profile"}
-                    </h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg font-bold text-foreground truncate">
+                        {publisherName || "Publisher Profile"}
+                      </h3>
+                      {isLibraryAdmin && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 shrink-0">
+                          <Building2 size={12} /> Org ID: {organizationId}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       Round logo for avatars, storefront badges &amp; invoices. PNG or JPEG,
                       512×512px.
@@ -408,16 +503,25 @@ function ProfilePage() {
           </div>
         </SectionCard>
 
-        {/* Address */}
-        <SectionCard title={isLibraryOnly ? "Address" : "Billing Address"}>
+        {/* Address & Organization Details */}
+        <SectionCard title={isLibraryAdmin ? "Organization & Address Details" : "Billing Address"}>
           <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
             <Field
-              label="Publisher Name"
+              label={isLibraryAdmin ? "Organization / Publisher Name" : "Publisher Name"}
               required
               value={publisherName}
               onChange={setPublisherName}
             />
-            {!isLibraryOnly && (
+            {isLibraryAdmin && (
+              <Field
+                label="Organization ID"
+                required
+                value={organizationId}
+                onChange={setOrganizationId}
+                placeholder="e.g. ORG-VIMALA-101"
+              />
+            )}
+            {!isLibraryAdmin && (
               <>
                 <Field label="GST Number" required value={gst} onChange={setGst} />
                 <Field label="PAN" required value={pan} onChange={setPan} />
@@ -528,11 +632,26 @@ function ProfilePage() {
 
         {/* Footer actions */}
         <div className="flex items-center justify-end gap-3 border-t border-border pt-6">
-          <button className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-6 text-sm font-medium text-foreground hover:bg-secondary">
+          <button
+            type="button"
+            onClick={() => {
+              setPublisherName("PixelBooks");
+              setOrganizationId("ORG-VIMALA-101");
+              toast.info("Changes reverted");
+            }}
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-card px-6 text-sm font-medium text-foreground hover:bg-secondary cursor-pointer"
+          >
             Cancel
           </button>
           <button
-            className="inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold hover:opacity-90"
+            type="button"
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                localStorage.setItem("pb_publisher_org_id", organizationId);
+              }
+              toast.success("Profile details updated successfully");
+            }}
+            className="inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold hover:opacity-90 cursor-pointer shadow-2xs"
             style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
           >
             Update Details

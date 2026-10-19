@@ -69,6 +69,7 @@ import { Route as PbWebIndexRouteImport } from './routes/pb-web/index'
 import { Route as PbWebAboutRouteImport } from './routes/pb-web/about'
 import { Route as PbWebAccountsRouteImport } from './routes/pb-web/accounts'
 import { Route as PbWebCartRouteImport } from './routes/pb-web/cart'
+import { Route as PbWebEmailTemplateRouteImport } from './routes/pb-web/email-template'
 import { Route as PbWebFaqRouteImport } from './routes/pb-web/faq'
 import { Route as PbWebGenreRouteImport } from './routes/pb-web/genre'
 import { Route as PbWebPrivacyPolicyRouteImport } from './routes/pb-web/privacy-policy'
@@ -436,6 +437,11 @@ const PbWebAccountsRoute = PbWebAccountsRouteImport.update({
 const PbWebCartRoute = PbWebCartRouteImport.update({
   id: '/pb-web/cart',
   path: '/pb-web/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PbWebEmailTemplateRoute = PbWebEmailTemplateRouteImport.update({
+  id: '/pb-web/email-template',
+  path: '/pb-web/email-template',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PbWebFaqRoute = PbWebFaqRouteImport.update({
@@ -829,6 +835,7 @@ export interface FileRoutesByFullPath {
   '/pb-web/about': typeof PbWebAboutRoute
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/email-template': typeof PbWebEmailTemplateRoute
   '/pb-web/faq': typeof PbWebFaqRoute
   '/pb-web/genre': typeof PbWebGenreRoute
   '/pb-web/privacy-policy': typeof PbWebPrivacyPolicyRoute
@@ -953,6 +960,7 @@ export interface FileRoutesByTo {
   '/pb-web/about': typeof PbWebAboutRoute
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/email-template': typeof PbWebEmailTemplateRoute
   '/pb-web/faq': typeof PbWebFaqRoute
   '/pb-web/genre': typeof PbWebGenreRoute
   '/pb-web/privacy-policy': typeof PbWebPrivacyPolicyRoute
@@ -1078,6 +1086,7 @@ export interface FileRoutesById {
   '/pb-web/about': typeof PbWebAboutRoute
   '/pb-web/accounts': typeof PbWebAccountsRoute
   '/pb-web/cart': typeof PbWebCartRoute
+  '/pb-web/email-template': typeof PbWebEmailTemplateRoute
   '/pb-web/faq': typeof PbWebFaqRoute
   '/pb-web/genre': typeof PbWebGenreRoute
   '/pb-web/privacy-policy': typeof PbWebPrivacyPolicyRoute
@@ -1204,6 +1213,7 @@ export interface FileRouteTypes {
     | '/pb-web/about'
     | '/pb-web/accounts'
     | '/pb-web/cart'
+    | '/pb-web/email-template'
     | '/pb-web/faq'
     | '/pb-web/genre'
     | '/pb-web/privacy-policy'
@@ -1328,6 +1338,7 @@ export interface FileRouteTypes {
     | '/pb-web/about'
     | '/pb-web/accounts'
     | '/pb-web/cart'
+    | '/pb-web/email-template'
     | '/pb-web/faq'
     | '/pb-web/genre'
     | '/pb-web/privacy-policy'
@@ -1452,6 +1463,7 @@ export interface FileRouteTypes {
     | '/pb-web/about'
     | '/pb-web/accounts'
     | '/pb-web/cart'
+    | '/pb-web/email-template'
     | '/pb-web/faq'
     | '/pb-web/genre'
     | '/pb-web/privacy-policy'
@@ -1577,6 +1589,7 @@ export interface RootRouteChildren {
   PbWebAboutRoute: typeof PbWebAboutRoute
   PbWebAccountsRoute: typeof PbWebAccountsRoute
   PbWebCartRoute: typeof PbWebCartRoute
+  PbWebEmailTemplateRoute: typeof PbWebEmailTemplateRoute
   PbWebFaqRoute: typeof PbWebFaqRoute
   PbWebGenreRoute: typeof PbWebGenreRoute
   PbWebPrivacyPolicyRoute: typeof PbWebPrivacyPolicyRoute
@@ -2065,6 +2078,13 @@ declare module '@tanstack/react-router' {
       path: '/pb-web/cart'
       fullPath: '/pb-web/cart'
       preLoaderRoute: typeof PbWebCartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pb-web/email-template': {
+      id: '/pb-web/email-template'
+      path: '/pb-web/email-template'
+      fullPath: '/pb-web/email-template'
+      preLoaderRoute: typeof PbWebEmailTemplateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pb-web/faq': {
@@ -2602,6 +2622,7 @@ const rootRouteChildren: RootRouteChildren = {
   PbWebAboutRoute: PbWebAboutRoute,
   PbWebAccountsRoute: PbWebAccountsRoute,
   PbWebCartRoute: PbWebCartRoute,
+  PbWebEmailTemplateRoute: PbWebEmailTemplateRoute,
   PbWebFaqRoute: PbWebFaqRoute,
   PbWebGenreRoute: PbWebGenreRoute,
   PbWebPrivacyPolicyRoute: PbWebPrivacyPolicyRoute,

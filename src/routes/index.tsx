@@ -14,6 +14,7 @@ import {
   Sun,
   Moon,
   Building2,
+  Mail,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
@@ -186,7 +187,7 @@ function WorkspaceSelector() {
       <main className="mx-auto my-auto w-full max-w-7xl 2xl:max-w-[1500px] py-12 md:py-16">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-5">
           {/* PixelBooks Website Link */}
-          <div className="flex items-center justify-center pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
             <Link
               to="/pb-web/genre"
               id="link-pixelbooks-website"
@@ -197,6 +198,21 @@ function WorkspaceSelector() {
                 className="text-[var(--brand)] transition-transform duration-200 group-hover:rotate-12"
               />
               <span>PixelBooks Website</span>
+              <ExternalLink
+                size={13}
+                className="text-muted-foreground transition-all duration-200 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </Link>
+            <Link
+              to="/pb-web/email-template"
+              id="link-email-template"
+              className="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card/75 px-5 py-2.5 text-sm font-semibold text-foreground shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--brand)]/50 hover:bg-card hover:text-[var(--brand)] hover:shadow-md cursor-pointer"
+            >
+              <Mail
+                size={16}
+                className="text-[var(--brand)] transition-transform duration-200 group-hover:rotate-12"
+              />
+              <span>Email Template</span>
               <ExternalLink
                 size={13}
                 className="text-muted-foreground transition-all duration-200 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
