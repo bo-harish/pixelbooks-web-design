@@ -16,6 +16,7 @@ import { AppShell } from "@/components/app-shell";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 
 export const Route = createFileRoute("/library-admin/courses")({
   component: LibraryAdminCoursesPage,
@@ -25,30 +26,32 @@ interface BatchItem {
   id: string;
   title: string;
   subtext: string;
+  isActive: boolean;
 }
 
 interface CourseItem {
   id: string;
   title: string;
+  isActive: boolean;
 }
 
 const INITIAL_BATCHES: BatchItem[] = [
-  { id: "b1", title: "MSC", subtext: "2025" },
-  { id: "b2", title: "2026", subtext: "001" },
-  { id: "b3", title: "NEET", subtext: "Online A" },
-  { id: "b4", title: "BSc Agriculture", subtext: "March 2025" },
-  { id: "b5", title: "BSc C", subtext: "Aug 2025 - Aug 2029" },
-  { id: "b6", title: "BSc C", subtext: "Aug 2024 to Aug 2028" },
-  { id: "b7", title: "BSc Agriculturev", subtext: "March 2019" },
+  { id: "b1", title: "MSC", subtext: "2025", isActive: true },
+  { id: "b2", title: "2026", subtext: "001", isActive: true },
+  { id: "b3", title: "NEET", subtext: "Online A", isActive: true },
+  { id: "b4", title: "BSc Agriculture", subtext: "March 2025", isActive: true },
+  { id: "b5", title: "BSc C", subtext: "Aug 2025 - Aug 2029", isActive: true },
+  { id: "b6", title: "BSc C", subtext: "Aug 2024 to Aug 2028", isActive: true },
+  { id: "b7", title: "BSc Agriculturev", subtext: "March 2019", isActive: false },
 ];
 
 const INITIAL_COURSES: CourseItem[] = [
-  { id: "c1", title: "MSC" },
-  { id: "c2", title: "2026" },
-  { id: "c3", title: "NEET" },
-  { id: "c4", title: "BSc C" },
-  { id: "c5", title: "BSc Agriculture" },
-  { id: "c6", title: "BSc Agriculturev" },
+  { id: "c1", title: "MSC", isActive: true },
+  { id: "c2", title: "2026", isActive: true },
+  { id: "c3", title: "NEET", isActive: true },
+  { id: "c4", title: "BSc C", isActive: true },
+  { id: "c5", title: "BSc Agriculture", isActive: true },
+  { id: "c6", title: "BSc Agriculturev", isActive: false },
 ];
 
 export function LibraryAdminCoursesPage() {
@@ -152,6 +155,7 @@ export function LibraryAdminCoursesPage() {
       const newCourses: CourseItem[] = validTitles.map((title, idx) => ({
         id: `c_${Date.now()}_${idx}`,
         title,
+        isActive: true,
       }));
       setCourses((prev) => [...newCourses, ...prev]);
       toast.success(
@@ -163,6 +167,19 @@ export function LibraryAdminCoursesPage() {
 
     setIsAddCourseOpen(false);
     setEditingCourse(null);
+  };
+
+  const handleToggleCourseActive = (courseId: string) => {
+    setCourses((prev) =>
+      prev.map((c) => {
+        if (c.id === courseId) {
+          const nextState = !c.isActive;
+          toast.success(`Course "${c.title}" is now ${nextState ? "Active" : "Inactive"}`);
+          return { ...c, isActive: nextState };
+        }
+        return c;
+      }),
+    );
   };
 
   // Handlers for Add/Edit Batch
@@ -219,6 +236,7 @@ export function LibraryAdminCoursesPage() {
         id: `b_${Date.now()}_${idx}`,
         title: batchTitleInput.trim(),
         subtext,
+        isActive: true,
       }));
       setBatches((prev) => [...newBatches, ...prev]);
       toast.success(
@@ -230,6 +248,21 @@ export function LibraryAdminCoursesPage() {
 
     setIsAddBatchOpen(false);
     setEditingBatch(null);
+  };
+
+  const handleToggleBatchActive = (batchId: string) => {
+    setBatches((prev) =>
+      prev.map((b) => {
+        if (b.id === batchId) {
+          const nextState = !b.isActive;
+          toast.success(
+            `Batch "${b.title} (${b.subtext})" is now ${nextState ? "Active" : "Inactive"}`,
+          );
+          return { ...b, isActive: nextState };
+        }
+        return b;
+      }),
+    );
   };
 
   // Delete Handler
@@ -349,13 +382,14 @@ export function LibraryAdminCoursesPage() {
                     <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       <th className="pb-3 pr-4 font-semibold">Course</th>
                       <th className="pb-3 px-3 font-semibold text-center w-20">Edit</th>
+                      <th className="pb-3 px-3 font-semibold text-center w-16">Active</th>
                       <th className="pb-3 pl-3 font-semibold text-center w-16">Remove</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/60">
                     {filteredCourses.length === 0 ? (
                       <tr>
-                        <td colSpan={3} className="py-12 text-center text-muted-foreground">
+                        <td colSpan={4} className="py-12 text-center text-muted-foreground">
                           <div className="flex flex-col items-center justify-center gap-2">
                             <GraduationCap size={32} className="text-muted-foreground/60" />
                             <p className="font-semibold text-sm">No courses found</p>
@@ -378,6 +412,16 @@ export function LibraryAdminCoursesPage() {
                             >
                               Edit
                             </button>
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <div className="inline-flex items-center justify-center">
+                              <Switch
+                                checked={c.isActive}
+                                onCheckedChange={() => handleToggleCourseActive(c.id)}
+                                className="data-[state=checked]:bg-[var(--brand)]"
+                                aria-label={`Toggle active status for ${c.title}`}
+                              />
+                            </div>
                           </td>
                           <td className="py-3 pl-3 text-center">
                             <button
@@ -463,13 +507,14 @@ export function LibraryAdminCoursesPage() {
                     <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       <th className="pb-3 pr-4 font-semibold">Batch</th>
                       <th className="pb-3 px-3 font-semibold text-center w-20">Edit</th>
+                      <th className="pb-3 px-3 font-semibold text-center w-16">Active</th>
                       <th className="pb-3 pl-3 font-semibold text-center w-16">Remove</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/60">
                     {filteredBatches.length === 0 ? (
                       <tr>
-                        <td colSpan={3} className="py-12 text-center text-muted-foreground">
+                        <td colSpan={4} className="py-12 text-center text-muted-foreground">
                           <div className="flex flex-col items-center justify-center gap-2">
                             <Layers size={32} className="text-muted-foreground/60" />
                             <p className="font-semibold text-sm">No batches found</p>
@@ -497,6 +542,16 @@ export function LibraryAdminCoursesPage() {
                             >
                               Edit
                             </button>
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <div className="inline-flex items-center justify-center">
+                              <Switch
+                                checked={b.isActive}
+                                onCheckedChange={() => handleToggleBatchActive(b.id)}
+                                className="data-[state=checked]:bg-[var(--brand)]"
+                                aria-label={`Toggle active status for ${b.title} (${b.subtext})`}
+                              />
+                            </div>
                           </td>
                           <td className="py-3 pl-3 text-center">
                             <button
