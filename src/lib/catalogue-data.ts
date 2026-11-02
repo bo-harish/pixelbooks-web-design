@@ -1,4 +1,4 @@
-export type Status = "Published" | "Unpublished" | "Draft" | "Rejected";
+export type Status = "Published" | "Unpublished" | "Draft" | "Rejected" | "Pending Approval";
 
 export type Book = {
   id: string;
@@ -69,7 +69,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Reference",
     isbn: "9781019041857",
-    status: "Published",
+    status: "Pending Approval",
     price: null,
     author: "John Timbs",
     cover: gradients[2],
@@ -125,7 +125,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Reference",
     isbn: "9781023088916",
-    status: "Unpublished",
+    status: "Pending Approval",
     price: 5.25,
     author: "Clutton Brock",
     cover: gradients[6],
@@ -243,7 +243,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Philosophy",
     isbn: "9780199535699",
-    status: "Unpublished",
+    status: "Pending Approval",
     price: null,
     author: "Niccolò Machiavelli",
     cover: gradients[1],
@@ -400,4 +400,45 @@ export function getBookTotalLibraryCopies(book: Book): number {
     return Object.values(alloc).reduce((sum, c) => sum + (c || 0), 0);
   }
   return book.licenseCount ?? 50;
+}
+
+const LOCAL_STORAGE_KEY = "pixelbooks_catalogue_books";
+
+export function getBooks(): Book[] {
+  if (typeof window === "undefined") {
+    return seedBooks;
+  }
+  const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (!stored) {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(seedBooks));
+    return seedBooks;
+  }
+  try {
+    const parsed: Book[] = JSON.parse(stored);
+    if (!Array.isArray(parsed) || parsed.length === 0) return seedBooks;
+    return seedBooks.map((sb) => {
+      const existing = parsed.find((p) => p.id === sb.id);
+      return existing ? { ...sb, status: existing.status } : sb;
+    });
+  } catch {
+    return seedBooks;
+  }
+}
+
+export function getBookById(id: string): Book | undefined {
+  const list = getBooks();
+  return list.find((b) => b.id === id);
+}
+
+export function updateBookStatus(id: string, status: Status): Book[] {
+  const book = seedBooks.find((b) => b.id === id);
+  if (book) {
+    book.status = status;
+  }
+  const list = getBooks();
+  const updated = list.map((b) => (b.id === id ? { ...b, status } : b));
+  if (typeof window !== "undefined") {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+  }
+  return updated;
 }

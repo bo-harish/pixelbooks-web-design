@@ -31,7 +31,7 @@ import {
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { BookCover } from "@/components/ui/book-cover";
-import { seedBooks, type Status } from "@/lib/catalogue-data";
+import { seedBooks, getBookById, updateBookStatus, type Book, type Status } from "@/lib/catalogue-data";
 import {
   Dialog,
   DialogContent,
@@ -40,6 +40,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { SocialPublishModal } from "@/components/social-publish-modal";
 
 export const Route = createFileRoute("/pb-admin/titles/$bookId")({
   component: EBookDetailPage,
@@ -103,15 +104,18 @@ function getExtra(id: string): BookExtra {
 /* ------------------------------------------------------------------ */
 
 function StatusPill({ status }: { status: Status }) {
-  const map = {
+  const map: Record<string, { color: string; Icon: typeof CheckCircle2 }> = {
     Published: { color: "var(--success)", Icon: CheckCircle2 },
     Rejected: { color: "var(--danger)", Icon: FileX2 },
     Unpublished: { color: "#6b7280", Icon: CircleOff },
-  } as const;
-  const { color, Icon } = map[status];
+    Draft: { color: "#f59e0b", Icon: Clock },
+    "Pending Approval": { color: "#d97706", Icon: Clock },
+  };
+  const item = map[status] ?? { color: "#6b7280", Icon: CircleOff };
+  const { color, Icon } = item;
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
       style={{
         backgroundColor: `color-mix(in oklch, ${color} 12%, transparent)`,
         color,
@@ -124,12 +128,14 @@ function StatusPill({ status }: { status: Status }) {
 }
 
 function StatusStamp({ status }: { status: Status }) {
-  const map = {
+  const map: Record<string, { label: string; color: string }> = {
     Published: { label: "PUBLISHED", color: "#059669" },
     Rejected: { label: "REJECTED", color: "#e11d48" },
-    Unpublished: { label: "DRAFT", color: "#6b7280" },
+    Unpublished: { label: "UNPUBLISHED", color: "#6b7280" },
+    Draft: { label: "DRAFT", color: "#6b7280" },
+    "Pending Approval": { label: "PENDING APPROVAL", color: "#d97706" },
   };
-  const s = map[status];
+  const s = map[status] ?? { label: "DRAFT", color: "#6b7280" };
   return (
     <div
       className="flex h-16 w-16 shrink-0 rotate-12 items-center justify-center rounded-full border-[3px] text-[8px] font-black uppercase tracking-widest opacity-80"
@@ -562,7 +568,16 @@ function LibraryStoreAllocationCard() {
 
 function EBookDetailPage() {
   const { bookId } = Route.useParams();
-  const book = seedBooks.find((b) => b.id === bookId);
+  const [book, setBook] = useState<Book | undefined>(() => getBookById(bookId));
+  const [isApproveOpen, setIsApproveOpen] = useState(false);
+  const [isRejectOpen, setIsRejectOpen] = useState(false);
+  const [isSocialPublishOpen, setIsSocialPublishOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+
+  useEffect(() => {
+    const found = getBookById(bookId);
+    if (found) setBook(found);
+  }, [bookId]);
 
   if (!book) {
     return (
@@ -585,9 +600,28 @@ function EBookDetailPage() {
   const priceExGST =
     book.price !== null ? (book.price / (1 + extra.gstRate / 100)).toFixed(2) : null;
 
+  const handleApprove = () => {
+    if (!book) return;
+    updateBookStatus(book.id, "Published");
+    setBook((prev) => (prev ? { ...prev, status: "Published" } : undefined));
+    setIsApproveOpen(false);
+    toast.success("eBook has been approved and published successfully!");
+    // Show social media publish popup
+    setIsSocialPublishOpen(true);
+  };
+
+  const handleReject = () => {
+    if (!book) return;
+    updateBookStatus(book.id, "Rejected");
+    setBook((prev) => (prev ? { ...prev, status: "Rejected" } : undefined));
+    setIsRejectOpen(false);
+    setRejectionReason("");
+    toast.error("eBook status set to Rejected");
+  };
+
   return (
     <AppShell title="Title Details">
-      <div className="space-y-4 p-4 md:p-8">
+      <div className="space-y-4 p-4 md:p-8 pb-20">
         {/* Back button */}
         <div className="mb-6 flex items-center gap-3">
           <Link
@@ -605,6 +639,47 @@ function EBookDetailPage() {
           </Link>
         </div>
 
+        {/* ── Pending Approval Banner ─────────────────────────────────── */}
+        {book.status === "Pending Approval" && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 sm:p-5 shadow-2xs">
+            <div className="flex items-start sm:items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                <Clock size={20} />
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-foreground">Pending Admin Approval</h3>
+                  <span className="inline-flex items-center rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                    Action Required
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  This eBook was submitted for review by {book.publisher || book.author}. Please evaluate the title details below to Approve or Reject this title.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setIsRejectOpen(true)}
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-rose-500/30 bg-card px-4 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+              >
+                <FileX2 size={14} />
+                <span>Reject</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsApproveOpen(true)}
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg px-4 text-xs font-bold text-white hover:opacity-90 transition-opacity shadow-2xs cursor-pointer"
+                style={{ backgroundColor: "var(--brand)" }}
+              >
+                <CheckCircle2 size={14} />
+                <span>Approve eBook</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ── Hero card ──────────────────────────────────────────────── */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-2xs">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
@@ -621,34 +696,42 @@ function EBookDetailPage() {
             <div className="flex-1 min-w-0 space-y-5">
               {/* Header: Title */}
               <div className="space-y-2.5 min-w-0">
-                <h1 className="text-2xl font-bold tracking-tight leading-snug text-foreground">
-                  {book.title}
-                </h1>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-2.5 min-w-0 flex-1">
+                    <h1 className="text-2xl font-bold tracking-tight leading-snug text-foreground">
+                      {book.title}
+                    </h1>
 
-                {/* Badges & Entity Row */}
-                <div className="flex flex-wrap items-center gap-2.5">
-                  {/* Author Chip */}
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-xs font-semibold text-foreground shadow-2xs">
-                    <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
-                      <Feather size={9} />
-                    </span>
-                    <span className="text-[11px] font-medium text-foreground">{book.author}</span>
+                    {/* Badges & Entity Row */}
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {/* Author Chip */}
+                      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-xs font-semibold text-foreground shadow-2xs">
+                        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/12 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                          <Feather size={9} />
+                        </span>
+                        <span className="text-[11px] font-medium text-foreground">{book.author}</span>
+                      </div>
+
+                      {/* Publisher Chip */}
+                      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-xs font-semibold text-foreground shadow-2xs">
+                        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+                          <Building2 size={9} />
+                        </span>
+                        <span className="text-[11px] font-medium text-foreground">
+                          {book.publisher ?? "PixelBooks Press"}
+                        </span>
+                      </div>
+
+                      {/* Category Pill */}
+                      <span className="rounded-md border border-border bg-secondary/50 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                        {book.category}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Publisher Chip */}
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-xs font-semibold text-foreground shadow-2xs">
-                    <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-500/12 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
-                      <Building2 size={9} />
-                    </span>
-                    <span className="text-[11px] font-medium text-foreground">
-                      {book.publisher ?? "PixelBooks Press"}
-                    </span>
+                  <div className="shrink-0 hidden sm:block">
+                    <StatusStamp status={book.status} />
                   </div>
-
-                  {/* Category Pill */}
-                  <span className="rounded-md border border-border bg-secondary/50 px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                    {book.category}
-                  </span>
                 </div>
               </div>
 
@@ -725,19 +808,67 @@ function EBookDetailPage() {
 
               {/* Actions */}
               <div className="pt-2 flex flex-wrap items-center gap-3">
+                {book.status === "Pending Approval" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setIsApproveOpen(true)}
+                      className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs cursor-pointer"
+                      style={{
+                        backgroundColor: "var(--brand)",
+                        color: "var(--brand-contrast)",
+                      }}
+                    >
+                      <CheckCircle2 size={16} />
+                      <span>Approve eBook</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsRejectOpen(true)}
+                      className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-destructive hover:bg-destructive hover:text-destructive-foreground cursor-pointer"
+                    >
+                      <FileX2 size={16} />
+                      <span>Reject</span>
+                    </button>
+                  </>
+                )}
+                {book.status === "Rejected" && (
+                  <button
+                    type="button"
+                    onClick={() => setIsApproveOpen(true)}
+                    className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs cursor-pointer"
+                    style={{
+                      backgroundColor: "var(--brand)",
+                      color: "var(--brand-contrast)",
+                    }}
+                  >
+                    <CheckCircle2 size={16} />
+                    <span>Approve eBook</span>
+                  </button>
+                )}
+                {book.status === "Published" && (
+                  <button
+                    type="button"
+                    onClick={() => setIsRejectOpen(true)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-destructive hover:bg-destructive hover:text-destructive-foreground cursor-pointer"
+                  >
+                    <FileX2 size={16} />
+                    <span>Reject</span>
+                  </button>
+                )}
                 <button
-                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 shadow-2xs"
-                  style={{
-                    backgroundColor: "var(--brand)",
-                    color: "var(--brand-contrast)",
-                  }}
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer"
                 >
                   <Eye size={16} />
-                  Preview eBook
+                  <span>Preview eBook</span>
                 </button>
-                <button className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer"
+                >
                   <BookOpen size={16} />
-                  Preview Sample eBook
+                  <span>Preview Sample eBook</span>
                 </button>
                 <CopyBookUrlButton bookId={book.id} />
               </div>
@@ -875,6 +1006,125 @@ function EBookDetailPage() {
             </p>
           </div>
         </div>
+
+        {/* ── Sticky Footer Actions (Pending Approval) ────────────────── */}
+        {book.status === "Pending Approval" && (
+          <div className="sticky bottom-0 -mx-4 mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border bg-background/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8 z-20 shadow-lg">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-xs font-semibold text-muted-foreground">
+                Awaiting approval decision: Review eBook metadata and allocate libraries
+              </span>
+            </div>
+            <div className="flex items-center gap-3 self-end sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setIsRejectOpen(true)}
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-background px-6 text-sm font-semibold transition-colors hover:border-destructive hover:bg-destructive hover:text-destructive-foreground cursor-pointer text-foreground"
+              >
+                <FileX2 size={16} />
+                <span>Reject</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsApproveOpen(true)}
+                className="inline-flex h-11 items-center gap-2 rounded-lg px-6 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+              >
+                <CheckCircle2 size={16} />
+                <span>Approve eBook</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Approve eBook Dialog ────────────────────────────────────── */}
+        <Dialog open={isApproveOpen} onOpenChange={setIsApproveOpen}>
+          <DialogContent className="max-w-md bg-card border border-border rounded-xl p-6 shadow-xl">
+            <DialogHeader>
+              <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                <CheckCircle2 size={20} className="text-[var(--brand)]" />
+                <span>Approve eBook</span>
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground pt-1 leading-relaxed">
+                Are you sure you want to approve <strong className="text-foreground">"{book.title}"</strong>? Once approved, the status will be changed to Published and this eBook will become live across authorized library catalogues.
+              </DialogDescription>
+            </DialogHeader>
+
+            <DialogFooter className="mt-5 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setIsApproveOpen(false)}
+                className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleApprove}
+                className="inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-bold text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
+                style={{ backgroundColor: "var(--brand)" }}
+              >
+                Confirm &amp; Approve
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* ── Reject eBook Dialog ─────────────────────────────────────── */}
+        <Dialog open={isRejectOpen} onOpenChange={setIsRejectOpen}>
+          <DialogContent className="max-w-md bg-card border border-border rounded-xl p-6 shadow-xl">
+            <DialogHeader>
+              <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                <FileX2 size={20} className="text-rose-500" />
+                <span>Reject eBook</span>
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground pt-1 leading-relaxed">
+                Are you sure you want to reject <strong className="text-foreground">"{book.title}"</strong>? You can optionally provide feedback to the publisher or author below.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-2 space-y-2">
+              <label className="text-xs font-semibold text-foreground block">
+                Rejection Reason / Feedback (Optional)
+              </label>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="e.g. Incomplete metadata, cover resolution too low, formatting issues..."
+                rows={3}
+                className="w-full rounded-lg border border-border bg-secondary/30 p-2.5 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-rose-500"
+              />
+            </div>
+
+            <DialogFooter className="mt-3 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRejectOpen(false);
+                  setRejectionReason("");
+                }}
+                className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleReject}
+                className="inline-flex h-9 items-center justify-center rounded-lg bg-rose-600 px-4 text-xs font-bold text-white shadow-xs hover:bg-rose-700 transition-colors cursor-pointer"
+              >
+                Reject eBook
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* ── Social Media Broadcast Modal ────────────────────────────── */}
+        <SocialPublishModal
+          open={isSocialPublishOpen}
+          onOpenChange={setIsSocialPublishOpen}
+          book={book}
+        />
       </div>
     </AppShell>
   );

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Search,
   Plus,
@@ -29,13 +29,28 @@ import {
   PaginationLink,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
-import { seedBooks, type Book, type Status } from "@/lib/catalogue-data";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { SocialPublishModal } from "@/components/social-publish-modal";
+import { seedBooks, getBooks, updateBookStatus, type Book, type Status } from "@/lib/catalogue-data";
 
 export const Route = createFileRoute("/pb-admin/titles/")({
   component: TitlesCataloguePage,
 });
 
-const STATUS_FILTERS: Array<"All" | Status> = ["All", "Published", "Unpublished", "Rejected"];
+const STATUS_FILTERS: Array<"All" | Status> = [
+  "All",
+  "Pending Approval",
+  "Published",
+  "Unpublished",
+  "Rejected",
+];
 const PUBLISHER_AUTHOR_FILTERS = ["Publisher & Author", "Publisher", "Author"];
 
 const LANGUAGE_FILTERS = ["All Languages", "English", "Hindi", "Tamil", "Spanish", "French"];
@@ -181,12 +196,13 @@ function StatusPill({ status }: { status: Status }) {
     Rejected: { color: "var(--danger)", Icon: FileX2 },
     Unpublished: { color: "#6b7280", Icon: CircleOff },
     Draft: { color: "#f59e0b", Icon: Clock },
+    "Pending Approval": { color: "#d97706", Icon: Clock },
   };
   const item = map[status] ?? { color: "#6b7280", Icon: CircleOff };
   const { color, Icon } = item;
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium"
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
       style={{
         backgroundColor: `color-mix(in oklch, ${color} 12%, transparent)`,
         color,
@@ -219,6 +235,7 @@ function StatusFilter({
 
 function TitlesCataloguePage() {
   const navigate = useNavigate();
+  const [books, setBooks] = useState<Book[]>(() => getBooks());
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]>("All");
   const [entityFilter, setEntityFilter] = useState("Publisher & Author");
@@ -227,9 +244,36 @@ function TitlesCataloguePage() {
   const [page, setPage] = useState(1);
   const [exportOpen, setExportOpen] = useState(false);
 
+  // Quick Action Approve Dialog state
+  const [pendingActionBook, setPendingActionBook] = useState<Book | null>(null);
+  const [isApproveOpen, setIsApproveOpen] = useState(false);
+  const [socialModalBook, setSocialModalBook] = useState<Book | null>(null);
+  const [isSocialPublishOpen, setIsSocialPublishOpen] = useState(false);
+
+  const refreshBooks = () => {
+    setBooks(getBooks());
+  };
+
+  useEffect(() => {
+    refreshBooks();
+  }, []);
+
+  const handleConfirmApprove = () => {
+    if (!pendingActionBook) return;
+    const target = pendingActionBook;
+    updateBookStatus(target.id, "Published");
+    refreshBooks();
+    setPendingActionBook(null);
+    setIsApproveOpen(false);
+    toast.success(`"${target.title}" has been approved and published successfully!`);
+    // Open social media publish modal
+    setSocialModalBook(target);
+    setIsSocialPublishOpen(true);
+  };
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return seedBooks.filter((b) => {
+    return books.filter((b) => {
       if (filter !== "All" && b.status !== filter) return false;
       if (entityFilter !== "Publisher & Author") {
         if (entityFilter === "Publisher" && !b.publisher) return false;
@@ -246,7 +290,7 @@ function TitlesCataloguePage() {
         (b.isbn ?? "").toLowerCase().includes(q)
       );
     });
-  }, [query, filter, entityFilter, languageFilter, genreFilter]);
+  }, [books, query, filter, entityFilter, languageFilter, genreFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -490,9 +534,27 @@ function TitlesCataloguePage() {
                       )}
                     </td>
                     <td className="py-4 pr-6 text-right">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
-                        <ChevronRight size={16} />
-                      </span>
+                      <div className="flex items-center justify-end gap-1.5">
+                        {b.status === "Pending Approval" && (
+                          <button
+                            type="button"
+                            title="Approve eBook"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPendingActionBook(b);
+                              setIsApproveOpen(true);
+                            }}
+                            className="mr-1.5 inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold text-white transition-opacity hover:opacity-90 shadow-2xs cursor-pointer"
+                            style={{ backgroundColor: "var(--brand)" }}
+                          >
+                            <CheckCircle2 size={13} />
+                            <span>Approve</span>
+                          </button>
+                        )}
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors group-hover:bg-secondary group-hover:text-foreground">
+                          <ChevronRight size={16} />
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -574,6 +636,23 @@ function TitlesCataloguePage() {
                         ISBN {b.isbn}
                       </p>
                     )}
+                    {b.status === "Pending Approval" && (
+                      <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPendingActionBook(b);
+                            setIsApproveOpen(true);
+                          }}
+                          className="w-full inline-flex h-8 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-semibold text-white shadow-2xs hover:opacity-90 transition-opacity cursor-pointer"
+                          style={{ backgroundColor: "var(--brand)" }}
+                        >
+                          <CheckCircle2 size={13} />
+                          <span>Approve eBook</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <ChevronRight size={16} className="mt-1 shrink-0 text-muted-foreground" />
                 </div>
@@ -641,6 +720,56 @@ function TitlesCataloguePage() {
             </Pagination>
           </div>
         </div>
+        {/* Approve Confirmation Dialog */}
+        <Dialog
+          open={isApproveOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setIsApproveOpen(false);
+              setPendingActionBook(null);
+            }
+          }}
+        >
+          <DialogContent className="max-w-md bg-card border border-border rounded-xl p-6 shadow-xl">
+            <DialogHeader>
+              <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
+                <CheckCircle2 size={20} className="text-[var(--brand)]" />
+                <span>Approve eBook</span>
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground pt-1 leading-relaxed">
+                Are you sure you want to approve <strong className="text-foreground">"{pendingActionBook?.title}"</strong>? Once approved, the status will be changed to Published and this eBook will become live across authorized library catalogues.
+              </DialogDescription>
+            </DialogHeader>
+
+            <DialogFooter className="mt-5 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsApproveOpen(false);
+                  setPendingActionBook(null);
+                }}
+                className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmApprove}
+                className="inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-bold text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
+                style={{ backgroundColor: "var(--brand)" }}
+              >
+                Confirm &amp; Approve
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Social Media Announcement Modal */}
+        <SocialPublishModal
+          open={isSocialPublishOpen}
+          onOpenChange={setIsSocialPublishOpen}
+          book={socialModalBook}
+        />
       </div>
     </AppShell>
   );

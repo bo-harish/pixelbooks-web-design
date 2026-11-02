@@ -176,6 +176,13 @@ const STATUS_CONFIGS: Record<Status, StatusConfig> = {
     borderColor: "border-rose-500/30 dark:border-rose-500/40",
     Icon: FileX2,
   },
+  "Pending Approval": {
+    label: "Pending Approval",
+    bgClass: "bg-amber-500/12 dark:bg-amber-500/20",
+    textColor: "text-amber-600 dark:text-amber-400 font-semibold",
+    borderColor: "border-amber-500/30 dark:border-amber-500/40",
+    Icon: Clock,
+  },
 };
 
 function StatusSelectPill({
