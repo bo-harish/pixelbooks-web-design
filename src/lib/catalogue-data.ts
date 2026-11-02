@@ -97,7 +97,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Reference",
     isbn: "9781023481717",
-    status: "Draft",
+    status: "Pending Approval",
     price: 1.05,
     author: "Glenn Curtiss",
     cover: gradients[4],
@@ -153,7 +153,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Philosophy",
     isbn: "9780140449334",
-    status: "Published",
+    status: "Pending Approval",
     price: 4.5,
     author: "Marcus Aurelius",
     cover: gradients[1],
@@ -167,7 +167,7 @@ export const seedBooks: Book[] = [
     format: "EPUB",
     category: "Academic & Education",
     isbn: "9780451529060",
-    status: "Published",
+    status: "Pending Approval",
     price: null,
     author: "Charles Darwin",
     cover: gradients[2],
@@ -402,7 +402,7 @@ export function getBookTotalLibraryCopies(book: Book): number {
   return book.licenseCount ?? 50;
 }
 
-const LOCAL_STORAGE_KEY = "pixelbooks_catalogue_books";
+const LOCAL_STORAGE_KEY = "pixelbooks_catalogue_books_v3";
 
 export function getBooks(): Book[] {
   if (typeof window === "undefined") {
