@@ -27,6 +27,7 @@ import {
   ShieldCheck,
   Calendar,
   FileText,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
@@ -846,16 +847,6 @@ function EBookDetailPage() {
                     <span>Approve eBook</span>
                   </button>
                 )}
-                {book.status === "Published" && (
-                  <button
-                    type="button"
-                    onClick={() => setIsRejectOpen(true)}
-                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-destructive hover:bg-destructive hover:text-destructive-foreground cursor-pointer"
-                  >
-                    <FileX2 size={16} />
-                    <span>Reject</span>
-                  </button>
-                )}
                 <button
                   type="button"
                   className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary cursor-pointer"
@@ -1033,6 +1024,36 @@ function EBookDetailPage() {
               >
                 <CheckCircle2 size={16} />
                 <span>Approve eBook</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Sticky Footer Actions (Published) ────────────────────────── */}
+        {book.status === "Published" && (
+          <div className="sticky bottom-0 -mx-4 mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-border bg-background/95 px-4 py-4 backdrop-blur md:-mx-8 md:px-8 z-20 shadow-lg">
+            {/* Left end of the page */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsSocialPublishOpen(true)}
+                className="inline-flex h-11 items-center gap-2 rounded-lg px-6 text-sm font-semibold shadow-sm transition-opacity hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "var(--brand)", color: "var(--brand-contrast)" }}
+              >
+                <Share2 size={16} />
+                <span>Post on Social Media</span>
+              </button>
+            </div>
+
+            {/* Right bottom */}
+            <div className="flex items-center gap-3 self-end sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setIsRejectOpen(true)}
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-background px-6 text-sm font-semibold transition-colors hover:border-destructive hover:bg-destructive hover:text-destructive-foreground cursor-pointer text-foreground"
+              >
+                <FileX2 size={16} />
+                <span>Reject</span>
               </button>
             </div>
           </div>
