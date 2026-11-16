@@ -16,6 +16,8 @@ import {
   PencilLine,
   Layers,
   Sparkles,
+  LayoutTemplate,
+  ChevronDown,
 } from "lucide-react";
 import {
   Dialog,
@@ -37,6 +39,47 @@ export interface SocialPublishModalProps {
   } | null;
 }
 
+type TemplateId = "template-1" | "template-2" | "template-3";
+
+interface TemplateConfig {
+  id: TemplateId;
+  name: string;
+  badge: string;
+  image: string;
+  filename: string;
+  getDefaultMessage: (title: string, author: string) => string;
+}
+
+const TEMPLATES: TemplateConfig[] = [
+  {
+    id: "template-1",
+    name: "Template 1",
+    badge: "Launch Poster",
+    image: "/sample-social-post.jpg",
+    filename: "pixelbooks-template-1.jpg",
+    getDefaultMessage: (title, author) =>
+      `New Book on PixelBooks!\n\n${title}\n By ${author}\n\nDiscover, read, and enjoy this new addition to the PixelBooks library.\n\nAvailable now on PixelBooks\nwww.pixelbooksapp.com\n\n#PixelBooks #NewBook #eBooks`,
+  },
+  {
+    id: "template-2",
+    name: "Template 2",
+    badge: "Spotlight Feature",
+    image: "/sample-social-post-2.jpg",
+    filename: "pixelbooks-template-2.jpg",
+    getDefaultMessage: (title, author) =>
+      `🎉 Just Released on PixelBooks!\n\n📖 ${title}\n✍️ By ${author}\n\nImmerse yourself in this captivating new title now streaming on the PixelBooks reading platform. Access full digital copies anytime on your mobile or tablet.\n\n📲 Start reading today: www.pixelbooksapp.com\nDownload the PixelBooks app on iOS & Android.\n\n#PixelBooks #BookRelease #MustRead #ReadingCommunity #DigitalLibrary`,
+  },
+  {
+    id: "template-3",
+    name: "Template 3",
+    badge: "Editorial Quote",
+    image: "/sample-social-post-3.jpg",
+    filename: "pixelbooks-template-3.jpg",
+    getDefaultMessage: (title, author) =>
+      `✨ Spotlight Title | Now Live!\n\nDiscover ${title} by ${author} — exclusively available across the PixelBooks catalog.\n\nExperience interactive digital reading, custom highlights, and seamless multi-device sync on PixelBooks.\n\n👉 Read now: www.pixelbooksapp.com\nAvailable on App Store & Google Play\n\n#PixelBooks #BookSpotlight #eReaders #eBooks #NewArrival`,
+  },
+];
+
 export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishModalProps) {
   const [selectedChannels, setSelectedChannels] = useState<{
     facebook: boolean;
@@ -48,19 +91,41 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
     linkedin: true,
   });
 
-  const [message, setMessage] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<TemplateId>("template-1");
+  const [templateMessages, setTemplateMessages] = useState<Record<TemplateId, string>>({
+    "template-1": "",
+    "template-2": "",
+    "template-3": "",
+  });
+
   const [copied, setCopied] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
 
   useEffect(() => {
     if (book) {
-      const defaultContent = `New Book on PixelBooks!\n\n${book.title}\n By ${book.author}\n\nDiscover, read, and enjoy this new addition to the PixelBooks library.\n\nAvailable now on PixelBooks\nwww.pixelbooksapp.com\n\n#PixelBooks #NewBook #eBooks`;
-      setMessage(defaultContent);
+      const initialMessages: Record<TemplateId, string> = {
+        "template-1": TEMPLATES[0].getDefaultMessage(book.title, book.author),
+        "template-2": TEMPLATES[1].getDefaultMessage(book.title, book.author),
+        "template-3": TEMPLATES[2].getDefaultMessage(book.title, book.author),
+      };
+      setTemplateMessages(initialMessages);
+      setSelectedTemplateId("template-1");
       setSelectedChannels({ facebook: true, instagram: true, linkedin: true });
     }
   }, [book, open]);
 
   if (!book) return null;
+
+  const activeTemplate =
+    TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
+  const currentMessage = templateMessages[selectedTemplateId] || "";
+
+  const handleMessageChange = (newText: string) => {
+    setTemplateMessages((prev) => ({
+      ...prev,
+      [selectedTemplateId]: newText,
+    }));
+  };
 
   const toggleChannel = (channel: "facebook" | "instagram" | "linkedin") => {
     setSelectedChannels((prev) => ({
@@ -82,7 +147,7 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
 
   const handleCopyMessage = async () => {
     try {
-      await navigator.clipboard.writeText(message);
+      await navigator.clipboard.writeText(currentMessage);
       setCopied(true);
       toast.success("Post text copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
@@ -106,7 +171,9 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
     setTimeout(() => {
       setIsPublishing(false);
       onOpenChange(false);
-      toast.success(`Post successfully published to ${channelNames.join(", ")}!`);
+      toast.success(
+        `Post (${activeTemplate.name}) successfully published to ${channelNames.join(", ")}!`
+      );
     }, 600);
   };
 
@@ -122,7 +189,7 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
                 <span>Broadcast on Social Media</span>
               </DialogTitle>
               <DialogDescription className="text-xs md:text-sm text-muted-foreground">
-                Review and publish this promotional announcement across your connected social channels.
+                Choose a creative template, review or edit the caption, and publish across your connected channels.
               </DialogDescription>
             </div>
           </div>
@@ -132,33 +199,56 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
         <div className="flex flex-col md:flex-row items-stretch">
           {/* Left Column: Real Social Post Preview (Caption Above Creative & Editable) */}
           <div className="flex-1 p-5 md:p-7 space-y-4 bg-muted/5 min-w-0">
-            {/* Top Bar above post */}
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-foreground">
-                  Post Preview
-                </span>
-                <span className="text-[10.5px] font-medium text-muted-foreground">
-                  (Live Editable Feed Card)
-                </span>
+            {/* Template Selection Dropdown & Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border/80 shadow-2xs">
+              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                <label
+                  htmlFor="social-template-select"
+                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 shrink-0"
+                >
+                  <LayoutTemplate size={14} className="text-[var(--brand)]" />
+                  <span>Template:</span>
+                </label>
+
+                <div className="relative flex-1 max-w-xs sm:max-w-sm">
+                  <select
+                    id="social-template-select"
+                    value={selectedTemplateId}
+                    onChange={(e) => setSelectedTemplateId(e.target.value as TemplateId)}
+                    className="w-full appearance-none rounded-lg border border-border bg-secondary/30 hover:bg-secondary/50 focus:bg-background focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] px-3.5 py-2 pr-9 text-xs sm:text-sm font-semibold text-foreground outline-none transition-colors cursor-pointer"
+                  >
+                    {TEMPLATES.map((tmpl) => (
+                      <option key={tmpl.id} value={tmpl.id} className="bg-card text-foreground font-medium py-1">
+                        {tmpl.name} — {tmpl.badge}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={15}
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={handleCopyMessage}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand)] hover:underline cursor-pointer"
-              >
-                {copied ? (
-                  <>
-                    <Check size={13} className="text-emerald-500" />
-                    <span>Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy size={13} />
-                    <span>Copy Text</span>
-                  </>
-                )}
-              </button>
+
+              <div className="flex items-center gap-2 self-end sm:self-auto pr-1">
+                <button
+                  type="button"
+                  onClick={handleCopyMessage}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand)] hover:underline cursor-pointer"
+                >
+                  {copied ? (
+                    <>
+                      <Check size={13} className="text-emerald-500" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={13} />
+                      <span>Copy Text</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Real Social Post Card Container */}
@@ -187,6 +277,11 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
                 </div>
 
                 <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20 px-2 py-0.5 text-[10.5px] font-bold">
+                    <span>{activeTemplate.name}</span>
+                    <span>•</span>
+                    <span className="font-medium text-muted-foreground">{activeTemplate.badge}</span>
+                  </span>
                   <span className="inline-flex items-center gap-1 rounded-md bg-secondary px-2.5 py-1 text-[11px] font-medium text-muted-foreground border border-border">
                     <PencilLine size={12} className="text-[var(--brand)]" />
                     <span>Editable</span>
@@ -199,16 +294,16 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
                     <span>Post Caption &amp; Message</span>
-                    <span className="text-[10px] text-muted-foreground/80">(click inside to edit)</span>
+                    <span className="text-[10px] text-muted-foreground/80">({activeTemplate.name} • click to edit)</span>
                   </label>
                   <span className="text-[10.5px] text-muted-foreground">
-                    {message.length} characters
+                    {currentMessage.length} characters
                   </span>
                 </div>
 
                 <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  value={currentMessage}
+                  onChange={(e) => handleMessageChange(e.target.value)}
                   rows={9}
                   placeholder="Write your post caption..."
                   className="w-full rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/35 focus:bg-background focus:border-[var(--brand)] focus:ring-1 focus:ring-[var(--brand)] p-3.5 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none leading-relaxed font-sans resize-y transition-colors"
@@ -220,31 +315,43 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
                 <div className="relative rounded-xl border border-border overflow-hidden bg-white dark:bg-neutral-900 shadow-inner p-2 sm:p-3 flex flex-col items-center">
                   <div className="w-full flex items-center justify-center">
                     <img
-                      src="/sample-social-post.jpg"
-                      alt="Sample Social Post Creative"
-                      className="w-auto h-auto max-h-[460px] md:max-h-[500px] max-w-full object-contain rounded-lg"
+                      key={activeTemplate.id}
+                      src={activeTemplate.image}
+                      alt={`${activeTemplate.name} - ${activeTemplate.badge}`}
+                      className="w-auto h-auto max-h-[460px] md:max-h-[500px] max-w-full object-contain rounded-lg transition-all duration-300"
                     />
                   </div>
 
                   {/* Creative sub-bar with Actions */}
-                  <div className="w-full bg-card/95 backdrop-blur-xs p-2.5 mt-2.5 rounded-lg border border-border/80 flex items-center justify-end gap-2 text-xs">
-                    <a
-                      href="/sample-social-post.jpg"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors"
-                      title="View Full Resolution"
-                    >
-                      <span>Full View</span>
-                    </a>
-                    <a
-                      href="/sample-social-post.jpg"
-                      download="pixelbooks-sample-post.jpg"
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shadow-2xs"
-                    >
-                      <Download size={12} />
-                      <span>Download</span>
-                    </a>
+                  <div className="w-full bg-card/95 backdrop-blur-xs p-2.5 mt-2.5 rounded-lg border border-border/80 flex items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <span className="text-[10.5px] font-semibold uppercase tracking-wider text-foreground">
+                        {activeTemplate.name}:
+                      </span>
+                      <span className="text-[11px] font-medium text-muted-foreground">
+                        {activeTemplate.badge}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={activeTemplate.image}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors"
+                        title="View Full Resolution"
+                      >
+                        <span>Full View</span>
+                      </a>
+                      <a
+                        href={activeTemplate.image}
+                        download={activeTemplate.filename}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shadow-2xs"
+                      >
+                        <Download size={12} />
+                        <span>Download</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -385,8 +492,10 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
                   <span className="font-semibold text-foreground">{selectedCount} of 3</span>
                 </li>
                 <li className="flex items-center justify-between">
-                  <span>Attached Creative:</span>
-                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">Out Now! Poster</span>
+                  <span>Selected Template:</span>
+                  <span className="font-semibold text-[var(--brand)]">
+                    {activeTemplate.name} ({activeTemplate.badge})
+                  </span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span>Target eBook:</span>
@@ -434,7 +543,7 @@ export function SocialPublishModal({ open, onOpenChange, book }: SocialPublishMo
                   </span>
                 ) : (
                   <span>
-                    Ready to broadcast to <strong>{selectedCount}</strong> channel{selectedCount > 1 ? "s" : ""}
+                    Ready to broadcast <strong>{activeTemplate.name}</strong> to <strong>{selectedCount}</strong> channel{selectedCount > 1 ? "s" : ""}
                   </span>
                 )}
               </p>

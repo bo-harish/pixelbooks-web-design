@@ -135,6 +135,7 @@ export function LibraryOnlyPublisherCataloguePage({
       Object.entries(existing).forEach(([libName, count]) => {
         res[libName] = {
           copies: count,
+          departments: ["All Departments"],
           courses: targetBook.courses || ["All Courses"],
           batches: targetBook.batches || ["All Batches"],
         };
@@ -144,11 +145,13 @@ export function LibraryOnlyPublisherCataloguePage({
     return {
       "Central University Digital Library": {
         copies: 50,
+        departments: ["All Departments"],
         courses: ["All Courses"],
         batches: ["All Batches"],
       },
       "National Science & Tech Consortium": {
         copies: 30,
+        departments: ["All Departments"],
         courses: ["All Courses"],
         batches: ["All Batches"],
       },

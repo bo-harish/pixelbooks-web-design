@@ -1,6 +1,12 @@
+export interface DepartmentOption {
+  id: string;
+  name: string;
+}
+
 export interface CourseOption {
   id: string;
   name: string;
+  departmentName?: string;
 }
 
 export interface BatchOption {
@@ -9,14 +15,23 @@ export interface BatchOption {
   courseName?: string;
 }
 
+export const DEFAULT_DEPARTMENTS: DepartmentOption[] = [
+  { id: "dept-1", name: "Computer Science" },
+  { id: "dept-2", name: "Commerce & Management" },
+  { id: "dept-3", name: "Science" },
+  { id: "dept-4", name: "Economics" },
+  { id: "dept-5", name: "Medical & Health Sciences" },
+  { id: "dept-6", name: "Physics" },
+];
+
 export const DEFAULT_COURSES: CourseOption[] = [
-  { id: "c-1", name: "B.Sc (CS)" },
-  { id: "c-2", name: "B.Tech (IT)" },
-  { id: "c-3", name: "B.Com (CA)" },
-  { id: "c-4", name: "M.B.A" },
-  { id: "c-5", name: "MSC" },
-  { id: "c-6", name: "BSc Agriculture" },
-  { id: "c-7", name: "NEET Courseware" },
+  { id: "c-1", name: "B.Sc (CS)", departmentName: "Computer Science" },
+  { id: "c-2", name: "B.Tech (IT)", departmentName: "Computer Science" },
+  { id: "c-3", name: "B.Com (CA)", departmentName: "Commerce & Management" },
+  { id: "c-4", name: "M.B.A", departmentName: "Commerce & Management" },
+  { id: "c-5", name: "MSC", departmentName: "Science" },
+  { id: "c-6", name: "BSc Agriculture", departmentName: "Science" },
+  { id: "c-7", name: "NEET Courseware", departmentName: "Medical & Health Sciences" },
 ];
 
 export const DEFAULT_BATCHES: BatchOption[] = [

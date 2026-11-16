@@ -350,11 +350,11 @@ function getSections(
               { label: "Video Library", icon: Video, to: "/library-admin/video-library" },
               { label: "Audio Library", icon: Headphones, to: "/library-admin/audio-library" },
               !hideRetailBookStore &&
-                !isStandardAdmin && {
-                  label: "Book Store",
-                  icon: Store,
-                  to: "/library-admin/book-store",
-                },
+              !isStandardAdmin && {
+                label: "Book Store",
+                icon: Store,
+                to: "/library-admin/book-store",
+              },
               !isStandardAdmin && {
                 label: "Banners",
                 icon: ImageIcon,
@@ -373,7 +373,7 @@ function getSections(
         {
           heading: "Users & Structure",
           items: [
-            { label: "Courses", icon: GraduationCap, to: "/library-admin/courses" },
+            { label: "Academics", icon: GraduationCap, to: "/library-admin/courses" },
             { label: "Library Users", icon: Users, to: "/library-admin/users" },
             { label: "Departments", icon: Building2, to: "/library-admin/departments" },
           ],
@@ -571,9 +571,8 @@ function SidebarBrand({ collapsed }: { collapsed: boolean }) {
           <Link
             to="/"
             id="sidebar-logo-link-expanded"
-            className={`flex items-center group overflow-hidden hover:opacity-95 transition-opacity ${
-              isCompletePublisher || isCompleteLibraryAdmin ? "justify-center w-full" : "w-full"
-            }`}
+            className={`flex items-center group overflow-hidden hover:opacity-95 transition-opacity ${isCompletePublisher || isCompleteLibraryAdmin ? "justify-center w-full" : "w-full"
+              }`}
             title="Return to Main Index"
           >
             <div className="bg-white dark:bg-white/95 rounded-xl px-3 py-2 shadow-2xs border border-border/40 w-full flex items-center justify-center">
@@ -676,9 +675,9 @@ function NavRow({
           style={
             isParentOrChildActive
               ? {
-                  backgroundColor: "var(--sidebar-highlight)",
-                  boxShadow: "0 6px 20px -12px var(--brand-glow)",
-                }
+                backgroundColor: "var(--sidebar-highlight)",
+                boxShadow: "0 6px 20px -12px var(--brand-glow)",
+              }
               : undefined
           }
         >
@@ -743,8 +742,8 @@ function NavRow({
                   style={
                     subActive
                       ? {
-                          boxShadow: "0 6px 20px -12px var(--brand-glow)",
-                        }
+                        boxShadow: "0 6px 20px -12px var(--brand-glow)",
+                      }
                       : undefined
                   }
                 >

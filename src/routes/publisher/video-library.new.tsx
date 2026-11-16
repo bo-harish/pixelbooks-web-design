@@ -66,11 +66,13 @@ function AddVideoPage() {
     return {
       "Central University Digital Library": {
         copies: 50,
+        departments: ["All Departments"],
         courses: targetVideo?.courses || ["All Courses"],
         batches: targetVideo?.batches || ["All Batches"],
       },
       "National Science & Tech Consortium": {
         copies: 30,
+        departments: ["All Departments"],
         courses: targetVideo?.courses || ["All Courses"],
         batches: targetVideo?.batches || ["All Batches"],
       },

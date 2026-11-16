@@ -64,11 +64,13 @@ function AddAudioPage() {
     return {
       "Central University Digital Library": {
         copies: 50,
+        departments: ["All Departments"],
         courses: targetAudio?.courses || ["All Courses"],
         batches: targetAudio?.batches || ["All Batches"],
       },
       "National Science & Tech Consortium": {
         copies: 30,
+        departments: ["All Departments"],
         courses: targetAudio?.courses || ["All Courses"],
         batches: targetAudio?.batches || ["All Batches"],
       },

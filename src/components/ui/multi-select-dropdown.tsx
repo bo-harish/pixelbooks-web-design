@@ -16,7 +16,7 @@ interface MultiSelectDropdownProps {
   selectedValues: string[];
   onChange: (values: string[]) => void;
   className?: string;
-  badgeVariant?: "brand" | "blue" | "amber";
+  badgeVariant?: "brand" | "blue" | "amber" | "purple";
 }
 
 export function MultiSelectDropdown({
@@ -79,6 +79,7 @@ export function MultiSelectDropdown({
     brand: "bg-[var(--brand)]/10 text-[var(--brand)] border-[var(--brand)]/20",
     blue: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20",
     amber: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20",
+    purple: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20",
   }[badgeVariant];
 
   return (

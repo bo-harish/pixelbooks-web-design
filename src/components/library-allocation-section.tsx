@@ -11,7 +11,7 @@ import {
   X,
   ChevronDown,
 } from "lucide-react";
-import { DEFAULT_COURSES, DEFAULT_BATCHES } from "@/lib/academic-data";
+import { DEFAULT_DEPARTMENTS, DEFAULT_COURSES, DEFAULT_BATCHES } from "@/lib/academic-data";
 import { MultiSelectDropdown, type MultiSelectOption } from "@/components/ui/multi-select-dropdown";
 
 export const ALL_LIBRARIES = [
@@ -26,6 +26,7 @@ export const ALL_LIBRARIES = [
 
 export interface LibraryAllocationItem {
   copies: number;
+  departments?: string[];
   courses: string[];
   batches: string[];
 }
@@ -72,6 +73,7 @@ export function LibraryMultiSelectDropdown({
     } else {
       next[libName] = {
         copies: defaultCopies,
+        departments: ["All Departments"],
         courses: ["All Courses"],
         batches: ["All Batches"],
       };
@@ -106,6 +108,7 @@ export function LibraryMultiSelectDropdown({
         if (next[l.name] === undefined) {
           next[l.name] = {
             copies: 50,
+            departments: ["All Departments"],
             courses: ["All Courses"],
             batches: ["All Batches"],
           };
@@ -327,11 +330,13 @@ export function LibraryAllocationSection({
   >({
     "Central University Digital Library": {
       copies: 50,
+      departments: ["All Departments"],
       courses: ["All Courses"],
       batches: ["All Batches"],
     },
     "National Science & Tech Consortium": {
       copies: 30,
+      departments: ["All Departments"],
       courses: ["All Courses"],
       batches: ["All Batches"],
     },
@@ -382,13 +387,61 @@ export function LibraryAllocationSection({
     });
   };
 
-  const courseOptions: MultiSelectOption[] = useMemo(
+  const departmentOptions: MultiSelectOption[] = useMemo(
     () => [
-      { id: "all-courses", label: "All Courses" },
-      ...DEFAULT_COURSES.map((c) => ({ id: c.id, label: c.name })),
+      { id: "all-departments", label: "All Departments" },
+      ...DEFAULT_DEPARTMENTS.map((d) => ({ id: d.id, label: d.name })),
     ],
     [],
   );
+
+  const handleDepartmentsChange = (libName: string, next: string[]) => {
+    const currentDepts = allocations[libName]?.departments ?? ["All Departments"];
+    let updatedDepts: string[];
+
+    if (next.includes("All Departments") && !currentDepts.includes("All Departments")) {
+      updatedDepts = ["All Departments"];
+    } else if (next.includes("All Departments") && next.length > 1) {
+      updatedDepts = next.filter((d) => d !== "All Departments");
+    } else {
+      updatedDepts = next;
+    }
+
+    updateAllocations((prev) => ({
+      ...prev,
+      [libName]: {
+        ...prev[libName],
+        departments: updatedDepts,
+      },
+    }));
+  };
+
+  const getCourseOptionsForDepartments = (departments: string[]): MultiSelectOption[] => {
+    if (departments.length === 0 || departments.includes("All Departments")) {
+      return [
+        { id: "all-courses", label: "All Courses" },
+        ...DEFAULT_COURSES.map((c) => ({
+          id: c.id,
+          label: c.name,
+          sublabel: c.departmentName ? `Dept: ${c.departmentName}` : undefined,
+          chipSublabel: c.departmentName,
+        })),
+      ];
+    }
+    const matching = DEFAULT_COURSES.filter(
+      (c) => c.departmentName && departments.includes(c.departmentName),
+    );
+    const pool = matching.length > 0 ? matching : DEFAULT_COURSES;
+    return [
+      { id: "all-courses", label: "All Courses" },
+      ...pool.map((c) => ({
+        id: c.id,
+        label: c.name,
+        sublabel: c.departmentName ? `Dept: ${c.departmentName}` : undefined,
+        chipSublabel: c.departmentName,
+      })),
+    ];
+  };
 
   const handleCoursesChange = (libName: string, next: string[]) => {
     const currentCourses = allocations[libName]?.courses ?? ["All Courses"];
@@ -475,8 +528,8 @@ export function LibraryAllocationSection({
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               {showCopies
-                ? "Select authorized institutional libraries, allocate license copies, and configure course & batch access per library."
-                : `Select authorized institutional libraries and configure course & batch access per library.`}
+                ? "Select authorized institutional libraries, allocate license copies, and configure department, course & batch access per library."
+                : `Select authorized institutional libraries and configure department, course & batch access per library.`}
             </p>
           </div>
         </div>
@@ -534,8 +587,8 @@ export function LibraryAllocationSection({
                 </h3>
                 <p className="text-[11px] text-muted-foreground mt-0.5">
                   {showCopies
-                    ? "Configure license quota, academic courses, and batches for each allocated library."
-                    : "Configure academic courses and batches for each allocated library."}
+                    ? "Configure license quota, academic departments, courses, and batches for each allocated library."
+                    : "Configure academic departments, courses, and batches for each allocated library."}
                 </p>
               </div>
               {showCopies ? (
@@ -558,8 +611,10 @@ export function LibraryAllocationSection({
                 const libInfo = ALL_LIBRARIES.find((l) => l.name === libName);
                 const allocation = allocations[libName];
                 const copies = allocation.copies;
+                const departments = allocation.departments ?? ["All Departments"];
                 const courses = allocation.courses ?? ["All Courses"];
                 const batches = allocation.batches ?? ["All Batches"];
+                const libraryCourseOptions = getCourseOptionsForDepartments(departments);
                 const libraryBatchOptions = getBatchOptionsForCourses(courses);
 
                 return (
@@ -656,14 +711,18 @@ export function LibraryAllocationSection({
                       </div>
                     </div>
 
-                    {/* Bottom Row: Library-specific Course & Batch dropdowns */}
+                    {/* Bottom Row: Library-specific Department, Course & Batch dropdowns */}
                     <div className="rounded-xl bg-secondary/30 border border-border/60 p-3.5 space-y-3">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
                           <GraduationCap size={15} className="text-blue-600 dark:text-blue-400" />
-                          <span>Linked Courses & Batches for {libName}</span>
+                          <span>Linked Departments, Courses & Batches for {libName}</span>
                         </div>
                         <span className="text-[11px] text-muted-foreground font-medium">
+                          {departments.includes("All Departments")
+                            ? "All Departments"
+                            : `${departments.length} dept${departments.length > 1 ? "s" : ""}`}{" "}
+                          •{" "}
                           {courses.includes("All Courses")
                             ? "All Courses"
                             : `${courses.length} course${courses.length > 1 ? "s" : ""}`}{" "}
@@ -674,7 +733,25 @@ export function LibraryAllocationSection({
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                        {/* Department Dropdown (Left to Courses) */}
+                        <div>
+                          <label className="block text-xs font-semibold text-foreground mb-1">
+                            Departments
+                          </label>
+                          <MultiSelectDropdown
+                            placeholder="All Departments"
+                            searchPlaceholder="Search departments..."
+                            options={departmentOptions}
+                            selectedValues={departments}
+                            onChange={(next) => handleDepartmentsChange(libName, next)}
+                            badgeVariant="purple"
+                          />
+                          <span className="text-[11px] text-muted-foreground mt-1 block">
+                            Assign specific departments or leave as All Departments.
+                          </span>
+                        </div>
+
                         {/* Course Dropdown */}
                         <div>
                           <label className="block text-xs font-semibold text-foreground mb-1">
@@ -683,7 +760,7 @@ export function LibraryAllocationSection({
                           <MultiSelectDropdown
                             placeholder="All Courses"
                             searchPlaceholder="Search courses..."
-                            options={courseOptions}
+                            options={libraryCourseOptions}
                             selectedValues={courses}
                             onChange={(next) => handleCoursesChange(libName, next)}
                             badgeVariant="blue"
