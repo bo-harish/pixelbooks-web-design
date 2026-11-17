@@ -745,7 +745,7 @@ export function LibraryAllocationSection({
                             options={departmentOptions}
                             selectedValues={departments}
                             onChange={(next) => handleDepartmentsChange(libName, next)}
-                            badgeVariant="purple"
+                            badgeVariant="teal"
                           />
                           <span className="text-[11px] text-muted-foreground mt-1 block">
                             Assign specific departments or leave as All Departments.
