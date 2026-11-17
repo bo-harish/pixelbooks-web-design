@@ -405,18 +405,18 @@ function LibraryDashboardView() {
                 <div className="flex items-center gap-1 text-[11px]">
                   {stat.changePct
                     ? (() => {
-                        const isUp = !stat.changePct.startsWith("-");
-                        const absVal = stat.changePct.replace(/^[+-]/, "");
-                        return (
-                          <span
-                            className="inline-flex items-center gap-0.5 font-semibold"
-                            style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
-                          >
-                            {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                            {absVal}
-                          </span>
-                        );
-                      })()
+                      const isUp = !stat.changePct.startsWith("-");
+                      const absVal = stat.changePct.replace(/^[+-]/, "");
+                      return (
+                        <span
+                          className="inline-flex items-center gap-0.5 font-semibold"
+                          style={{ color: isUp ? "var(--success)" : "var(--danger)" }}
+                        >
+                          {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                          {absVal}
+                        </span>
+                      );
+                    })()
                     : null}
                   {stat.changeLabel ? (
                     <span className="text-muted-foreground">{stat.changeLabel}</span>
@@ -901,7 +901,7 @@ function PBAdminDashboard() {
       subtitle={
         adminMode === "library"
           ? "Library administration overview for eBook sales, order requests, and institution metrics."
-          : "Global administration overview for retail sales and publishing activity."
+          : "PixelBooks administration overview for retail sales and publishing activity."
       }
     >
       <div className="space-y-6 p-4 md:p-8">
