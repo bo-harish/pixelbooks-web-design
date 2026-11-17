@@ -649,8 +649,8 @@ export function LibraryAdminCoursesPage() {
               type="button"
               onClick={() => setActiveSection("departments-courses")}
               className={`h-9 px-3.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${activeSection === "departments-courses"
-                  ? "bg-card text-foreground shadow-xs border border-border"
-                  : "text-muted-foreground hover:text-foreground"
+                ? "bg-card text-foreground shadow-xs border border-border"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
             >
               <Building2 size={14} className="text-[var(--brand)]" />
@@ -663,8 +663,8 @@ export function LibraryAdminCoursesPage() {
               type="button"
               onClick={() => setActiveSection("courses-batches")}
               className={`h-9 px-3.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${activeSection === "courses-batches"
-                  ? "bg-card text-foreground shadow-xs border border-border"
-                  : "text-muted-foreground hover:text-foreground"
+                ? "bg-card text-foreground shadow-xs border border-border"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
             >
               <GraduationCap size={14} className="text-[var(--brand)]" />
@@ -822,7 +822,7 @@ export function LibraryAdminCoursesPage() {
                     <div className="flex items-center gap-2">
                       <BookOpen className="text-[var(--brand)]" size={18} />
                       <h3 className="font-bold text-foreground text-sm sm:text-base">
-                        Department Courses
+                        Courses
                       </h3>
                       <span className="rounded-full bg-slate-100 dark:bg-secondary/40 text-slate-600 dark:text-muted-foreground text-xs font-semibold px-2 py-0.5">
                         {departmentCourses.length}
@@ -1247,8 +1247,8 @@ export function LibraryAdminCoursesPage() {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={`relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${uploadDragging
-                    ? "border-[var(--brand)] bg-[var(--sidebar-highlight)]/30 scale-[1.01]"
-                    : "border-slate-300 dark:border-border/80 bg-secondary/10 hover:bg-secondary/20"
+                  ? "border-[var(--brand)] bg-[var(--sidebar-highlight)]/30 scale-[1.01]"
+                  : "border-slate-300 dark:border-border/80 bg-secondary/10 hover:bg-secondary/20"
                   }`}
               >
                 <input
@@ -1321,8 +1321,8 @@ export function LibraryAdminCoursesPage() {
                   type="submit"
                   disabled={!uploadFile || uploadProgress !== null}
                   className={`h-11 px-8 rounded-full font-semibold text-sm transition-all cursor-pointer shadow-xs min-w-32 ${uploadFile && uploadProgress === null
-                      ? "bg-[var(--brand)] text-white hover:opacity-90"
-                      : "bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-border dark:text-muted-foreground"
+                    ? "bg-[var(--brand)] text-white hover:opacity-90"
+                    : "bg-slate-300 text-slate-500 cursor-not-allowed dark:bg-border dark:text-muted-foreground"
                     }`}
                 >
                   Upload
@@ -1398,8 +1398,8 @@ export function LibraryAdminCoursesPage() {
                               setCourseDeptSearchQuery("");
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-colors text-left cursor-pointer ${selectedCourseDept === d.name
-                                ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
-                                : "hover:bg-secondary/60 text-foreground"
+                              ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
+                              : "hover:bg-secondary/60 text-foreground"
                               }`}
                           >
                             <span>{d.name}</span>
@@ -1609,8 +1609,8 @@ export function LibraryAdminCoursesPage() {
                               setCourseSearchQuery("");
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-colors text-left cursor-pointer ${batchTitleInput === c.title
-                                ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
-                                : "hover:bg-secondary/60 text-foreground"
+                              ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
+                              : "hover:bg-secondary/60 text-foreground"
                               }`}
                           >
                             <span>{c.title}</span>
@@ -1886,8 +1886,8 @@ export function LibraryAdminCoursesPage() {
                               setDeptSearchQueryInModal("");
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-colors text-left cursor-pointer ${deptCourseDeptInput === d.name
-                                ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
-                                : "hover:bg-secondary/60 text-foreground"
+                              ? "bg-[var(--sidebar-highlight)] text-[var(--brand)]"
+                              : "hover:bg-secondary/60 text-foreground"
                               }`}
                           >
                             <span>{d.name}</span>
